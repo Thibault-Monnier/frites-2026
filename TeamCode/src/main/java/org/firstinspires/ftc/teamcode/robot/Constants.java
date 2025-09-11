@@ -1,0 +1,77 @@
+package org.firstinspires.ftc.teamcode.robot;
+
+import com.acmerobotics.dashboard.config.Config;
+
+@Config
+public class Constants {
+    /* --- SYSTEM --- */
+    public static final String TAG = "FRITES";
+
+    /* --- MODE REGISTRATION GROUPS --- */
+    public static final String MAIN_MODES_GROUP = "Main";
+    public static final String DEBUGGER_MODES_GROUP = "Debuggers";
+    public static final String TEST_MODES_GROUP = "Tests";
+
+    /* --- ROBOT MODULES --- */
+    public static double CLAMP_OPEN_POSITION = 0.75f;
+    public static double CLAMP_CLOSED_POSITION = 1.0;  // 0.75f;
+
+    public static double PLASTIC_CLAMP_OPEN_POSITION = 0.6f;
+    public static double PLASTIC_CLAMP_CLOSED_POSITION = 0.1f;  // 0.75f;
+    public static String PLASTIC_CLAMP_ID = "plastic_clamp";
+
+    public static double BASKET_OPEN_POSITION = 0.5f;  // 0.0f;
+    public static double BASKET_CLOSED_POSITION = 0.0f;  // 0.4f;
+    public static String BASKET_ID = "basket";
+
+    /* --- HARDWARE MAP --- */
+    public static String FRONT_LEFT_MOTOR_ID = "front_left";
+    public static String FRONT_RIGHT_MOTOR_ID = "front_right";
+    public static String BACK_LEFT_MOTOR_ID = "back_left";
+    public static String BACK_RIGHT_MOTOR_ID = "back_right";
+    public static String ARM_MOTOR_ID = "arm_motor";
+    public static String ELEVATOR_MOTOR_ID = "elevator_motor";
+    public static String ASCENT_MOTOR_ID = "ascent_motor";
+    public static String CLAMP_SERVO_ID = "clamp_servo";
+    public static String BASKET_SERVO_ID = "basket_servo";
+    public static String ROTATION_SERVO_ID = "rotation_servo";
+    public static String FIXED_SERVO_ID = "fixed_servo";
+    public static String CLAMP_COLOR_SENSOR_ID = "clamp_color_sensor";
+    public static String ARM_COLOR_SENSOR_ID = "arm_color_sensor";
+    public static String IMU_ID = "imu";
+
+    /* --- UTILS --- */
+    public static String REPLAY_FILE_DEST = "replay_file.txt";
+
+    public enum Team {
+        BLUE,
+        RED,
+        ANY_OR_UNKNOWN
+    }
+
+    public enum StartPosition {
+        BASKET,
+        OBSERVATION_ZONE,
+        ANY_OR_UNKNOWN
+    }
+
+    public enum ColorRange {
+        YELLOW(60, 80),
+        RED(20, 40),
+        BLUE(180, 200),
+        UNKNOW(-1, -1);
+
+
+        final int lowerBound;
+        final int upperBound;
+
+        ColorRange(int lowerBound, int upperBound) {
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
+        }
+
+        boolean valueInRange(int value) {
+            return value >= lowerBound && value <= upperBound;
+        }
+    }
+}
