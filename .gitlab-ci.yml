@@ -13,8 +13,4 @@ build:
   artifacts:
     paths:
       - '**/build/'
-  only:
-    - main
-    - master
-    - develop
 
