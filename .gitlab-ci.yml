@@ -1,16 +1,47 @@
 image: eclipse-temurin:21-jdk
 
+variables:
+  ANDROID_API_LEVEL: "34"                  # change if your compileSdk matches another level
+  ANDROID_BUILD_TOOLS: "34.0.0"            # change to match your project if needed
+  ANDROID_SDK_ROOT: "$CI_PROJECT_DIR/.android-sdk"
+  ANDROID_HOME: "$ANDROID_SDK_ROOT"        # some tools still read ANDROID_HOME
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"  # keeps cache inside project dir for GitLab caching
+
 stages:
   - build
 
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .gradle/
+    - .android-sdk/
+
 before_script:
+  - apt-get update -y
+  - apt-get install -y --no-install-recommends unzip wget ca-certificates
+  # Prepare SDK dir
+  - mkdir -p "$ANDROID_SDK_ROOT"/cmdline-tools
+  # Download latest command-line tools (Linux)
+  - wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdtools.zip
+  - unzip -q /tmp/cmdtools.zip -d /tmp/cmdtools
+  - mv /tmp/cmdtools/cmdline-tools "$ANDROID_SDK_ROOT"/cmdline-tools/latest
+  - rm -rf /tmp/cmdtools /tmp/cmdtools.zip
+  # Make sdkmanager available
+  - export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH"
+  # Accept licenses and install required components
+  - yes | sdkmanager --licenses > /dev/null || true
+  - sdkmanager "platform-tools" "platforms;android-${ANDROID_API_LEVEL}" "build-tools;${ANDROID_BUILD_TOOLS}"
+  # (Optional) if your project needs extras, add them here, e.g.:
+  # - sdkmanager "extras;google;m2repository" "extras;android;m2repository"
+  # Ensure Gradle can find the SDK even if it insists on local.properties
+  - echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+  # Make Gradle wrapper executable
   - chmod +x ./gradlew
 
 build:
   stage: build
   script:
-    - ./gradlew build
+    - ./gradlew --no-daemon --stacktrace build
   artifacts:
     paths:
       - '**/build/'
-
