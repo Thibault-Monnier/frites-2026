@@ -13,7 +13,6 @@ public class ServoClamp implements Clamp {
     private final double openPos;
     private final double closedPos;
 
-    private final String id;
     private final String key;
 
     private State state;
@@ -23,8 +22,7 @@ public class ServoClamp implements Clamp {
         this.openPos = openPos;
         this.closedPos = closedPos;
 
-        this.id = id;
-        this.key = this.id + STATE_KEY_EXTENSION;
+        this.key = id + STATE_KEY_EXTENSION;
 
         this.servo.resetDeviceConfigurationForOpMode();
 
@@ -61,11 +59,6 @@ public class ServoClamp implements Clamp {
     @Override
     public void close() {
         state = State.CLOSED;
-    }
-
-    @Override
-    public void toggle() {
-
     }
 
     @Override

@@ -5,8 +5,6 @@ public interface Clamp extends RobotModule {
 
     void close();
 
-    void toggle();
-
     String getStateKey();
 
     enum State {
