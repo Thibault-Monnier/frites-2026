@@ -32,7 +32,12 @@ public class Constants {
     public static String ARM_MOTOR_ID = "arm_motor";
     public static String ELEVATOR_MOTOR_ID = "elevator_motor";
     public static String ASCENT_MOTOR_ID = "ascent_motor";
-    public static String TEST_MOTOR_ID = "test_motor";
+
+    public static String TEST_MOTOR_1_ID = "test_motor_1";
+    public static String TEST_MOTOR_2_ID = "test_motor_2";
+    public static double TEST_MOTOR_1_POWER = 0.5;
+    public static double TEST_MOTOR_2_POWER = -0.5;
+
     public static String CLAMP_SERVO_ID = "clamp_servo";
     public static String BASKET_SERVO_ID = "basket_servo";
     public static String ROTATION_SERVO_ID = "rotation_servo";
