@@ -65,6 +65,8 @@ public class GamepadController {
     private double lastNotBTime = Double.POSITIVE_INFINITY;
     private double lastNotXTime = Double.POSITIVE_INFINITY;
     private double lastNotYTime = Double.POSITIVE_INFINITY;
+    private double lastNotLeftStickButtonTime = Double.POSITIVE_INFINITY;
+    private double lastNotRightStickButtonTime = Double.POSITIVE_INFINITY;
 
     /* CONSTRUCTOR */
     public GamepadController(Telemetry globalTelemetry, ElapsedTime globalRuntime, Gamepad globalGamepad) {
@@ -147,7 +149,7 @@ public class GamepadController {
         return pressed;
     }
 
-    // Get if a button is long-pressed, returns true while the button is not released (does not currently support left/right stick)
+    // Get if a button is long-pressed, returns true while the button is not released
     public boolean longPress(Button button) {
         boolean longPressed = false;
         switch (button) {
@@ -170,8 +172,22 @@ public class GamepadController {
                 if (!gamepad.y) lastNotYTime = runtime.time();
                 longPressed = gamepad.y && (runtime.time() - lastNotYTime > LONG_PRESS_TIME);
                 break;
+
+            case LEFT_STICK:
+                if (!gamepad.left_stick_button) lastNotLeftStickButtonTime = runtime.time();
+                longPressed = gamepad.left_stick_button && (runtime.time() - lastNotLeftStickButtonTime > LONG_PRESS_TIME);
+                break;
+
+            case RIGHT_STICK:
+                if (!gamepad.right_stick_button) lastNotRightStickButtonTime = runtime.time();
+                longPressed = gamepad.right_stick_button && (runtime.time() - lastNotRightStickButtonTime > LONG_PRESS_TIME);
+                break;
         }
         return longPressed;
+    }
+
+    public boolean leftStickPressed() {
+        return gamepad.left_stick_button;
     }
 
     public enum Button {
@@ -184,8 +200,6 @@ public class GamepadController {
         DPAD_LEFT,
         DPAD_RIGHT,
         LEFT_STICK,
-        UPSTICK,
-
         RIGHT_STICK,
         OPTIONS,
         SHARE,

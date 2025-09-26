@@ -125,9 +125,11 @@ public class Movement implements RobotModule {
         );
     }
 
-    public void joystickTranslate(Gamepad gamepad) {
-        double sideways = gamepad.left_stick_x;
-        double front = gamepad.left_stick_y;
+    public void joystickTranslate(Gamepad gamepad, boolean isSlow) {
+        double speedMultiplier = isSlow ? 0.5 : 1;
+
+        double sideways = gamepad.left_stick_x * speedMultiplier;
+        double front = gamepad.left_stick_y * speedMultiplier;
 
         // Gradual speed increase
         sideways = smooth(sideways);
@@ -164,8 +166,9 @@ public class Movement implements RobotModule {
             //   = [                                ]
             //     [ sin(θ)*front + cos(θ)*sideways ]
 
-            front = front * Math.cos(-robotOrientation.getYaw(AngleUnit.RADIANS)) - sideways * Math.sin(-robotOrientation.getYaw(AngleUnit.RADIANS));
-            sideways = front * Math.sin(-robotOrientation.getYaw(AngleUnit.RADIANS)) + sideways * Math.cos(-robotOrientation.getYaw(AngleUnit.RADIANS));
+            final double theta = -robotOrientation.getYaw(AngleUnit.RADIANS);
+            front = front * Math.cos(theta) - sideways * Math.sin(theta);
+            sideways = front * Math.sin(theta) + sideways * Math.cos(theta);
         }
         double denominator = Math.max(Math.abs(front) + Math.abs(sideways) + Math.abs(turn), 1);
         frontLeftPower += (front - sideways - turn) / denominator;

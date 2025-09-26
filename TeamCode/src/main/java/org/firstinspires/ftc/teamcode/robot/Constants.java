@@ -35,8 +35,8 @@ public class Constants {
 
     public static String TEST_MOTOR_1_ID = "test_motor_1";
     public static String TEST_MOTOR_2_ID = "test_motor_2";
-    public static double TEST_MOTOR_1_POWER = 0.5;
-    public static double TEST_MOTOR_2_POWER = -0.5;
+    public static double TEST_MOTOR_1_POWER = -1.0;
+    public static double TEST_MOTOR_2_POWER = 1.0;
 
     public static String CLAMP_SERVO_ID = "clamp_servo";
     public static String BASKET_SERVO_ID = "basket_servo";

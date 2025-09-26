@@ -123,6 +123,7 @@ public class ManualOpMode extends OpMode {
         /* --- MOVEMENT --- */
         move.reset();
 
+        /*
         if (gamepad.press(GamepadController.Button.LEFT_STICK)) {
             if (move.getMovementMode() == Movement.MovementMode.ROBOT_CENTRIC) {
                 move.setMovementMode(Movement.MovementMode.FIELD_CENTRIC);
@@ -130,10 +131,10 @@ public class ManualOpMode extends OpMode {
                 move.setMovementMode(Movement.MovementMode.ROBOT_CENTRIC);
             }
         }
+        */
 
-        // Translation : joystick (fast) and dpad (slow)
-        move.joystickTranslate(gamepad1);
-        move.dpadTranslate(gamepad1);
+        // Translation : unpressed (fast) and pressed (slow)
+        move.joystickTranslate(gamepad1, gamepad.leftStickPressed());
 
         // Rotation : bumpers (fast) and triggers (slow)
         move.bumperTurn(gamepad1);
