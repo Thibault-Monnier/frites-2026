@@ -7,8 +7,6 @@ import org.firstinspires.ftc.teamcode.models.Clamp;
 import java.util.HashMap;
 
 public class ServoClamp implements Clamp {
-    private final String STATE_KEY_EXTENSION = "State";
-
     private final Servo servo;
     private final double openPos;
     private final double closedPos;
@@ -22,6 +20,7 @@ public class ServoClamp implements Clamp {
         this.openPos = openPos;
         this.closedPos = closedPos;
 
+        String STATE_KEY_EXTENSION = "State";
         this.key = id + STATE_KEY_EXTENSION;
 
         this.servo.resetDeviceConfigurationForOpMode();

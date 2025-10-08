@@ -26,7 +26,6 @@ import java.util.List;
 
 @Autonomous(name = "Main Auto Mode")
 public class MainAutoOpMode extends OpMode {
-
     private final Constants.Team team;
     private final Constants.StartPosition startPosition;
     private final FtcDashboard dash = FtcDashboard.getInstance();

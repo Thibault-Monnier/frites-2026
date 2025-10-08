@@ -11,10 +11,6 @@ import org.firstinspires.ftc.teamcode.robot.Constants;
         group = Constants.MAIN_MODES_GROUP)
 public class Blue_Automation extends ManualOpMode {
     public Blue_Automation() {
-        super(
-                Constants.Team.BLUE,
-                Constants.StartPosition.ANY_OR_UNKNOWN,
-                false,
-                Arm.ColorSensorMode.TEAM_ONLY);
+        super(Constants.Team.BLUE, false, Arm.ColorSensorMode.TEAM_ONLY);
     }
 }

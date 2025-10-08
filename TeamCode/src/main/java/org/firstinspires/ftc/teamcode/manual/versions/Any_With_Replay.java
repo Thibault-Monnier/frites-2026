@@ -11,10 +11,6 @@ import org.firstinspires.ftc.teamcode.robot.Constants;
         group = Constants.MAIN_MODES_GROUP)
 public class Any_With_Replay extends ManualOpMode {
     public Any_With_Replay() {
-        super(
-                Constants.Team.ANY_OR_UNKNOWN,
-                Constants.StartPosition.ANY_OR_UNKNOWN,
-                true,
-                Arm.ColorSensorMode.NO_DETECTION);
+        super(Constants.Team.ANY_OR_UNKNOWN, true, Arm.ColorSensorMode.NO_DETECTION);
     }
 }

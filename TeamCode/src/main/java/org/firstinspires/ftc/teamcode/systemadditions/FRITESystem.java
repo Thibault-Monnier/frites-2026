@@ -36,64 +36,57 @@ public class FRITESystem implements OpModeManagerNotifier.Notifications {
 
     @OnCreateEventLoop
     public static void attachEventLoop(Context context) {
-        //TODO
+        // TODO
     }
 
     @WebHandlerRegistrar
     public static void attachWebServer(Context context, WebHandlerManager manager) {
-//        if (instance != null) {
-//            instance.internalAttachWebServer(manager.getWebServer());
-//        }
+        //        if (instance != null) {
+        //            instance.internalAttachWebServer(manager.getWebServer());
+        //        }
     }
 
     @OpModeRegistrar
-    public static void registerOpModes() {
-    }
+    public static void registerOpModes() {}
 
     @Override
-    public void onOpModePreInit(OpMode opMode) {
-
-    }
+    public void onOpModePreInit(OpMode opMode) {}
 
     @Override
-    public void onOpModePreStart(OpMode opMode) {
-
-    }
+    public void onOpModePreStart(OpMode opMode) {}
 
     @Override
-    public void onOpModePostStop(OpMode opMode) {
+    public void onOpModePostStop(OpMode opMode) {}
 
-    }
-
-//    public void internalAttachWebServer(WebServer webServer) {
-//        if (webServer == null) {
-//            return;
-//        }
-//
-//        Activity activity = AppUtil.getInstance().getActivity();
-//
-//        if (activity == null) {
-//            return;
-//        }
-//
-//        WebHandlerManager webHandlerManager = webServer.getWebHandlerManager();
-//        AssetManager assetManager = activity.getAssets();
-//
-//        webHandlerManager.register("/frites",
-//                newStaticAssetHandler(assetManager, "frites/index.html"));
-//        webHandlerManager.register("/frites/",
-//                newStaticAssetHandler(assetManager, "frites/index.html"));
-//        addAssetWebHandlers(webHandlerManager, assetManager, "dash");
-//
-//        addAssetWebHandlers(webHandlerManager, assetManager, "images");
-//
-//        webServerAttached = true;
-//
+    //    public void internalAttachWebServer(WebServer webServer) {
+    //        if (webServer == null) {
+    //            return;
+    //        }
+    //
+    //        Activity activity = AppUtil.getInstance().getActivity();
+    //
+    //        if (activity == null) {
+    //            return;
+    //        }
+    //
+    //        WebHandlerManager webHandlerManager = webServer.getWebHandlerManager();
+    //        AssetManager assetManager = activity.getAssets();
+    //
+    //        webHandlerManager.register("/frites",
+    //                newStaticAssetHandler(assetManager, "frites/index.html"));
+    //        webHandlerManager.register("/frites/",
+    //                newStaticAssetHandler(assetManager, "frites/index.html"));
+    //        addAssetWebHandlers(webHandlerManager, assetManager, "dash");
+    //
+    //        addAssetWebHandlers(webHandlerManager, assetManager, "images");
+    //
+    //        webServerAttached = true;
+    //
 
     /// /        updateStatusView();
-//    }
-    private void addAssetWebHandlers(WebHandlerManager webHandlerManager,
-                                     AssetManager assetManager, String path) {
+    //    }
+    private void addAssetWebHandlers(
+            WebHandlerManager webHandlerManager, AssetManager assetManager, String path) {
         try {
             String[] list = assetManager.list(path);
 
@@ -106,8 +99,7 @@ public class FRITESystem implements OpModeManagerNotifier.Notifications {
                     addAssetWebHandlers(webHandlerManager, assetManager, path + "/" + file);
                 }
             } else {
-                webHandlerManager.register("/" + path,
-                        newStaticAssetHandler(assetManager, path));
+                webHandlerManager.register("/" + path, newStaticAssetHandler(assetManager, path));
             }
         } catch (IOException e) {
             Log.w(TAG, e);
@@ -121,43 +113,44 @@ public class FRITESystem implements OpModeManagerNotifier.Notifications {
                     throws IOException {
                 if (session.getMethod() == NanoHTTPD.Method.GET) {
                     String mimeType = MimeTypesUtil.determineMimeType(file);
-                    return NanoHTTPD.newChunkedResponse(NanoHTTPD.Response.Status.OK,
-                            mimeType, assetManager.open(file));
+                    return NanoHTTPD.newChunkedResponse(
+                            NanoHTTPD.Response.Status.OK, mimeType, assetManager.open(file));
                 } else {
-                    return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.NOT_FOUND,
-                            NanoHTTPD.MIME_PLAINTEXT, "");
+                    return NanoHTTPD.newFixedLengthResponse(
+                            NanoHTTPD.Response.Status.NOT_FOUND, NanoHTTPD.MIME_PLAINTEXT, "");
                 }
             }
         };
     }
 
-//    private void updateStatusView() {
-//        if (connectionStatusTextView != null) {
-//            AppUtil.getInstance().runOnUiThread(new Runnable() {
-//                @SuppressLint("SetTextI18n")
-//                @Override
-//                public void run() {
-//                    if (!core.enabled) {
-//                        connectionStatusTextView.setText("Dashboard: disabled");
-//                        return;
-//                    }
-//
-//                    String serverStatus = webServerAttached ? "server attached" : "server detached";
-//
-//                    String connStatus;
-//                    int connections = core.clientCount();
-//                    if (connections == 0) {
-//                        connStatus = "no connections";
-//                    } else if (connections == 1) {
-//                        connStatus = "1 connection";
-//                    } else {
-//                        connStatus = connections + " connections";
-//                    }
-//
-//                    connectionStatusTextView.setText(
-//                            "Dashboard: " + serverStatus + ", " + connStatus);
-//                }
-//            });
-//        }
-//    }
+    //    private void updateStatusView() {
+    //        if (connectionStatusTextView != null) {
+    //            AppUtil.getInstance().runOnUiThread(new Runnable() {
+    //                @SuppressLint("SetTextI18n")
+    //                @Override
+    //                public void run() {
+    //                    if (!core.enabled) {
+    //                        connectionStatusTextView.setText("Dashboard: disabled");
+    //                        return;
+    //                    }
+    //
+    //                    String serverStatus = webServerAttached ? "server attached" : "server
+    // detached";
+    //
+    //                    String connStatus;
+    //                    int connections = core.clientCount();
+    //                    if (connections == 0) {
+    //                        connStatus = "no connections";
+    //                    } else if (connections == 1) {
+    //                        connStatus = "1 connection";
+    //                    } else {
+    //                        connStatus = connections + " connections";
+    //                    }
+    //
+    //                    connectionStatusTextView.setText(
+    //                            "Dashboard: " + serverStatus + ", " + connStatus);
+    //                }
+    //            });
+    //        }
+    //    }
 }

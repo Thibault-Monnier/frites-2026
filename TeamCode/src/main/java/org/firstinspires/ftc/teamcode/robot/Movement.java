@@ -111,7 +111,7 @@ public class Movement implements RobotModule {
         if (!(gamepad.dpad_up || gamepad.dpad_down || gamepad.dpad_left || gamepad.dpad_right)) {
             dpadTime = globalRuntime.time();
         } // Allows us to get the time the dpad was pressed, so we can progressively augment the
-          // speed of the robot
+        // speed of the robot
         double time = globalRuntime.time() - dpadTime;
         double sidewaysTime = time / TIME_TO_DPAD_SIDEWAYS;
         double frontTime = time / TIME_TO_DPAD_FRONT;

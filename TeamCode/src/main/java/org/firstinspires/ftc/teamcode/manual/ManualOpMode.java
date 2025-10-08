@@ -36,7 +36,6 @@ public class ManualOpMode extends OpMode {
     private final boolean feature_disabled = false;
 
     private final Constants.Team team;
-    private final Constants.StartPosition startPosition;
     private final boolean replay;
     private final Arm.ColorSensorMode colorSensorAutomation;
     private ElapsedTime runtime;
@@ -48,12 +47,8 @@ public class ManualOpMode extends OpMode {
     private Replayer.Logger replaySaver;
 
     public ManualOpMode(
-            Constants.Team team,
-            Constants.StartPosition startPosition,
-            boolean replay,
-            Arm.ColorSensorMode colorSensorAutomation) {
+            Constants.Team team, boolean replay, Arm.ColorSensorMode colorSensorAutomation) {
         this.team = team;
-        this.startPosition = startPosition;
         this.replay = replay;
         this.colorSensorAutomation = colorSensorAutomation;
     }
