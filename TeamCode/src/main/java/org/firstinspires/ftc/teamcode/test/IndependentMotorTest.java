@@ -6,7 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@TeleOp(name = Constants.TEST_MODES_GROUP + ": Independent motor test", group = Constants.TEST_MODES_GROUP)
+@TeleOp(
+        name = Constants.TEST_MODES_GROUP + ": Independent motor test",
+        group = Constants.TEST_MODES_GROUP)
 public class IndependentMotorTest extends OpMode {
     private DcMotor testMotor1;
     private DcMotor testMotor2;

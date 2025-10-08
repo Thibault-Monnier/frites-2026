@@ -42,41 +42,43 @@ public class ModuleReplayer extends Replayer.ReplayerMode {
 
         runtime = new ElapsedTime();
 
-        globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        GamepadController gamepad = new GamepadController(
-                globalTelemetry,
-                runtime,
-                gamepad1
-        );
+        GamepadController gamepad = new GamepadController(globalTelemetry, runtime, gamepad1);
 
         IMU onBoardIMU = hardwareMap.get(IMU.class, Constants.IMU_ID);
 
-        move = new Movement(
-                globalTelemetry,
-                runtime,
-                hardwareMap.get(DcMotor.class, Constants.FRONT_LEFT_MOTOR_ID),
-                hardwareMap.get(DcMotor.class, Constants.FRONT_RIGHT_MOTOR_ID),
-                hardwareMap.get(DcMotor.class, Constants.BACK_LEFT_MOTOR_ID),
-                hardwareMap.get(DcMotor.class, Constants.BACK_RIGHT_MOTOR_ID),
-                onBoardIMU
-        );
+        move =
+                new Movement(
+                        globalTelemetry,
+                        runtime,
+                        hardwareMap.get(DcMotor.class, Constants.FRONT_LEFT_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, Constants.FRONT_RIGHT_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, Constants.BACK_LEFT_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, Constants.BACK_RIGHT_MOTOR_ID),
+                        onBoardIMU);
 
-        arm = new Arm(
-                globalTelemetry,
-                hardwareMap.get(DcMotor.class, Constants.ELEVATOR_MOTOR_ID),
-                hardwareMap.get(DcMotor.class, Constants.ARM_MOTOR_ID),
-                new ServoClamp(hardwareMap.get(Servo.class, Constants.CLAMP_SERVO_ID), PLASTIC_CLAMP_OPEN_POSITION, PLASTIC_CLAMP_CLOSED_POSITION, Constants.PLASTIC_CLAMP_ID),
-                new ServoClamp(hardwareMap.get(Servo.class, Constants.BASKET_SERVO_ID), BASKET_OPEN_POSITION, BASKET_CLOSED_POSITION, Constants.BASKET_ID),
-                hardwareMap.get(Servo.class, Constants.ROTATION_SERVO_ID)
-        );
+        arm =
+                new Arm(
+                        globalTelemetry,
+                        hardwareMap.get(DcMotor.class, Constants.ELEVATOR_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, Constants.ARM_MOTOR_ID),
+                        new ServoClamp(
+                                hardwareMap.get(Servo.class, Constants.CLAMP_SERVO_ID),
+                                PLASTIC_CLAMP_OPEN_POSITION,
+                                PLASTIC_CLAMP_CLOSED_POSITION,
+                                Constants.PLASTIC_CLAMP_ID),
+                        new ServoClamp(
+                                hardwareMap.get(Servo.class, Constants.BASKET_SERVO_ID),
+                                BASKET_OPEN_POSITION,
+                                BASKET_CLOSED_POSITION,
+                                Constants.BASKET_ID),
+                        hardwareMap.get(Servo.class, Constants.ROTATION_SERVO_ID));
         arm.tryResetMotors();
         arm.setColorSensor(null, Arm.ColorSensorMode.NO_DETECTION);
 
-        this.robotModules = new RobotModule[]{
-                this.move,
-                this.arm
-        };
+        this.robotModules = new RobotModule[] {this.move, this.arm};
     }
 
     public void loop() {

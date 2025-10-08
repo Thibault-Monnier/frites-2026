@@ -13,7 +13,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
 @Config
-@TeleOp(name = Constants.DEBUGGER_MODES_GROUP + ": Color Sensor", group = Constants.DEBUGGER_MODES_GROUP)
+@TeleOp(
+        name = Constants.DEBUGGER_MODES_GROUP + ": Color Sensor",
+        group = Constants.DEBUGGER_MODES_GROUP)
 public class ColorSensorDebugger extends OpMode {
     public static String sensorId = "color_sensor";
 
@@ -22,7 +24,8 @@ public class ColorSensorDebugger extends OpMode {
 
     @Override
     public void init() {
-        globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         sensor = hardwareMap.get(ColorSensor.class, sensorId);
         sensor.resetDeviceConfigurationForOpMode();
@@ -41,7 +44,7 @@ public class ColorSensorDebugger extends OpMode {
         int g = sensor.green();
         int b = sensor.blue();
 
-//            int rgb = Color.rgb(r, g, b);
+        //            int rgb = Color.rgb(r, g, b);
         float[] hsv = new float[3];
         Color.RGBToHSV(r, g, b, hsv);
 

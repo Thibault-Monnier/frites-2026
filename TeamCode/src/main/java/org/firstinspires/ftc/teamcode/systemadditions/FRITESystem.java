@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerNotifier;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import com.qualcomm.robotcore.util.WebHandlerManager;
 
+import fi.iki.elonen.NanoHTTPD;
+
 import org.firstinspires.ftc.ftccommon.external.OnCreate;
 import org.firstinspires.ftc.ftccommon.external.OnCreateEventLoop;
 import org.firstinspires.ftc.ftccommon.external.WebHandlerRegistrar;
@@ -18,8 +20,6 @@ import org.firstinspires.ftc.robotcore.internal.webserver.WebHandler;
 import org.firstinspires.ftc.robotserver.internal.webserver.MimeTypesUtil;
 
 import java.io.IOException;
-
-import fi.iki.elonen.NanoHTTPD;
 
 public class FRITESystem implements OpModeManagerNotifier.Notifications {
 

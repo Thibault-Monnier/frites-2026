@@ -69,7 +69,8 @@ public class GamepadController {
     private double lastNotRightStickButtonTime = Double.POSITIVE_INFINITY;
 
     /* CONSTRUCTOR */
-    public GamepadController(Telemetry globalTelemetry, ElapsedTime globalRuntime, Gamepad globalGamepad) {
+    public GamepadController(
+            Telemetry globalTelemetry, ElapsedTime globalRuntime, Gamepad globalGamepad) {
         // INITIALIZE TELEMETRY
         this.globalTelemetry = globalTelemetry;
         gamepad = globalGamepad;
@@ -175,12 +176,16 @@ public class GamepadController {
 
             case LEFT_STICK:
                 if (!gamepad.left_stick_button) lastNotLeftStickButtonTime = runtime.time();
-                longPressed = gamepad.left_stick_button && (runtime.time() - lastNotLeftStickButtonTime > LONG_PRESS_TIME);
+                longPressed =
+                        gamepad.left_stick_button
+                                && (runtime.time() - lastNotLeftStickButtonTime > LONG_PRESS_TIME);
                 break;
 
             case RIGHT_STICK:
                 if (!gamepad.right_stick_button) lastNotRightStickButtonTime = runtime.time();
-                longPressed = gamepad.right_stick_button && (runtime.time() - lastNotRightStickButtonTime > LONG_PRESS_TIME);
+                longPressed =
+                        gamepad.right_stick_button
+                                && (runtime.time() - lastNotRightStickButtonTime > LONG_PRESS_TIME);
                 break;
         }
         return longPressed;

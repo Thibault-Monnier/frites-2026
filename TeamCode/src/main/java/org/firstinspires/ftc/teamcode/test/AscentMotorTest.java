@@ -13,7 +13,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
 @Config
-@TeleOp(name = Constants.TEST_MODES_GROUP + ": Ascent Motor Test", group = Constants.TEST_MODES_GROUP)
+@TeleOp(
+        name = Constants.TEST_MODES_GROUP + ": Ascent Motor Test",
+        group = Constants.TEST_MODES_GROUP)
 public class AscentMotorTest extends OpMode {
     private static final int STEP = 10;
 
@@ -23,7 +25,8 @@ public class AscentMotorTest extends OpMode {
 
     @Override
     public void init() {
-        globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         motor = hardwareMap.get(DcMotor.class, ASCENT_MOTOR_ID);
 

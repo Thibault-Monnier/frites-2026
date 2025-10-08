@@ -27,7 +27,7 @@ public class ServoClamp implements Clamp {
         this.servo.resetDeviceConfigurationForOpMode();
 
         this.close();
-//        this.apply();
+        //        this.apply();
     }
 
     @Override
@@ -46,9 +46,11 @@ public class ServoClamp implements Clamp {
 
     @Override
     public HashMap<String, Object> getCurrentState() {
-        return new HashMap<String, Object>() {{
-            put(key, state);
-        }};
+        return new HashMap<String, Object>() {
+            {
+                put(key, state);
+            }
+        };
     }
 
     @Override

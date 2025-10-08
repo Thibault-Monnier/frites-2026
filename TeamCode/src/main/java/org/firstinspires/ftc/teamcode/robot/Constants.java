@@ -14,14 +14,14 @@ public class Constants {
 
     /* --- ROBOT MODULES --- */
     public static double CLAMP_OPEN_POSITION = 0.75f;
-    public static double CLAMP_CLOSED_POSITION = 1.0;  // 0.75f;
+    public static double CLAMP_CLOSED_POSITION = 1.0; // 0.75f;
 
     public static double PLASTIC_CLAMP_OPEN_POSITION = 0.6f;
-    public static double PLASTIC_CLAMP_CLOSED_POSITION = 0.1f;  // 0.75f;
+    public static double PLASTIC_CLAMP_CLOSED_POSITION = 0.1f; // 0.75f;
     public static String PLASTIC_CLAMP_ID = "plastic_clamp";
 
-    public static double BASKET_OPEN_POSITION = 0.5f;  // 0.0f;
-    public static double BASKET_CLOSED_POSITION = 0.0f;  // 0.4f;
+    public static double BASKET_OPEN_POSITION = 0.5f; // 0.0f;
+    public static double BASKET_CLOSED_POSITION = 0.0f; // 0.4f;
     public static String BASKET_ID = "basket";
 
     /* --- HARDWARE MAP --- */
@@ -66,7 +66,6 @@ public class Constants {
         RED(20, 40),
         BLUE(180, 200),
         UNKNOW(-1, -1);
-
 
         final int lowerBound;
         final int upperBound;

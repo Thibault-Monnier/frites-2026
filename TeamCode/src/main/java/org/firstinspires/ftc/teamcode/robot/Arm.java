@@ -29,14 +29,15 @@ public class Arm implements RobotModule {
     public static int ARM_HANG_POS = 600;
     public static int ARM_TRANSFER_POS = 1870;
     public static int ARM_HIGH_POS = 2920; //
-    public static int ARM_INTAKE_POS = 4700; //4800;
+    public static int ARM_INTAKE_POS = 4700; // 4800;
     public static int ARM_LOW_POS = 4300;
     public static int ARM_LOW_INTAKE_EXTRA = 100;
     // REVERSE KINEMATICS
     public static double ARM_INIT_ANGLE = -37;
     public static double ARM_MOTOR_OUTER_RATIO = (20. / 100.);
     public static double ARM_MOTOR_TICKS_PER_ROTATION = 1425;
-    public static double ARM_MOTOR_DEGREE_PER_TICKS = 360 / (ARM_MOTOR_TICKS_PER_ROTATION / ARM_MOTOR_OUTER_RATIO);
+    public static double ARM_MOTOR_DEGREE_PER_TICKS =
+            360 / (ARM_MOTOR_TICKS_PER_ROTATION / ARM_MOTOR_OUTER_RATIO);
     // ELEVATOR
     public static double ELEVATOR_ACTIVE_POWER = 0.7;
     public static double ELEVATOR_REST_POWER = 0.5;
@@ -81,7 +82,13 @@ public class Arm implements RobotModule {
         DEBUG = true;
     }
 
-    public Arm(Telemetry globalTelemetry, DcMotor elevatorMotor, DcMotor armMotor, Clamp clamp, Clamp basket, Servo clampRotator) {
+    public Arm(
+            Telemetry globalTelemetry,
+            DcMotor elevatorMotor,
+            DcMotor armMotor,
+            Clamp clamp,
+            Clamp basket,
+            Servo clampRotator) {
         this.armMotor = armMotor;
         this.elevatorMotor = elevatorMotor;
         this.telemetry = globalTelemetry;
@@ -89,13 +96,12 @@ public class Arm implements RobotModule {
         this.basket = basket;
         this.clampRotator = clampRotator;
 
-
-//        this.armMotor.resetDeviceConfigurationForOpMode();
-//        this.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //        this.armMotor.resetDeviceConfigurationForOpMode();
+        //        this.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-//        this.elevatorMotor.resetDeviceConfigurationForOpMode();
-//        this.elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //        this.elevatorMotor.resetDeviceConfigurationForOpMode();
+        //        this.elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.elevatorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -111,8 +117,8 @@ public class Arm implements RobotModule {
 
     /**
      * Resets the motors if they haven't been reset yet.
-     * <p>
-     * This allows for motors to be reset only once at the start of the first OpMode, and not
+     *
+     * <p>This allows for motors to be reset only once at the start of the first OpMode, and not
      * when switching between OpModes during a match.
      */
     public void tryResetMotors() {
@@ -175,14 +181,16 @@ public class Arm implements RobotModule {
         }
 
         if (gamepadChoice == ArmPosition.DEFAULT
-                && currentElevatorPosition.encoderPos <= ElevatorPosition.LAISSER_PASSER.encoderPos) {
+                && currentElevatorPosition.encoderPos
+                        <= ElevatorPosition.LAISSER_PASSER.encoderPos) {
             gamepadChoice = currentArmPosition;
             gamepad.rumble(RUMBLE_ERROR_DURATION);
         }
     }
 
     public void transfer() {
-        if (currentArmPosition != ArmPosition.DEFAULT && currentElevatorPosition == ElevatorPosition.DEFAULT) {
+        if (currentArmPosition != ArmPosition.DEFAULT
+                && currentElevatorPosition == ElevatorPosition.DEFAULT) {
             goToArmPosition(ArmPosition.TRANSFER);
             goToElevatorPos(ElevatorPosition.TRANSFER);
             isClampAtMax = true;
@@ -229,7 +237,7 @@ public class Arm implements RobotModule {
 
     public void toggleRotation() {
         isClampAtMax = !isClampAtMax;
-//        clamp.close();
+        //        clamp.close();
     }
 
     private double clampReverseKinematics(double targetAngle) {
@@ -241,11 +249,11 @@ public class Arm implements RobotModule {
         int currentArmPos = getArmEncoderPosition();
         double armAngle = currentArmPos * ARM_MOTOR_DEGREE_PER_TICKS + ARM_INIT_ANGLE;
 
-        double correction = Range.clip(
-                armAngle - Math.signum(armAngle - 90) * targetAngle - 90,
-                -CLAMP_ROTATION_RANGE,
-                CLAMP_ROTATION_RANGE
-        );
+        double correction =
+                Range.clip(
+                        armAngle - Math.signum(armAngle - 90) * targetAngle - 90,
+                        -CLAMP_ROTATION_RANGE,
+                        CLAMP_ROTATION_RANGE);
 
         return (correction / CLAMP_ROTATION_RANGE) + .5;
     }
@@ -268,12 +276,11 @@ public class Arm implements RobotModule {
             targetRotation = 0;
         }
 
-
         /* --- GENERAL INFOS --- */
         int realArmPosition = getArmEncoderPosition();
-        if (targetArmPosition == ArmPosition.LOW_INTAKE && clamp.getCurrentState().get(clamp.getStateKey()) == Clamp.State.CLOSED) {
+        if (targetArmPosition == ArmPosition.LOW_INTAKE
+                && clamp.getCurrentState().get(clamp.getStateKey()) == Clamp.State.CLOSED) {
             realArmPosition -= ARM_LOW_INTAKE_EXTRA;
-
         }
         currentArmPosition = ArmPosition.getWithEncoderPos(realArmPosition);
 
@@ -293,7 +300,6 @@ public class Arm implements RobotModule {
             }
         }
 
-
         /* --- ARM --- */
         if (currentArmPosition != ArmPosition.UNKNOWN) {
             lastArmPosition = currentArmPosition;
@@ -304,19 +310,17 @@ public class Arm implements RobotModule {
 
             armMotor.setTargetPosition(
                     targetArmPosition.encoderPos
-                            + (
-                            targetArmPosition == ArmPosition.LOW_INTAKE &&
-                                    clamp.getCurrentState().get(clamp.getStateKey()) == Clamp.State.CLOSED
-                                    ? ARM_LOW_INTAKE_EXTRA : 0
-                    )
-            );
+                            + (targetArmPosition == ArmPosition.LOW_INTAKE
+                                            && clamp.getCurrentState().get(clamp.getStateKey())
+                                                    == Clamp.State.CLOSED
+                                    ? ARM_LOW_INTAKE_EXTRA
+                                    : 0));
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armMotor.setPower(ARM_ACTIVE_POWER);
         } else {
             isArmMoving = false;
             armMotor.setPower(ARM_REST_POWER);
         }
-
 
         /* --- ELEVATOR --- */
         if (currentElevatorPosition != targetElevatorPosition) {
@@ -334,10 +338,11 @@ public class Arm implements RobotModule {
             }
         }
 
-
         /* --- BASKET --- */
-        if ((lastArmPosition.encoderPos < ArmPosition.TRANSFER.encoderPos && ArmPosition.TRANSFER.encoderPos < targetArmPosition.encoderPos)
-                || (targetArmPosition.encoderPos < ArmPosition.TRANSFER.encoderPos && ArmPosition.TRANSFER.encoderPos <= lastArmPosition.encoderPos)) {
+        if ((lastArmPosition.encoderPos < ArmPosition.TRANSFER.encoderPos
+                        && ArmPosition.TRANSFER.encoderPos < targetArmPosition.encoderPos)
+                || (targetArmPosition.encoderPos < ArmPosition.TRANSFER.encoderPos
+                        && ArmPosition.TRANSFER.encoderPos <= lastArmPosition.encoderPos)) {
             basket.open();
         } else {
             if (currentElevatorPosition != ElevatorPosition.HIGH) {
@@ -347,7 +352,8 @@ public class Arm implements RobotModule {
 
         /* --- COLOR SENSOR --- */
         if (colorSensor != null && colorSensorMode != ColorSensorMode.NO_DETECTION) {
-            if (currentArmPosition == ArmPosition.LOW_INTAKE && clamp.getCurrentState().get(clamp.getStateKey()) == Clamp.State.OPEN) {
+            if (currentArmPosition == ArmPosition.LOW_INTAKE
+                    && clamp.getCurrentState().get(clamp.getStateKey()) == Clamp.State.OPEN) {
                 int r = colorSensor.red();
                 int g = colorSensor.green();
                 int b = colorSensor.blue();
@@ -387,13 +393,11 @@ public class Arm implements RobotModule {
             }
         }
 
-
         /* --- APPLY TO SERVOS --- */
         clampRotator.setPosition(clampReverseKinematics(targetRotation));
 
         clamp.apply();
         basket.apply();
-
 
         /* --- TELEMETRY --- */
         telemetry.addLine("--- ARM ---");
@@ -428,14 +432,12 @@ public class Arm implements RobotModule {
         state.put("isClampAtMax", isClampAtMax);
 
         HashMap<String, Object> clampState = clamp.getCurrentState();
-        for (String key :
-                clampState.keySet()) {
+        for (String key : clampState.keySet()) {
             state.put(key, clampState.get(key));
         }
 
         HashMap<String, Object> basketState = basket.getCurrentState();
-        for (String key :
-                basketState.keySet()) {
+        for (String key : basketState.keySet()) {
             state.put(key, basketState.get(key));
         }
 
@@ -493,7 +495,7 @@ public class Arm implements RobotModule {
             this.encoderPos = encoderPos;
         }
 
-        static public ElevatorPosition getWithEncoderPos(int pos) {
+        public static ElevatorPosition getWithEncoderPos(int pos) {
             for (ElevatorPosition position : ElevatorPosition.values()) {
                 if (isAtPosition(position.encoderPos, pos)) {
                     return position;
@@ -509,9 +511,9 @@ public class Arm implements RobotModule {
         SIDE_INTAKE(1, ARM_SIDE_INTAKE_POS, 90),
         HANG(2, ARM_HANG_POS, 0),
         TRANSFER(3, ARM_TRANSFER_POS, 90), // 1800
-        HIGH(4, ARM_HIGH_POS, 180), //3440 //3850
-        LOW(5, ARM_LOW_POS, 180), //4300 //4700
-        LOW_INTAKE(6, ARM_INTAKE_POS, 180), //4830
+        HIGH(4, ARM_HIGH_POS, 180), // 3440 //3850
+        LOW(5, ARM_LOW_POS, 180), // 4300 //4700
+        LOW_INTAKE(6, ARM_INTAKE_POS, 180), // 4830
 
         UNKNOWN(-1, -1, 0);
 
@@ -535,7 +537,7 @@ public class Arm implements RobotModule {
             this.maxRotation = maxRotation;
         }
 
-        static public ArmPosition getWithEncoderPos(int pos) {
+        public static ArmPosition getWithEncoderPos(int pos) {
             for (ArmPosition position : ArmPosition.values()) {
                 if (isAtPosition(position.encoderPos, pos)) {
                     return position;

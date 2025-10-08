@@ -18,11 +18,7 @@ public class MainLinearAutoOpMode extends LinearOpMode {
 
         drive = new DriveActions(new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0)));
 
-        Actions.runBlocking(
-                new SequentialAction(
-                )
-
-        );
+        Actions.runBlocking(new SequentialAction());
     }
 
     public enum State {

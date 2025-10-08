@@ -20,7 +20,8 @@ import java.util.Objects;
 @Config
 public class Movement implements RobotModule {
     /* --- CONSTANTS --- */
-    private static final DcMotor.ZeroPowerBehavior DEFAULT_BEHAVIOR = DcMotor.ZeroPowerBehavior.BRAKE;
+    private static final DcMotor.ZeroPowerBehavior DEFAULT_BEHAVIOR =
+            DcMotor.ZeroPowerBehavior.BRAKE;
     public static boolean DEBUG = true;
     public static double FRONT_LEFT_COEFF = 1;
     public static double FRONT_RIGHT_COEFF = 1;
@@ -29,12 +30,11 @@ public class Movement implements RobotModule {
 
     public static double TIME_TO_DPAD_FRONT = 3;
     public static double TIME_TO_DPAD_SIDEWAYS = 2;
-    public static double DPAD_MARGIN_FRONT = 0.5; //0.2;
-    public static double DPAD_MARGIN_SIDEWAYS = 0.5; //0.3;
+    public static double DPAD_MARGIN_FRONT = 0.5; // 0.2;
+    public static double DPAD_MARGIN_SIDEWAYS = 0.5; // 0.3;
     public static double MAX_DPAD_SENSITIVITY = 0.6;
-    public static double BUMPER_TURN_VALUE = 0.5;  //0.3;
+    public static double BUMPER_TURN_VALUE = 0.5; // 0.3;
     public static double TRIGGER_TURN_VALUE = 0.8;
-
 
     /* --- CLASS FIELDS --- */
 
@@ -59,7 +59,14 @@ public class Movement implements RobotModule {
     // OTHER FIELDS
     private MovementMode movementMode;
 
-    public Movement(Telemetry globalTelemetry, ElapsedTime globalRuntime, DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR, IMU globalImu) {
+    public Movement(
+            Telemetry globalTelemetry,
+            ElapsedTime globalRuntime,
+            DcMotor FL,
+            DcMotor FR,
+            DcMotor BL,
+            DcMotor BR,
+            IMU globalImu) {
         this.globalTelemetry = globalTelemetry;
         this.globalRuntime = globalRuntime;
         this.frontLeftDrive = FL;
@@ -73,12 +80,11 @@ public class Movement implements RobotModule {
         backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        IMU.Parameters parameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
-                        RevHubOrientationOnRobot.UsbFacingDirection.LEFT
-                )
-        );
+        IMU.Parameters parameters =
+                new IMU.Parameters(
+                        new RevHubOrientationOnRobot(
+                                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+                                RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
         globalImu.initialize(parameters);
     }
 
@@ -92,10 +98,8 @@ public class Movement implements RobotModule {
 
     public void bumperTurn(Gamepad gamepad) {
         if (gamepad.left_bumper || gamepad.right_bumper) {
-            if (gamepad.left_bumper)
-                turn -= BUMPER_TURN_VALUE;
-            if (gamepad.right_bumper)
-                turn += BUMPER_TURN_VALUE;
+            if (gamepad.left_bumper) turn -= BUMPER_TURN_VALUE;
+            if (gamepad.right_bumper) turn += BUMPER_TURN_VALUE;
         } else {
             turn += gamepad.right_trigger * TRIGGER_TURN_VALUE;
             turn -= gamepad.left_trigger * TRIGGER_TURN_VALUE;
@@ -106,7 +110,8 @@ public class Movement implements RobotModule {
     public void dpadTranslate(Gamepad gamepad) {
         if (!(gamepad.dpad_up || gamepad.dpad_down || gamepad.dpad_left || gamepad.dpad_right)) {
             dpadTime = globalRuntime.time();
-        } // Allows us to get the time the dpad was pressed, so we can progressively augment the speed of the robot
+        } // Allows us to get the time the dpad was pressed, so we can progressively augment the
+          // speed of the robot
         double time = globalRuntime.time() - dpadTime;
         double sidewaysTime = time / TIME_TO_DPAD_SIDEWAYS;
         double frontTime = time / TIME_TO_DPAD_FRONT;
@@ -116,13 +121,10 @@ public class Movement implements RobotModule {
         if (frontTime > MAX_DPAD_SENSITIVITY) frontTime = MAX_DPAD_SENSITIVITY;
 
         double front = (gamepad.dpad_down ? frontTime : 0) - (gamepad.dpad_up ? frontTime : 0);
-        double sideways = (gamepad.dpad_right ? sidewaysTime : 0) - (gamepad.dpad_left ? sidewaysTime : 0);
+        double sideways =
+                (gamepad.dpad_right ? sidewaysTime : 0) - (gamepad.dpad_left ? sidewaysTime : 0);
 
-        move(
-                front,
-                sideways,
-                0
-        );
+        move(front, sideways, 0);
     }
 
     public void joystickTranslate(Gamepad gamepad, boolean isSlow) {
@@ -135,11 +137,7 @@ public class Movement implements RobotModule {
         sideways = smooth(sideways);
         front = smooth(front);
 
-        move(
-                front,
-                sideways,
-                0
-        );
+        move(front, sideways, 0);
     }
 
     private double smooth(double input) {
@@ -182,7 +180,6 @@ public class Movement implements RobotModule {
         backRightPower *= BACK_RIGHT_COEFF;
     }
 
-
     public void reset() {
         frontLeftPower = 0;
         frontRightPower = 0;
@@ -192,7 +189,10 @@ public class Movement implements RobotModule {
     }
 
     public boolean isMoving() {
-        return Math.abs(frontLeftPower) > 0.1 || Math.abs(frontRightPower) > 0.1 || Math.abs(backLeftPower) > 0.1 || Math.abs(backRightPower) > 0.1;
+        return Math.abs(frontLeftPower) > 0.1
+                || Math.abs(frontRightPower) > 0.1
+                || Math.abs(backLeftPower) > 0.1
+                || Math.abs(backRightPower) > 0.1;
     }
 
     public void apply() {
@@ -221,12 +221,14 @@ public class Movement implements RobotModule {
 
     @Override
     public HashMap<String, Object> getCurrentState() {
-        return new HashMap<String, Object>() {{
-            put("frontLeftPower", frontLeftPower);
-            put("frontRightPower", frontRightPower);
-            put("backLeftPower", backLeftPower);
-            put("backRightPower", backRightPower);
-        }};
+        return new HashMap<String, Object>() {
+            {
+                put("frontLeftPower", frontLeftPower);
+                put("frontRightPower", frontRightPower);
+                put("backLeftPower", backLeftPower);
+                put("backRightPower", backRightPower);
+            }
+        };
     }
 
     @Override

@@ -26,7 +26,8 @@ public class DcMotorDebugger extends OpMode {
 
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
     @Override

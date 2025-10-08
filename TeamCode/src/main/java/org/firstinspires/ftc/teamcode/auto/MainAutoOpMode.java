@@ -50,14 +50,12 @@ public class MainAutoOpMode extends OpMode {
     public void init() {
         runtime = new ElapsedTime();
 
-        globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         IMU onBoardIMU = hardwareMap.get(IMU.class, Constants.IMU_ID);
 
-        drive = new MecanumDrive(
-                hardwareMap,
-                new Pose2d(0, 0, 0)
-        );
+        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
         driveActions = new DriveActions(drive);
 
@@ -79,18 +77,14 @@ public class MainAutoOpMode extends OpMode {
                 registerAction(
                         new SequentialAction(
                                 driveActions.gotToSubmersible(drive.localizer.getPose()),
-                                queueState(State.SUB_TO_OBS)
-                        )
-                );
+                                queueState(State.SUB_TO_OBS)));
                 break;
             case SUB_TO_OBS:
                 if (previousState != currentState) {
                     registerAction(
                             new SequentialAction(
                                     driveActions.goFromSubmersibleToObservation(false),
-                                    queueState(State.OBS_TO_SUB)
-                            )
-                    );
+                                    queueState(State.OBS_TO_SUB)));
                 }
                 break;
             case OBS_TO_SUB:

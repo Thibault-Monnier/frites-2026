@@ -21,7 +21,8 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Replayer {
-    private static final String DIRECTORY_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/FIRST/replays/";
+    private static final String DIRECTORY_PATH =
+            Environment.getExternalStorageDirectory().getAbsolutePath() + "/FIRST/replays/";
     private static final String SEPARATOR = ",";
     private static final String TIME_IDENTIFIER = "time";
 
@@ -81,7 +82,8 @@ public class Replayer {
         public void init() {
             open(this.replayFile);
 
-            globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+            globalTelemetry =
+                    new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         }
 
         public void start() {
@@ -99,7 +101,9 @@ public class Replayer {
 
                 if (line != null) {
                     lastState = hashLine(line);
-                    lastReplayStamp = Double.parseDouble(Objects.requireNonNull(lastState.get(TIME_IDENTIFIER)));
+                    lastReplayStamp =
+                            Double.parseDouble(
+                                    Objects.requireNonNull(lastState.get(TIME_IDENTIFIER)));
 
                     lastDelay = getRuntime() - lastReplayStamp;
 

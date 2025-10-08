@@ -35,10 +35,13 @@ public final class TwoDeadWheelLocalizer implements Localizer {
     private double lastRawHeadingVel, headingVelOffset;
     private boolean initialized;
     private Pose2d pose;
-    public TwoDeadWheelLocalizer(HardwareMap hardwareMap, IMU imu, double inPerTick, Pose2d initialPose) {
+
+    public TwoDeadWheelLocalizer(
+            HardwareMap hardwareMap, IMU imu, double inPerTick, Pose2d initialPose) {
         // TODO: make sure your config has **motors** with these names (or change them)
         //   the encoders should be plugged into the slot matching the named motor
-        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
+        //   see
+        // https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         par = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par")));
         perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "perp")));
 
@@ -70,17 +73,20 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
 
         YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
-        // Use degrees here to work around https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1070
+        // Use degrees here to work around
+        // https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1070
         AngularVelocity angularVelocityDegrees = imu.getRobotAngularVelocity(AngleUnit.DEGREES);
-        AngularVelocity angularVelocity = new AngularVelocity(
-                UnnormalizedAngleUnit.RADIANS,
-                (float) Math.toRadians(angularVelocityDegrees.xRotationRate),
-                (float) Math.toRadians(angularVelocityDegrees.yRotationRate),
-                (float) Math.toRadians(angularVelocityDegrees.zRotationRate),
-                angularVelocityDegrees.acquisitionTime
-        );
+        AngularVelocity angularVelocity =
+                new AngularVelocity(
+                        UnnormalizedAngleUnit.RADIANS,
+                        (float) Math.toRadians(angularVelocityDegrees.xRotationRate),
+                        (float) Math.toRadians(angularVelocityDegrees.yRotationRate),
+                        (float) Math.toRadians(angularVelocityDegrees.zRotationRate),
+                        angularVelocityDegrees.acquisitionTime);
 
-        FlightRecorder.write("TWO_DEAD_WHEEL_INPUTS", new TwoDeadWheelInputsMessage(parPosVel, perpPosVel, angles, angularVelocity));
+        FlightRecorder.write(
+                "TWO_DEAD_WHEEL_INPUTS",
+                new TwoDeadWheelInputsMessage(parPosVel, perpPosVel, angles, angularVelocity));
 
         Rotation2d heading = Rotation2d.exp(angles.getYaw(AngleUnit.RADIANS));
 
@@ -106,22 +112,27 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         int perpPosDelta = perpPosVel.position - lastPerpPos;
         double headingDelta = heading.minus(lastHeading);
 
-        Twist2dDual<Time> twist = new Twist2dDual<>(
-                new Vector2dDual<>(
-                        new DualNum<Time>(new double[]{
-                                parPosDelta - PARAMS.parYTicks * headingDelta,
-                                parPosVel.velocity - PARAMS.parYTicks * headingVel,
-                        }).times(inPerTick),
-                        new DualNum<Time>(new double[]{
-                                perpPosDelta - PARAMS.perpXTicks * headingDelta,
-                                perpPosVel.velocity - PARAMS.perpXTicks * headingVel,
-                        }).times(inPerTick)
-                ),
-                new DualNum<>(new double[]{
-                        headingDelta,
-                        headingVel,
-                })
-        );
+        Twist2dDual<Time> twist =
+                new Twist2dDual<>(
+                        new Vector2dDual<>(
+                                new DualNum<Time>(
+                                                new double[] {
+                                                    parPosDelta - PARAMS.parYTicks * headingDelta,
+                                                    parPosVel.velocity
+                                                            - PARAMS.parYTicks * headingVel,
+                                                })
+                                        .times(inPerTick),
+                                new DualNum<Time>(
+                                                new double[] {
+                                                    perpPosDelta - PARAMS.perpXTicks * headingDelta,
+                                                    perpPosVel.velocity
+                                                            - PARAMS.perpXTicks * headingVel,
+                                                })
+                                        .times(inPerTick)),
+                        new DualNum<>(
+                                new double[] {
+                                    headingDelta, headingVel,
+                                }));
 
         lastParPos = parPosVel.position;
         lastPerpPos = perpPosVel.position;

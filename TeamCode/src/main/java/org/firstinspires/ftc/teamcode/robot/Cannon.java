@@ -13,11 +13,11 @@ public class Cannon implements RobotModule {
     private final Servo servo;
 
     private final double[][] distanceCmToPosition = {
-            {0, 0.0},
-            {25, 0.2},
-            {50, 0.4},
-            {75, 0.6},
-            {100, 0.8}
+        {0, 0.0},
+        {25, 0.2},
+        {50, 0.4},
+        {75, 0.6},
+        {100, 0.8}
     };
 
     private double servoTargetPosition;
@@ -40,9 +40,11 @@ public class Cannon implements RobotModule {
 
     @Override
     public java.util.HashMap<String, Object> getCurrentState() {
-        return new java.util.HashMap<String, Object>() {{
-            put(servoTargetPositionKey, servoTargetPosition);
-        }};
+        return new java.util.HashMap<String, Object>() {
+            {
+                put(servoTargetPositionKey, servoTargetPosition);
+            }
+        };
     }
 
     public void aim(double QRCodeDistanceCm) {
@@ -58,7 +60,9 @@ public class Cannon implements RobotModule {
         double result = distanceCmToPosition[i][1];
         for (int j = 0; j < distanceCmToPosition.length; j++) {
             if (j != i) {
-                result *= (x - distanceCmToPosition[j][0]) / (distanceCmToPosition[i][0] - distanceCmToPosition[j][0]);
+                result *=
+                        (x - distanceCmToPosition[j][0])
+                                / (distanceCmToPosition[i][0] - distanceCmToPosition[j][0]);
             }
         }
         return result;

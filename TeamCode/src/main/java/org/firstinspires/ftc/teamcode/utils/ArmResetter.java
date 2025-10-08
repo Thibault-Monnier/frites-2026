@@ -19,7 +19,9 @@ import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.ServoClamp;
 
 @Config
-@TeleOp(name = Constants.DEBUGGER_MODES_GROUP + ": Arm Re-setter", group = Constants.DEBUGGER_MODES_GROUP)
+@TeleOp(
+        name = Constants.DEBUGGER_MODES_GROUP + ": Arm Re-setter",
+        group = Constants.DEBUGGER_MODES_GROUP)
 public class ArmResetter extends OpMode {
     private static final double POWER = 0.3;
 
@@ -30,14 +32,15 @@ public class ArmResetter extends OpMode {
 
     @Override
     public void init() {
-        globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        basket = new ServoClamp(
-                hardwareMap.get(Servo.class, CLAMP_SERVO_ID),
-                CLAMP_OPEN_POSITION,
-                CLAMP_CLOSED_POSITION,
-                "clamp_servo"
-        );
+        basket =
+                new ServoClamp(
+                        hardwareMap.get(Servo.class, CLAMP_SERVO_ID),
+                        CLAMP_OPEN_POSITION,
+                        CLAMP_CLOSED_POSITION,
+                        "clamp_servo");
 
         armMotor = hardwareMap.get(DcMotor.class, Constants.ARM_MOTOR_ID);
 
@@ -70,5 +73,4 @@ public class ArmResetter extends OpMode {
         }
         globalTelemetry.update();
     }
-
 }

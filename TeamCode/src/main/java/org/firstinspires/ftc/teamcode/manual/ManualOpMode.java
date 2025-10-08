@@ -47,7 +47,11 @@ public class ManualOpMode extends OpMode {
 
     private Replayer.Logger replaySaver;
 
-    public ManualOpMode(Constants.Team team, Constants.StartPosition startPosition, boolean replay, Arm.ColorSensorMode colorSensorAutomation) {
+    public ManualOpMode(
+            Constants.Team team,
+            Constants.StartPosition startPosition,
+            boolean replay,
+            Arm.ColorSensorMode colorSensorAutomation) {
         this.team = team;
         this.startPosition = startPosition;
         this.replay = replay;
@@ -58,43 +62,47 @@ public class ManualOpMode extends OpMode {
     public void init() {
         runtime = new ElapsedTime();
 
-        globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        gamepad = new GamepadController(
-                globalTelemetry,
-                runtime,
-                gamepad1
-        );
+        gamepad = new GamepadController(globalTelemetry, runtime, gamepad1);
 
         IMU onBoardIMU = hardwareMap.get(IMU.class, Constants.IMU_ID);
 
-        move = new Movement(
-                globalTelemetry,
-                runtime,
-                hardwareMap.get(DcMotor.class, Constants.FRONT_LEFT_MOTOR_ID),
-                hardwareMap.get(DcMotor.class, Constants.FRONT_RIGHT_MOTOR_ID),
-                hardwareMap.get(DcMotor.class, Constants.BACK_LEFT_MOTOR_ID),
-                hardwareMap.get(DcMotor.class, Constants.BACK_RIGHT_MOTOR_ID),
-                onBoardIMU
-        );
+        move =
+                new Movement(
+                        globalTelemetry,
+                        runtime,
+                        hardwareMap.get(DcMotor.class, Constants.FRONT_LEFT_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, Constants.FRONT_RIGHT_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, Constants.BACK_LEFT_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, Constants.BACK_RIGHT_MOTOR_ID),
+                        onBoardIMU);
 
-        arm = new Arm(
-                globalTelemetry,
-                hardwareMap.get(DcMotor.class, Constants.ELEVATOR_MOTOR_ID),
-                hardwareMap.get(DcMotor.class, Constants.ARM_MOTOR_ID),
-                new ServoClamp(hardwareMap.get(Servo.class, Constants.CLAMP_SERVO_ID), PLASTIC_CLAMP_OPEN_POSITION, PLASTIC_CLAMP_CLOSED_POSITION, PLASTIC_CLAMP_ID),
-                new ServoClamp(hardwareMap.get(Servo.class, Constants.BASKET_SERVO_ID), BASKET_OPEN_POSITION, BASKET_CLOSED_POSITION, BASKET_ID),
-                hardwareMap.get(Servo.class, Constants.ROTATION_SERVO_ID)
-        );
+        arm =
+                new Arm(
+                        globalTelemetry,
+                        hardwareMap.get(DcMotor.class, Constants.ELEVATOR_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, Constants.ARM_MOTOR_ID),
+                        new ServoClamp(
+                                hardwareMap.get(Servo.class, Constants.CLAMP_SERVO_ID),
+                                PLASTIC_CLAMP_OPEN_POSITION,
+                                PLASTIC_CLAMP_CLOSED_POSITION,
+                                PLASTIC_CLAMP_ID),
+                        new ServoClamp(
+                                hardwareMap.get(Servo.class, Constants.BASKET_SERVO_ID),
+                                BASKET_OPEN_POSITION,
+                                BASKET_CLOSED_POSITION,
+                                BASKET_ID),
+                        hardwareMap.get(Servo.class, Constants.ROTATION_SERVO_ID));
         arm.tryResetMotors();
         arm.setTeam(this.team);
-        arm.setColorSensor(hardwareMap.get(ColorSensor.class, Constants.CLAMP_COLOR_SENSOR_ID), this.colorSensorAutomation);
+        arm.setColorSensor(
+                hardwareMap.get(ColorSensor.class, Constants.CLAMP_COLOR_SENSOR_ID),
+                this.colorSensorAutomation);
 
         if (replay) {
-            replaySaver = new Replayer.Logger(
-                    runtime,
-                    new RobotModule[]{move, arm}
-            );
+            replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move, arm});
         }
 
         hardwareMap.get(Servo.class, "fixed_servo").setPosition(0.8);
@@ -117,9 +125,9 @@ public class ManualOpMode extends OpMode {
     @Override
     public void loop() {
         /* --- DEBUG TOOLS --- */
-//        if (gamepad.press(GamepadController.Button.B) && DEBUG) {
-//            feature_disabled = !feature_disabled;
-//        }
+        //        if (gamepad.press(GamepadController.Button.B) && DEBUG) {
+        //            feature_disabled = !feature_disabled;
+        //        }
 
         /* --- MOVEMENT --- */
         move.reset();
@@ -172,10 +180,9 @@ public class ManualOpMode extends OpMode {
             arm.goToArmPosition(Arm.ArmPosition.DEFAULT);
         }
 
-        if (
-                move.isMoving()
-                        && arm.isAtPosition(Arm.ArmPosition.LOW_INTAKE)
-                        && arm.isClampAtState(Clamp.State.CLOSED)) {
+        if (move.isMoving()
+                && arm.isAtPosition(Arm.ArmPosition.LOW_INTAKE)
+                && arm.isClampAtState(Clamp.State.CLOSED)) {
             arm.goToArmPosition(Arm.ArmPosition.LOW);
         }
 
@@ -183,7 +190,6 @@ public class ManualOpMode extends OpMode {
         if (gamepad.press(GamepadController.Button.SHARE)) {
             arm.hangSequence();
         }
-
 
         /* --- OPMODE TELEMETRY --- */
         if (DEBUG) {

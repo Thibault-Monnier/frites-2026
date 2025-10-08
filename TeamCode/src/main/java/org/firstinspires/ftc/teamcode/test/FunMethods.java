@@ -10,9 +10,7 @@ import org.firstinspires.ftc.teamcode.robot.Constants;
 @TeleOp(name = Constants.TEST_MODES_GROUP + ": Fun methods", group = Constants.TEST_MODES_GROUP)
 public class FunMethods extends OpMode {
     @Override
-    public void init() {
-
-    }
+    public void init() {}
 
     @Override
     public void start() {
@@ -21,7 +19,5 @@ public class FunMethods extends OpMode {
     }
 
     @Override
-    public void loop() {
-
-    }
+    public void loop() {}
 }

@@ -9,7 +9,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
-@TeleOp(name = Constants.DEBUGGER_MODES_GROUP + ": Husky Lens", group = Constants.DEBUGGER_MODES_GROUP)
+@TeleOp(
+        name = Constants.DEBUGGER_MODES_GROUP + ": Husky Lens",
+        group = Constants.DEBUGGER_MODES_GROUP)
 public class HuskyLensDebugger extends OpMode {
     private static final HuskyLens.Algorithm algorithm = HuskyLens.Algorithm.TAG_RECOGNITION;
 
@@ -19,7 +21,8 @@ public class HuskyLensDebugger extends OpMode {
 
     @Override
     public void init() {
-        globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         huskyLens = hardwareMap.get(HuskyLens.class, "husky_lens");
         huskyLens.resetDeviceConfigurationForOpMode();

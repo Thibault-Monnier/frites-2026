@@ -20,7 +20,8 @@ public class ServoTest extends OpMode {
 
     @Override
     public void init() {
-        globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         servo = hardwareMap.get(Servo.class, motorId);
         servo.resetDeviceConfigurationForOpMode();

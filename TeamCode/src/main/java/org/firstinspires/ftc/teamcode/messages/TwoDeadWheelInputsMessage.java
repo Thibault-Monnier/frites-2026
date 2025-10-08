@@ -17,7 +17,11 @@ public final class TwoDeadWheelInputsMessage {
     public double yRotationRate;
     public double zRotationRate;
 
-    public TwoDeadWheelInputsMessage(PositionVelocityPair par, PositionVelocityPair perp, YawPitchRollAngles angles, AngularVelocity angularVelocity) {
+    public TwoDeadWheelInputsMessage(
+            PositionVelocityPair par,
+            PositionVelocityPair perp,
+            YawPitchRollAngles angles,
+            AngularVelocity angularVelocity) {
         this.timestamp = System.nanoTime();
         this.par = par;
         this.perp = perp;

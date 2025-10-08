@@ -34,13 +34,11 @@ public class DriveActions {
         TrajectoryActionBuilder builder = drive.actionBuilder(initPos);
 
         if (takeSamples) {
-            return builder
-                    .setTangent(Math.toRadians(90))
+            return builder.setTangent(Math.toRadians(90))
                     .splineTo(new Vector2d(10, 32), Math.toRadians(-90))
                     .build();
         } else {
-            return builder
-                    .setTangent(Math.toRadians(90))
+            return builder.setTangent(Math.toRadians(90))
                     .splineTo(new Vector2d(0, 32), Math.toRadians(-90))
                     .build();
         }

@@ -1,4 +1,3 @@
 package org.firstinspires.ftc.teamcode.systemadditions;
 
-public class AllOpModes {
-}
+public class AllOpModes {}

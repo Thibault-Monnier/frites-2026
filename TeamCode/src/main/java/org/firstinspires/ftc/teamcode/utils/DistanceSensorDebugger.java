@@ -12,7 +12,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
 @Config
-@TeleOp(name = Constants.DEBUGGER_MODES_GROUP + ": Distance Sensor", group = Constants.DEBUGGER_MODES_GROUP)
+@TeleOp(
+        name = Constants.DEBUGGER_MODES_GROUP + ": Distance Sensor",
+        group = Constants.DEBUGGER_MODES_GROUP)
 public class DistanceSensorDebugger extends OpMode {
     private static final String sensorId = "";
     private DistanceSensor distanceSensor;
@@ -20,7 +22,8 @@ public class DistanceSensorDebugger extends OpMode {
 
     @Override
     public void init() {
-        globalTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, sensorId);
         distanceSensor.resetDeviceConfigurationForOpMode();

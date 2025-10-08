@@ -3,14 +3,11 @@ package org.firstinspires.ftc.teamcode.roadrunner;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 
-/**
- * Interface for localization methods.
- */
+/** Interface for localization methods. */
 public interface Localizer {
     /**
-     * Returns the current pose estimate.
-     * NOTE: Does not update the pose estimate;
-     * you must call update() to update the pose estimate.
+     * Returns the current pose estimate. NOTE: Does not update the pose estimate; you must call
+     * update() to update the pose estimate.
      *
      * @return the Localizer's current pose
      */
