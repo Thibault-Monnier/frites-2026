@@ -334,7 +334,11 @@ public class Arm implements RobotModule {
             elevatorMotor.setPower(ELEVATOR_ACTIVE_POWER);
         } else {
             isElevatorMoving = false;
-            elevatorMotor.setPower(ELEVATOR_REST_POWER);
+            if (targetElevatorPosition == ElevatorPosition.DEFAULT) {
+                elevatorMotor.setPower(0);
+            } else {
+                elevatorMotor.setPower(ELEVATOR_REST_POWER);
+            }
         }
 
 
@@ -411,9 +415,13 @@ public class Arm implements RobotModule {
         telemetry.addLine("=> Arm");
         telemetry.addData("Current position", currentArmPosition);
         telemetry.addData("Target position", targetArmPosition);
+        telemetry.addData("Motor power", armMotor.getPower());
         telemetry.addLine("=> Elevator");
-        telemetry.addData("Current position", currentElevatorPosition);
-        telemetry.addData("Target position", targetElevatorPosition);
+        telemetry.addData("Current position type", currentElevatorPosition);
+        telemetry.addData("Current position value", currentElevatorPosition.encoderPos);
+        telemetry.addData("Target position type", targetElevatorPosition);
+        telemetry.addData("Target position value", targetElevatorPosition.encoderPos);
+        telemetry.addData("Motor power", elevatorMotor.getPower());
 
         telemetry.addLine();
     }
