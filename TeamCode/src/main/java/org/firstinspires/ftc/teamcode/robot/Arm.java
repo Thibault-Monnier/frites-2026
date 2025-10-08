@@ -63,7 +63,6 @@ public class Arm implements RobotModule {
     // ELEVATOR
     private ElevatorPosition currentElevatorPosition = ElevatorPosition.DEFAULT;
     private ElevatorPosition targetElevatorPosition = ElevatorPosition.DEFAULT;
-    private ElevatorPosition lastElevatorPosition = ElevatorPosition.DEFAULT;
     private boolean isElevatorMoving;
     // ARM
     private ArmPosition currentArmPosition = ArmPosition.DEFAULT;
@@ -233,10 +232,6 @@ public class Arm implements RobotModule {
 //        clamp.close();
     }
 
-    private void setRotation(double rotation) {
-        targetRotation = rotation;
-    }
-
     private double clampReverseKinematics(double targetAngle) {
         // the angle 0 is directed upwards
         // the position 0 of the servo translates to the clamp being in the continuity of the arm
@@ -257,14 +252,6 @@ public class Arm implements RobotModule {
 
     public boolean isAtPosition(ArmPosition position) {
         return currentArmPosition == position;
-    }
-
-    public Clamp getClamp() {
-        return clamp;
-    }
-
-    public Clamp getBasket() {
-        return basket;
     }
 
     public boolean isClampAtState(Clamp.State state) {
@@ -332,10 +319,6 @@ public class Arm implements RobotModule {
 
 
         /* --- ELEVATOR --- */
-        if (currentElevatorPosition != ElevatorPosition.UNKNOWN) {
-            lastElevatorPosition = currentElevatorPosition;
-        }
-
         if (currentElevatorPosition != targetElevatorPosition) {
             isElevatorMoving = true;
 
@@ -472,7 +455,6 @@ public class Arm implements RobotModule {
     public enum ColorSensorMode {
         DEFAULT_ONLY(false, true),
         TEAM_ONLY(true, false),
-        TEAM_AND_DEFAULT(true, true),
         NO_DETECTION(false, false);
 
         final boolean teamColor;
@@ -509,15 +491,6 @@ public class Arm implements RobotModule {
         ElevatorPosition(int id, int encoderPos) {
             this.id = id;
             this.encoderPos = encoderPos;
-        }
-
-        static public ElevatorPosition getWithId(int id) {
-            for (ElevatorPosition position : ElevatorPosition.values()) {
-                if (position.id == id) {
-                    return position;
-                }
-            }
-            return UNKNOWN;
         }
 
         static public ElevatorPosition getWithEncoderPos(int pos) {
@@ -560,15 +533,6 @@ public class Arm implements RobotModule {
             this.id = id;
             this.encoderPos = encoderPos;
             this.maxRotation = maxRotation;
-        }
-
-        static public ArmPosition getWithId(int id) {
-            for (ArmPosition position : ArmPosition.values()) {
-                if (position.id == id) {
-                    return position;
-                }
-            }
-            return UNKNOWN;
         }
 
         static public ArmPosition getWithEncoderPos(int pos) {
