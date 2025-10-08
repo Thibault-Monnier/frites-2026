@@ -86,6 +86,7 @@ public class ManualOpMode extends OpMode {
                 new ServoClamp(hardwareMap.get(Servo.class, Constants.BASKET_SERVO_ID), BASKET_OPEN_POSITION, BASKET_CLOSED_POSITION, BASKET_ID),
                 hardwareMap.get(Servo.class, Constants.ROTATION_SERVO_ID)
         );
+        arm.tryResetMotors();
         arm.setTeam(this.team);
         arm.setColorSensor(hardwareMap.get(ColorSensor.class, Constants.CLAMP_COLOR_SENSOR_ID), this.colorSensorAutomation);
 

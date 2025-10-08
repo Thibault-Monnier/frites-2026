@@ -70,7 +70,7 @@ public class ModuleReplayer extends Replayer.ReplayerMode {
                 new ServoClamp(hardwareMap.get(Servo.class, Constants.BASKET_SERVO_ID), BASKET_OPEN_POSITION, BASKET_CLOSED_POSITION, Constants.BASKET_ID),
                 hardwareMap.get(Servo.class, Constants.ROTATION_SERVO_ID)
         );
-        arm.resetMotors();
+        arm.tryResetMotors();
         arm.setColorSensor(null, Arm.ColorSensorMode.NO_DETECTION);
 
         this.robotModules = new RobotModule[]{

@@ -56,6 +56,7 @@ public class Arm implements RobotModule {
     private final Clamp clamp;
     private final Clamp basket;
     private final Servo clampRotator;
+    private static boolean motorsReset = false;
     private Constants.Team team = Constants.Team.ANY_OR_UNKNOWN;
     private ColorSensor colorSensor;
     private ColorSensorMode colorSensorMode = ColorSensorMode.NO_DETECTION;
@@ -109,7 +110,16 @@ public class Arm implements RobotModule {
         return Math.abs(currentPos - pos) <= ENCODER_POSITION_ERROR;
     }
 
-    public void resetMotors() {
+    /**
+     * Resets the motors if they haven't been reset yet.
+     * <p>
+     * This allows for motors to be reset only once at the start of the first OpMode, and not
+     * when switching between OpModes during a match.
+     */
+    public void tryResetMotors() {
+        if (motorsReset) return;
+        motorsReset = true;
+
         this.armMotor.resetDeviceConfigurationForOpMode();
         this.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
