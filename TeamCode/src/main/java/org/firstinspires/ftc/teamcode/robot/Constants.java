@@ -12,16 +12,21 @@ public class Constants {
     public static final String DEBUGGER_MODES_GROUP = "Debuggers";
     public static final String TEST_MODES_GROUP = "Tests";
 
-    /* --- ROBOT MODULES --- */
-    public static double CLAMP_OPEN_POSITION = 0.75f;
-    public static double CLAMP_CLOSED_POSITION = 1.0; // 0.75f;
+    /* --- ROBOT GLOBAL CONSTANTS --- */
+    public static double ROBOT_WIDTH = 18.0; // inches
+    public static double ROBOT_DEPTH = 18.0; // inches
+    public static double ROBOT_HEIGHT = 18.0; // inches
 
-    public static double PLASTIC_CLAMP_OPEN_POSITION = 0.6f;
-    public static double PLASTIC_CLAMP_CLOSED_POSITION = 0.1f; // 0.75f;
+    /* --- ROBOT MODULES --- */
+    public static double CLAMP_OPEN_POSITION = 0.75;
+    public static double CLAMP_CLOSED_POSITION = 1.0;
+
+    public static double PLASTIC_CLAMP_OPEN_POSITION = 0.6;
+    public static double PLASTIC_CLAMP_CLOSED_POSITION = 0.1;
     public static String PLASTIC_CLAMP_ID = "plastic_clamp";
 
-    public static double BASKET_OPEN_POSITION = 0.5f; // 0.0f;
-    public static double BASKET_CLOSED_POSITION = 0.0f; // 0.4f;
+    public static double BASKET_OPEN_POSITION = 0.5;
+    public static double BASKET_CLOSED_POSITION = 0.0;
     public static String BASKET_ID = "basket";
 
     /* --- HARDWARE MAP --- */
@@ -41,7 +46,6 @@ public class Constants {
     public static String CLAMP_SERVO_ID = "clamp_servo";
     public static String BASKET_SERVO_ID = "basket_servo";
     public static String ROTATION_SERVO_ID = "rotation_servo";
-    public static String FIXED_SERVO_ID = "fixed_servo";
     public static String CLAMP_COLOR_SENSOR_ID = "clamp_color_sensor";
     public static String ARM_COLOR_SENSOR_ID = "arm_color_sensor";
     public static String IMU_ID = "imu";
@@ -52,12 +56,15 @@ public class Constants {
     public enum Team {
         BLUE,
         RED,
-        ANY_OR_UNKNOWN
+        ANY_OR_UNKNOWN;
+
+        public boolean isBlue() {
+            return this == BLUE;
+        }
     }
 
     public enum StartPosition {
-        BASKET,
-        OBSERVATION_ZONE,
+        NORMAL,
         ANY_OR_UNKNOWN
     }
 

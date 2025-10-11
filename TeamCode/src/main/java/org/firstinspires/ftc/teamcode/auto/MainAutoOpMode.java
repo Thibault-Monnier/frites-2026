@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import static org.firstinspires.ftc.teamcode.auto.DriveActions.START_BASKET;
-import static org.firstinspires.ftc.teamcode.auto.DriveActions.START_OBSERVATION_ZONE;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -18,8 +15,10 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.field.PlayingField;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Constants;
+import org.firstinspires.ftc.teamcode.robot.DriveActions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,10 +59,8 @@ public class MainAutoOpMode extends OpMode {
 
         runtime.reset();
 
-        if (startPosition == Constants.StartPosition.OBSERVATION_ZONE) {
-            drive.localizer.setPose(START_OBSERVATION_ZONE);
-        } else if (startPosition == Constants.StartPosition.BASKET) {
-            drive.localizer.setPose(START_BASKET);
+        if (startPosition == Constants.StartPosition.NORMAL) {
+            drive.localizer.setPose(PlayingField.startPose(team));
         }
     }
 
@@ -72,35 +69,13 @@ public class MainAutoOpMode extends OpMode {
         TelemetryPacket packet = new TelemetryPacket();
 
         switch (currentState) {
-            case START_TO_SUB:
+            case TURN_TOWARDS_GOAL:
                 registerAction(
                         new SequentialAction(
-                                driveActions.gotToSubmersible(drive.localizer.getPose()),
-                                queueState(State.SUB_TO_OBS)));
-                break;
-            case SUB_TO_OBS:
-                if (previousState != currentState) {
-                    registerAction(
-                            new SequentialAction(
-                                    driveActions.goFromSubmersibleToObservation(false),
-                                    queueState(State.OBS_TO_SUB)));
-                }
-                break;
-            case OBS_TO_SUB:
-                break;
-            case SUB_TO_OBS_3_SAMPLE:
-                break;
-
-            case HANG_SPECIMEN:
-                break;
-            case TAKE_SPECIMEN:
-                break;
-
-            case WAIT:
+                                driveActions.turnTowardsGoal(drive.localizer.getPose(), team),
+                                queueState(State.IDLE)));
                 break;
             case IDLE:
-                break;
-            case ERROR:
                 break;
         }
 
@@ -153,22 +128,8 @@ public class MainAutoOpMode extends OpMode {
     }
 
     public enum State {
-        // Obs. = Observation
-        // Sub. = Submersible
+        TURN_TOWARDS_GOAL,
 
-        // TRAJECTORIES
-        START_TO_SUB,
-        SUB_TO_OBS,
-        OBS_TO_SUB,
-        SUB_TO_OBS_3_SAMPLE,
-
-        // ACTIONS
-        HANG_SPECIMEN,
-        TAKE_SPECIMEN,
-
-        // OTHER
-        WAIT,
         IDLE,
-        ERROR
     }
 }
