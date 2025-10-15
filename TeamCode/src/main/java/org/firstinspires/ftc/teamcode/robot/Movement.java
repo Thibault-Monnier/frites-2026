@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -28,11 +27,6 @@ public class Movement implements RobotModule {
     public static double BACK_LEFT_COEFF = 1;
     public static double BACK_RIGHT_COEFF = 1;
 
-    public static double TIME_TO_DPAD_FRONT = 3;
-    public static double TIME_TO_DPAD_SIDEWAYS = 2;
-    public static double DPAD_MARGIN_FRONT = 0.5; // 0.2;
-    public static double DPAD_MARGIN_SIDEWAYS = 0.5; // 0.3;
-    public static double MAX_DPAD_SENSITIVITY = 0.6;
     public static double BUMPER_TURN_VALUE = 0.5; // 0.3;
     public static double TRIGGER_TURN_VALUE = 0.8;
 
@@ -40,7 +34,6 @@ public class Movement implements RobotModule {
 
     // CONSTRUCTOR FIELDS
     private final Telemetry globalTelemetry;
-    private final ElapsedTime globalRuntime;
     private final DcMotor frontLeftDrive;
     private final DcMotor frontRightDrive;
     private final DcMotor backLeftDrive;
@@ -53,7 +46,6 @@ public class Movement implements RobotModule {
     public double backLeftPower = 0;
     public double backRightPower = 0;
 
-    private double dpadTime;
     private double turn = 0f;
 
     // OTHER FIELDS
@@ -61,14 +53,12 @@ public class Movement implements RobotModule {
 
     public Movement(
             Telemetry globalTelemetry,
-            ElapsedTime globalRuntime,
             DcMotor FL,
             DcMotor FR,
             DcMotor BL,
             DcMotor BR,
             IMU globalImu) {
         this.globalTelemetry = globalTelemetry;
-        this.globalRuntime = globalRuntime;
         this.frontLeftDrive = FL;
         this.frontRightDrive = FR;
         this.backLeftDrive = BL;
@@ -107,28 +97,8 @@ public class Movement implements RobotModule {
         move(0, 0, turn);
     }
 
-    public void dpadTranslate(Gamepad gamepad) {
-        if (!(gamepad.dpad_up || gamepad.dpad_down || gamepad.dpad_left || gamepad.dpad_right)) {
-            dpadTime = globalRuntime.time();
-        } // Allows us to get the time the dpad was pressed, so we can progressively augment the
-        // speed of the robot
-        double time = globalRuntime.time() - dpadTime;
-        double sidewaysTime = time / TIME_TO_DPAD_SIDEWAYS;
-        double frontTime = time / TIME_TO_DPAD_FRONT;
-        sidewaysTime += DPAD_MARGIN_SIDEWAYS;
-        frontTime += DPAD_MARGIN_FRONT;
-        if (sidewaysTime > MAX_DPAD_SENSITIVITY) sidewaysTime = MAX_DPAD_SENSITIVITY;
-        if (frontTime > MAX_DPAD_SENSITIVITY) frontTime = MAX_DPAD_SENSITIVITY;
-
-        double front = (gamepad.dpad_down ? frontTime : 0) - (gamepad.dpad_up ? frontTime : 0);
-        double sideways =
-                (gamepad.dpad_right ? sidewaysTime : 0) - (gamepad.dpad_left ? sidewaysTime : 0);
-
-        move(front, sideways, 0);
-    }
-
-    public void joystickTranslate(Gamepad gamepad, boolean isSlow) {
-        double speedMultiplier = isSlow ? 0.5 : 1;
+    public void joystickTranslate(Gamepad gamepad, boolean slow) {
+        double speedMultiplier = slow ? 0.5 : 1;
 
         double sideways = gamepad.left_stick_x * speedMultiplier;
         double front = gamepad.left_stick_y * speedMultiplier;
