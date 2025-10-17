@@ -25,6 +25,8 @@ public class Constants {
     public static String FRONT_RIGHT_MOTOR_ID = "front_right";
     public static String BACK_LEFT_MOTOR_ID = "back_left";
     public static String BACK_RIGHT_MOTOR_ID = "back_right";
+    public static String CANNON_MOTOR_1_ID = "cannon_motor_1";
+    public static String CANNON_MOTOR_2_ID = "cannon_motor_2";
 
     /* --- TEST HARDWARE --- */
     public static String TEST_MOTOR_1_ID = "test_motor_1";

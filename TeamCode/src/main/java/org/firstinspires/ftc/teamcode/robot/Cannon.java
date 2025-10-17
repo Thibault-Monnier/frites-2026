@@ -1,70 +1,83 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.models.RobotModule;
 
+import java.util.HashMap;
+
 public class Cannon implements RobotModule {
-    public final String servoTargetPositionKey = "CannonTargetPosition";
-
-    private final Telemetry globalTelemetry;
-
-    private final Servo servo;
-
-    private final double[][] distanceCmToPosition = {
+    private static final double[][] DIST_TO_POWER = {
         {0, 0.0},
         {25, 0.2},
         {50, 0.4},
         {75, 0.6},
         {100, 0.8}
     };
+    private static final double DEFAULT_DIST = 50;
 
-    private double servoTargetPosition;
+    private final Telemetry globalTelemetry;
 
-    public Cannon(Telemetry globalTelemetry, Servo servo) {
+    private final DcMotor motor;
+    private double motorTargetPower;
+
+    private boolean isRunning = false;
+    private double lastQRCodeDistance = DEFAULT_DIST;
+
+    public Cannon(Telemetry globalTelemetry, DcMotor motor) {
         this.globalTelemetry = globalTelemetry;
-        this.servo = servo;
-        servoTargetPosition = 0.0;
+        this.motor = motor;
     }
 
     @Override
     public void apply() {
-        servo.setPosition(servoTargetPosition);
+        motor.setPower(motorTargetPower);
     }
 
-    @Override
-    public void setState(java.util.HashMap<String, String> state) {
-        this.servoTargetPosition = Double.parseDouble(state.get(servoTargetPositionKey));
+    public void toggle() {
+        isRunning = !isRunning;
     }
 
-    @Override
-    public java.util.HashMap<String, Object> getCurrentState() {
-        return new java.util.HashMap<String, Object>() {
-            {
-                put(servoTargetPositionKey, servoTargetPosition);
-            }
-        };
+    public void update() {
+        update(lastQRCodeDistance);
     }
 
-    public void aim(double QRCodeDistanceCm) {
-        // Use Lagrange interpolation to find the servo position
-        double position = 0.0;
-        for (int i = 0; i < distanceCmToPosition.length; i++)
-            position += lagrangeInterpolation(QRCodeDistanceCm, i);
-        servoTargetPosition = position;
-        globalTelemetry.addData("Cannon Target Position", position);
+    public void update(double QRCodeDistance) {
+        lastQRCodeDistance = QRCodeDistance;
+        if (isRunning) {
+            computePower(QRCodeDistance);
+        } else {
+            motorTargetPower = 0.0;
+        }
+    }
+
+    private void computePower(double QRCodeDistance) {
+        // Use Lagrange interpolation to find the motor power
+        double power = 0.0;
+        for (int i = 0; i < DIST_TO_POWER.length; i++)
+            power += lagrangeInterpolation(QRCodeDistance, i);
+        motorTargetPower = power;
+        globalTelemetry.addData("Cannon Motor Power", power);
     }
 
     private double lagrangeInterpolation(double x, int i) {
-        double result = distanceCmToPosition[i][1];
-        for (int j = 0; j < distanceCmToPosition.length; j++) {
+        double result = DIST_TO_POWER[i][1];
+        for (int j = 0; j < DIST_TO_POWER.length; j++) {
             if (j != i) {
-                result *=
-                        (x - distanceCmToPosition[j][0])
-                                / (distanceCmToPosition[i][0] - distanceCmToPosition[j][0]);
+                result *= (x - DIST_TO_POWER[j][0]) / (DIST_TO_POWER[i][0] - DIST_TO_POWER[j][0]);
             }
         }
         return result;
+    }
+
+    @Override
+    public HashMap<String, Object> getCurrentState() {
+        throw new UnsupportedOperationException("Cannon module does not support state saving.");
+    }
+
+    @Override
+    public void setState(HashMap<String, String> state) {
+        throw new UnsupportedOperationException("Cannon module does not support state loading.");
     }
 }

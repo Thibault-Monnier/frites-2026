@@ -27,13 +27,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.manual;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
 public class GamepadController {
@@ -41,7 +39,6 @@ public class GamepadController {
     public static double LONG_PRESS_TIME = 1.0;
 
     /* CLASS PROPERTIES */
-    private final Telemetry globalTelemetry;
     private final Gamepad gamepad;
     private final ElapsedTime runtime;
 
@@ -69,16 +66,14 @@ public class GamepadController {
     private double lastNotRightStickButtonTime = Double.POSITIVE_INFINITY;
 
     /* CONSTRUCTOR */
-    public GamepadController(
-            Telemetry globalTelemetry, ElapsedTime globalRuntime, Gamepad globalGamepad) {
+    public GamepadController(ElapsedTime globalRuntime, Gamepad globalGamepad) {
         // INITIALIZE TELEMETRY
-        this.globalTelemetry = globalTelemetry;
         gamepad = globalGamepad;
         runtime = globalRuntime;
     }
 
     /* BUTTONS */
-    // Get if a button is pressed, only returns true once
+    /** Get if a button was just pressed, returns true only on the frame the button is pressed */
     public boolean press(Button button) {
         boolean pressed = false;
         switch (button) {
@@ -150,7 +145,55 @@ public class GamepadController {
         return pressed;
     }
 
-    // Get if a button is long-pressed, returns true while the button is not released
+    /** Get if a button is being pressed, returns true while the button is pressed */
+    public boolean pressing(Button button) {
+        boolean pressing = false;
+        switch (button) {
+            case A:
+                pressing = gamepad.a;
+                break;
+            case B:
+                pressing = gamepad.b;
+                break;
+            case X:
+                pressing = gamepad.x;
+                break;
+            case Y:
+                pressing = gamepad.y;
+                break;
+            case DPAD_UP:
+                pressing = gamepad.dpad_up;
+                break;
+            case DPAD_DOWN:
+                pressing = gamepad.dpad_down;
+                break;
+            case DPAD_LEFT:
+                pressing = gamepad.dpad_left;
+                break;
+            case DPAD_RIGHT:
+                pressing = gamepad.dpad_right;
+                break;
+            case LEFT_STICK:
+                pressing = gamepad.left_stick_button;
+                break;
+            case RIGHT_STICK:
+                pressing = gamepad.right_stick_button;
+                break;
+            case OPTIONS:
+                pressing = gamepad.options;
+                break;
+            case SHARE:
+                pressing = gamepad.share;
+                break;
+            case HOME:
+                pressing = gamepad.guide;
+                break;
+        }
+
+        return pressing;
+    }
+
+    /** Get if a button is long-pressed, returns true while the button is not released */
     public boolean longPress(Button button) {
         boolean longPressed = false;
         switch (button) {
@@ -189,10 +232,6 @@ public class GamepadController {
                 break;
         }
         return longPressed;
-    }
-
-    public boolean leftStickPressed() {
-        return gamepad.left_stick_button;
     }
 
     public enum Button {

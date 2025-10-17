@@ -38,7 +38,7 @@ public class DistanceSensorDebugger extends OpMode {
         globalTelemetry.addData("Version", distanceSensor.getVersion());
 
         // La ligne "réellement" intéressante
-        globalTelemetry.addData("Distance", distanceSensor.getDistance(DistanceUnit.CM));
+        globalTelemetry.addData("Distance (cm)", distanceSensor.getDistance(DistanceUnit.CM));
         globalTelemetry.update();
     }
 }

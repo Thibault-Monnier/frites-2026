@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.robot.Constants;
 @Config
 @TeleOp(name = Constants.DEBUGGER_MODES_GROUP + ": DcMotor", group = Constants.DEBUGGER_MODES_GROUP)
 public class DcMotorDebugger extends OpMode {
-    public static String motorId = "elevator_motor";
+    public static String motorId = Constants.TEST_MOTOR_1_ID;
 
     private DcMotor motor;
     private Telemetry globalTelemetry;
@@ -32,7 +32,7 @@ public class DcMotorDebugger extends OpMode {
 
     @Override
     public void loop() {
-        globalTelemetry.addLine("--- Infos ---");
+        globalTelemetry.addLine("--- Infos for " + motorId + " ---");
         globalTelemetry.addData("getController", motor.getController());
         globalTelemetry.addData("getMotorType", motor.getMotorType());
         globalTelemetry.addData("getConnectionInfo", motor.getConnectionInfo());

@@ -6,13 +6,12 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.models.RobotModule;
+import org.firstinspires.ftc.teamcode.robot.Cannon;
 import org.firstinspires.ftc.teamcode.robot.Constants;
-import org.firstinspires.ftc.teamcode.robot.GamepadController;
 import org.firstinspires.ftc.teamcode.robot.Movement;
 import org.firstinspires.ftc.teamcode.robot.Replayer;
 
@@ -24,6 +23,10 @@ public class ManualOpMode extends OpMode {
     private GamepadController gamepad;
     private Movement move;
     private Telemetry globalTelemetry;
+
+    // Modules
+    private Cannon cannon1;
+    private Cannon cannon2;
 
     private Replayer.Logger replaySaver;
 
@@ -39,7 +42,7 @@ public class ManualOpMode extends OpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        gamepad = new GamepadController(globalTelemetry, runtime, gamepad1);
+        gamepad = new GamepadController(runtime, gamepad1);
 
         IMU onBoardIMU = hardwareMap.get(IMU.class, Constants.IMU_ID);
 
@@ -52,11 +55,18 @@ public class ManualOpMode extends OpMode {
                         hardwareMap.get(DcMotor.class, Constants.BACK_RIGHT_MOTOR_ID),
                         onBoardIMU);
 
+        cannon1 =
+                new Cannon(
+                        globalTelemetry,
+                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_1_ID));
+        cannon2 =
+                new Cannon(
+                        globalTelemetry,
+                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID));
+
         if (replay) {
             replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move});
         }
-
-        hardwareMap.get(Servo.class, "fixed_servo").setPosition(0.8);
     }
 
     @Override
@@ -85,13 +95,16 @@ public class ManualOpMode extends OpMode {
         */
 
         // Translation : unpressed (fast) and pressed (slow)
-        move.joystickTranslate(gamepad1, gamepad.leftStickPressed());
+        move.joystickTranslate(gamepad1, gamepad.pressing(GamepadController.Button.LEFT_STICK));
 
         // Rotation : bumpers (fast) and triggers (slow)
         move.bumperTurn(gamepad1);
 
-        /* --- Specific modules handling --- */
-        // Empty for now
+        /* --- ACTIONS --- */
+        if (gamepad.press(GamepadController.Button.B)) cannon1.toggle();
+        if (gamepad.press(GamepadController.Button.X)) cannon2.toggle();
+        cannon1.update();
+        cannon2.update();
 
         /* --- OPMODE TELEMETRY --- */
         globalTelemetry.addLine("--- MANUAL MODE ---");
@@ -99,6 +112,8 @@ public class ManualOpMode extends OpMode {
 
         /* --- APPLY --- */
         move.apply();
+        cannon1.apply();
+        cannon2.apply();
 
         globalTelemetry.update();
 
