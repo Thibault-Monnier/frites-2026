@@ -95,14 +95,14 @@ public class ManualOpMode extends OpMode {
         */
 
         // Translation : unpressed (fast) and pressed (slow)
-        move.joystickTranslate(gamepad1, gamepad.pressing(GamepadController.Button.LEFT_STICK));
+        move.joystickTranslate(gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK));
 
         // Rotation : bumpers (fast) and triggers (slow)
         move.bumperTurn(gamepad1);
 
         /* --- ACTIONS --- */
-        if (gamepad.press(GamepadController.Button.B)) cannon1.toggle();
-        if (gamepad.press(GamepadController.Button.X)) cannon2.toggle();
+        if (gamepad.isPressed(GamepadController.Button.B)) cannon1.toggle();
+        if (gamepad.isPressed(GamepadController.Button.X)) cannon2.toggle();
         cannon1.update();
         cannon2.update();
 

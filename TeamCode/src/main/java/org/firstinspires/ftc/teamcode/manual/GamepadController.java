@@ -35,218 +35,87 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class GamepadController {
-    /* CONFIG */
     public static double LONG_PRESS_TIME = 1.0;
+    public static double DOUBLE_PRESS_INTERVAL = 0.3;
 
-    /* CLASS PROPERTIES */
-    private final Gamepad gamepad;
-    private final ElapsedTime runtime;
+    protected final Gamepad gamepad;
+    protected final ElapsedTime runtime;
 
-    // I've not found any way to do this nicely, so it's just a separate variable for every button
-    private boolean lastA = false;
-    private boolean lastB = false;
-    private boolean lastX = false;
-    private boolean lastY = false;
-    private boolean lastDPAD_UP = false;
-    private boolean lastDPAD_DOWN = false;
-    private boolean lastDPAD_LEFT = false;
-    private boolean lastDPAD_RIGHT = false;
-    private boolean lastLeftStick = false;
-    private boolean lastRightStick = false;
-    private boolean lastOptions = false;
-    private boolean lastShare = false;
-    private boolean lastHome = false;
-
-    // Store the last time at which A was not pressed
-    private double lastNotATime = Double.POSITIVE_INFINITY;
-    private double lastNotBTime = Double.POSITIVE_INFINITY;
-    private double lastNotXTime = Double.POSITIVE_INFINITY;
-    private double lastNotYTime = Double.POSITIVE_INFINITY;
-    private double lastNotLeftStickButtonTime = Double.POSITIVE_INFINITY;
-    private double lastNotRightStickButtonTime = Double.POSITIVE_INFINITY;
-
-    /* CONSTRUCTOR */
     public GamepadController(ElapsedTime globalRuntime, Gamepad globalGamepad) {
         // INITIALIZE TELEMETRY
         gamepad = globalGamepad;
         runtime = globalRuntime;
     }
 
-    /* BUTTONS */
-    /** Get if a button was just pressed, returns true only on the frame the button is pressed */
-    public boolean press(Button button) {
-        boolean pressed = false;
-        switch (button) {
-            case A:
-                pressed = gamepad.a && !lastA;
-                lastA = gamepad.a;
-                break;
-
-            case B:
-                pressed = gamepad.b && !lastB;
-                lastB = gamepad.b;
-                break;
-
-            case X:
-                pressed = gamepad.x && !lastX;
-                lastX = gamepad.x;
-                break;
-
-            case Y:
-                pressed = gamepad.y && !lastY;
-                lastY = gamepad.y;
-                break;
-
-            case DPAD_UP:
-                pressed = gamepad.dpad_up && !lastDPAD_UP;
-                lastDPAD_UP = gamepad.dpad_up;
-                break;
-
-            case DPAD_DOWN:
-                pressed = gamepad.dpad_down && !lastDPAD_DOWN;
-                lastDPAD_DOWN = gamepad.dpad_down;
-                break;
-
-            case DPAD_LEFT:
-                pressed = gamepad.dpad_left && !lastDPAD_LEFT;
-                lastDPAD_LEFT = gamepad.dpad_left;
-                break;
-
-            case DPAD_RIGHT:
-                pressed = gamepad.dpad_right && !lastDPAD_RIGHT;
-                lastDPAD_RIGHT = gamepad.dpad_right;
-                break;
-
-            case LEFT_STICK:
-                pressed = gamepad.left_stick_button && !lastLeftStick;
-                lastLeftStick = gamepad.left_stick_button;
-                break;
-
-            case RIGHT_STICK:
-                pressed = gamepad.right_stick_button && !lastRightStick;
-                lastRightStick = gamepad.right_stick_button;
-                break;
-
-            case OPTIONS:
-                pressed = gamepad.options && !lastOptions;
-                lastOptions = gamepad.options;
-                break;
-
-            case SHARE:
-                pressed = gamepad.share && !lastShare;
-                lastShare = gamepad.share;
-                break;
-            case HOME:
-                pressed = gamepad.guide && !lastHome;
-                lastHome = gamepad.guide;
-                break;
+    public void update() {
+        for (Button button : Button.values()) {
+            button.update(gamepad);
         }
-
-        return pressed;
     }
 
-    /** Get if a button is being pressed, returns true while the button is pressed */
-    public boolean pressing(Button button) {
-        boolean pressing = false;
-        switch (button) {
-            case A:
-                pressing = gamepad.a;
-                break;
-            case B:
-                pressing = gamepad.b;
-                break;
-            case X:
-                pressing = gamepad.x;
-                break;
-            case Y:
-                pressing = gamepad.y;
-                break;
-            case DPAD_UP:
-                pressing = gamepad.dpad_up;
-                break;
-            case DPAD_DOWN:
-                pressing = gamepad.dpad_down;
-                break;
-            case DPAD_LEFT:
-                pressing = gamepad.dpad_left;
-                break;
-            case DPAD_RIGHT:
-                pressing = gamepad.dpad_right;
-                break;
-            case LEFT_STICK:
-                pressing = gamepad.left_stick_button;
-                break;
-            case RIGHT_STICK:
-                pressing = gamepad.right_stick_button;
-                break;
-            case OPTIONS:
-                pressing = gamepad.options;
-                break;
-            case SHARE:
-                pressing = gamepad.share;
-                break;
-            case HOME:
-                pressing = gamepad.guide;
-                break;
-        }
-
-        return pressing;
+    /** Returns true if the button was pressed since last update. Returns true only once. */
+    public boolean isPressed(Button button) {
+        return isPressing(button) && !button.lastPressed;
     }
 
-    /** Get if a button is long-pressed, returns true while the button is not released */
-    public boolean longPress(Button button) {
-        boolean longPressed = false;
-        switch (button) {
-            case A:
-                if (!gamepad.a) lastNotATime = runtime.time();
-                longPressed = gamepad.a && (runtime.time() - lastNotATime > LONG_PRESS_TIME);
-                break;
+    /** Returns true if the button is currently being pressed. */
+    public boolean isPressing(Button button) {
+        return button.get(gamepad);
+    }
 
-            case B:
-                if (!gamepad.b) lastNotBTime = runtime.time();
-                longPressed = gamepad.b && (runtime.time() - lastNotBTime > LONG_PRESS_TIME);
-                break;
+    /** Returns true if the button has been held down for LONG_PRESS_TIME seconds. */
+    public boolean isLongPressed(Button button) {
+        double elapsedSeconds = (runtime.milliseconds() - button.lastTimePressed) / 1000.0;
+        return isPressing(button) && elapsedSeconds >= LONG_PRESS_TIME;
+    }
 
-            case X:
-                if (!gamepad.x) lastNotXTime = runtime.time();
-                longPressed = gamepad.x && (runtime.time() - lastNotXTime > LONG_PRESS_TIME);
-                break;
-
-            case Y:
-                if (!gamepad.y) lastNotYTime = runtime.time();
-                longPressed = gamepad.y && (runtime.time() - lastNotYTime > LONG_PRESS_TIME);
-                break;
-
-            case LEFT_STICK:
-                if (!gamepad.left_stick_button) lastNotLeftStickButtonTime = runtime.time();
-                longPressed =
-                        gamepad.left_stick_button
-                                && (runtime.time() - lastNotLeftStickButtonTime > LONG_PRESS_TIME);
-                break;
-
-            case RIGHT_STICK:
-                if (!gamepad.right_stick_button) lastNotRightStickButtonTime = runtime.time();
-                longPressed =
-                        gamepad.right_stick_button
-                                && (runtime.time() - lastNotRightStickButtonTime > LONG_PRESS_TIME);
-                break;
-        }
-        return longPressed;
+    /**
+     * Returns true if the button was pressed twice within DOUBLE_PRESS_INTERVAL seconds. Returns
+     * true only once.
+     */
+    public boolean isDoublePressed(Button button) {
+        double intervalSeconds = (button.lastTimePressed - button.previousTimePressed) / 1000.0;
+        return isPressed(button) && intervalSeconds <= DOUBLE_PRESS_INTERVAL;
     }
 
     public enum Button {
-        X,
-        Y,
-        A,
-        B,
-        DPAD_UP,
-        DPAD_DOWN,
-        DPAD_LEFT,
-        DPAD_RIGHT,
-        LEFT_STICK,
-        RIGHT_STICK,
-        OPTIONS,
-        SHARE,
-        HOME
+        A(gamepad -> gamepad.a),
+        B(gamepad -> gamepad.b),
+        X(gamepad -> gamepad.x),
+        Y(gamepad -> gamepad.y),
+        DPAD_UP(gamepad -> gamepad.dpad_up),
+        DPAD_DOWN(gamepad -> gamepad.dpad_down),
+        DPAD_LEFT(gamepad -> gamepad.dpad_left),
+        DPAD_RIGHT(gamepad -> gamepad.dpad_right),
+        LEFT_STICK(gamepad -> gamepad.left_stick_button),
+        RIGHT_STICK(gamepad -> gamepad.right_stick_button),
+        OPTIONS(gamepad -> gamepad.options),
+        SHARE(gamepad -> gamepad.share),
+        HOME(gamepad -> gamepad.guide);
+
+        private final java.util.function.Function<Gamepad, Boolean> accessor;
+
+        private boolean lastPressed = false;
+        private long previousTimePressed = 0;
+        private long lastTimePressed = 0;
+
+        Button(java.util.function.Function<Gamepad, Boolean> accessor) {
+            this.accessor = accessor;
+        }
+
+        public boolean get(Gamepad gamepad) {
+            return accessor.apply(gamepad);
+        }
+
+        /** Update internal state for this button */
+        public void update(Gamepad gamepad) {
+            boolean current = get(gamepad);
+            if (current && !lastPressed) {
+                // Just pressed now
+                previousTimePressed = lastTimePressed;
+                lastTimePressed = System.currentTimeMillis();
+            }
+            lastPressed = current;
+        }
     }
 }
