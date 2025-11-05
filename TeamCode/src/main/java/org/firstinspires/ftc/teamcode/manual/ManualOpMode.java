@@ -83,6 +83,7 @@ public class ManualOpMode extends OpMode {
     public void loop() {
         /* --- MOVEMENT --- */
         move.reset();
+        gamepad.update();
 
         /*
         if (gamepad.press(GamepadController.Button.LEFT_STICK)) {

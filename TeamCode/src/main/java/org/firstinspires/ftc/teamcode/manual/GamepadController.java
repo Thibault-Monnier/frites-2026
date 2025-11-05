@@ -13,11 +13,14 @@ public class GamepadController {
     protected final ElapsedTime runtime;
 
     public GamepadController(ElapsedTime globalRuntime, Gamepad globalGamepad) {
-        // INITIALIZE TELEMETRY
         gamepad = globalGamepad;
         runtime = globalRuntime;
     }
 
+    /**
+     * Update the internal state of all buttons. This function MUST be called at EVERY loop cycle,
+     * before any queries are made.
+     */
     public void update() {
         for (Button button : Button.values()) {
             button.update(gamepad);
