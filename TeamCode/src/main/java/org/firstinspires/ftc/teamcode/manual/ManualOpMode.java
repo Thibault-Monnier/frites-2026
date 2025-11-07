@@ -17,11 +17,6 @@ import org.firstinspires.ftc.teamcode.robot.Replayer;
 
 @Config
 public class ManualOpMode extends OpMode {
-    static boolean hasOncePressed = false;
-    static GamepadController.Button lastPressed;
-    static GamepadController.Button lastPressing;
-    static GamepadController.Button lastLongPressed;
-    static GamepadController.Button lastDoublePressed;
     private final Constants.Team team;
     private final boolean replay;
     private ElapsedTime runtime;
