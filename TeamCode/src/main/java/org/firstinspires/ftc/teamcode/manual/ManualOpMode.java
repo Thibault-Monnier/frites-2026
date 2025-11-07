@@ -4,8 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -17,17 +15,16 @@ import org.firstinspires.ftc.teamcode.robot.Replayer;
 
 @Config
 public class ManualOpMode extends OpMode {
+    static boolean hasOncePressed = false;
     private final Constants.Team team;
     private final boolean replay;
     private ElapsedTime runtime;
     private GamepadController gamepad;
     private Movement move;
     private Telemetry globalTelemetry;
-
     // Modules
     private Cannon cannon1;
     private Cannon cannon2;
-
     private Replayer.Logger replaySaver;
 
     public ManualOpMode(Constants.Team team, boolean replay) {
@@ -44,6 +41,7 @@ public class ManualOpMode extends OpMode {
 
         gamepad = new GamepadController(runtime, gamepad1);
 
+        /*
         IMU onBoardIMU = hardwareMap.get(IMU.class, Constants.IMU_ID);
 
         move =
@@ -63,6 +61,7 @@ public class ManualOpMode extends OpMode {
                 new Cannon(
                         globalTelemetry,
                         hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID));
+        */
 
         if (replay) {
             replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move});
@@ -79,11 +78,30 @@ public class ManualOpMode extends OpMode {
         runtime.reset();
     }
 
+    static GamepadController.Button lastPressed;
+    static GamepadController.Button lastPressing;
+    static GamepadController.Button lastLongPressed;
+    static GamepadController.Button lastDoublePressed;
     @Override
     public void loop() {
-        /* --- MOVEMENT --- */
-        move.reset();
+        //move.reset();
         gamepad.update();
+        globalTelemetry.addData("Last pressed", lastPressed);
+        globalTelemetry.addData("Last pressing", lastPressing);
+        globalTelemetry.addData("Last long pressed", lastLongPressed);
+        globalTelemetry.addData("Last double pressed", lastDoublePressed);
+        for (GamepadController.Button button : GamepadController.Button.values()) {
+            if (gamepad.isPressed(button)) lastPressed = button;
+            if (gamepad.isPressing(button)) lastPressing = button;
+            if (gamepad.isLongPressed(button)) lastLongPressed = button;
+            if (gamepad.isDoublePressed(button)) lastDoublePressed = button;
+            globalTelemetry.addData(" --- BUTTON ", button);
+            globalTelemetry.addData("IsPressed", gamepad.isPressed(button));
+            globalTelemetry.addData("IsPressing", gamepad.isPressing(button));
+            globalTelemetry.addData("IsLongPressed", gamepad.isLongPressed(button));
+            globalTelemetry.addData("IsDoublePressed", gamepad.isDoublePressed(button));
+        }
+
 
         /*
         if (gamepad.press(GamepadController.Button.LEFT_STICK)) {
@@ -96,25 +114,25 @@ public class ManualOpMode extends OpMode {
         */
 
         // Translation : unpressed (fast) and pressed (slow)
-        move.joystickTranslate(gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK));
+        //move.joystickTranslate(gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK));
 
         // Rotation : bumpers (fast) and triggers (slow)
-        move.bumperTurn(gamepad1);
+        //move.bumperTurn(gamepad1);
 
         /* --- ACTIONS --- */
-        if (gamepad.isPressed(GamepadController.Button.B)) cannon1.toggle();
+        /*if (gamepad.isPressed(GamepadController.Button.B)) cannon1.toggle();
         if (gamepad.isPressed(GamepadController.Button.X)) cannon2.toggle();
         cannon1.update();
-        cannon2.update();
+        cannon2.update();*/
 
         /* --- OPMODE TELEMETRY --- */
         globalTelemetry.addLine("--- MANUAL MODE ---");
         globalTelemetry.addData("Team", team);
 
         /* --- APPLY --- */
-        move.apply();
+        /*move.apply();
         cannon1.apply();
-        cannon2.apply();
+        cannon2.apply();*/
 
         globalTelemetry.update();
 

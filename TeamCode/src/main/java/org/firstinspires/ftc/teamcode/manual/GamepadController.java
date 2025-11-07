@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class GamepadController {
-    public static double LONG_PRESS_TIME = 1.0;
+    public static double LONG_PRESS_TIME = 0.5;
     public static double DOUBLE_PRESS_INTERVAL = 0.3;
 
     protected final Gamepad gamepad;
@@ -23,7 +23,7 @@ public class GamepadController {
      */
     public void update() {
         for (Button button : Button.values()) {
-            button.update(gamepad);
+            button.update(gamepad, runtime);
         }
     }
 
@@ -70,8 +70,9 @@ public class GamepadController {
         private final java.util.function.Function<Gamepad, Boolean> accessor;
 
         private boolean lastPressed = false;
-        private long previousTimePressed = 0;
-        private long lastTimePressed = 0;
+        private boolean currentPressed = false;
+        private double previousTimePressed = -10000.0;
+        private double lastTimePressed = -10000.0;
 
         Button(java.util.function.Function<Gamepad, Boolean> accessor) {
             this.accessor = accessor;
@@ -82,14 +83,14 @@ public class GamepadController {
         }
 
         /** Update internal state for this button */
-        public void update(Gamepad gamepad) {
-            boolean current = get(gamepad);
-            if (current && !lastPressed) {
+        public void update(Gamepad gamepad, ElapsedTime runtime) {
+            lastPressed = currentPressed;
+            currentPressed = get(gamepad);
+            if (currentPressed && !lastPressed) {
                 // Just pressed now
                 previousTimePressed = lastTimePressed;
-                lastTimePressed = System.currentTimeMillis();
+                lastTimePressed = runtime.milliseconds();
             }
-            lastPressed = current;
         }
     }
 }
