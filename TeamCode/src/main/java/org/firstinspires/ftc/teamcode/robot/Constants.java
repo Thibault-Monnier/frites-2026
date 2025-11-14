@@ -2,6 +2,11 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+
 @Config
 public class Constants {
     /* --- SYSTEM --- */
@@ -17,8 +22,10 @@ public class Constants {
     public static double ROBOT_DEPTH = 18.0; // inches
     public static double ROBOT_HEIGHT = 18.0; // inches
 
-    /* --- ROBOT MODULES --- */
-    // Empty for now
+    /* --- MODULES CONSTANTS --- */
+    public static Position CAMERA_RELATIVE_POSITION = new Position(DistanceUnit.CM, 0, 0, 0, 0);
+    public static YawPitchRollAngles CAMERA_RELATIVE_ORIENTATION =
+            new YawPitchRollAngles(AngleUnit.DEGREES, 0, 0, 0, 0);
 
     /* --- HARDWARE MAP --- */
     public static String FRONT_LEFT_MOTOR_ID = "front_left";
@@ -27,6 +34,7 @@ public class Constants {
     public static String BACK_RIGHT_MOTOR_ID = "back_right";
     public static String CANNON_MOTOR_1_ID = "cannon_motor_1";
     public static String CANNON_MOTOR_2_ID = "cannon_motor_2";
+    public static final String LIMELIGHT_CAMERA_ID = "limelight";
 
     /* --- TEST HARDWARE --- */
     public static String TEST_MOTOR_1_ID = "test_motor_1";
