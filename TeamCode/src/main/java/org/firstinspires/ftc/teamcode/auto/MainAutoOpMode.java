@@ -10,7 +10,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Autonomous(name = "Main Auto Mode")
-public class MainAutoOpMode extends OpMode {
+public class MainAutoOpMode extends LinearOpMode {
     private final Constants.Team team;
     private final Constants.StartPosition startPosition;
     private final FtcDashboard dash = FtcDashboard.getInstance();
@@ -45,7 +45,19 @@ public class MainAutoOpMode extends OpMode {
     }
 
     @Override
-    public void init() {
+    public void runOpMode() {
+        initialize();
+
+        waitForStart();
+
+        runtime.reset();
+
+        while (opModeIsActive()) {
+            runStep();
+        }
+    }
+
+    public void initialize() {
         runtime = new ElapsedTime();
 
         globalTelemetry =
@@ -64,8 +76,7 @@ public class MainAutoOpMode extends OpMode {
         }
     }
 
-    @Override
-    public void loop() {
+    public void runStep() {
         TelemetryPacket packet = new TelemetryPacket();
 
         switch (currentState) {

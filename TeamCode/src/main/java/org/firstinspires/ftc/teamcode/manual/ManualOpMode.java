@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.manual;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.robot.Movement;
 import org.firstinspires.ftc.teamcode.robot.Replayer;
 
 @Config
-public class ManualOpMode extends OpMode {
+public class ManualOpMode extends LinearOpMode {
     private final Constants.Team team;
     private final boolean replay;
     private ElapsedTime runtime;
@@ -34,7 +34,22 @@ public class ManualOpMode extends OpMode {
     }
 
     @Override
-    public void init() {
+    public void runOpMode() {
+        initialize();
+
+        waitForStart();
+        runtime.reset();
+
+        while (opModeIsActive()) {
+            runStep();
+        }
+
+        if (replay) {
+            replaySaver.saveAndExit(Constants.REPLAY_FILE_DEST);
+        }
+    }
+
+    public void initialize() {
         runtime = new ElapsedTime();
 
         globalTelemetry =
@@ -67,18 +82,7 @@ public class ManualOpMode extends OpMode {
         }
     }
 
-    @Override
-    public void init_loop() {
-        runtime.reset();
-    }
-
-    @Override
-    public void start() {
-        runtime.reset();
-    }
-
-    @Override
-    public void loop() {
+    public void runStep() {
         move.reset();
         gamepad.update();
 
@@ -118,13 +122,6 @@ public class ManualOpMode extends OpMode {
         /* --- REPLAY --- */
         if (replay) {
             replaySaver.logCurrentState();
-        }
-    }
-
-    @Override
-    public void stop() {
-        if (replay) {
-            replaySaver.saveAndExit(Constants.REPLAY_FILE_DEST);
         }
     }
 }
