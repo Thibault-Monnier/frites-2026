@@ -6,16 +6,17 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.field.CameraLocalizer;
+import org.firstinspires.ftc.teamcode.field.LimelightHandler;
 
 @TeleOp(name = "Camera Localizer OpMode", group = "Concept")
 public class CameraLocalizerOpMode extends LinearOpMode {
     private Telemetry globalTelemetry;
 
-    private CameraLocalizer cameraLocalizer;
+    private LimelightHandler limelightHandler;
 
     public CameraLocalizerOpMode() {}
 
@@ -25,32 +26,34 @@ public class CameraLocalizerOpMode extends LinearOpMode {
 
         waitForStart();
 
-        cameraLocalizer.start();
+        limelightHandler.start();
 
         while (opModeIsActive()) {
-            if (cameraLocalizer.update()) {
-                Pose3D pose = cameraLocalizer.getLastKnownPose();
+            if (limelightHandler.update()) {
+                Pose3D pose = limelightHandler.getLastKnownPose();
                 Position pos = pose.getPosition();
                 YawPitchRollAngles orient = pose.getOrientation();
                 globalTelemetry.addLine("--- Last Known Pose: ---");
-                globalTelemetry.addData("X (in)", pos.x);
-                globalTelemetry.addData("Y (in)", pos.y);
-                globalTelemetry.addData("Z (in)", pos.z);
-                globalTelemetry.addData("Roll (deg)", Math.toDegrees(orient.getRoll()));
-                globalTelemetry.addData("Pitch (deg)", Math.toDegrees(orient.getPitch()));
-                globalTelemetry.addData("Yaw (deg)", Math.toDegrees(orient.getYaw()));
+                globalTelemetry.addData(" Distance unit", pos.unit);
+                globalTelemetry.addData("X", pos.x);
+                globalTelemetry.addData("Y", pos.y);
+                globalTelemetry.addData("Z", pos.z);
+                globalTelemetry.addData("Roll (deg)", orient.getRoll(AngleUnit.DEGREES));
+                globalTelemetry.addData("Pitch (deg)", orient.getPitch(AngleUnit.DEGREES));
+                globalTelemetry.addData("Yaw (deg)", orient.getYaw(AngleUnit.DEGREES));
             }
+
             globalTelemetry.update();
         }
 
-        cameraLocalizer.stop();
+        limelightHandler.stop();
     }
 
     private void initialize() {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        cameraLocalizer = new CameraLocalizer(globalTelemetry, hardwareMap);
-        cameraLocalizer.init();
+        limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
+        limelightHandler.init();
     }
 }

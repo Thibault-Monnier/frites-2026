@@ -8,6 +8,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.robot.Constants;
@@ -15,7 +16,7 @@ import org.firstinspires.ftc.teamcode.utils.Units;
 
 import java.util.List;
 
-public class CameraLocalizer {
+public class LimelightHandler {
     private final Telemetry telemetry;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     private final HardwareMap hardwareMap;
@@ -23,11 +24,11 @@ public class CameraLocalizer {
     private Limelight3A limelight;
     private int validFramesInRow = 0;
     private LLResult lastResult = null;
-    private final double STABILITY_THRESHOLD_METERS = 0.1;
+    private final double STABILITY_THRESHOLD_METERS = 0.15;
 
     private Pose3D lastKnownPose = null;
 
-    public CameraLocalizer(Telemetry telemetry, HardwareMap hardwareMap) {
+    public LimelightHandler(Telemetry telemetry, HardwareMap hardwareMap) {
         this.telemetry = telemetry;
         this.hardwareMap = hardwareMap;
     }
@@ -56,57 +57,67 @@ public class CameraLocalizer {
     public boolean update() {
         LLResult result = limelight.getLatestResult();
 
-        if (result != null) {
-            if (result.isValid()) {
-                telemetry.addLine("--- Camera Localization ---");
+        if (!isNewResult(result)) return false;
 
-                List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
+        if (result != null && result.isValid()) {
+            List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
+            tags.removeIf(
+                    tag -> {
+                        int id = tag.getFiducialId();
+                        return id != 20 && id != 24;
+                    });
 
-                Pose3D finalPose = result.getBotpose();
-                Position finalPos = finalPose.getPosition();
-
-                telemetry.addData("unit", finalPos.unit);
-
-                telemetry.addData("Robot X", finalPos.x);
-                telemetry.addData("Robot Y", finalPos.y);
-                telemetry.addData("Heading", Math.toDegrees(finalPose.getOrientation().getYaw()));
-
-                telemetry.addLine();
-                telemetry.addData("# of tags", tags.size());
-                for (LLResultTypes.FiducialResult tag : tags) {
-                    Pose3D pose = tag.getRobotPoseFieldSpace();
-
-                    telemetry.addData("ID", tag.getFiducialId());
-                    telemetry.addData("tx deg", tag.getTargetXDegrees());
-                    telemetry.addData("ty deg", tag.getTargetYDegrees());
-                    telemetry.addData("pose", pose.toString());
-                }
-
-                if (lastResult == null || isStableNewResult(result)) {
-                    validFramesInRow++;
-                } else {
-                    validFramesInRow = 0;
-                }
-                lastResult = result;
-
-                if (validFramesInRow >= 3) {
-                    // Stable result
-                    lastKnownPose = lastResult.getBotpose();
-                    renderFieldOverlayInDashboard();
-
-                    return true;
-                }
-
-            } else {
-                lastResult = null;
-                validFramesInRow = 0;
-
-                telemetry.clear();
-                telemetry.addLine("Nothing detected");
+            if (tags.isEmpty()) {
+                handleNoDetection();
+                return false;
             }
+
+            Pose3D finalPose = result.getBotpose();
+            Position finalPos = finalPose.getPosition();
+
+            telemetry.addLine("--- Camera Localization ---");
+            telemetry.addData("Unit", finalPos.unit);
+            telemetry.addData("Robot X", finalPos.x);
+            telemetry.addData("Robot Y", finalPos.y);
+            telemetry.addData("Heading", finalPose.getOrientation().getYaw(AngleUnit.DEGREES));
+
+            telemetry.addLine();
+            telemetry.addData("# of tags", tags.size());
+            for (LLResultTypes.FiducialResult tag : tags) {
+                Pose3D pose = tag.getRobotPoseFieldSpace();
+                telemetry.addData("ID", tag.getFiducialId());
+                telemetry.addData("tx deg", tag.getTargetXDegrees());
+                telemetry.addData("ty deg", tag.getTargetYDegrees());
+                telemetry.addData("pose", pose.toString());
+            }
+
+            if (lastResult == null || isStableResult(result)) {
+                validFramesInRow++;
+            } else {
+                validFramesInRow = 0;
+            }
+            lastResult = result;
+
+            if (validFramesInRow >= 3) {
+                // Stable result
+                lastKnownPose = lastResult.getBotpose();
+                renderFieldOverlayInDashboard();
+
+                return true;
+            }
+
+        } else {
+            handleNoDetection();
         }
 
         return false;
+    }
+
+    private void handleNoDetection() {
+        lastResult = null;
+        validFramesInRow = 0;
+
+        telemetry.addLine("Nothing detected");
     }
 
     private void renderFieldOverlayInDashboard() {
@@ -139,10 +150,9 @@ public class CameraLocalizer {
         return lastResult == null || lastResult.getTimestamp() != newResult.getTimestamp();
     }
 
-    private boolean isStableNewResult(LLResult newResult) {
+    private boolean isStableResult(LLResult newResult) {
         Position newPos = newResult.getBotpose().getPosition();
         Position prevPos = lastResult.getBotpose().getPosition();
-        boolean isStable = distance(newPos, prevPos) < STABILITY_THRESHOLD_METERS;
-        return isNewResult(newResult) && isStable;
+        return distance(newPos, prevPos) < STABILITY_THRESHOLD_METERS;
     }
 }
