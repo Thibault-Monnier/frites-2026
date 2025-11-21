@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.robot.Constants;
+import org.firstinspires.ftc.teamcode.utils.Units;
 
 import java.util.List;
 
@@ -55,7 +56,6 @@ public class CameraLocalizer {
     public boolean update() {
         LLResult result = limelight.getLatestResult();
 
-        TelemetryPacket packet = new TelemetryPacket();
         if (result != null) {
             if (result.isValid()) {
                 telemetry.addLine("--- Camera Localization ---");
@@ -64,23 +64,14 @@ public class CameraLocalizer {
 
                 Pose3D finalPose = result.getBotpose();
                 Position finalPos = finalPose.getPosition();
-                double robotHeading = finalPose.getOrientation().getYaw();
-                dashboard.getTelemetry().addData("unit", finalPos.unit);
-                packet.fieldOverlay()
-                        .setStroke("red")
-                        .strokeCircle(
-                                finalPos.x, finalPos.y, 4); // radius of 4 units (inches/meters)
 
-                dashboard.getTelemetry().addData("Robot X", finalPos.x);
-                dashboard.getTelemetry().addData("Robot Y", finalPos.y);
-                dashboard.getTelemetry().addData("Heading", Math.toDegrees(robotHeading));
-                double lineLength = 8; // units
-                double endX = finalPos.x + lineLength * Math.cos(robotHeading);
-                double endY = finalPos.y + lineLength * Math.sin(robotHeading);
-                packet.fieldOverlay()
-                        .setStroke("green")
-                        .strokeLine(finalPos.x, finalPos.y, endX, endY);
+                telemetry.addData("unit", finalPos.unit);
 
+                telemetry.addData("Robot X", finalPos.x);
+                telemetry.addData("Robot Y", finalPos.y);
+                telemetry.addData("Heading", Math.toDegrees(finalPose.getOrientation().getYaw()));
+
+                telemetry.addLine();
                 telemetry.addData("# of tags", tags.size());
                 for (LLResultTypes.FiducialResult tag : tags) {
                     Pose3D pose = tag.getRobotPoseFieldSpace();
@@ -101,7 +92,8 @@ public class CameraLocalizer {
                 if (validFramesInRow >= 3) {
                     // Stable result
                     lastKnownPose = lastResult.getBotpose();
-                    dashboard.sendTelemetryPacket(packet);
+                    renderFieldOverlayInDashboard();
+
                     return true;
                 }
 
@@ -109,13 +101,31 @@ public class CameraLocalizer {
                 lastResult = null;
                 validFramesInRow = 0;
 
+                telemetry.clear();
                 telemetry.addLine("Nothing detected");
-                dashboard.getTelemetry().clear();
             }
         }
 
-        dashboard.sendTelemetryPacket(packet);
         return false;
+    }
+
+    private void renderFieldOverlayInDashboard() {
+        TelemetryPacket packet = new TelemetryPacket();
+
+        double heading = lastKnownPose.getOrientation().getYaw();
+
+        double robotXInches = Units.metersToInches(lastKnownPose.getPosition().x);
+        double robotYInches = Units.metersToInches(lastKnownPose.getPosition().y);
+
+        double lineLength = 8;
+        double endXInches = robotXInches + lineLength * Math.cos(heading);
+        double endYInches = robotYInches + lineLength * Math.sin(heading);
+
+        packet.fieldOverlay().setStroke("red").strokeCircle(robotXInches, robotYInches, 4);
+        packet.fieldOverlay()
+                .setStroke("green")
+                .strokeLine(robotXInches, robotYInches, endXInches, endYInches);
+        dashboard.sendTelemetryPacket(packet);
     }
 
     private double distance(Position p1, Position p2) {

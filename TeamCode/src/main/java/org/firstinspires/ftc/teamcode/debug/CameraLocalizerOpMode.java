@@ -50,7 +50,7 @@ public class CameraLocalizerOpMode extends LinearOpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        cameraLocalizer = new CameraLocalizer(telemetry, hardwareMap);
+        cameraLocalizer = new CameraLocalizer(globalTelemetry, hardwareMap);
         cameraLocalizer.init();
     }
 }
