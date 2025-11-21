@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.field;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -14,6 +16,7 @@ import java.util.List;
 
 public class CameraLocalizer {
     private final Telemetry telemetry;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
     private final HardwareMap hardwareMap;
 
     private Limelight3A limelight;
@@ -35,10 +38,12 @@ public class CameraLocalizer {
 
     public void start() {
         limelight.start();
+        dashboard.startCameraStream(limelight, 0);
     }
 
     public void stop() {
         limelight.stop();
+        dashboard.stopCameraStream();
     }
 
     public Pose3D getLastKnownPose() {
@@ -50,19 +55,40 @@ public class CameraLocalizer {
     public boolean update() {
         LLResult result = limelight.getLatestResult();
 
+        TelemetryPacket packet = new TelemetryPacket();
         if (result != null) {
             if (result.isValid()) {
                 telemetry.addLine("--- Camera Localization ---");
 
                 List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
 
-                telemetry.addData("# of tags", tags.size());
+                Pose3D finalPose = result.getBotpose();
+                Position finalPos = finalPose.getPosition();
+                double robotHeading = finalPose.getOrientation().getYaw();
+                dashboard.getTelemetry().addData("unit", finalPos.unit);
+                packet.fieldOverlay()
+                        .setStroke("red")
+                        .strokeCircle(
+                                finalPos.x, finalPos.y, 4); // radius of 4 units (inches/meters)
 
+                dashboard.getTelemetry().addData("Robot X", finalPos.x);
+                dashboard.getTelemetry().addData("Robot Y", finalPos.y);
+                dashboard.getTelemetry().addData("Heading", Math.toDegrees(robotHeading));
+                double lineLength = 8; // units
+                double endX = finalPos.x + lineLength * Math.cos(robotHeading);
+                double endY = finalPos.y + lineLength * Math.sin(robotHeading);
+                packet.fieldOverlay()
+                        .setStroke("green")
+                        .strokeLine(finalPos.x, finalPos.y, endX, endY);
+
+                telemetry.addData("# of tags", tags.size());
                 for (LLResultTypes.FiducialResult tag : tags) {
+                    Pose3D pose = tag.getRobotPoseFieldSpace();
+
                     telemetry.addData("ID", tag.getFiducialId());
                     telemetry.addData("tx deg", tag.getTargetXDegrees());
                     telemetry.addData("ty deg", tag.getTargetYDegrees());
-                    telemetry.addData("pose", tag.getRobotPoseFieldSpace().toString());
+                    telemetry.addData("pose", pose.toString());
                 }
 
                 if (lastResult == null || isStableNewResult(result)) {
@@ -75,6 +101,7 @@ public class CameraLocalizer {
                 if (validFramesInRow >= 3) {
                     // Stable result
                     lastKnownPose = lastResult.getBotpose();
+                    dashboard.sendTelemetryPacket(packet);
                     return true;
                 }
 
@@ -83,9 +110,11 @@ public class CameraLocalizer {
                 validFramesInRow = 0;
 
                 telemetry.addLine("Nothing detected");
+                dashboard.getTelemetry().clear();
             }
         }
 
+        dashboard.sendTelemetryPacket(packet);
         return false;
     }
 
