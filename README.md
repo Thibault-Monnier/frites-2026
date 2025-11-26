@@ -7,34 +7,39 @@ This is the code for the FTC team Frites during the 2025-26 Decode season.
 ## Setting up & Compiling
 
 Start by cloning this repository with one of the following commands:
+
 ```bash
 git clone https://gitlab.com/ftc-civ/frites/2026.git
 git clone git@gitlab.com:ftc-civ/frites/2026.git
 ```
 
-Make sure you have [Android Studio](https://developer.android.com/studio) installed (this is required to compile the code), and Java 21 (may not work with more recent versions!).
+Make sure you have [Android Studio](https://developer.android.com/studio) installed (this is
+required to compile the code), and Java 21 (may not work with more recent versions!).
 
-Open this directory in Android Studio and let it sync (required if you want to be able to compile the code, even from the terminal).
+Open this directory in Android Studio and let it sync (required if you want to be able to compile
+the code, even from the terminal).
 
-To compile, use Android Studio or run the following command (on Linux, you may have to run `chmod +x ./gradlew` first):
+To compile, use Android Studio or run the following command (on Linux, you may have to run
+`chmod +x ./gradlew` first):
 
 ```bash
 ./gradlew build
 ```
 
 ## Coding guidelines
+
 ### General
-- __Names should _always_ be descriptive and meaningful__: Don't use non-trivial abbreviations, and don't use single letter names (except in `for` loops). Good naming is the base of good code.
-- __Keep it simple:__ If it looks complicated, then there’s probably a better and simpler way to do it.
-- __Keep it readable:__ Avoid nesting things too much, using long lines (over 100 characters), and space your code out.
+
+- __Names should _always_ be descriptive and meaningful__: Don't use non-trivial abbreviations, and
+  don't use single letter names (except in `for` loops). Good naming is the base of good code.
+- __Keep it simple:__ If it looks complicated, then there’s probably a better and simpler way to do
+  it.
+- __Keep it readable:__ Avoid nesting things too much, using long lines (over 100 characters), and
+  space your code out.
 - __Avoid magic numbers:__ Use named constants instead.
-- In a class, the definition order is:
-    1. static properties
-    2. public properties
-    3. private properties
-    4. public/private methods
 
 ### Formatting
+
 - __Classes and enums__ start with _uppercase_ and use _PascalCase_
 - __Objects, variables and functions__ start with _lowercase_ and use _camelCase_
 - __Constants and enum members__ use _CONSTANT_CASE_
@@ -43,11 +48,12 @@ To compile, use Android Studio or run the following command (on Linux, you may h
 - Split up long lines
 
 ```java
-class Class { /*...*/ }
+class Class { /*...*/
+}
 
 enum Enum {
-   FIRST_MEMBER,
-   SECOND_MEMBER
+    FIRST_MEMBER,
+    SECOND_MEMBER
 }
 
 int exampleVariable;
