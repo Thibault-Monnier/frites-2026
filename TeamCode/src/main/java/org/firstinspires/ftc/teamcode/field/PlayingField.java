@@ -4,11 +4,11 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
 public class PlayingField {
-    public static final FieldElement FIELD =
+    private static final FieldElement FIELD =
             new FieldElement(
                     new Vector2d(0, 0), FieldConstants.FIELD_WIDTH, FieldConstants.FIELD_DEPTH, 0);
 
-    public static final FieldElement BLUE_GOAL =
+    private static final FieldElement BLUE_GOAL =
             new FieldElement(
                     new Vector2d(
                             -FIELD.halfWidth() + FieldConstants.GOAL_WIDTH / 2,
@@ -16,7 +16,7 @@ public class PlayingField {
                     FieldConstants.GOAL_WIDTH,
                     FieldConstants.GOAL_DEPTH,
                     FieldConstants.GOAL_HEIGHT);
-    public static final FieldElement RED_GOAL =
+    private static final FieldElement RED_GOAL =
             new FieldElement(
                     new Vector2d(
                             -FIELD.halfWidth() + FieldConstants.GOAL_WIDTH / 2,
@@ -25,7 +25,7 @@ public class PlayingField {
                     FieldConstants.GOAL_DEPTH,
                     FieldConstants.GOAL_HEIGHT);
 
-    private PlayingField() {}
+    public PlayingField() {}
 
     public static Pose2d startPose(org.firstinspires.ftc.teamcode.robot.Constants.Team color) {
         return color.isBlue() ? FieldConstants.BLUE_START_POSE : FieldConstants.RED_START_POSE;

@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.field.PlayingField;
+import org.firstinspires.ftc.teamcode.field.RobotPosition;
 import org.firstinspires.ftc.teamcode.models.RobotModule;
 import org.firstinspires.ftc.teamcode.robot.Cannon;
 import org.firstinspires.ftc.teamcode.robot.Constants;
@@ -21,9 +23,13 @@ public class ManualOpMode extends LinearOpMode {
     private final Constants.Team team;
     private final boolean replay;
     private ElapsedTime runtime;
+    private Telemetry globalTelemetry;
+
+    private RobotPosition robotPosition;
+    private final PlayingField playingField;
+
     private GamepadController gamepad;
     private Movement move;
-    private Telemetry globalTelemetry;
 
     // Modules
     private Cannon cannon1;
@@ -35,6 +41,7 @@ public class ManualOpMode extends LinearOpMode {
     public ManualOpMode(Constants.Team team, boolean replay) {
         this.team = team;
         this.replay = replay;
+        this.playingField = new PlayingField();
     }
 
     @Override
@@ -55,14 +62,14 @@ public class ManualOpMode extends LinearOpMode {
 
     public void initialize() {
         runtime = new ElapsedTime();
-
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        robotPosition = new RobotPosition(globalTelemetry, hardwareMap);
 
         gamepad = new GamepadController(runtime, gamepad1);
 
         IMU onBoardIMU = hardwareMap.get(IMU.class, Constants.IMU_ID);
-
         move =
                 new Movement(
                         globalTelemetry,
@@ -92,6 +99,7 @@ public class ManualOpMode extends LinearOpMode {
     public void runStep() {
         move.reset();
         gamepad.update();
+        robotPosition.updatePose();
 
         /*
         if (gamepad.isPressed(GamepadController.Button.LEFT_STICK)) {
@@ -112,8 +120,10 @@ public class ManualOpMode extends LinearOpMode {
         /* --- ACTIONS --- */
         if (gamepad.isPressed(GamepadController.Button.B)) cannon1.toggle();
         if (gamepad.isPressed(GamepadController.Button.X)) cannon2.toggle();
-        cannon1.update();
-        cannon2.update();
+
+        double targetDistance = playingField.distanceToGoal(robotPosition.get2dPosition(), team);
+        cannon1.update(targetDistance);
+        cannon2.update(targetDistance);
 
         if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
 
