@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.models.RobotModule;
 import org.firstinspires.ftc.teamcode.robot.Cannon;
 import org.firstinspires.ftc.teamcode.robot.Constants;
+import org.firstinspires.ftc.teamcode.robot.Intake;
 import org.firstinspires.ftc.teamcode.robot.Movement;
 import org.firstinspires.ftc.teamcode.robot.Replayer;
 
@@ -23,9 +24,12 @@ public class ManualOpMode extends LinearOpMode {
     private GamepadController gamepad;
     private Movement move;
     private Telemetry globalTelemetry;
+
     // Modules
     private Cannon cannon1;
     private Cannon cannon2;
+    private Intake intake;
+
     private Replayer.Logger replaySaver;
 
     public ManualOpMode(Constants.Team team, boolean replay) {
@@ -76,6 +80,9 @@ public class ManualOpMode extends LinearOpMode {
                 new Cannon(
                         globalTelemetry,
                         hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID));
+        intake =
+                new Intake(
+                        globalTelemetry, hardwareMap.get(DcMotor.class, Constants.INTAKE_MOTOR_ID));
 
         if (replay) {
             replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move});
@@ -108,6 +115,8 @@ public class ManualOpMode extends LinearOpMode {
         cannon1.update();
         cannon2.update();
 
+        if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
+
         /* --- OPMODE TELEMETRY --- */
         globalTelemetry.addLine("--- MANUAL MODE ---");
         globalTelemetry.addData("Team", team);
@@ -116,6 +125,7 @@ public class ManualOpMode extends LinearOpMode {
         move.apply();
         cannon1.apply();
         cannon2.apply();
+        intake.apply();
 
         globalTelemetry.update();
 
