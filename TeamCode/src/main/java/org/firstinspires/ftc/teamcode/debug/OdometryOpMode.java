@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.debug;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -10,9 +12,8 @@ import org.firstinspires.ftc.teamcode.robot.Constants;
 
 @TeleOp(name = "Odometry OpMode", group = "concept")
 public class OdometryOpMode extends LinearOpMode {
-    Telemetry telemetry;
+    Telemetry globalTelemetry;
 
-    IMU imu;
     GoBildaPinpointDriver pinpoint;
 
     @Override
@@ -27,7 +28,8 @@ public class OdometryOpMode extends LinearOpMode {
     }
 
     public void initialize() {
-        imu = hardwareMap.get(IMU.class, Constants.IMU_ID);
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
@@ -36,17 +38,19 @@ public class OdometryOpMode extends LinearOpMode {
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
         // TODO: Set this according to their physical placement on the robot
-        // inpoint.setOffsets(xOffsetMM, yOffsetMM);
+        pinpoint.setOffsets(0, 0);
 
         pinpoint.resetPosAndIMU();
     }
 
     public void tick() {
+        pinpoint.update();
+
         double Xpos = pinpoint.getPosX();
         double Ypos = pinpoint.getPosY();
 
-        telemetry.addData("X (mm)", Xpos);
-        telemetry.addData("Y (mm)", Ypos);
-        telemetry.update();
+        globalTelemetry.addData("X (mm)", Xpos);
+        globalTelemetry.addData("Y (mm)", Ypos);
+        globalTelemetry.update();
     }
 }
