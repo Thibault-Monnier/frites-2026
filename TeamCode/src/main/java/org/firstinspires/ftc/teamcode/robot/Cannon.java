@@ -23,7 +23,7 @@ public class Cannon implements RobotModule {
     private double motorTargetPower;
 
     private boolean isRunning = false;
-    private double lastQRCodeDistance = DEFAULT_DIST;
+    private double lastTarget2dDistance = DEFAULT_DIST;
 
     public Cannon(Telemetry globalTelemetry, DcMotor motor) {
         this.globalTelemetry = globalTelemetry;
@@ -35,18 +35,21 @@ public class Cannon implements RobotModule {
         motor.setPower(motorTargetPower);
     }
 
+    /// Toggle cannon motor on/off.
     public void toggle() {
         isRunning = !isRunning;
     }
 
+    /// Update motor power by using last registered target distance
     public void update() {
-        update(lastQRCodeDistance);
+        update(lastTarget2dDistance);
     }
 
-    public void update(double QRCodeDistance) {
-        lastQRCodeDistance = QRCodeDistance;
+    /// Update motor power using a value interpolated from target distance.
+    public void update(double target2dDistance) {
+        lastTarget2dDistance = target2dDistance;
         if (isRunning) {
-            computePower(QRCodeDistance);
+            computePower(target2dDistance);
         } else {
             motorTargetPower = 0.0;
         }
