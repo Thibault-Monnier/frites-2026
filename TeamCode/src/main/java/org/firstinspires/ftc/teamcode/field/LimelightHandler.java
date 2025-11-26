@@ -123,7 +123,7 @@ public class LimelightHandler {
     private void renderFieldOverlayInDashboard() {
         TelemetryPacket packet = new TelemetryPacket();
 
-        double heading = lastKnownPose.getOrientation().getYaw();
+        double heading = lastKnownPose.getOrientation().getYaw(AngleUnit.RADIANS);
 
         double robotXInches = Units.metersToInches(lastKnownPose.getPosition().x);
         double robotYInches = Units.metersToInches(lastKnownPose.getPosition().y);
