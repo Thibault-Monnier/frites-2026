@@ -26,9 +26,10 @@ public class ManualOpMode extends LinearOpMode {
     private GamepadController gamepad;
     private Movement move;
     private Telemetry globalTelemetry;
-
     // Modules
     private Cannon cannon;
+
+    private CannonBuffer cannonBuffer;
 
     private Intake intake;
 
@@ -79,6 +80,11 @@ public class ManualOpMode extends LinearOpMode {
                 hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID)
         );
 
+        cannonBuffer = new CannonBuffer(
+                globalTelemetry,
+                hardwareMap.get(Servo.class, Constants.CANNON_BUFFER)
+        );
+
         intake =
                 new Intake(
                         globalTelemetry, hardwareMap.get(DcMotor.class, Constants.INTAKE_MOTOR_ID));
@@ -112,6 +118,8 @@ public class ManualOpMode extends LinearOpMode {
 //        if (gamepad.isPressed(GamepadController.Button.X)) cannon1.toggle();
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
         cannon.update();
+
+        if (gamepad.isPressed(GamepadController.Button.B)) cannonBuffer.toggle();
 
         if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
 
