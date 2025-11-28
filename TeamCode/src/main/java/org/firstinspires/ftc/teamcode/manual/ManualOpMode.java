@@ -6,7 +6,9 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -100,18 +102,19 @@ public class ManualOpMode extends LinearOpMode {
                         globalTelemetry,
                         hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID));
 
-        cannonBufferLeft =
-                new CannonBuffer(
-                        globalTelemetry,
-                        hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_LEFT));
-        cannonBufferRight =
-                new CannonBuffer(
-                        globalTelemetry,
-                        hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_RIGHT));
+        cannonBufferLeft = new CannonBuffer(
+                globalTelemetry, hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_LEFT), DcMotorSimple.Direction.REVERSE
+        );
+        cannonBufferRight = new CannonBuffer(
+                globalTelemetry, hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_RIGHT), DcMotorSimple.Direction.FORWARD);
 
         intake =
                 new Intake(
                         globalTelemetry, hardwareMap.get(DcMotor.class, Constants.INTAKE_MOTOR_ID));
+
+        intakeSwitcher = new IntakeSwitcher(
+                globalTelemetry, hardwareMap.get(Servo.class, Constants.INTAKE_SWITCHER_SERVO)
+        );
 
         if (replay) {
             replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move});
@@ -154,10 +157,14 @@ public class ManualOpMode extends LinearOpMode {
         if (gamepad.isPressing(GamepadController.Button.DPAD_RIGHT)) {
             cannonBufferRight.on();
         } else {
-            cannonBufferLeft.off();
+            cannonBufferRight.off();
         }
 
         if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
+
+        if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
+        if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
+
 
         /* --- OPMODE TELEMETRY --- */
         globalTelemetry.addLine("--- MANUAL MODE ---");

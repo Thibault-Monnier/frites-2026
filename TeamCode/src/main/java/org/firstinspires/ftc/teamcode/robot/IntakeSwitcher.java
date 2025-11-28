@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -9,37 +8,45 @@ import org.firstinspires.ftc.teamcode.models.RobotModule;
 
 import java.util.HashMap;
 
-public class CannonBuffer implements RobotModule {
+public class IntakeSwitcher implements RobotModule {
     private Telemetry globalTelemetry;
-    private CRServo servo;
-    private boolean isRunning = false;
+    private Servo servo;
+    private boolean isAtLeftPos = false;
+    private boolean isAtCenter = true;
 
-    public CannonBuffer(Telemetry globalTelemetry, CRServo servo, DcMotorSimple.Direction direction) {
+    private final float CENTER_POS = 0.5F;
+    private final float OFFSET = 0.125F;
+
+    public IntakeSwitcher(Telemetry globalTelemetry, Servo servo) {
         this.globalTelemetry = globalTelemetry;
         this.servo = servo;
 
-        servo.setDirection(direction);
+        servo.setPosition(CENTER_POS);
     }
-
     @Override
     public void apply() {
-        if (isRunning) {
-            servo.setPower(1.0); // Full speed
+        if (isAtCenter) {
+            servo.setPosition(CENTER_POS);
         } else {
-            servo.setPower(0); // Stop
+            if (isAtLeftPos) {
+                servo.setPosition(CENTER_POS - OFFSET);
+            } else {
+                servo.setPosition(CENTER_POS + OFFSET);
+            }
         }
-    }
 
-    public void on() {
-        isRunning = true;
-    }
+        double pos = servo.getPosition();
 
-    public void off() {
-        isRunning = false;
+        globalTelemetry.addData("SERVO POSITION", pos);
     }
 
     public void toggle() {
-        isRunning = !isRunning;
+        isAtCenter = false;
+        isAtLeftPos = !isAtLeftPos;
+    }
+
+    public void center() {
+        isAtCenter = true;
     }
 
     @Override

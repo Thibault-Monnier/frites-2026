@@ -38,6 +38,7 @@ public class Constants {
     public static String CANNON_BUFFER_LEFT = "cannon_buffer_left";
     public static String INTAKE_MOTOR_ID = "intake_motor";
     public static final String LIMELIGHT_CAMERA_ID = "limelight";
+    public static final String INTAKE_SWITCHER_SERVO = "intake_switcher_servo";
 
     /* --- TEST HARDWARE --- */
     public static String TEST_MOTOR_1_ID = "test_motor_1";
