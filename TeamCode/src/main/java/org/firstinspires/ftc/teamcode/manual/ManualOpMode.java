@@ -83,22 +83,21 @@ public class ManualOpMode extends LinearOpMode {
                         hardwareMap.get(DcMotor.class, Constants.BACK_RIGHT_MOTOR_ID),
                         onBoardIMU);
 
-        cannon = new Cannon(
-                globalTelemetry,
-                hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID)
-        );
+        cannon =
+                new Cannon(
+                        globalTelemetry,
+                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID));
 
-        cannonBuffer = new CannonBuffer(
-                globalTelemetry,
-                hardwareMap.get(Servo.class, Constants.CANNON_BUFFER)
-        );
+        cannonBuffer =
+                new CannonBuffer(
+                        globalTelemetry, hardwareMap.get(Servo.class, Constants.CANNON_BUFFER));
 
         intake =
                 new Intake(
                         globalTelemetry, hardwareMap.get(DcMotor.class, Constants.INTAKE_MOTOR_ID));
 
         if (replay) {
-            replaySaver = new Replayer.Logger(runtime, new RobotModule[]{move});
+            replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move});
         }
     }
 
