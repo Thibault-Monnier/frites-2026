@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.robot.Cannon;
 import org.firstinspires.ftc.teamcode.robot.CannonBuffer;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.Intake;
+import org.firstinspires.ftc.teamcode.robot.IntakeSwitcher;
 import org.firstinspires.ftc.teamcode.robot.Movement;
 import org.firstinspires.ftc.teamcode.robot.Replayer;
 
@@ -37,9 +39,12 @@ public class ManualOpMode extends LinearOpMode {
     // Modules
     private Cannon cannon;
 
-    private CannonBuffer cannonBuffer;
+    private CannonBuffer cannonBufferLeft;
+    private CannonBuffer cannonBufferRight;
 
     private Intake intake;
+
+    private IntakeSwitcher intakeSwitcher;
 
     private Replayer.Logger replaySaver;
 
@@ -94,16 +99,19 @@ public class ManualOpMode extends LinearOpMode {
                         globalTelemetry,
                         hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID));
 
-        cannonBuffer =
-                new CannonBuffer(
-                        globalTelemetry, hardwareMap.get(Servo.class, Constants.CANNON_BUFFER));
+        cannonBufferLeft = new CannonBuffer(
+                globalTelemetry, hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_LEFT)
+        );
+        cannonBufferRight = new CannonBuffer(
+                globalTelemetry, hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_RIGHT));
+
 
         intake =
                 new Intake(
                         globalTelemetry, hardwareMap.get(DcMotor.class, Constants.INTAKE_MOTOR_ID));
 
         if (replay) {
-            replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move});
+            replaySaver = new Replayer.Logger(runtime, new RobotModule[]{move});
         }
     }
 
@@ -129,13 +137,22 @@ public class ManualOpMode extends LinearOpMode {
         move.bumperTurn(gamepad1);
 
         /* --- ACTIONS --- */
-        double targetDistance = 50; // Default distance if pose calculation is disabled
+        double targetDistance = 150; // Default distance if pose calculation is disabled
         if (calculatePose)
             targetDistance = playingField.distanceToGoal(robotPosition.getPosition(), team);
         cannon.update(targetDistance);
 
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
-        if (gamepad.isPressed(GamepadController.Button.B)) cannonBuffer.toggle();
+        if (gamepad.isPressing(GamepadController.Button.DPAD_LEFT)) {
+            cannonBufferLeft.on();
+        } else {
+            cannonBufferLeft.off();
+        }
+        if (gamepad.isPressing(GamepadController.Button.DPAD_RIGHT)) {
+            cannonBufferRight.on();
+        } else {
+            cannonBufferLeft.off();
+        }
 
         if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
 
@@ -147,6 +164,11 @@ public class ManualOpMode extends LinearOpMode {
         move.apply();
         cannon.apply();
         intake.apply();
+
+        cannonBufferRight.apply();
+        cannonBufferLeft.apply();
+
+        intakeSwitcher.apply();
 
         globalTelemetry.update();
 

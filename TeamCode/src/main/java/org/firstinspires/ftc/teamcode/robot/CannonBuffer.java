@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.models.RobotModule;
@@ -8,48 +10,44 @@ import java.util.HashMap;
 
 public class CannonBuffer implements RobotModule {
     private Telemetry globalTelemetry;
-    private Servo servo;
+    private CRServo servo;
     private boolean isRunning = false;
 
-    public CannonBuffer(Telemetry globalTelemetry, Servo servo) {
+    public CannonBuffer(Telemetry globalTelemetry, CRServo servo) {
         this.globalTelemetry = globalTelemetry;
         this.servo = servo;
+
+        servo.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
     public void apply() {
         if (isRunning) {
-            servo.setPosition(1.0);
+            servo.setPower(1.0); // Full speed
         } else {
-            servo.setPosition(0.5);
+            servo.setPower(0); // Stop
         }
-        globalTelemetry.addData("CannonBuffer", "Current state: " + (isRunning ? "Running" : "Stopped"));
-        globalTelemetry.update();
+    }
+
+    public void on() {
+        isRunning = true;
+    }
+
+    public void off() {
+        isRunning = false;
     }
 
     public void toggle() {
-        if (isRunning) {
-            servo.setPosition(0.5); // Stop
-        } else {
-            servo.setPosition(1.0); // Full speed forward
-        }
         isRunning = !isRunning;
-        globalTelemetry.addData("CannonBuffer", "Toggled: " + (isRunning ? "Running" : "Stopped"));
-        globalTelemetry.update();
     }
 
     @Override
     public HashMap<String, Object> getCurrentState() {
-        HashMap<String, Object> state = new HashMap<>();
-        state.put("running", isRunning);
-        return state;
+        throw new UnsupportedOperationException("Cannon module does not support state saving.");
     }
 
     @Override
     public void setState(HashMap<String, String> state) {
-        if (state.containsKey("running")) {
-            isRunning = Boolean.parseBoolean(state.get("running"));
-            servo.setPosition(isRunning ? 1.0 : 0.5);
-        }
+        throw new UnsupportedOperationException("Cannon module does not support state loading.");
     }
 }

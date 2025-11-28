@@ -11,9 +11,9 @@ public class Cannon implements RobotModule {
     private static final double[][] DIST_TO_POWER = {
         {0, 0.0},
         {25, 0.2},
-        {50, 0.4},
-        {75, 0.6},
-        {100, 0.8}
+        {75, 0.4},
+        {125, 0.6},
+        {200, 0.8},
     };
     private static final double DEFAULT_DIST = 50;
 
@@ -60,8 +60,8 @@ public class Cannon implements RobotModule {
         double power = 0.0;
         for (int i = 0; i < DIST_TO_POWER.length; i++)
             power += lagrangeInterpolation(QRCodeDistance, i);
-        motorTargetPower = power;
-        globalTelemetry.addData("Cannon Motor Power", power);
+        motorTargetPower = Math.clamp(power, 0.0, 1.0);
+        globalTelemetry.addData("Cannon Motor Power", motorTargetPower);
     }
 
     private double lagrangeInterpolation(double x, int i) {
