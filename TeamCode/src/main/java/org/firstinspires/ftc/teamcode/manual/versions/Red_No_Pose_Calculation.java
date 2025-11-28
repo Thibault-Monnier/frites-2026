@@ -6,10 +6,10 @@ import org.firstinspires.ftc.teamcode.manual.ManualOpMode;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
 @TeleOp(
-        name = Constants.MAIN_MODES_GROUP + ": Main - RED Team | WITH Automation",
+        name = Constants.MAIN_MODES_GROUP + ": Main - RED Team | No Pose Calculation",
         group = Constants.MAIN_MODES_GROUP)
-public class Red_Automation extends ManualOpMode {
-    public Red_Automation() {
-        super(Constants.Team.RED, false);
+public class Red_No_Pose_Calculation extends ManualOpMode {
+    public Red_No_Pose_Calculation() {
+        super(Constants.Team.RED, false, false);
     }
 }

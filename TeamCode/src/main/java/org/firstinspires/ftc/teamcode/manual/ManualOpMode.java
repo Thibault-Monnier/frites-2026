@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.robot.Replayer;
 public class ManualOpMode extends LinearOpMode {
     private final Constants.Team team;
     private final boolean replay;
+    private final boolean calculatePose;
     private ElapsedTime runtime;
     private Telemetry globalTelemetry;
 
@@ -42,10 +43,15 @@ public class ManualOpMode extends LinearOpMode {
 
     private Replayer.Logger replaySaver;
 
-    public ManualOpMode(Constants.Team team, boolean replay) {
+    public ManualOpMode(Constants.Team team, boolean replay, boolean calculatePose) {
         this.team = team;
         this.replay = replay;
+        this.calculatePose = calculatePose;
         this.playingField = new PlayingField();
+    }
+
+    public ManualOpMode(Constants.Team team, boolean replay) {
+        this(team, replay, true);
     }
 
     @Override
@@ -69,7 +75,7 @@ public class ManualOpMode extends LinearOpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap);
+        if (calculatePose) robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap);
 
         gamepad = new GamepadController(runtime, gamepad1);
 
@@ -104,7 +110,7 @@ public class ManualOpMode extends LinearOpMode {
     public void runStep() {
         move.reset();
         gamepad.update();
-        robotPosition.updatePose();
+        if (calculatePose) robotPosition.updatePose();
 
         /*
         if (gamepad.isPressed(GamepadController.Button.LEFT_STICK)) {
@@ -123,7 +129,9 @@ public class ManualOpMode extends LinearOpMode {
         move.bumperTurn(gamepad1);
 
         /* --- ACTIONS --- */
-        double targetDistance = playingField.distanceToGoal(robotPosition.getPosition(), team);
+        double targetDistance = 50; // Default distance if pose calculation is disabled
+        if (calculatePose)
+            targetDistance = playingField.distanceToGoal(robotPosition.getPosition(), team);
         cannon.update(targetDistance);
 
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();

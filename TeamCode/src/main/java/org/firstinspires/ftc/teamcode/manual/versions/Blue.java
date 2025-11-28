@@ -6,10 +6,10 @@ import org.firstinspires.ftc.teamcode.manual.ManualOpMode;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 
 @TeleOp(
-        name = Constants.MAIN_MODES_GROUP + ": Main - ANY Team | WITH Automation",
+        name = Constants.MAIN_MODES_GROUP + ": Main - BLUE Team",
         group = Constants.MAIN_MODES_GROUP)
-public class Any_Automation extends ManualOpMode {
-    public Any_Automation() {
-        super(Constants.Team.ANY_OR_UNKNOWN, false);
+public class Blue extends ManualOpMode {
+    public Blue() {
+        super(Constants.Team.BLUE, false);
     }
 }
