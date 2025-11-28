@@ -6,11 +6,13 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.models.RobotModule;
 import org.firstinspires.ftc.teamcode.robot.Cannon;
+import org.firstinspires.ftc.teamcode.robot.CannonBuffer;
 import org.firstinspires.ftc.teamcode.robot.Constants;
 import org.firstinspires.ftc.teamcode.robot.Intake;
 import org.firstinspires.ftc.teamcode.robot.Movement;
@@ -26,8 +28,8 @@ public class ManualOpMode extends LinearOpMode {
     private Telemetry globalTelemetry;
 
     // Modules
-    private Cannon cannon1;
-    private Cannon cannon2;
+    private Cannon cannon;
+
     private Intake intake;
 
     private Replayer.Logger replaySaver;
@@ -72,20 +74,17 @@ public class ManualOpMode extends LinearOpMode {
                         hardwareMap.get(DcMotor.class, Constants.BACK_RIGHT_MOTOR_ID),
                         onBoardIMU);
 
-        cannon1 =
-                new Cannon(
-                        globalTelemetry,
-                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_1_ID));
-        cannon2 =
-                new Cannon(
-                        globalTelemetry,
-                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID));
+        cannon = new Cannon(
+                globalTelemetry,
+                hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID)
+        );
+
         intake =
                 new Intake(
                         globalTelemetry, hardwareMap.get(DcMotor.class, Constants.INTAKE_MOTOR_ID));
 
         if (replay) {
-            replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move});
+            replaySaver = new Replayer.Logger(runtime, new RobotModule[]{move});
         }
     }
 
@@ -110,10 +109,9 @@ public class ManualOpMode extends LinearOpMode {
         move.bumperTurn(gamepad1);
 
         /* --- ACTIONS --- */
-        if (gamepad.isPressed(GamepadController.Button.B)) cannon1.toggle();
-        if (gamepad.isPressed(GamepadController.Button.X)) cannon2.toggle();
-        cannon1.update();
-        cannon2.update();
+//        if (gamepad.isPressed(GamepadController.Button.X)) cannon1.toggle();
+        if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
+        cannon.update();
 
         if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
 
@@ -123,8 +121,7 @@ public class ManualOpMode extends LinearOpMode {
 
         /* --- APPLY --- */
         move.apply();
-        cannon1.apply();
-        cannon2.apply();
+        cannon.apply();
         intake.apply();
 
         globalTelemetry.update();

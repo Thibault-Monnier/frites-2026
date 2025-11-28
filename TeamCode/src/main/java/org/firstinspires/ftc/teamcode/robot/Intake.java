@@ -12,7 +12,7 @@ public class Intake implements RobotModule {
     private final Telemetry globalTelemetry;
     private final DcMotor motor;
 
-    private static final double MOVING_SPEED = 1.0f;
+    private static final double MOVING_SPEED = -1.0f;
     private double motorTargetPower;
     private boolean isRunning = false;
 
