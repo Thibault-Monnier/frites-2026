@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.field;
 import com.acmerobotics.roadrunner.Pose2d;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.utils.Distance;
 import org.firstinspires.ftc.teamcode.utils.Position2D;
 
 public class PlayingField {
@@ -56,11 +57,14 @@ public class PlayingField {
     /// @param robotPos The current position of the robot.
     /// @param color The color of the goal to target.
     /// @return The distance to the center of the specified goal.
-    public double distanceToGoal(
+    public Distance distanceToGoal(
             Position2D robotPos, org.firstinspires.ftc.teamcode.robot.Constants.Team color) {
         Position2D goalPos = goalPos(color);
         DistanceUnit unit = DistanceUnit.MM;
-        return Math.hypot(
-                goalPos.getX(unit) - robotPos.getX(unit), goalPos.getY(unit) - robotPos.getY(unit));
+        double dist =
+                Math.hypot(
+                        goalPos.getX(unit) - robotPos.getX(unit),
+                        goalPos.getY(unit) - robotPos.getY(unit));
+        return new Distance(unit, dist);
     }
 }

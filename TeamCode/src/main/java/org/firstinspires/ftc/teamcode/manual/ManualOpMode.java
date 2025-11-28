@@ -7,10 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.field.PlayingField;
 import org.firstinspires.ftc.teamcode.field.RobotPosition;
 import org.firstinspires.ftc.teamcode.models.RobotModule;
@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.robot.Intake;
 import org.firstinspires.ftc.teamcode.robot.IntakeSwitcher;
 import org.firstinspires.ftc.teamcode.robot.Movement;
 import org.firstinspires.ftc.teamcode.robot.Replayer;
+import org.firstinspires.ftc.teamcode.utils.Distance;
 
 @Config
 public class ManualOpMode extends LinearOpMode {
@@ -99,19 +100,21 @@ public class ManualOpMode extends LinearOpMode {
                         globalTelemetry,
                         hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID));
 
-        cannonBufferLeft = new CannonBuffer(
-                globalTelemetry, hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_LEFT)
-        );
-        cannonBufferRight = new CannonBuffer(
-                globalTelemetry, hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_RIGHT));
-
+        cannonBufferLeft =
+                new CannonBuffer(
+                        globalTelemetry,
+                        hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_LEFT));
+        cannonBufferRight =
+                new CannonBuffer(
+                        globalTelemetry,
+                        hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_RIGHT));
 
         intake =
                 new Intake(
                         globalTelemetry, hardwareMap.get(DcMotor.class, Constants.INTAKE_MOTOR_ID));
 
         if (replay) {
-            replaySaver = new Replayer.Logger(runtime, new RobotModule[]{move});
+            replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move});
         }
     }
 
@@ -137,7 +140,7 @@ public class ManualOpMode extends LinearOpMode {
         move.bumperTurn(gamepad1);
 
         /* --- ACTIONS --- */
-        double targetDistance = 150; // Default distance if pose calculation is disabled
+        Distance targetDistance = new Distance(DistanceUnit.CM, 130); // Default distance
         if (calculatePose)
             targetDistance = playingField.distanceToGoal(robotPosition.getPosition(), team);
         cannon.update(targetDistance);

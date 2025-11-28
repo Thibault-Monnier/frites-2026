@@ -10,29 +10,29 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 public class Position2D {
     protected final double x;
     protected final double y;
-    protected final DistanceUnit distanceUnit;
+    protected final DistanceUnit unit;
 
     /**
      * Creates a new Position2D object.
      *
-     * @param distanceUnit the unit of distance for both x and y
+     * @param unit the unit of distance for both x and y
      * @param x the x position
      * @param y the y position
      */
-    public Position2D(DistanceUnit distanceUnit, double x, double y) {
+    public Position2D(DistanceUnit unit, double x, double y) {
         this.x = x;
         this.y = y;
-        this.distanceUnit = distanceUnit;
+        this.unit = unit;
     }
 
     /**
      * Creates a new Position2D object from a Vector2d
      *
-     * @param distanceUnit the unit of distance for both x and y
+     * @param unit the unit of distance for both x and y
      * @param vec the vector containing x and y
      */
-    public Position2D(DistanceUnit distanceUnit, Vector2d vec) {
-        this(distanceUnit, vec.x, vec.y);
+    public Position2D(DistanceUnit unit, Vector2d vec) {
+        this(unit, vec.x, vec.y);
     }
 
     /**
@@ -41,9 +41,9 @@ public class Position2D {
      * @param pose the Pose2D object to create the Position2D from
      */
     public Position2D(Pose2D pose) {
-        this.distanceUnit = DistanceUnit.MM;
-        this.x = pose.getX(distanceUnit);
-        this.y = pose.getY(distanceUnit);
+        this.unit = DistanceUnit.MM;
+        this.x = pose.getX(unit);
+        this.y = pose.getY(unit);
     }
 
     /** Creates a new Position2D object at (0, 0) */
@@ -52,27 +52,27 @@ public class Position2D {
     }
 
     /**
-     * This gets X in the desired distance unit
+     * Gets X in the desired distance unit
      *
      * @param unit the desired distance unit
      * @return the X member converted to the desired distance unit
      */
     public double getX(DistanceUnit unit) {
-        return unit.fromUnit(this.distanceUnit, x);
+        return unit.fromUnit(this.unit, x);
     }
 
     /**
-     * This gets the Y in the desired distance unit
+     * Gets the Y in the desired distance unit
      *
      * @param unit the desired distance unit
      * @return the Y member converted to the desired distance unit
      */
     public double getY(DistanceUnit unit) {
-        return unit.fromUnit(this.distanceUnit, y);
+        return unit.fromUnit(this.unit, y);
     }
 
     /**
-     * This returns a string representation of the object in a human readable format for debugging
+     * Returns a string representation of the object in a human readable format for debugging
      * purposes.
      *
      * @return a string representation of the object
@@ -80,6 +80,6 @@ public class Position2D {
     @NonNull
     @Override
     public String toString() {
-        return "(Pose2D) x=" + x + ", y=" + y + " " + distanceUnit;
+        return "(Pose2D) x=" + x + ", y=" + y + " " + unit;
     }
 }
