@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.field;
 
-import com.acmerobotics.roadrunner.Vector2d;
+
+import org.firstinspires.ftc.teamcode.utils.Position2D;
 
 public class FieldElement {
-    public final Vector2d position;
+    public final Position2D position;
     public final double width;
     public final double depth;
     public final double height;
 
-    public FieldElement(Vector2d position, double width, double depth, double height) {
+    public FieldElement(Position2D position, double width, double depth, double height) {
         this.position = position;
         this.width = width;
         this.depth = depth;

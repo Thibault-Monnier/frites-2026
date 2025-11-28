@@ -3,14 +3,17 @@ package org.firstinspires.ftc.teamcode.field;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.roadrunner.PinpointLocalizer;
 
 public class OdometryHandler {
-    OdometryHandler instance;
+    private static OdometryHandler instance;
 
-    PinpointLocalizer localizer;
+    private final PinpointLocalizer localizer;
 
-    OdometryHandler getInstance(HardwareMap hardwareMap) {
+    public static OdometryHandler getInstance(HardwareMap hardwareMap) {
         if (instance == null) {
             instance = new OdometryHandler(hardwareMap);
         }
@@ -25,7 +28,13 @@ public class OdometryHandler {
         localizer.update();
     }
 
-    public Pose2d getPose() {
-        return localizer.getPose();
+    public Pose2D getPose() {
+        Pose2d pose = localizer.getPose();
+        return new Pose2D(
+                DistanceUnit.INCH,
+                pose.position.x,
+                pose.position.y,
+                AngleUnit.RADIANS,
+                pose.heading.toDouble());
     }
 }

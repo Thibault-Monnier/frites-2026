@@ -9,14 +9,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.robot.Constants;
-import org.firstinspires.ftc.teamcode.utils.Units;
 
 import java.util.List;
 
 public class LimelightHandler {
+    private static LimelightHandler instance;
+
     private final Telemetry telemetry;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     private final HardwareMap hardwareMap;
@@ -26,9 +29,16 @@ public class LimelightHandler {
     private LLResult lastResult = null;
     private final double STABILITY_THRESHOLD_METERS = 0.15;
 
-    private Pose3D lastKnownPose = null;
+    private Pose2D lastKnownPose = null;
 
-    public LimelightHandler(Telemetry telemetry, HardwareMap hardwareMap) {
+    public static LimelightHandler getInstance(Telemetry telemetry, HardwareMap hardwareMap) {
+        if (instance == null) {
+            instance = new LimelightHandler(telemetry, hardwareMap);
+        }
+        return instance;
+    }
+
+    private LimelightHandler(Telemetry telemetry, HardwareMap hardwareMap) {
         this.telemetry = telemetry;
         this.hardwareMap = hardwareMap;
     }
@@ -48,7 +58,7 @@ public class LimelightHandler {
         dashboard.stopCameraStream();
     }
 
-    public Pose3D getLastKnownPose() {
+    public Pose2D getLastKnownPose() {
         return lastKnownPose;
     }
 
@@ -100,7 +110,10 @@ public class LimelightHandler {
 
             if (validFramesInRow >= 3) {
                 // Stable result
-                lastKnownPose = lastResult.getBotpose();
+                Pose3D pose = lastResult.getBotpose();
+                Position pos = pose.getPosition();
+                double heading = pose.getOrientation().getYaw(AngleUnit.RADIANS);
+                lastKnownPose = new Pose2D(pos.unit, pos.x, pos.y, AngleUnit.RADIANS, heading);
                 renderFieldOverlayInDashboard();
 
                 return true;
@@ -123,10 +136,10 @@ public class LimelightHandler {
     private void renderFieldOverlayInDashboard() {
         TelemetryPacket packet = new TelemetryPacket();
 
-        double heading = lastKnownPose.getOrientation().getYaw(AngleUnit.RADIANS);
+        double heading = lastKnownPose.getHeading(AngleUnit.RADIANS);
 
-        double robotXInches = Units.metersToInches(lastKnownPose.getPosition().x);
-        double robotYInches = Units.metersToInches(lastKnownPose.getPosition().y);
+        double robotXInches = lastKnownPose.getX(DistanceUnit.INCH);
+        double robotYInches = lastKnownPose.getY(DistanceUnit.INCH);
 
         double lineLength = 8;
         double endXInches = robotXInches + lineLength * Math.cos(heading);

@@ -7,9 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.field.LimelightHandler;
 
 @TeleOp(name = "Camera Localizer OpMode", group = "Concept")
@@ -30,17 +29,11 @@ public class CameraLocalizerOpMode extends LinearOpMode {
 
         while (opModeIsActive()) {
             if (limelightHandler.update()) {
-                Pose3D pose = limelightHandler.getLastKnownPose();
-                Position pos = pose.getPosition();
-                YawPitchRollAngles orient = pose.getOrientation();
+                Pose2D pose = limelightHandler.getLastKnownPose();
                 globalTelemetry.addLine("--- Last Known Pose: ---");
-                globalTelemetry.addData(" Distance unit", pos.unit);
-                globalTelemetry.addData("X", pos.x);
-                globalTelemetry.addData("Y", pos.y);
-                globalTelemetry.addData("Z", pos.z);
-                globalTelemetry.addData("Roll (deg)", orient.getRoll(AngleUnit.DEGREES));
-                globalTelemetry.addData("Pitch (deg)", orient.getPitch(AngleUnit.DEGREES));
-                globalTelemetry.addData("Yaw (deg)", orient.getYaw(AngleUnit.DEGREES));
+                globalTelemetry.addData("X (mm)", pose.getX(DistanceUnit.MM));
+                globalTelemetry.addData("Y (mm)", pose.getY(DistanceUnit.MM));
+                globalTelemetry.addData("Yaw (deg)", pose.getHeading(AngleUnit.DEGREES));
             }
 
             globalTelemetry.update();
@@ -53,7 +46,7 @@ public class CameraLocalizerOpMode extends LinearOpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
+        limelightHandler = LimelightHandler.getInstance(globalTelemetry, hardwareMap);
         limelightHandler.init();
     }
 }

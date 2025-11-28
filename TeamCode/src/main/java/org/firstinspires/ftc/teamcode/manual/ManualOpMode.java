@@ -69,7 +69,7 @@ public class ManualOpMode extends LinearOpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        robotPosition = new RobotPosition(globalTelemetry, hardwareMap);
+        robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap);
 
         gamepad = new GamepadController(runtime, gamepad1);
 
@@ -124,10 +124,10 @@ public class ManualOpMode extends LinearOpMode {
         move.bumperTurn(gamepad1);
 
         /* --- ACTIONS --- */
-        if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
-        double targetDistance = playingField.distanceToGoal(robotPosition.get2dPosition(), team);
+        double targetDistance = playingField.distanceToGoal(robotPosition.getPosition(), team);
         cannon.update(targetDistance);
 
+        if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
         if (gamepad.isPressed(GamepadController.Button.B)) cannonBuffer.toggle();
 
         if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();

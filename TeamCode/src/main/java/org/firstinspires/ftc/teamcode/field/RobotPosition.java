@@ -1,46 +1,53 @@
 package org.firstinspires.ftc.teamcode.field;
 
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.utils.Position2D;
 
 public class RobotPosition {
+    private static RobotPosition instance;
+
     private final Telemetry globalTelemetry;
 
     private final LimelightHandler limelightHandler;
+    private final OdometryHandler odometryHandler;
 
-    private Pose3D pose;
+    private Pose2D pose;
 
-    public RobotPosition(Telemetry globalTelemetry, HardwareMap hardwareMap) {
+    public static RobotPosition getInstance(Telemetry globalTelemetry, HardwareMap hardwareMap) {
+        if (instance == null) {
+            instance = new RobotPosition(globalTelemetry, hardwareMap);
+        }
+        return instance;
+    }
+
+    private RobotPosition(Telemetry globalTelemetry, HardwareMap hardwareMap) {
         this.globalTelemetry = globalTelemetry;
 
-        limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
+        limelightHandler = LimelightHandler.getInstance(globalTelemetry, hardwareMap);
+        odometryHandler = OdometryHandler.getInstance(hardwareMap);
     }
 
     /// Updates the robot pose
     public void updatePose() {
+        odometryHandler.update();
+
         if (limelightHandler.update()) {
             pose = limelightHandler.getLastKnownPose();
+        } else {
+            pose = odometryHandler.getPose();
         }
     }
 
-    /// Gets the current robot pose
-    public Pose3D getPose() {
+    /// Gets the current robot pose as a Pose2D
+    public Pose2D getPose() {
         return pose;
     }
 
-    /// Gets the current robot position
-    public Position getPosition() {
-        return pose.getPosition();
-    }
-
-    /// Gets the current robot 2D position.
-    /// @return A Vector2d representing the robot's X and Y coordinates on the field.
-    public Vector2d get2dPosition() {
-        Position pos = getPosition();
-        return new Vector2d(pos.x, pos.y);
+    /// Gets the current robot position as a Position2D
+    public Position2D getPosition() {
+        return new Position2D(pose);
     }
 }

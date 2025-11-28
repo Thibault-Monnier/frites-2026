@@ -1,16 +1,19 @@
 package org.firstinspires.ftc.teamcode.field;
 
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Vector2d;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.utils.Position2D;
 
 public class PlayingField {
     private static final FieldElement FIELD =
             new FieldElement(
-                    new Vector2d(0, 0), FieldConstants.FIELD_WIDTH, FieldConstants.FIELD_DEPTH, 0);
+                    new Position2D(), FieldConstants.FIELD_WIDTH, FieldConstants.FIELD_DEPTH, 0);
 
     private static final FieldElement BLUE_GOAL =
             new FieldElement(
-                    new Vector2d(
+                    new Position2D(
+                            DistanceUnit.INCH,
                             -FIELD.halfWidth() + FieldConstants.GOAL_WIDTH / 2,
                             -FIELD.halfDepth() + FieldConstants.GOAL_DEPTH / 2),
                     FieldConstants.GOAL_WIDTH,
@@ -18,7 +21,8 @@ public class PlayingField {
                     FieldConstants.GOAL_HEIGHT);
     private static final FieldElement RED_GOAL =
             new FieldElement(
-                    new Vector2d(
+                    new Position2D(
+                            DistanceUnit.INCH,
                             -FIELD.halfWidth() + FieldConstants.GOAL_WIDTH / 2,
                             FIELD.halfDepth() - FieldConstants.GOAL_DEPTH / 2),
                     FieldConstants.GOAL_WIDTH,
@@ -31,7 +35,7 @@ public class PlayingField {
         return color.isBlue() ? FieldConstants.BLUE_START_POSE : FieldConstants.RED_START_POSE;
     }
 
-    private static Vector2d goalPos(org.firstinspires.ftc.teamcode.robot.Constants.Team color) {
+    private static Position2D goalPos(org.firstinspires.ftc.teamcode.robot.Constants.Team color) {
         return color.isBlue() ? BLUE_GOAL.position : RED_GOAL.position;
     }
 
@@ -40,9 +44,11 @@ public class PlayingField {
     /// @param color The color of the goal to target.
     /// @return The angle in radians to the center of the specified goal.
     public static double angleToGoal(
-            Vector2d robotPos, org.firstinspires.ftc.teamcode.robot.Constants.Team color) {
-        Vector2d goalPos = goalPos(color);
-        return Math.atan2(goalPos.x - robotPos.x, goalPos.y - robotPos.y);
+            Position2D robotPos, org.firstinspires.ftc.teamcode.robot.Constants.Team color) {
+        Position2D goalPos = goalPos(color);
+        DistanceUnit unit = DistanceUnit.MM;
+        return Math.atan2(
+                goalPos.getX(unit) - robotPos.getX(unit), goalPos.getY(unit) - robotPos.getY(unit));
     }
 
     /// Calculates the distance from the robot's current position to the center of the specified
@@ -51,8 +57,10 @@ public class PlayingField {
     /// @param color The color of the goal to target.
     /// @return The distance to the center of the specified goal.
     public double distanceToGoal(
-            Vector2d robotPos, org.firstinspires.ftc.teamcode.robot.Constants.Team color) {
-        Vector2d goalPos = goalPos(color);
-        return Math.hypot(goalPos.x - robotPos.x, goalPos.y - robotPos.y);
+            Position2D robotPos, org.firstinspires.ftc.teamcode.robot.Constants.Team color) {
+        Position2D goalPos = goalPos(color);
+        DistanceUnit unit = DistanceUnit.MM;
+        return Math.hypot(
+                goalPos.getX(unit) - robotPos.getX(unit), goalPos.getY(unit) - robotPos.getY(unit));
     }
 }
