@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import robot.Constants;
+import core.modules.Constants;
 
 @Config
 @TeleOp(

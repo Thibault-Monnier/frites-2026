@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import roadrunner.PinpointLocalizer;
+import core.roadrunner.PinpointLocalizer;
 
 @TeleOp(name = "PinpointLocalizer OpMode", group = "concept")
 public class PinpointLocalizerOpMode extends LinearOpMode {

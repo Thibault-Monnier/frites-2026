@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import robot.Constants;
+import core.modules.Constants;
 
 @Config
 @TeleOp(name = Constants.DEBUGGER_MODES_GROUP + ": DcMotor", group = Constants.DEBUGGER_MODES_GROUP)
