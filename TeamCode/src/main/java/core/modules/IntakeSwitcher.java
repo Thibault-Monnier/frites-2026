@@ -1,13 +1,14 @@
 package core.modules;
 
 import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.HashMap;
 
 public class IntakeSwitcher implements RobotModule {
-    private Telemetry globalTelemetry;
-    private Servo servo;
+    private final Telemetry globalTelemetry;
+    private final Servo servo;
     private boolean isAtLeftPos = false;
     private boolean isAtCenter = true;
 
@@ -20,6 +21,7 @@ public class IntakeSwitcher implements RobotModule {
 
         servo.setPosition(CENTER_POS);
     }
+
     @Override
     public void apply() {
         if (isAtCenter) {

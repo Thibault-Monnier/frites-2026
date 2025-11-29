@@ -2,8 +2,8 @@ package core.opmodes.versions.manual;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import core.opmodes.ManualOpMode;
 import core.modules.Constants;
+import core.opmodes.ManualOpMode;
 
 @TeleOp(
         name = Constants.MAIN_MODES_GROUP + ": Main - BLUE Team | No Pose Calculation",

@@ -37,7 +37,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import core.roadrunner.GoBildaPinpointDriver;
 import core.roadrunner.MecanumDrive;
 import core.roadrunner.OTOSLocalizer;
@@ -45,6 +44,8 @@ import core.roadrunner.PinpointLocalizer;
 import core.roadrunner.TankDrive;
 import core.roadrunner.ThreeDeadWheelLocalizer;
 import core.roadrunner.TwoDeadWheelLocalizer;
+
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,6 +93,7 @@ public final class TuningOpModes {
                 return (float) pl.driver.getHeadingVelocity();
             }
 
+            @NonNull
             @Override
             public DcMotorSimple.Direction getParDirection() {
                 return parDirection == GoBildaPinpointDriver.EncoderDirection.FORWARD
@@ -108,6 +110,7 @@ public final class TuningOpModes {
                 pl.driver.setEncoderDirections(parDirection, perpDirection);
             }
 
+            @NonNull
             @Override
             public DcMotorSimple.Direction getPerpDirection() {
                 return perpDirection == GoBildaPinpointDriver.EncoderDirection.FORWARD

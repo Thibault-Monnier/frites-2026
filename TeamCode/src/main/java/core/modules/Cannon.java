@@ -2,10 +2,10 @@ package core.modules;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import core.math.Distance;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import core.math.Distance;
 
 import java.util.HashMap;
 

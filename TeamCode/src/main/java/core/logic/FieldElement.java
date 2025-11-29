@@ -1,6 +1,5 @@
 package core.logic;
 
-
 import core.math.Position2D;
 
 public class FieldElement {

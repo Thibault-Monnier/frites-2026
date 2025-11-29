@@ -11,21 +11,21 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import core.modules.GamepadController;
-import core.logic.PlayingField;
 import core.localization.RobotPosition;
-import core.modules.RobotModule;
+import core.logic.Movement;
+import core.logic.PlayingField;
+import core.logic.Replayer;
+import core.math.Distance;
 import core.modules.Cannon;
 import core.modules.CannonBuffer;
 import core.modules.Constants;
+import core.modules.GamepadController;
 import core.modules.Intake;
 import core.modules.IntakeSwitcher;
-import core.logic.Movement;
-import core.logic.Replayer;
-import core.math.Distance;
+import core.modules.RobotModule;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class ManualOpMode extends LinearOpMode {

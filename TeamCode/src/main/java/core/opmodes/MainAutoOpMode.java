@@ -14,11 +14,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import core.logic.PlayingField;
-import core.roadrunner.MecanumDrive;
-import core.modules.Constants;
 import core.logic.DriveActions;
+import core.logic.PlayingField;
+import core.modules.Constants;
+import core.roadrunner.MecanumDrive;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,10 +133,6 @@ public class MainAutoOpMode extends LinearOpMode {
                 // Optionally implement preview logic if needed
             }
         };
-    }
-
-    private enum OpModes {
-        MAX_SPECIMENS,
     }
 
     public enum State {

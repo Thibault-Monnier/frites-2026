@@ -3,10 +3,11 @@ package core.localization;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import core.roadrunner.PinpointLocalizer;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import core.roadrunner.PinpointLocalizer;
 
 public class OdometryHandler {
     private static OdometryHandler instance;
