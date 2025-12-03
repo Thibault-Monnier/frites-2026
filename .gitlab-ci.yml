@@ -10,12 +10,6 @@ variables:
 stages:
   - build
 
-cache:
-  key: "$CI_COMMIT_REF_SLUG"
-  paths:
-    - .gradle/
-    - .android-sdk/
-
 before_script:
   - apt-get update -y
   - apt-get install -y --no-install-recommends unzip wget ca-certificates
@@ -25,9 +19,6 @@ before_script:
 
   # Download Android commandline tools (Linux)
   - wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdtools.zip
-
-  # Clean any cached/old "latest" to make this step idempotent
-  - rm -rf "$ANDROID_SDK_ROOT/cmdline-tools/latest"
 
   # Unzip and place exactly as $SDK/cmdline-tools/latest/{bin,lib,...}
   - unzip -q /tmp/cmdtools.zip -d /tmp/cmdtools
