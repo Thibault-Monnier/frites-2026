@@ -1,10 +1,10 @@
 package core.roadrunner;
 
-import static core.modules.Constants.BACK_LEFT_MOTOR_ID;
-import static core.modules.Constants.BACK_RIGHT_MOTOR_ID;
-import static core.modules.Constants.FRONT_LEFT_MOTOR_ID;
-import static core.modules.Constants.FRONT_RIGHT_MOTOR_ID;
-import static core.modules.Constants.IMU_ID;
+import static core.Constants.BACK_LEFT_MOTOR_ID;
+import static core.Constants.BACK_RIGHT_MOTOR_ID;
+import static core.Constants.FRONT_LEFT_MOTOR_ID;
+import static core.Constants.FRONT_RIGHT_MOTOR_ID;
+import static core.Constants.IMU_ID;
 
 import androidx.annotation.NonNull;
 

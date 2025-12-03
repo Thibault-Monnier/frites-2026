@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import core.logic.DriveActions;
 import core.logic.PlayingField;
-import core.modules.Constants;
+import core.Constants;
 import core.roadrunner.MecanumDrive;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
