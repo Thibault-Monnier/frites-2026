@@ -20,11 +20,15 @@ before_script:
   - apt-get update -y
   - apt-get install -y --no-install-recommends unzip wget ca-certificates
 
+  # Clean corrupted Gradle caches
+  - rm -rf .gradle/caches/transforms-*
+  - rm -rf .gradle/caches/*/transforms
+
   # Prepare SDK dir
   - mkdir -p "$ANDROID_SDK_ROOT/cmdline-tools"
 
   # Download Android commandline tools (Linux)
-  - wget -q https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O /tmp/cmdtools.zip
+  - wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdtools.zip
 
   # Clean any cached/old "latest" to make this step idempotent
   - rm -rf "$ANDROID_SDK_ROOT/cmdline-tools/latest"
