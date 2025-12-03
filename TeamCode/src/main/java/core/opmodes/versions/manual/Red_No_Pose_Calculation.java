@@ -6,7 +6,7 @@ import core.Constants;
 import core.opmodes.ManualOpMode;
 
 @TeleOp(
-        name = Constants.MAIN_MODES_GROUP + ": Main - RED Team | No Pose Calculation",
+        name = Constants.MAIN_MODES_GROUP + ": No Pose Calculation - RED Team",
         group = Constants.MAIN_MODES_GROUP)
 public class Red_No_Pose_Calculation extends ManualOpMode {
     public Red_No_Pose_Calculation() {

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import core.Constants;
 import core.localization.RobotPosition;
 import core.logic.Movement;
 import core.logic.PlayingField;
@@ -18,7 +19,6 @@ import core.logic.Replayer;
 import core.math.Distance;
 import core.modules.Cannon;
 import core.modules.CannonBuffer;
-import core.Constants;
 import core.modules.GamepadController;
 import core.modules.Intake;
 import core.modules.IntakeSwitcher;
@@ -104,19 +104,25 @@ public class ManualOpMode extends LinearOpMode {
                         globalTelemetry,
                         hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID));
 
-        cannonBufferLeft = new CannonBuffer(
-                globalTelemetry, hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_LEFT), DcMotorSimple.Direction.REVERSE
-        );
-        cannonBufferRight = new CannonBuffer(
-                globalTelemetry, hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_RIGHT), DcMotorSimple.Direction.FORWARD);
+        cannonBufferLeft =
+                new CannonBuffer(
+                        globalTelemetry,
+                        hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_LEFT),
+                        DcMotorSimple.Direction.REVERSE);
+        cannonBufferRight =
+                new CannonBuffer(
+                        globalTelemetry,
+                        hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_RIGHT),
+                        DcMotorSimple.Direction.FORWARD);
 
         intake =
                 new Intake(
                         globalTelemetry, hardwareMap.get(DcMotor.class, Constants.INTAKE_MOTOR_ID));
 
-        intakeSwitcher = new IntakeSwitcher(
-                globalTelemetry, hardwareMap.get(Servo.class, Constants.INTAKE_SWITCHER_SERVO)
-        );
+        intakeSwitcher =
+                new IntakeSwitcher(
+                        globalTelemetry,
+                        hardwareMap.get(Servo.class, Constants.INTAKE_SWITCHER_SERVO));
 
         if (replay) {
             replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move});
@@ -167,20 +173,19 @@ public class ManualOpMode extends LinearOpMode {
         if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
         if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
 
-
         /* --- OPMODE TELEMETRY --- */
         globalTelemetry.addLine("--- MANUAL MODE ---");
         globalTelemetry.addData("Team", team);
 
         /* --- APPLY --- */
         move.apply();
-        cannon.apply();
-        intake.apply();
 
+        intake.apply();
+        intakeSwitcher.apply();
+
+        cannon.apply();
         cannonBufferRight.apply();
         cannonBufferLeft.apply();
-
-        intakeSwitcher.apply();
 
         globalTelemetry.update();
 
