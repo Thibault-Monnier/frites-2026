@@ -24,7 +24,7 @@ before_script:
   - mkdir -p "$ANDROID_SDK_ROOT/cmdline-tools"
 
   # Download Android commandline tools (Linux)
-  - wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdtools.zip
+  - wget -q https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O /tmp/cmdtools.zip
 
   # Clean any cached/old "latest" to make this step idempotent
   - rm -rf "$ANDROID_SDK_ROOT/cmdline-tools/latest"
@@ -43,8 +43,6 @@ before_script:
 
   # Ensure Gradle can find the SDK even if it insists on local.properties
   - echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
-
-  # Make Gradle wrapper executable
   - chmod +x ./gradlew
 
 build:
