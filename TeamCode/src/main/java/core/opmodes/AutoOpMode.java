@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import core.logic.DriveActions;
 import core.logic.PlayingField;
-import core.modules.Constants;
+import core.Constants;
 import core.roadrunner.MecanumDrive;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -24,8 +24,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name = "Main Auto Mode")
-public class MainAutoOpMode extends LinearOpMode {
+@Autonomous(name = "Auto Mode")
+public class AutoOpMode extends LinearOpMode {
     private final Constants.Team team;
     private final Constants.StartPosition startPosition;
     private final FtcDashboard dash = FtcDashboard.getInstance();
@@ -40,7 +40,7 @@ public class MainAutoOpMode extends LinearOpMode {
     private State currentState;
     private double stateStartTime;
 
-    public MainAutoOpMode(Constants.Team team, Constants.StartPosition position) {
+    public AutoOpMode(Constants.Team team, Constants.StartPosition position) {
         this.team = team;
         this.startPosition = position;
     }

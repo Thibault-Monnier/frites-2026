@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import core.modules.Constants;
+import core.Constants;
 
 @Config
 @TeleOp(name = Constants.DEBUGGER_MODES_GROUP + ": Servo", group = Constants.DEBUGGER_MODES_GROUP)

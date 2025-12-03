@@ -18,7 +18,7 @@ import core.logic.Replayer;
 import core.math.Distance;
 import core.modules.Cannon;
 import core.modules.CannonBuffer;
-import core.modules.Constants;
+import core.Constants;
 import core.modules.GamepadController;
 import core.modules.Intake;
 import core.modules.IntakeSwitcher;

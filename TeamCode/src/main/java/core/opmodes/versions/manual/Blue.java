@@ -2,7 +2,7 @@ package core.opmodes.versions.manual;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import core.modules.Constants;
+import core.Constants;
 import core.opmodes.ManualOpMode;
 
 @TeleOp(

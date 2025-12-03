@@ -1,4 +1,4 @@
-package core.modules;
+package core;
 
 import com.acmerobotics.dashboard.config.Config;
 

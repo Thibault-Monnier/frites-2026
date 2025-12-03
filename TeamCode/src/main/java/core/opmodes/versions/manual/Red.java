@@ -2,7 +2,7 @@ package core.opmodes.versions.manual;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import core.modules.Constants;
+import core.Constants;
 import core.opmodes.ManualOpMode;
 
 @TeleOp(name = Constants.MAIN_MODES_GROUP + ": Main - RED Team", group = Constants.MAIN_MODES_GROUP)

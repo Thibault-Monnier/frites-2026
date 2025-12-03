@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import core.modules.Constants;
+import core.Constants;
 
 @Config
 @TeleOp(
