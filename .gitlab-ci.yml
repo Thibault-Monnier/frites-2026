@@ -10,19 +10,9 @@ variables:
 stages:
   - build
 
-cache:
-  key: "$CI_COMMIT_REF_SLUG"
-  paths:
-    - .gradle/
-    - .android-sdk/
-
 before_script:
   - apt-get update -y
   - apt-get install -y --no-install-recommends unzip wget ca-certificates
-
-  # Clean corrupted Gradle caches
-  - rm -rf .gradle/caches/transforms-*
-  - rm -rf .gradle/caches/*/transforms
 
   # Prepare SDK dir
   - mkdir -p "$ANDROID_SDK_ROOT/cmdline-tools"
