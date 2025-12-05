@@ -2,6 +2,8 @@ package core.math;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.roadrunner.Pose2d;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -97,5 +99,13 @@ public class Pose2D {
                 + heading
                 + " "
                 + headingUnit;
+    }
+
+    /** Converts this Pose2D to a Roadrunner Pose2d object. */
+    public Pose2d toRoadrunner() {
+        return new Pose2d(
+                this.getX(DistanceUnit.INCH),
+                this.getY(DistanceUnit.INCH),
+                this.getHeading(AngleUnit.RADIANS));
     }
 }

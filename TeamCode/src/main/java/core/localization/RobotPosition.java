@@ -31,8 +31,9 @@ public class RobotPosition {
             Telemetry globalTelemetry, HardwareMap hardwareMap, Constants.Team color) {
         this.globalTelemetry = globalTelemetry;
 
+        pose = PlayingField.startPose(color);
         limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
-        odometryHandler = new OdometryHandler(hardwareMap, PlayingField.startPose(color));
+        odometryHandler = new OdometryHandler(hardwareMap, pose);
     }
 
     /// Updates the robot pose

@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import core.Constants;
+import core.localization.RobotPosition;
 import core.logic.DriveActions;
 import core.logic.PlayingField;
 import core.roadrunner.MecanumDrive;
@@ -28,13 +29,15 @@ import java.util.List;
 public class AutoOpMode extends LinearOpMode {
     private final Constants.Team team;
     private final Constants.StartPosition startPosition;
-    private final FtcDashboard dash = FtcDashboard.getInstance();
     List<Action> runningActions = new ArrayList<>();
 
     private ElapsedTime runtime;
     private Telemetry globalTelemetry;
     private MecanumDrive drive;
     private DriveActions driveActions;
+
+    private RobotPosition robotPosition;
+    private final PlayingField playingField;
 
     private State previousState;
     private State currentState;
@@ -43,6 +46,7 @@ public class AutoOpMode extends LinearOpMode {
     public AutoOpMode(Constants.Team team, Constants.StartPosition position) {
         this.team = team;
         this.startPosition = position;
+        this.playingField = new PlayingField();
     }
 
     @Override
@@ -70,10 +74,12 @@ public class AutoOpMode extends LinearOpMode {
 
         driveActions = new DriveActions(drive);
 
+        robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
+
         runtime.reset();
 
         if (startPosition == Constants.StartPosition.NORMAL) {
-            drive.localizer.setPose(PlayingField.startPose(team));
+            drive.localizer.setPose(robotPosition.getPose().toRoadrunner());
         }
     }
 
@@ -99,8 +105,6 @@ public class AutoOpMode extends LinearOpMode {
             }
         }
         runningActions = newActions;
-
-        dash.sendTelemetryPacket(packet);
 
         globalTelemetry.addLine("--- Main Auto Mode ---");
         globalTelemetry.addData("State", currentState);
