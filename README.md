@@ -4,6 +4,10 @@
 
 This is the code for the FTC team Frites during the 2025-26 Decode season.
 
+# Robot manual
+
+Detailed instructions, schematics, and everything you need to know about the robot are available at [docs/manual.pdf](docs/manual.pdf).
+
 ## Setting up & Compiling
 
 Start by cloning this repository with one of the following commands:
