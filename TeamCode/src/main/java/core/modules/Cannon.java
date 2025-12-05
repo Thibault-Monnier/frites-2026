@@ -18,10 +18,10 @@ public class Cannon implements RobotModule {
         {200, 0.8},
     };
 
-    private final Telemetry globalTelemetry;
+    protected final Telemetry globalTelemetry;
 
     private final DcMotor motor;
-    private double motorTargetPower;
+    protected double motorTargetPower;
 
     private boolean isRunning = false;
 
@@ -50,7 +50,7 @@ public class Cannon implements RobotModule {
         globalTelemetry.addData("Cannon Motor Power", motorTargetPower);
     }
 
-    private double computePower(Distance target2dDistance) {
+    protected double computePower(Distance target2dDistance) {
         // Use Lagrange interpolation to find the motor power
         double power = 0.0;
         for (int i = 0; i < DIST_CM_TO_POWER.length; i++)

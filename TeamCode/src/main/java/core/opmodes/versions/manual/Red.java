@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import core.Constants;
 import core.opmodes.ManualOpMode;
 
-@TeleOp(name = Constants.MAIN_MODES_GROUP + ": Main - RED Team", group = Constants.MAIN_MODES_GROUP)
+@TeleOp(
+        name = Constants.MAIN_MODES_GROUP + ": Normal - RED Team",
+        group = Constants.MAIN_MODES_GROUP)
 public class Red extends ManualOpMode {
     public Red() {
         super(Constants.Team.RED, false);
