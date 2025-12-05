@@ -6,7 +6,7 @@ import core.Constants;
 import core.opmodes.AutoOpMode;
 
 @Autonomous(
-        name = Constants.MAIN_MODES_GROUP + ": Normal - BLUE Team",
+        name = Constants.MAIN_MODES_GROUP + ": Normal Auto - BLUE Team",
         group = Constants.MAIN_MODES_GROUP)
 public class Blue extends AutoOpMode {
     public Blue() {

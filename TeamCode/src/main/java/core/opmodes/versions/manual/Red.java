@@ -6,7 +6,7 @@ import core.Constants;
 import core.opmodes.ManualOpMode;
 
 @TeleOp(
-        name = Constants.MAIN_MODES_GROUP + ": Normal - RED Team",
+        name = Constants.MAIN_MODES_GROUP + ": Normal Manual - RED Team",
         group = Constants.MAIN_MODES_GROUP)
 public class Red extends ManualOpMode {
     public Red() {
