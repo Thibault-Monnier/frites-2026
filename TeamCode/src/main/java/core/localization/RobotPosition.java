@@ -2,10 +2,10 @@ package core.localization;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import core.math.Pose2D;
 import core.math.Position2D;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class RobotPosition {
     private static RobotPosition instance;

@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class Position2D {
     protected final double x;
