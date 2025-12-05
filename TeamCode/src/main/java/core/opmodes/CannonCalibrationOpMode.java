@@ -67,7 +67,7 @@ public class CannonCalibrationOpMode extends LinearOpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap);
+        robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
 
         gamepad = new GamepadController(runtime, gamepad1);
 

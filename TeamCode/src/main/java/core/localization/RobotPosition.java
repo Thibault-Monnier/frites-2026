@@ -2,6 +2,8 @@ package core.localization;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import core.Constants;
+import core.logic.PlayingField;
 import core.math.Pose2D;
 import core.math.Position2D;
 
@@ -17,18 +19,20 @@ public class RobotPosition {
 
     private Pose2D pose;
 
-    public static RobotPosition getInstance(Telemetry globalTelemetry, HardwareMap hardwareMap) {
+    public static RobotPosition getInstance(
+            Telemetry globalTelemetry, HardwareMap hardwareMap, Constants.Team color) {
         if (instance == null) {
-            instance = new RobotPosition(globalTelemetry, hardwareMap);
+            instance = new RobotPosition(globalTelemetry, hardwareMap, color);
         }
         return instance;
     }
 
-    private RobotPosition(Telemetry globalTelemetry, HardwareMap hardwareMap) {
+    private RobotPosition(
+            Telemetry globalTelemetry, HardwareMap hardwareMap, Constants.Team color) {
         this.globalTelemetry = globalTelemetry;
 
-        limelightHandler = LimelightHandler.getInstance(globalTelemetry, hardwareMap);
-        odometryHandler = OdometryHandler.getInstance(hardwareMap);
+        limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
+        odometryHandler = new OdometryHandler(hardwareMap, PlayingField.startPose(color));
     }
 
     /// Updates the robot pose
@@ -37,6 +41,7 @@ public class RobotPosition {
 
         if (limelightHandler.update()) {
             pose = limelightHandler.getLastKnownPose();
+            odometryHandler.setPoseBase(pose);
         } else {
             pose = odometryHandler.getPose();
         }

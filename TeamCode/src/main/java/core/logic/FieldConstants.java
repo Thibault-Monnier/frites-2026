@@ -1,6 +1,9 @@
 package core.logic;
 
-import com.acmerobotics.roadrunner.Pose2d;
+import core.math.Pose2D;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class FieldConstants {
     /* --- Field dimensions --- */
@@ -10,10 +13,20 @@ public class FieldConstants {
     public static final double TILE_DEPTH = FIELD_DEPTH / 6.0;
 
     /* --- Starting positions --- */
-    public static final Pose2d BLUE_START_POSE =
-            new Pose2d(FIELD_WIDTH / 2 - TILE_WIDTH / 2, -TILE_DEPTH / 2, Math.toRadians(90));
-    public static final Pose2d RED_START_POSE =
-            new Pose2d(FIELD_WIDTH / 2 - TILE_WIDTH / 2, TILE_DEPTH / 2, Math.toRadians(90));
+    public static final Pose2D BLUE_START_POSE =
+            new Pose2D(
+                    DistanceUnit.INCH,
+                    FIELD_WIDTH / 2 - TILE_WIDTH / 2,
+                    -TILE_DEPTH / 2,
+                    AngleUnit.DEGREES,
+                    90);
+    public static final Pose2D RED_START_POSE =
+            new Pose2D(
+                    DistanceUnit.INCH,
+                    FIELD_WIDTH / 2 - TILE_WIDTH / 2,
+                    TILE_DEPTH / 2,
+                    AngleUnit.DEGREES,
+                    90);
 
     /* --- Goal constants --- */
     public static final double GOAL_HEIGHT = 54.0;

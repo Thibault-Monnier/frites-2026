@@ -32,14 +32,7 @@ public class LimelightHandler {
 
     private Pose2D lastKnownPose = null;
 
-    public static LimelightHandler getInstance(Telemetry telemetry, HardwareMap hardwareMap) {
-        if (instance == null) {
-            instance = new LimelightHandler(telemetry, hardwareMap);
-        }
-        return instance;
-    }
-
-    private LimelightHandler(Telemetry telemetry, HardwareMap hardwareMap) {
+    public LimelightHandler(Telemetry telemetry, HardwareMap hardwareMap) {
         this.telemetry = telemetry;
         this.hardwareMap = hardwareMap;
     }

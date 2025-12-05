@@ -85,7 +85,8 @@ public class ManualOpMode extends LinearOpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        if (calculatePose) robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap);
+        if (calculatePose)
+            robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
 
         gamepad = new GamepadController(runtime, gamepad1);
 
