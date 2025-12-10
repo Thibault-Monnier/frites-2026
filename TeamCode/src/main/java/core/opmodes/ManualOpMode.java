@@ -16,6 +16,7 @@ import core.localization.RobotPosition;
 import core.logic.Movement;
 import core.logic.PlayingField;
 import core.logic.Replayer;
+import core.logic.Sequence;
 import core.math.Distance;
 import core.modules.Cannon;
 import core.modules.CannonBuffer;
@@ -50,6 +51,9 @@ public class ManualOpMode extends LinearOpMode {
     private Intake intake;
 
     private IntakeSwitcher intakeSwitcher;
+
+
+    private Sequence sequence;
 
     private Replayer.Logger replaySaver;
 
@@ -137,6 +141,14 @@ public class ManualOpMode extends LinearOpMode {
         move.reset();
         gamepad.update();
         if (calculatePose) robotPosition.updatePose();
+
+        if (calculatePose && sequence == null) {
+            try {
+                sequence = Sequence.findCurrentSequence(robotPosition.getLimelightHandler());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         /*
         if (gamepad.isPressed(GamepadController.Button.LEFT_STICK)) {

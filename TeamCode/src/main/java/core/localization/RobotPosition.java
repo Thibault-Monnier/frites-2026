@@ -70,4 +70,10 @@ public class RobotPosition {
     public Position2D getPosition() {
         return new Position2D(pose);
     }
+
+    public LimelightHandler getLimelightHandler() {
+        return limelightHandler;
+    }
+
+    ;
 }

@@ -30,6 +30,12 @@ public class LimelightHandler {
 
     private Pose2D lastKnownPose = null;
 
+    private List<LLResultTypes.FiducialResult> lastDetectedTags = null;
+
+    public List<LLResultTypes.FiducialResult> getLastDetectedTags() {
+        return lastDetectedTags;
+    }
+
     public LimelightHandler(Telemetry telemetry, HardwareMap hardwareMap) {
         this.telemetry = telemetry;
         this.hardwareMap = hardwareMap;
@@ -73,9 +79,11 @@ public class LimelightHandler {
                 handleNoDetection();
                 return false;
             }
+            lastDetectedTags = tags;
 
             Pose3D finalPose = result.getBotpose();
             Position finalPos = finalPose.getPosition();
+
 
             telemetry.addLine("--- Camera Localization ---");
             telemetry.addData("Unit", finalPos.unit);
