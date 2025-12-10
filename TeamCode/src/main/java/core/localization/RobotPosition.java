@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RobotPosition {
     private static RobotPosition instance;
+    private static boolean started = false;
 
     private final Telemetry globalTelemetry;
 
@@ -36,6 +37,14 @@ public class RobotPosition {
         odometryHandler = new OdometryHandler(hardwareMap, pose);
 
         limelightHandler.init();
+    }
+
+    /// Starts internal handlers if not already started (e.g. if another opmode used this).
+    /// This should be called in the start phase of each opmode.
+    public void maybeStart() {
+        if (started) return;
+        started = true;
+        limelightHandler.start();
     }
 
     /// Updates the robot pose

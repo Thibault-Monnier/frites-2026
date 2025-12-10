@@ -69,7 +69,9 @@ public class ManualOpMode extends LinearOpMode {
         initialize();
 
         waitForStart();
+
         runtime.reset();
+        robotPosition.maybeStart();
 
         while (opModeIsActive()) {
             runStep();
@@ -156,6 +158,7 @@ public class ManualOpMode extends LinearOpMode {
         Distance targetDistance = new Distance(DistanceUnit.CM, 130); // Default distance
         if (calculatePose)
             targetDistance = playingField.distanceToGoal(robotPosition.getPosition(), team);
+        globalTelemetry.addData("target dist", targetDistance.toString());
         cannon.update(targetDistance);
 
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
