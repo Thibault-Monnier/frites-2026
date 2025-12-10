@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import java.util.Locale;
+
 public class Distance {
     protected final double value;
     protected final DistanceUnit unit;
@@ -43,6 +45,10 @@ public class Distance {
     @NonNull
     @Override
     public String toString() {
-        return "(Distance) value=" + value + " " + unit.toString();
+        return String.format(
+                Locale.ENGLISH,
+                "(Distance) %.3f %s",
+                getValue(DistanceUnit.METER),
+                DistanceUnit.METER);
     }
 }

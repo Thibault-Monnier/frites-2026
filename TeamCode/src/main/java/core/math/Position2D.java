@@ -6,6 +6,8 @@ import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import java.util.Locale;
+
 public class Position2D {
     protected final double x;
     protected final double y;
@@ -79,6 +81,12 @@ public class Position2D {
     @NonNull
     @Override
     public String toString() {
-        return "(Pose2D) x=" + x + ", y=" + y + " " + unit;
+        return String.format(
+                Locale.ENGLISH,
+                "(Position2D) x=%.3f %s, y=%.3f %s",
+                getX(DistanceUnit.METER),
+                DistanceUnit.METER,
+                getY(DistanceUnit.METER),
+                DistanceUnit.METER);
     }
 }

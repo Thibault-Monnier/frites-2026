@@ -99,12 +99,12 @@ public class Pose2D {
         return String.format(
                 Locale.ENGLISH,
                 "(Pose2D) x=%.3f %s, y=%.3f %s, heading=%.2f %s",
-                x,
-                distanceUnit.toString(),
-                y,
-                distanceUnit,
-                heading,
-                headingUnit.toString());
+                getX(DistanceUnit.METER),
+                DistanceUnit.METER,
+                getY(DistanceUnit.METER),
+                DistanceUnit.METER,
+                getHeading(AngleUnit.DEGREES),
+                AngleUnit.DEGREES);
     }
 
     /** Converts this Pose2D to a Roadrunner Pose2d object. */
