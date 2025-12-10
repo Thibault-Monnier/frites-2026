@@ -10,8 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class OdometryHandler {
-    private static OdometryHandler instance;
-
     private final PinpointLocalizer localizer;
     private Pose2D poseBase; // The base to which localizer pose is relative
 

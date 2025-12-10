@@ -19,8 +19,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import java.util.List;
 
 public class LimelightHandler {
-    private static LimelightHandler instance;
-
     private final Telemetry telemetry;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     private final HardwareMap hardwareMap;

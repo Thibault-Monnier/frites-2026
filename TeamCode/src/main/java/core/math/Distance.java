@@ -19,7 +19,7 @@ public class Distance {
         this.unit = unit;
     }
 
-    /** Creates a new Distance object at 0 */
+    /** Creates a new default Distance object at 0 */
     public Distance() {
         this(DistanceUnit.MM, 0);
     }

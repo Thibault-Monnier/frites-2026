@@ -34,6 +34,9 @@ public class RobotPosition {
         pose = PlayingField.startPose(color);
         limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
         odometryHandler = new OdometryHandler(hardwareMap, pose);
+
+        limelightHandler.init();
+        odometryHandler.setPoseBase(new Pose2D());
     }
 
     /// Updates the robot pose

@@ -45,7 +45,7 @@ public class Position2D {
         this.y = pose.getY(unit);
     }
 
-    /** Creates a new Position2D object at (0, 0) */
+    /** Creates a new default Position2D object at (0, 0) */
     public Position2D() {
         this(DistanceUnit.MM, 0, 0);
     }

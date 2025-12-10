@@ -33,6 +33,11 @@ public class Pose2D {
         this.headingUnit = headingUnit;
     }
 
+    /** Creates a new default Pose2D object at (0, 0) with 0 heading */
+    public Pose2D() {
+        this(DistanceUnit.MM, 0, 0, AngleUnit.RADIANS, 0);
+    }
+
     /**
      * This gets X in the desired distance unit
      *
@@ -72,11 +77,11 @@ public class Pose2D {
      * @return a new Pose2D object that is the result of adding the two Pose2D objects together
      */
     public Pose2D add(Pose2D other) {
-        double newX = this.getX(DistanceUnit.MM) + other.getX(DistanceUnit.MM);
-        double newY = this.getY(DistanceUnit.MM) + other.getY(DistanceUnit.MM);
+        double newX = getX(DistanceUnit.MM) + other.getX(DistanceUnit.MM);
+        double newY = getY(DistanceUnit.MM) + other.getY(DistanceUnit.MM);
         double newHeading =
                 AngleUnit.normalizeRadians(
-                        this.getHeading(AngleUnit.RADIANS) + other.getHeading(AngleUnit.RADIANS));
+                        getHeading(AngleUnit.RADIANS) + other.getHeading(AngleUnit.RADIANS));
         return new Pose2D(DistanceUnit.MM, newX, newY, AngleUnit.RADIANS, newHeading);
     }
 
@@ -104,8 +109,6 @@ public class Pose2D {
     /** Converts this Pose2D to a Roadrunner Pose2d object. */
     public Pose2d toRoadrunner() {
         return new Pose2d(
-                this.getX(DistanceUnit.INCH),
-                this.getY(DistanceUnit.INCH),
-                this.getHeading(AngleUnit.RADIANS));
+                getX(DistanceUnit.INCH), getY(DistanceUnit.INCH), getHeading(AngleUnit.RADIANS));
     }
 }
