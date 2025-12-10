@@ -35,8 +35,8 @@ public class Cannon implements RobotModule {
 
     @Override
     public void apply() {
-        motorLeft.setPower(motorTargetPower);
-        motorRight.setPower(-motorTargetPower); // Motors are mirrored
+        motorLeft.setPower(-motorTargetPower); // Motors are mirrored
+        motorRight.setPower(motorTargetPower);
     }
 
     /// Toggle cannon motor on/off.
