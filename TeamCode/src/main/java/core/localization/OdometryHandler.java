@@ -15,6 +15,7 @@ public class OdometryHandler {
 
     public OdometryHandler(HardwareMap hardwareMap, Pose2D initialPose) {
         localizer = new PinpointLocalizer(hardwareMap, 0.00198, new Pose2d(0, 0, 0));
+        setPoseBase(initialPose);
     }
 
     public void setPoseBase(Pose2D poseBase) {

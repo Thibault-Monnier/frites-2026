@@ -36,7 +36,6 @@ public class RobotPosition {
         odometryHandler = new OdometryHandler(hardwareMap, pose);
 
         limelightHandler.init();
-        odometryHandler.setPoseBase(new Pose2D());
     }
 
     /// Updates the robot pose
