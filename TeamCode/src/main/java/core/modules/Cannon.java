@@ -11,11 +11,7 @@ import java.util.HashMap;
 
 public class Cannon implements RobotModule {
     private static final double[][] DIST_CM_TO_POWER = {
-        {0, 0.0},
-        {25, 0.2},
-        {75, 0.4},
-        {125, 0.6},
-        {200, 0.8},
+        {0, 0.0}, {50, 0.2}, {100, 0.4}, {175, 0.6}, {250, 0.8}, {350, 1.0}
     };
 
     protected final Telemetry globalTelemetry;
@@ -55,23 +51,28 @@ public class Cannon implements RobotModule {
     }
 
     protected double computePower(Distance target2dDistance) {
-        // Use Lagrange interpolation to find the motor power
-        double power = 0.0;
-        for (int i = 0; i < DIST_CM_TO_POWER.length; i++)
-            power += lagrangeInterpolation(target2dDistance, i);
-        return Math.clamp(power, 0.0, 1.0);
-    }
+        double x = target2dDistance.getValue(DistanceUnit.CM);
 
-    private double lagrangeInterpolation(Distance x, int i) {
-        double result = DIST_CM_TO_POWER[i][1];
-        for (int j = 0; j < DIST_CM_TO_POWER.length; j++) {
-            if (j != i) {
-                result *=
-                        (x.getValue(DistanceUnit.CM) - DIST_CM_TO_POWER[j][0])
-                                / (DIST_CM_TO_POWER[i][0] - DIST_CM_TO_POWER[j][0]);
+        // clamp below minimum
+        if (x <= DIST_CM_TO_POWER[0][0]) return DIST_CM_TO_POWER[0][1];
+
+        // clamp above maximum
+        if (x >= DIST_CM_TO_POWER[DIST_CM_TO_POWER.length - 1][0])
+            return DIST_CM_TO_POWER[DIST_CM_TO_POWER.length - 1][1];
+
+        for (int i = 0; i < DIST_CM_TO_POWER.length - 1; i++) {
+            double x0 = DIST_CM_TO_POWER[i][0];
+            double y0 = DIST_CM_TO_POWER[i][1];
+            double x1 = DIST_CM_TO_POWER[i + 1][0];
+            double y1 = DIST_CM_TO_POWER[i + 1][1];
+
+            if (x >= x0 && x <= x1) {
+                double t = (x - x0) / (x1 - x0);
+                return y0 + t * (y1 - y0);
             }
         }
-        return result;
+
+        throw new IllegalStateException("Unreachable code reached in computePower.");
     }
 
     @Override
