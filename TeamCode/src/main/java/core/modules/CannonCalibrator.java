@@ -13,8 +13,8 @@ public class CannonCalibrator extends Cannon {
 
     private Map<Distance, Double> savedCalibrationData;
 
-    public CannonCalibrator(Telemetry globalTelemetry, DcMotor motor) {
-        super(globalTelemetry, motor);
+    public CannonCalibrator(Telemetry globalTelemetry, DcMotor motorLeft, DcMotor motorRight) {
+        super(globalTelemetry, motorLeft, motorRight);
     }
 
     @Override

@@ -84,6 +84,7 @@ public class CannonCalibrationOpMode extends LinearOpMode {
         cannonCalibrator =
                 new CannonCalibrator(
                         globalTelemetry,
+                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_LEFT_ID),
                         hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_RIGHT_ID));
 
         cannonBufferLeft =
