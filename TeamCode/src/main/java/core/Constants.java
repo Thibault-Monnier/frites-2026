@@ -33,8 +33,8 @@ public class Constants {
     public static String FRONT_RIGHT_MOTOR_ID = "front_right";
     public static String BACK_LEFT_MOTOR_ID = "back_left";
     public static String BACK_RIGHT_MOTOR_ID = "back_right";
-    public static String CANNON_MOTOR_1_ID = "cannon_motor_1";
-    public static String CANNON_MOTOR_2_ID = "cannon_motor_2";
+    public static String CANNON_MOTOR_LEFT_ID = "cannon_motor_left";
+    public static String CANNON_MOTOR_RIGHT_ID = "cannon_motor_right";
     public static String CANNON_BUFFER_RIGHT = "cannon_buffer_right";
     public static String CANNON_BUFFER_LEFT = "cannon_buffer_left";
     public static String INTAKE_MOTOR_ID = "intake_motor";

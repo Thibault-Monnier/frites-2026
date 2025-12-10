@@ -103,7 +103,8 @@ public class ManualOpMode extends LinearOpMode {
         cannon =
                 new Cannon(
                         globalTelemetry,
-                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_2_ID));
+                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_LEFT_ID),
+                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_RIGHT_ID));
 
         cannonBufferLeft =
                 new CannonBuffer(

@@ -20,19 +20,23 @@ public class Cannon implements RobotModule {
 
     protected final Telemetry globalTelemetry;
 
-    private final DcMotor motor;
+    private final DcMotor motorLeft;
+    private final DcMotor motorRight;
+
     protected double motorTargetPower;
 
     private boolean isRunning = false;
 
-    public Cannon(Telemetry globalTelemetry, DcMotor motor) {
+    public Cannon(Telemetry globalTelemetry, DcMotor motorLeft, DcMotor motorRight) {
         this.globalTelemetry = globalTelemetry;
-        this.motor = motor;
+        this.motorLeft = motorLeft;
+        this.motorRight = motorRight;
     }
 
     @Override
     public void apply() {
-        motor.setPower(motorTargetPower);
+        motorLeft.setPower(motorTargetPower);
+        motorRight.setPower(motorTargetPower);
     }
 
     /// Toggle cannon motor on/off.
