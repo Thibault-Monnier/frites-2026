@@ -48,6 +48,8 @@ public class RobotPosition {
         } else {
             pose = odometryHandler.getPose();
         }
+
+        globalTelemetry.addData("Computed pose", pose.toString());
     }
 
     /// Gets the current robot pose as a Pose2D

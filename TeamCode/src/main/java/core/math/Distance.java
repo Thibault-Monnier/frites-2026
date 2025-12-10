@@ -43,6 +43,6 @@ public class Distance {
     @NonNull
     @Override
     public String toString() {
-        return "(Distance) value=" + value + " " + unit;
+        return "(Distance) value=" + value + " " + unit.toString();
     }
 }

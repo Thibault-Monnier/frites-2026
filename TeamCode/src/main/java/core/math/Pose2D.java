@@ -7,6 +7,8 @@ import com.acmerobotics.roadrunner.Pose2d;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import java.util.Locale;
+
 /** Pose2D represents the position and heading of an object in 2D space. */
 public class Pose2D {
     protected final double x;
@@ -94,16 +96,15 @@ public class Pose2D {
     @NonNull
     @Override
     public String toString() {
-        return "(Pose2D) x="
-                + x
-                + ", y="
-                + y
-                + " "
-                + distanceUnit
-                + ", heading="
-                + heading
-                + " "
-                + headingUnit;
+        return String.format(
+                Locale.ENGLISH,
+                "(Pose2D) x=%.3f %s, y=%.3f %s, heading=%.2f %s",
+                x,
+                distanceUnit.toString(),
+                y,
+                distanceUnit,
+                heading,
+                headingUnit.toString());
     }
 
     /** Converts this Pose2D to a Roadrunner Pose2d object. */
