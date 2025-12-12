@@ -3,8 +3,8 @@ package core.logic;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 
-import core.math.Position2D;
 import core.Constants;
+import core.math.Position2D;
 import core.roadrunner.MecanumDrive;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;

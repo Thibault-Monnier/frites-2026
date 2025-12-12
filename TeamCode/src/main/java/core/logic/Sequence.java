@@ -2,14 +2,12 @@ package core.logic;
 
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 
+import core.localization.LimelightHandler;
+
 import java.util.List;
 import java.util.Set;
 
-import core.localization.LimelightHandler;
-
-/**
- * A sequence represents a set of 3 artifacts with differing colors and ordering.
- */
+/** A sequence represents a set of 3 artifacts with differing colors and ordering. */
 public class Sequence {
     Artifact[] artifacts = new Artifact[3];
 
@@ -20,8 +18,7 @@ public class Sequence {
     }
 
     /**
-     * Attempts to retrieve the current sequence using the central AprilTag
-     * if it is visible.
+     * Attempts to retrieve the current sequence using the central AprilTag if it is visible.
      *
      * @return the sequence if found; otherwise {@code null}
      */
@@ -38,25 +35,31 @@ public class Sequence {
 
             switch (tag.getFiducialId()) {
                 case 21:
-                    sequence = new Sequence(new Artifact[]{
-                            new Artifact(ArtifactColor.GREEN),
-                            new Artifact(ArtifactColor.PURPLE),
-                            new Artifact(ArtifactColor.PURPLE)
-                    });
+                    sequence =
+                            new Sequence(
+                                    new Artifact[] {
+                                        new Artifact(ArtifactColor.GREEN),
+                                        new Artifact(ArtifactColor.PURPLE),
+                                        new Artifact(ArtifactColor.PURPLE)
+                                    });
                     break;
                 case 22:
-                    sequence = new Sequence(new Artifact[]{
-                            new Artifact(ArtifactColor.PURPLE),
-                            new Artifact(ArtifactColor.GREEN),
-                            new Artifact(ArtifactColor.PURPLE)
-                    });
+                    sequence =
+                            new Sequence(
+                                    new Artifact[] {
+                                        new Artifact(ArtifactColor.PURPLE),
+                                        new Artifact(ArtifactColor.GREEN),
+                                        new Artifact(ArtifactColor.PURPLE)
+                                    });
                     break;
                 case 23:
-                    sequence = new Sequence(new Artifact[]{
-                            new Artifact(ArtifactColor.PURPLE),
-                            new Artifact(ArtifactColor.PURPLE),
-                            new Artifact(ArtifactColor.GREEN)
-                    });
+                    sequence =
+                            new Sequence(
+                                    new Artifact[] {
+                                        new Artifact(ArtifactColor.PURPLE),
+                                        new Artifact(ArtifactColor.PURPLE),
+                                        new Artifact(ArtifactColor.GREEN)
+                                    });
             }
         }
         return null;

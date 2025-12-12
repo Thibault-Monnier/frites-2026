@@ -6,7 +6,8 @@ This is the code for the FTC team Frites during the 2025-26 Decode season.
 
 # Robot manual
 
-Detailed instructions, schematics, and everything you need to know about the robot are available at [docs/manual.pdf](docs/manual.pdf).
+Detailed instructions, schematics, and everything you need to know about the robot are available
+at [docs/manual.pdf](docs/manual.pdf).
 
 ## Setting up & Compiling
 
@@ -18,7 +19,7 @@ git clone git@gitlab.com:ftc-civ/frites/2026.git
 ```
 
 Make sure you have [Android Studio](https://developer.android.com/studio) installed (this is
-required to compile the code), and Java 21 (may  not work with more recent versions!).
+required to compile the code), and Java 21 (may not work with more recent versions!).
 
 Open this directory in Android Studio and let it sync (required if you want to be able to compile
 the code, even from the terminal).

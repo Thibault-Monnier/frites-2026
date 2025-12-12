@@ -74,6 +74,4 @@ public class RobotPosition {
     public LimelightHandler getLimelightHandler() {
         return limelightHandler;
     }
-
-    ;
 }

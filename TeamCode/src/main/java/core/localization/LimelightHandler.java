@@ -84,7 +84,6 @@ public class LimelightHandler {
             Pose3D finalPose = result.getBotpose();
             Position finalPos = finalPose.getPosition();
 
-
             telemetry.addLine("--- Camera Localization ---");
             telemetry.addData("Unit", finalPos.unit);
             telemetry.addData("Robot X", finalPos.x);

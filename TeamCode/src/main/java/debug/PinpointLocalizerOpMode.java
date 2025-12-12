@@ -6,8 +6,9 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import core.roadrunner.PinpointLocalizer;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp(name = "PinpointLocalizer OpMode", group = "concept")
 public class PinpointLocalizerOpMode extends LinearOpMode {
@@ -35,7 +36,6 @@ public class PinpointLocalizerOpMode extends LinearOpMode {
         localizer.update();
 
         Pose2d pose = localizer.getPose();
-
 
         globalTelemetry.addData("X (mm)", pose.position.x);
         globalTelemetry.addData("Y (mm)", pose.position.y);
