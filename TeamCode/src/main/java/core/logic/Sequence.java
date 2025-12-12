@@ -26,6 +26,8 @@ public class Sequence {
      */
     public static Sequence findCurrentSequence(LimelightHandler limelightHandler) throws Exception {
         List<LLResultTypes.FiducialResult> tags = limelightHandler.getLastDetectedTags();
+        if (tags == null || tags.isEmpty()) return null;
+
         for (LLResultTypes.FiducialResult tag : tags) {
             /*
              * See https://ftc-resources.firstinspires.org/ftc/game/manual, page 72
