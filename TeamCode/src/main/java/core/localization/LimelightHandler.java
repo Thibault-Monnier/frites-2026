@@ -70,6 +70,9 @@ public class LimelightHandler {
         if (result != null && result.isValid()) {
             List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
             lastDetectedTags = tags;
+
+            telemetry.addData("Tags in view", lastDetectedTags);
+
             tags.removeIf(
                     tag -> {
                         int id = tag.getFiducialId();

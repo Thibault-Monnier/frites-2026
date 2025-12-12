@@ -146,6 +146,7 @@ public class ManualOpMode extends LinearOpMode {
         if (calculatePose && sequence == null) {
             try {
                 sequence = Sequence.findCurrentSequence(robotPosition.getLimelightHandler());
+                globalTelemetry.addData("NO PATTERN FOUND (YET)", sequence);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
