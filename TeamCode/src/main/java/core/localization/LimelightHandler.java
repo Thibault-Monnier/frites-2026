@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LimelightHandler {
     private final Telemetry telemetry;
@@ -71,7 +72,11 @@ public class LimelightHandler {
             List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
             lastDetectedTags = tags;
 
-            telemetry.addData("Tags in view", lastDetectedTags);
+            telemetry.addData(
+                    "Tag ids in view",
+                    lastDetectedTags.stream()
+                            .map(LLResultTypes.FiducialResult::getFiducialId)
+                            .collect(Collectors.toList()));
 
             tags.removeIf(
                     tag -> {
