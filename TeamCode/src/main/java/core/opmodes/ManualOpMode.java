@@ -145,9 +145,12 @@ public class ManualOpMode extends LinearOpMode {
             try {
                 sequence = Sequence.findCurrentSequence(robotPosition.getLimelightHandler());
             } catch (Exception e) {
-                throw new RuntimeException(e);
+//                throw new RuntimeException(e);
             }
         }
+
+        // Show the current sequence
+        globalTelemetry.addData("PATTERN", sequence.getSequenceString());
 
         /*
         if (gamepad.isPressed(GamepadController.Button.LEFT_STICK)) {

@@ -1,5 +1,7 @@
 package core.logic;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 
 import core.localization.LimelightHandler;
@@ -31,7 +33,7 @@ public class Sequence {
             Set<Integer> allowedIds = Set.of(21, 22, 23);
             if (!allowedIds.contains(tag.getFiducialId())) continue;
 
-            Sequence sequence;
+            Sequence sequence = null;
 
             switch (tag.getFiducialId()) {
                 case 21:
@@ -61,7 +63,14 @@ public class Sequence {
                                         new Artifact(ArtifactColor.GREEN)
                                     });
             }
+
+            return sequence;
         }
         return null;
+    }
+
+    @NonNull
+    public String getSequenceString() {
+        return artifacts[0].color.toString() + artifacts[1].color.toString() + artifacts[2].color.toString();
     }
 }
