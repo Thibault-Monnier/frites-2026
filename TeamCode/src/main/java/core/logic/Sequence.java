@@ -71,7 +71,6 @@ public class Sequence {
         return null;
     }
 
-    @NonNull
     public String getSequenceString() {
         return artifacts[0].color.toString() + artifacts[1].color.toString() + artifacts[2].color.toString();
     }

@@ -24,7 +24,9 @@ public class OdometryHandler {
                 new Pose2d(
                         poseBase.getX(DistanceUnit.INCH),
                         poseBase.getY(DistanceUnit.INCH),
-                        poseBase.getHeading(AngleUnit.RADIANS)));
+                        poseBase.getHeading(AngleUnit.RADIANS)
+                )
+        );
     }
 
     public void update() {
