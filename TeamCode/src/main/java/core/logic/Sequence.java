@@ -15,7 +15,7 @@ public class Sequence {
 
     public Sequence(Artifact[] artifacts) throws Exception {
         if (artifacts.length != 3) {
-            throw new Exception("Sequence is not three artifacts long");
+            throw new Exception("Sequence should be three artifacts long");
         }
     }
 
@@ -42,27 +42,27 @@ public class Sequence {
                     sequence =
                             new Sequence(
                                     new Artifact[] {
-                                        new Artifact(ArtifactColor.GREEN),
-                                        new Artifact(ArtifactColor.PURPLE),
-                                        new Artifact(ArtifactColor.PURPLE)
+                                        new Artifact(Artifact.Color.GREEN),
+                                        new Artifact(Artifact.Color.PURPLE),
+                                        new Artifact(Artifact.Color.PURPLE)
                                     });
                     break;
                 case 22:
                     sequence =
                             new Sequence(
                                     new Artifact[] {
-                                        new Artifact(ArtifactColor.PURPLE),
-                                        new Artifact(ArtifactColor.GREEN),
-                                        new Artifact(ArtifactColor.PURPLE)
+                                        new Artifact(Artifact.Color.PURPLE),
+                                        new Artifact(Artifact.Color.GREEN),
+                                        new Artifact(Artifact.Color.PURPLE)
                                     });
                     break;
                 case 23:
                     sequence =
                             new Sequence(
                                     new Artifact[] {
-                                        new Artifact(ArtifactColor.PURPLE),
-                                        new Artifact(ArtifactColor.PURPLE),
-                                        new Artifact(ArtifactColor.GREEN)
+                                        new Artifact(Artifact.Color.PURPLE),
+                                        new Artifact(Artifact.Color.PURPLE),
+                                        new Artifact(Artifact.Color.GREEN)
                                     });
             }
 
