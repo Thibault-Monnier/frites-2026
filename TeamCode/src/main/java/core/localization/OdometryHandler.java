@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import core.math.Pose2D;
-import core.math.Units;
 import core.roadrunner.PinpointLocalizer;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
