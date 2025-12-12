@@ -52,7 +52,6 @@ public class ManualOpMode extends LinearOpMode {
 
     private IntakeSwitcher intakeSwitcher;
 
-
     private Sequence sequence;
 
     private Replayer.Logger replaySaver;

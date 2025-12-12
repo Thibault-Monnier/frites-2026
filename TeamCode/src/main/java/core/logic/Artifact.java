@@ -18,4 +18,3 @@ public class Artifact extends FieldElement {
         this.color = color;
     }
 }
-
