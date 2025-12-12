@@ -76,8 +76,6 @@ public class ManualOpMode extends LinearOpMode {
         runtime.reset();
         robotPosition.maybeStart();
 
-        sequence = null;
-
         while (opModeIsActive()) {
             runStep();
         }
@@ -152,7 +150,7 @@ public class ManualOpMode extends LinearOpMode {
             }
         } else if (calculatePose) {
             // Show the current sequence
-            globalTelemetry.addData("PATTERN", sequence.getSequenceString());
+            globalTelemetry.addData("PATTERN", sequence.toString());
         }
 
         /*
