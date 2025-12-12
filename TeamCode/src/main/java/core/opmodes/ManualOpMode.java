@@ -76,8 +76,6 @@ public class ManualOpMode extends LinearOpMode {
         runtime.reset();
         robotPosition.maybeStart();
 
-        sequence = null;
-
         while (opModeIsActive()) {
             runStep();
         }
@@ -152,7 +150,7 @@ public class ManualOpMode extends LinearOpMode {
             }
         } else if (calculatePose) {
             // Show the current sequence
-            globalTelemetry.addData("PATTERN", sequence.getSequenceString());
+            globalTelemetry.addData("PATTERN", sequence.toString());
         }
 
         /*
@@ -179,21 +177,15 @@ public class ManualOpMode extends LinearOpMode {
         cannon.update(targetDistance);
 
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
-        if (gamepad.isPressing(GamepadController.Button.DPAD_LEFT)) {
-            cannonBufferLeft.on();
-        } else {
-            cannonBufferLeft.off();
-        }
-        if (gamepad.isPressing(GamepadController.Button.DPAD_RIGHT)) {
-            cannonBufferRight.on();
-        } else {
-            cannonBufferRight.off();
-        }
+
+        if (gamepad.isPressing(GamepadController.Button.DPAD_LEFT)) cannonBufferLeft.on();
+        else cannonBufferLeft.off();
+
+        if (gamepad.isPressing(GamepadController.Button.DPAD_RIGHT)) cannonBufferRight.on();
+        else cannonBufferRight.off();
 
         if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
-
         if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
-//        if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
 
         /* --- OPMODE TELEMETRY --- */
         globalTelemetry.addLine("--- MANUAL MODE ---");

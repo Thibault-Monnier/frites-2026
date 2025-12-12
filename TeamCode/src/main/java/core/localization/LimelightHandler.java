@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LimelightHandler {
     private final Telemetry globalTelemetry;
@@ -71,7 +72,11 @@ public class LimelightHandler {
             List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
             lastDetectedTags = tags;
 
-            globalTelemetry.addData("Tags in view", lastDetectedTags);
+            globalTelemetry.addData(
+                    "Tag ids in view",
+                    lastDetectedTags.stream()
+                            .map(LLResultTypes.FiducialResult::getFiducialId)
+                            .collect(Collectors.toList()));
 
             tags.removeIf(
                     tag -> {
@@ -87,20 +92,20 @@ public class LimelightHandler {
             Pose3D finalPose = result.getBotpose();
             Position finalPos = finalPose.getPosition();
 
-            globalTelemetry.addLine("--- Camera Localization ---");
-            globalTelemetry.addData("Unit", finalPos.unit);
-            globalTelemetry.addData("Robot X", finalPos.x);
-            globalTelemetry.addData("Robot Y", finalPos.y);
-            globalTelemetry.addData("Heading", finalPose.getOrientation().getYaw(AngleUnit.DEGREES));
+            telemetry.addLine("--- Camera Localization ---");
+            telemetry.addData("Unit", finalPos.unit);
+            telemetry.addData("Robot X", finalPos.x);
+            telemetry.addData("Robot Y", finalPos.y);
+            telemetry.addData("Heading", finalPose.getOrientation().getYaw(AngleUnit.DEGREES));
 
-            globalTelemetry.addLine();
-            globalTelemetry.addData("# of tags", tags.size());
+            telemetry.addLine();
+            telemetry.addData("# of tags", tags.size());
             for (LLResultTypes.FiducialResult tag : tags) {
                 Pose3D pose = tag.getRobotPoseFieldSpace();
-                globalTelemetry.addData("ID", tag.getFiducialId());
-                globalTelemetry.addData("tx deg", tag.getTargetXDegrees());
-                globalTelemetry.addData("ty deg", tag.getTargetYDegrees());
-                globalTelemetry.addData("pose", pose.toString());
+                telemetry.addData("ID", tag.getFiducialId());
+                telemetry.addData("tx deg", tag.getTargetXDegrees());
+                telemetry.addData("ty deg", tag.getTargetYDegrees());
+                telemetry.addData("pose", pose.toString());
             }
 
             if (lastResult == null || isStableResult(result)) {
@@ -132,7 +137,7 @@ public class LimelightHandler {
         lastResult = null;
         validFramesInRow = 0;
 
-        globalTelemetry.addLine("Nothing detected");
+        telemetry.addLine("Nothing detected");
     }
 
     private void renderFieldOverlayInDashboard() {

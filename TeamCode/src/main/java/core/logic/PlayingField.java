@@ -1,6 +1,5 @@
 package core.logic;
 
-
 import core.Constants;
 import core.math.Distance;
 import core.math.Pose2D;

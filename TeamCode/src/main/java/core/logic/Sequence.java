@@ -7,7 +7,6 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import core.localization.LimelightHandler;
 
 import java.util.List;
-import java.util.Set;
 
 /** A sequence represents a set of 3 artifacts with differing colors and ordering. */
 public class Sequence {
@@ -30,48 +29,40 @@ public class Sequence {
 
         for (LLResultTypes.FiducialResult tag : tags) {
             /*
-             * See https://ftc-resources.firstinspires.org/ftc/game/manual, page 72
+             * See https://ftc-resources.firstinspires.org/ftc/game/manual, page 72 for sequence tag ids
              */
-            Set<Integer> allowedIds = Set.of(21, 22, 23);
-            if (!allowedIds.contains(tag.getFiducialId())) continue;
-
-            Sequence sequence = null;
-
             switch (tag.getFiducialId()) {
                 case 21:
-                    sequence =
-                            new Sequence(
-                                    new Artifact[] {
-                                        new Artifact(Artifact.Color.GREEN),
-                                        new Artifact(Artifact.Color.PURPLE),
-                                        new Artifact(Artifact.Color.PURPLE)
-                                    });
-                    break;
+                    return new Sequence(
+                            new Artifact[] {
+                                new Artifact(Artifact.Color.GREEN),
+                                new Artifact(Artifact.Color.PURPLE),
+                                new Artifact(Artifact.Color.PURPLE)
+                            });
                 case 22:
-                    sequence =
-                            new Sequence(
-                                    new Artifact[] {
-                                        new Artifact(Artifact.Color.PURPLE),
-                                        new Artifact(Artifact.Color.GREEN),
-                                        new Artifact(Artifact.Color.PURPLE)
-                                    });
-                    break;
+                    return new Sequence(
+                            new Artifact[] {
+                                new Artifact(Artifact.Color.PURPLE),
+                                new Artifact(Artifact.Color.GREEN),
+                                new Artifact(Artifact.Color.PURPLE)
+                            });
                 case 23:
-                    sequence =
-                            new Sequence(
-                                    new Artifact[] {
-                                        new Artifact(Artifact.Color.PURPLE),
-                                        new Artifact(Artifact.Color.PURPLE),
-                                        new Artifact(Artifact.Color.GREEN)
-                                    });
+                    return new Sequence(
+                            new Artifact[] {
+                                new Artifact(Artifact.Color.PURPLE),
+                                new Artifact(Artifact.Color.PURPLE),
+                                new Artifact(Artifact.Color.GREEN)
+                            });
             }
-
-            return sequence;
         }
+
         return null;
     }
 
-    public String getSequenceString() {
-        return artifacts[0].color.toString() + artifacts[1].color.toString() + artifacts[2].color.toString();
+    @NonNull
+    public String toString() {
+        return artifacts[0].color.toString()
+                + artifacts[1].color.toString()
+                + artifacts[2].color.toString();
     }
 }
