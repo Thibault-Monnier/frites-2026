@@ -69,6 +69,7 @@ public class LimelightHandler {
 
         if (result != null && result.isValid()) {
             List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
+            lastDetectedTags = tags;
             tags.removeIf(
                     tag -> {
                         int id = tag.getFiducialId();
@@ -79,7 +80,6 @@ public class LimelightHandler {
                 handleNoDetection();
                 return false;
             }
-            lastDetectedTags = tags;
 
             Pose3D finalPose = result.getBotpose();
             Position finalPos = finalPose.getPosition();
