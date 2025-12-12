@@ -15,7 +15,19 @@ public class OdometryHandler {
 
     public OdometryHandler(HardwareMap hardwareMap, Pose2D initialPose) {
         localizer = new PinpointLocalizer(hardwareMap, 0.00198, new Pose2d(0, 0, 0));
+        resetAll();
         setPoseBase(initialPose);
+    }
+
+    /**
+     * This resets both the localizer pose and the driver odometry readings to zero. It then
+     * recalibrates the driver IMU.
+     *
+     * <p>This function should ONLY be called when we a certain the robot is stationary.
+     */
+    private void resetAll() {
+        localizer.setPose(new Pose2d(0, 0, 0));
+        localizer.driver.resetPosAndIMU();
     }
 
     public void setPoseBase(Pose2D poseBase) {
