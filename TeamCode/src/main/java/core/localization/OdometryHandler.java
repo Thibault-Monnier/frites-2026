@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import core.math.Pose2D;
+import core.math.Units;
 import core.roadrunner.PinpointLocalizer;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -20,13 +21,7 @@ public class OdometryHandler {
 
     public void setPoseBase(Pose2D poseBase) {
         this.poseBase = poseBase;
-        localizer.setPose(
-                new Pose2d(
-                        poseBase.getX(DistanceUnit.INCH),
-                        poseBase.getY(DistanceUnit.INCH),
-                        poseBase.getHeading(AngleUnit.RADIANS)
-                )
-        );
+        localizer.setPose(new Pose2d(0, 0, 0));
     }
 
     public void update() {

@@ -51,12 +51,12 @@ public class RobotPosition {
     public void updatePose() {
         odometryHandler.update();
 
-//        if (limelightHandler.update()) {
-//            pose = limelightHandler.getLastKnownPose();
-//            odometryHandler.setPoseBase(pose);
-//        } else {
+        if (limelightHandler.update()) {
+            pose = limelightHandler.getLastKnownPose();
+            odometryHandler.setPoseBase(pose);
+        } else {
             pose = odometryHandler.getPose();
-//        }
+        }
 
         globalTelemetry.addData("Computed pose", pose.toString());
     }
