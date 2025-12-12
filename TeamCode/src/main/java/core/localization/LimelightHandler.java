@@ -1,7 +1,6 @@
 package core.localization;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -12,7 +11,6 @@ import core.math.Pose2D;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class LimelightHandler {
     private final Telemetry globalTelemetry;
-    FtcDashboard dashboard = FtcDashboard.getInstance();
+    private final FtcDashboard dashboard = FtcDashboard.getInstance();
     private final HardwareMap hardwareMap;
 
     private Limelight3A limelight;
@@ -122,8 +120,6 @@ public class LimelightHandler {
                 Position pos = pose.getPosition();
                 double heading = pose.getOrientation().getYaw(AngleUnit.RADIANS);
                 lastKnownPose = new Pose2D(pos.unit, pos.x, pos.y, AngleUnit.RADIANS, heading);
-                renderFieldOverlayInDashboard();
-
                 return true;
             }
 
@@ -139,25 +135,6 @@ public class LimelightHandler {
         validFramesInRow = 0;
 
         globalTelemetry.addLine("Nothing detected");
-    }
-
-    private void renderFieldOverlayInDashboard() {
-        TelemetryPacket packet = new TelemetryPacket();
-
-        double heading = lastKnownPose.getHeading(AngleUnit.RADIANS);
-
-        double robotXInches = lastKnownPose.getX(DistanceUnit.INCH);
-        double robotYInches = lastKnownPose.getY(DistanceUnit.INCH);
-
-        double lineLength = 8;
-        double endXInches = robotXInches + lineLength * Math.cos(heading);
-        double endYInches = robotYInches + lineLength * Math.sin(heading);
-
-        packet.fieldOverlay().setStroke("red").strokeCircle(robotXInches, robotYInches, 4);
-        packet.fieldOverlay()
-                .setStroke("green")
-                .strokeLine(robotXInches, robotYInches, endXInches, endYInches);
-        dashboard.sendTelemetryPacket(packet);
     }
 
     private double distance(Position p1, Position p2) {

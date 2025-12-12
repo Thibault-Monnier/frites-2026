@@ -1,5 +1,7 @@
 package core.localization;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import core.Constants;
@@ -8,12 +10,15 @@ import core.math.Pose2D;
 import core.math.Position2D;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class RobotPosition {
     private static RobotPosition instance;
     private static boolean started = false;
 
     private final Telemetry globalTelemetry;
+    private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private final LimelightHandler limelightHandler;
     private final OdometryHandler odometryHandler;
@@ -59,6 +64,7 @@ public class RobotPosition {
         }
 
         globalTelemetry.addData("Computed pose", pose.toString());
+        renderFieldOverlayInDashboard();
     }
 
     /// Gets the current robot pose as a Pose2D
@@ -73,5 +79,24 @@ public class RobotPosition {
 
     public LimelightHandler getLimelightHandler() {
         return limelightHandler;
+    }
+
+    private void renderFieldOverlayInDashboard() {
+        TelemetryPacket packet = new TelemetryPacket();
+
+        double heading = pose.getHeading(AngleUnit.RADIANS);
+
+        double robotXInches = pose.getX(DistanceUnit.INCH);
+        double robotYInches = pose.getY(DistanceUnit.INCH);
+
+        double lineLength = 8;
+        double endXInches = robotXInches + lineLength * Math.cos(heading);
+        double endYInches = robotYInches + lineLength * Math.sin(heading);
+
+        packet.fieldOverlay().setStroke("red").strokeCircle(robotXInches, robotYInches, 4);
+        packet.fieldOverlay()
+                .setStroke("green")
+                .strokeLine(robotXInches, robotYInches, endXInches, endYInches);
+        dashboard.sendTelemetryPacket(packet);
     }
 }
