@@ -7,15 +7,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import core.Constants;
+import core.opmodes.GroupConstants;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 @TeleOp(
-        name = Constants.DEBUGGER_MODES_GROUP + ": Distance Sensor",
-        group = Constants.DEBUGGER_MODES_GROUP)
+        name = GroupConstants.DEBUGGER_MODES_GROUP + ": Distance Sensor",
+        group = GroupConstants.DEBUGGER_MODES_GROUP)
 public class DistanceSensorDebugger extends OpMode {
     private static final String sensorId = "";
     private DistanceSensor distanceSensor;

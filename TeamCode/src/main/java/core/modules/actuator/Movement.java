@@ -1,4 +1,4 @@
-package core.logic;
+package core.modules.actuator;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
-import core.modules.RobotModule;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -18,7 +16,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 @Config
-public class Movement implements RobotModule {
+public class Movement implements RobotActuatorModule {
     /* --- CONSTANTS --- */
     private static final DcMotor.ZeroPowerBehavior DEFAULT_BEHAVIOR =
             DcMotor.ZeroPowerBehavior.BRAKE;

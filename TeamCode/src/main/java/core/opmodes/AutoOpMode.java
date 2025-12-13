@@ -14,10 +14,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import core.Constants;
-import core.localization.RobotPosition;
 import core.logic.DriveActions;
 import core.logic.PlayingField;
+import core.logic.RobotPosition;
+import core.logic.Team;
+import core.modules.HardwareConstants;
 import core.roadrunner.MecanumDrive;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -27,8 +28,8 @@ import java.util.List;
 
 @Autonomous(name = "Auto Mode")
 public class AutoOpMode extends LinearOpMode {
-    private final Constants.Team team;
-    private final Constants.StartPosition startPosition;
+    private final Team team;
+    private final RobotPosition.StartPosition startPosition;
     List<Action> runningActions = new ArrayList<>();
 
     private ElapsedTime runtime;
@@ -43,7 +44,7 @@ public class AutoOpMode extends LinearOpMode {
     private State currentState;
     private double stateStartTime;
 
-    public AutoOpMode(Constants.Team team, Constants.StartPosition position) {
+    public AutoOpMode(Team team, RobotPosition.StartPosition position) {
         this.team = team;
         this.startPosition = position;
         this.playingField = new PlayingField();
@@ -69,7 +70,7 @@ public class AutoOpMode extends LinearOpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        IMU onBoardIMU = hardwareMap.get(IMU.class, Constants.IMU_ID);
+        IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConstants.IMU_ID);
 
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 

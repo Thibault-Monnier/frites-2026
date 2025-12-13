@@ -7,7 +7,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import core.modules.RobotModule;
+import core.modules.actuator.RobotActuatorModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -33,7 +33,7 @@ public class Replayer {
 
     public static class ReplayerMode extends OpMode {
         private final String replayFile;
-        public RobotModule[] robotModules;
+        public RobotActuatorModule[] robotActuatorModules;
         public Telemetry globalTelemetry;
         private double orderId = 0;
         private Scanner reader;
@@ -118,7 +118,7 @@ public class Replayer {
                     orderId += 1;
                 }
 
-                for (RobotModule module : robotModules) {
+                for (RobotActuatorModule module : robotActuatorModules) {
                     module.setState(lastState);
                     module.apply();
                 }
@@ -133,19 +133,21 @@ public class Replayer {
     }
 
     public static class Logger {
+        private static final String REPLAY_FILE_DEST = "replay_file.txt";
+
         private final List<String> logs;
-        private final RobotModule[] robotModules;
+        private final RobotActuatorModule[] robotActuatorModules;
         private final ElapsedTime globalRuntime;
 
-        public Logger(ElapsedTime globalRime, RobotModule[] robotModules) {
+        public Logger(ElapsedTime globalRime, RobotActuatorModule[] robotActuatorModules) {
             logs = new ArrayList<>();
 
-            this.robotModules = robotModules;
+            this.robotActuatorModules = robotActuatorModules;
             this.globalRuntime = globalRime;
 
             StringBuilder line = new StringBuilder();
             line.append(TIME_IDENTIFIER).append(SEPARATOR);
-            for (RobotModule module : this.robotModules) {
+            for (RobotActuatorModule module : this.robotActuatorModules) {
                 for (Object keys : module.getCurrentState().keySet()) {
                     line.append(keys.toString()).append(SEPARATOR);
                 }
@@ -161,7 +163,7 @@ public class Replayer {
         public void logCurrentState() {
             StringBuilder line = new StringBuilder();
             line.append(globalRuntime.time()).append(SEPARATOR);
-            for (RobotModule module : this.robotModules) {
+            for (RobotActuatorModule module : this.robotActuatorModules) {
                 for (Object obj : module.getCurrentState().values()) {
                     line.append(obj.toString()).append(SEPARATOR);
                 }
@@ -170,9 +172,9 @@ public class Replayer {
             logLine(line.toString());
         }
 
-        public void saveAndExit(String destinationFile) {
+        public void saveAndExit() {
             try {
-                PrintWriter writer = new PrintWriter(DIRECTORY_PATH + destinationFile);
+                PrintWriter writer = new PrintWriter(DIRECTORY_PATH + REPLAY_FILE_DEST);
                 writer.print("");
 
                 for (String line : logs) {

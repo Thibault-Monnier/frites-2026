@@ -11,26 +11,27 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import core.Constants;
-import core.localization.RobotPosition;
-import core.logic.Movement;
 import core.logic.PlayingField;
 import core.logic.Replayer;
+import core.logic.RobotPosition;
 import core.logic.Sequence;
+import core.logic.Team;
 import core.math.Distance;
-import core.modules.Cannon;
-import core.modules.CannonBuffer;
-import core.modules.GamepadController;
-import core.modules.Intake;
-import core.modules.IntakeSwitcher;
-import core.modules.RobotModule;
+import core.modules.HardwareConstants;
+import core.modules.actuator.Cannon;
+import core.modules.actuator.CannonBuffer;
+import core.modules.actuator.Intake;
+import core.modules.actuator.IntakeSwitcher;
+import core.modules.actuator.Movement;
+import core.modules.actuator.RobotActuatorModule;
+import core.modules.sensor.GamepadController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class ManualOpMode extends LinearOpMode {
-    private final Constants.Team team;
+    private final Team team;
     private final boolean replay;
     private final boolean calculatePose;
     private ElapsedTime runtime;
@@ -56,14 +57,14 @@ public class ManualOpMode extends LinearOpMode {
 
     private Replayer.Logger replaySaver;
 
-    public ManualOpMode(Constants.Team team, boolean replay, boolean calculatePose) {
+    public ManualOpMode(Team team, boolean replay, boolean calculatePose) {
         this.team = team;
         this.replay = replay;
         this.calculatePose = calculatePose;
         this.playingField = new PlayingField();
     }
 
-    public ManualOpMode(Constants.Team team, boolean replay) {
+    public ManualOpMode(Team team, boolean replay) {
         this(team, replay, true);
     }
 
@@ -81,7 +82,7 @@ public class ManualOpMode extends LinearOpMode {
         }
 
         if (replay) {
-            replaySaver.saveAndExit(Constants.REPLAY_FILE_DEST);
+            replaySaver.saveAndExit();
         }
     }
 
@@ -95,44 +96,45 @@ public class ManualOpMode extends LinearOpMode {
 
         gamepad = new GamepadController(runtime, gamepad1);
 
-        IMU onBoardIMU = hardwareMap.get(IMU.class, Constants.IMU_ID);
+        IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConstants.IMU_ID);
         move =
                 new Movement(
                         globalTelemetry,
-                        hardwareMap.get(DcMotor.class, Constants.FRONT_LEFT_MOTOR_ID),
-                        hardwareMap.get(DcMotor.class, Constants.FRONT_RIGHT_MOTOR_ID),
-                        hardwareMap.get(DcMotor.class, Constants.BACK_LEFT_MOTOR_ID),
-                        hardwareMap.get(DcMotor.class, Constants.BACK_RIGHT_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, HardwareConstants.FRONT_LEFT_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, HardwareConstants.FRONT_RIGHT_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, HardwareConstants.BACK_LEFT_MOTOR_ID),
+                        hardwareMap.get(DcMotor.class, HardwareConstants.BACK_RIGHT_MOTOR_ID),
                         onBoardIMU);
 
         cannon =
                 new Cannon(
                         globalTelemetry,
-                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_LEFT_ID),
-                        hardwareMap.get(DcMotor.class, Constants.CANNON_MOTOR_RIGHT_ID));
+                        hardwareMap.get(DcMotor.class, HardwareConstants.CANNON_MOTOR_LEFT_ID),
+                        hardwareMap.get(DcMotor.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID));
 
         cannonBufferLeft =
                 new CannonBuffer(
                         globalTelemetry,
-                        hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_LEFT),
+                        hardwareMap.get(CRServo.class, HardwareConstants.CANNON_BUFFER_LEFT),
                         DcMotorSimple.Direction.REVERSE);
         cannonBufferRight =
                 new CannonBuffer(
                         globalTelemetry,
-                        hardwareMap.get(CRServo.class, Constants.CANNON_BUFFER_RIGHT),
+                        hardwareMap.get(CRServo.class, HardwareConstants.CANNON_BUFFER_RIGHT),
                         DcMotorSimple.Direction.FORWARD);
 
         intake =
                 new Intake(
-                        globalTelemetry, hardwareMap.get(DcMotor.class, Constants.INTAKE_MOTOR_ID));
+                        globalTelemetry,
+                        hardwareMap.get(DcMotor.class, HardwareConstants.INTAKE_MOTOR_ID));
 
         intakeSwitcher =
                 new IntakeSwitcher(
                         globalTelemetry,
-                        hardwareMap.get(Servo.class, Constants.INTAKE_SWITCHER_SERVO));
+                        hardwareMap.get(Servo.class, HardwareConstants.INTAKE_SWITCHER_SERVO));
 
         if (replay) {
-            replaySaver = new Replayer.Logger(runtime, new RobotModule[] {move});
+            replaySaver = new Replayer.Logger(runtime, new RobotActuatorModule[] {move});
         }
     }
 

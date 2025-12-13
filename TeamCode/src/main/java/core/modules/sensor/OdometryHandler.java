@@ -1,10 +1,10 @@
-package core.localization;
+package core.modules.sensor;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import core.Constants;
 import core.math.Distance;
 import core.math.Pose2D;
+import core.modules.HardwareConstants;
 import core.roadrunner.GoBildaPinpointDriver;
 
 public final class OdometryHandler {
@@ -17,7 +17,7 @@ public final class OdometryHandler {
     public final GoBildaPinpointDriver driver;
 
     public OdometryHandler(HardwareMap hardwareMap, Pose2D initialPose) {
-        driver = hardwareMap.get(GoBildaPinpointDriver.class, Constants.ODOMETRY_POD_ID);
+        driver = hardwareMap.get(GoBildaPinpointDriver.class, HardwareConstants.ODOMETRY_POD_ID);
 
         driver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         driver.setEncoderDirections(

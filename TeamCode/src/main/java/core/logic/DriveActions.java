@@ -3,7 +3,6 @@ package core.logic;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 
-import core.Constants;
 import core.math.Position2D;
 import core.roadrunner.MecanumDrive;
 
@@ -16,7 +15,7 @@ public class DriveActions {
         this.drive = drive;
     }
 
-    public Action turnTowardsGoal(Pose2d robotPose, Constants.Team teamColor) {
+    public Action turnTowardsGoal(Pose2d robotPose, Team teamColor) {
         Position2D robotPosition = new Position2D(DistanceUnit.INCH, robotPose.position);
         return drive.actionBuilder(robotPose)
                 .turnTo(PlayingField.angleToGoal(robotPosition, teamColor))

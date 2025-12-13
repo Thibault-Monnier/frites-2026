@@ -1,4 +1,4 @@
-package core.modules;
+package core.modules.sensor;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;

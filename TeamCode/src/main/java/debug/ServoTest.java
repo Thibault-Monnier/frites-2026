@@ -7,12 +7,14 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import core.Constants;
+import core.opmodes.GroupConstants;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
-@TeleOp(name = Constants.DEBUGGER_MODES_GROUP + ": Servo", group = Constants.DEBUGGER_MODES_GROUP)
+@TeleOp(
+        name = GroupConstants.DEBUGGER_MODES_GROUP + ": Servo",
+        group = GroupConstants.DEBUGGER_MODES_GROUP)
 public class ServoTest extends OpMode {
     public static String motorId = "rotation_servo";
 

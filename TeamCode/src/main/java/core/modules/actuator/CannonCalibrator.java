@@ -1,4 +1,4 @@
-package core.modules;
+package core.modules.actuator;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 

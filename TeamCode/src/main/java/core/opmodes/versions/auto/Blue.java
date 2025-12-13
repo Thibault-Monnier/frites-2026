@@ -2,14 +2,16 @@ package core.opmodes.versions.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import core.Constants;
+import core.logic.RobotPosition;
+import core.logic.Team;
 import core.opmodes.AutoOpMode;
+import core.opmodes.GroupConstants;
 
 @Autonomous(
-        name = Constants.MAIN_MODES_GROUP + ": Normal Auto - BLUE Team",
-        group = Constants.MAIN_MODES_GROUP)
+        name = GroupConstants.MAIN_MODES_GROUP + ": Normal Auto - BLUE Team",
+        group = GroupConstants.MAIN_MODES_GROUP)
 public class Blue extends AutoOpMode {
     public Blue() {
-        super(Constants.Team.BLUE, Constants.StartPosition.NORMAL);
+        super(Team.BLUE, RobotPosition.StartPosition.NORMAL);
     }
 }

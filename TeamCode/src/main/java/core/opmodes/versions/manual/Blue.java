@@ -2,14 +2,15 @@ package core.opmodes.versions.manual;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import core.Constants;
+import core.logic.Team;
+import core.opmodes.GroupConstants;
 import core.opmodes.ManualOpMode;
 
 @TeleOp(
-        name = Constants.MAIN_MODES_GROUP + ": Normal Manual - BLUE Team",
-        group = Constants.MAIN_MODES_GROUP)
+        name = GroupConstants.MAIN_MODES_GROUP + ": Normal Manual - BLUE Team",
+        group = GroupConstants.MAIN_MODES_GROUP)
 public class Blue extends ManualOpMode {
     public Blue() {
-        super(Constants.Team.BLUE, false);
+        super(Team.BLUE, false);
     }
 }

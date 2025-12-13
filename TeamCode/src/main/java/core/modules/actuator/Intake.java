@@ -1,4 +1,4 @@
-package core.modules;
+package core.modules.actuator;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -6,7 +6,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.HashMap;
 
-public class Intake implements RobotModule {
+public class Intake implements RobotActuatorModule {
 
     private final Telemetry globalTelemetry;
     private final DcMotor motor;

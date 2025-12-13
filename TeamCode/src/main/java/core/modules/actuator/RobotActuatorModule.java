@@ -1,8 +1,8 @@
-package core.modules;
+package core.modules.actuator;
 
 import java.util.HashMap;
 
-public interface RobotModule {
+public interface RobotActuatorModule {
     void apply();
 
     HashMap<String, Object> getCurrentState();

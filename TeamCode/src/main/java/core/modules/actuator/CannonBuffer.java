@@ -1,4 +1,4 @@
-package core.modules;
+package core.modules.actuator;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.HashMap;
 
-public class CannonBuffer implements RobotModule {
+public class CannonBuffer implements RobotActuatorModule {
     private final Telemetry globalTelemetry;
     private final CRServo servo;
     private boolean isRunning = false;

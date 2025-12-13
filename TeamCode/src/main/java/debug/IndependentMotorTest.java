@@ -4,11 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import core.Constants;
+import core.modules.HardwareConstants;
+import core.opmodes.GroupConstants;
 
 @TeleOp(
-        name = Constants.TEST_MODES_GROUP + ": Independent motor test",
-        group = Constants.TEST_MODES_GROUP)
+        name = GroupConstants.TEST_MODES_GROUP + ": Independent motor test",
+        group = GroupConstants.TEST_MODES_GROUP)
 public class IndependentMotorTest extends OpMode {
     private DcMotor testMotor1;
     private DcMotor testMotor2;
@@ -20,19 +21,19 @@ public class IndependentMotorTest extends OpMode {
 
     @Override
     public void init() {
-        testMotor1 = hardwareMap.get(DcMotor.class, Constants.TEST_MOTOR_1_ID);
-        testMotor2 = hardwareMap.get(DcMotor.class, Constants.TEST_MOTOR_2_ID);
+        testMotor1 = hardwareMap.get(DcMotor.class, HardwareConstants.TEST_MOTOR_1_ID);
+        testMotor2 = hardwareMap.get(DcMotor.class, HardwareConstants.TEST_MOTOR_2_ID);
         resetMotor(testMotor1);
         resetMotor(testMotor2);
 
-        telemetry.addData("Motor 1 power", Constants.TEST_MOTOR_1_POWER);
-        telemetry.addData("Motor 2 power", Constants.TEST_MOTOR_2_POWER);
+        telemetry.addData("Motor 1 power", HardwareConstants.TEST_MOTOR_1_POWER);
+        telemetry.addData("Motor 2 power", HardwareConstants.TEST_MOTOR_2_POWER);
         telemetry.update();
     }
 
     @Override
     public void loop() {
-        testMotor1.setPower(Constants.TEST_MOTOR_1_POWER);
-        testMotor2.setPower(Constants.TEST_MOTOR_2_POWER);
+        testMotor1.setPower(HardwareConstants.TEST_MOTOR_1_POWER);
+        testMotor2.setPower(HardwareConstants.TEST_MOTOR_2_POWER);
     }
 }

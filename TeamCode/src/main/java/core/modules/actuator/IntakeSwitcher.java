@@ -1,4 +1,4 @@
-package core.modules;
+package core.modules.actuator;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -6,7 +6,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.HashMap;
 
-public class IntakeSwitcher implements RobotModule {
+public class IntakeSwitcher implements RobotActuatorModule {
     private final Telemetry globalTelemetry;
     private final Servo servo;
     private boolean isAtLeftPos = false;

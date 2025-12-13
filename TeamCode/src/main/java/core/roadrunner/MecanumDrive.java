@@ -1,11 +1,5 @@
 package core.roadrunner;
 
-import static core.Constants.BACK_LEFT_MOTOR_ID;
-import static core.Constants.BACK_RIGHT_MOTOR_ID;
-import static core.Constants.FRONT_LEFT_MOTOR_ID;
-import static core.Constants.FRONT_RIGHT_MOTOR_ID;
-import static core.Constants.IMU_ID;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -54,6 +48,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+
+import core.modules.HardwareConstants;
 
 import messages.DriveCommandMessage;
 import messages.MecanumCommandMessage;
@@ -107,10 +103,10 @@ public final class MecanumDrive {
         // TODO: make sure your config has motors with these names (or change them)
         //   see
         // https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, FRONT_LEFT_MOTOR_ID);
-        leftBack = hardwareMap.get(DcMotorEx.class, BACK_LEFT_MOTOR_ID);
-        rightBack = hardwareMap.get(DcMotorEx.class, BACK_RIGHT_MOTOR_ID);
-        rightFront = hardwareMap.get(DcMotorEx.class, FRONT_RIGHT_MOTOR_ID);
+        leftFront = hardwareMap.get(DcMotorEx.class, HardwareConstants.FRONT_LEFT_MOTOR_ID);
+        leftBack = hardwareMap.get(DcMotorEx.class, HardwareConstants.BACK_LEFT_MOTOR_ID);
+        rightBack = hardwareMap.get(DcMotorEx.class, HardwareConstants.BACK_RIGHT_MOTOR_ID);
+        rightFront = hardwareMap.get(DcMotorEx.class, HardwareConstants.FRONT_RIGHT_MOTOR_ID);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -130,7 +126,7 @@ public final class MecanumDrive {
         lazyImu =
                 new LazyHardwareMapImu(
                         hardwareMap,
-                        IMU_ID,
+                        HardwareConstants.IMU_ID,
                         new RevHubOrientationOnRobot(
                                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
 

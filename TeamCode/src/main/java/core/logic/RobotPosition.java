@@ -1,13 +1,13 @@
-package core.localization;
+package core.logic;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import core.Constants;
-import core.logic.PlayingField;
 import core.math.Pose2D;
 import core.math.Position2D;
+import core.modules.sensor.LimelightHandler;
+import core.modules.sensor.OdometryHandler;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -26,15 +26,14 @@ public class RobotPosition {
     private Pose2D pose;
 
     public static RobotPosition getInstance(
-            Telemetry globalTelemetry, HardwareMap hardwareMap, Constants.Team color) {
+            Telemetry globalTelemetry, HardwareMap hardwareMap, Team color) {
         if (instance == null) {
             instance = new RobotPosition(globalTelemetry, hardwareMap, color);
         }
         return instance;
     }
 
-    private RobotPosition(
-            Telemetry globalTelemetry, HardwareMap hardwareMap, Constants.Team color) {
+    private RobotPosition(Telemetry globalTelemetry, HardwareMap hardwareMap, Team color) {
         this.globalTelemetry = globalTelemetry;
 
         pose = PlayingField.startPose(color);
@@ -98,5 +97,9 @@ public class RobotPosition {
                 .setStroke("green")
                 .strokeLine(robotXInches, robotYInches, endXInches, endYInches);
         dashboard.sendTelemetryPacket(packet);
+    }
+
+    public enum StartPosition {
+        NORMAL,
     }
 }

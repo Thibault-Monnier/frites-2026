@@ -1,6 +1,5 @@
 package core.logic;
 
-import core.Constants;
 import core.math.Distance;
 import core.math.Pose2D;
 import core.math.Position2D;
@@ -33,11 +32,11 @@ public class PlayingField {
 
     public PlayingField() {}
 
-    public static Pose2D startPose(Constants.Team color) {
+    public static Pose2D startPose(Team color) {
         return color.isBlue() ? FieldConstants.BLUE_START_POSE : FieldConstants.RED_START_POSE;
     }
 
-    private static Position2D goalPos(Constants.Team color) {
+    private static Position2D goalPos(Team color) {
         return color.isBlue() ? BLUE_GOAL.position : RED_GOAL.position;
     }
 
@@ -45,7 +44,7 @@ public class PlayingField {
     /// @param robotPos The current position of the robot.
     /// @param color The color of the goal to target.
     /// @return The angle in radians to the center of the specified goal.
-    public static double angleToGoal(Position2D robotPos, Constants.Team color) {
+    public static double angleToGoal(Position2D robotPos, Team color) {
         Position2D goalPos = goalPos(color);
         DistanceUnit unit = DistanceUnit.MM;
         return Math.atan2(
@@ -57,7 +56,7 @@ public class PlayingField {
     /// @param robotPos The current position of the robot.
     /// @param color The color of the goal to target.
     /// @return The distance to the center of the specified goal.
-    public Distance distanceToGoal(Position2D robotPos, Constants.Team color) {
+    public Distance distanceToGoal(Position2D robotPos, Team color) {
         Position2D goalPos = goalPos(color);
         DistanceUnit unit = DistanceUnit.MM;
         double dist =
