@@ -64,70 +64,62 @@ public class LimelightHandler {
     public boolean update() {
         LLResult result = limelight.getLatestResult();
 
-        if (!isNewResult(result)) return false;
-
-        if (result != null && result.isValid()) {
-            List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
-            lastDetectedTags = tags;
-
-            globalTelemetry.addData(
-                    "Tag ids in view",
-                    lastDetectedTags.stream()
-                            .map(LLResultTypes.FiducialResult::getFiducialId)
-                            .collect(Collectors.toList()));
-
-            tags.removeIf(
-                    tag -> {
-                        int id = tag.getFiducialId();
-                        return id != 20 && id != 24;
-                    });
-
-            if (tags.isEmpty()) {
-                handleNoDetection();
-                return false;
-            }
-
-            Pose3D finalPose = result.getBotpose();
-            Position finalPos = finalPose.getPosition();
-
-            globalTelemetry.addLine("--- Camera Localization ---");
-            globalTelemetry.addData("Unit", finalPos.unit);
-            globalTelemetry.addData("Robot X", finalPos.x);
-            globalTelemetry.addData("Robot Y", finalPos.y);
-            globalTelemetry.addData(
-                    "Heading", finalPose.getOrientation().getYaw(AngleUnit.DEGREES));
-
-            globalTelemetry.addLine();
-            globalTelemetry.addData("# of tags", tags.size());
-            for (LLResultTypes.FiducialResult tag : tags) {
-                Pose3D pose = tag.getRobotPoseFieldSpace();
-                globalTelemetry.addData("ID", tag.getFiducialId());
-                globalTelemetry.addData("tx deg", tag.getTargetXDegrees());
-                globalTelemetry.addData("ty deg", tag.getTargetYDegrees());
-                globalTelemetry.addData("pose", pose.toString());
-            }
-
-            if (lastResult == null || isStableResult(result)) {
-                validFramesInRow++;
-            } else {
-                validFramesInRow = 0;
-            }
-            lastResult = result;
-
-            if (validFramesInRow >= 3) {
-                // Stable result
-                Pose3D pose = lastResult.getBotpose();
-                Position pos = pose.getPosition();
-                double heading = pose.getOrientation().getYaw(AngleUnit.RADIANS);
-                lastKnownPose = new Pose2D(pos.unit, pos.x, pos.y, AngleUnit.RADIANS, heading);
-                return true;
-            }
-
-        } else {
+        if (result == null || !result.isValid()) {
             handleNoDetection();
+            return false;
         }
 
-        return false;
+        if (!isNewResult(result)) return false;
+
+        List<LLResultTypes.FiducialResult> tags = result.getFiducialResults();
+        lastDetectedTags = tags;
+
+        printDetectionInfo(result);
+
+        // Filter to only the positioning tags
+        if (tags.stream()
+                .noneMatch(tag -> tag.getFiducialId() == 20 || tag.getFiducialId() == 24)) {
+            handleNoDetection();
+            return false;
+        }
+
+        if (lastResult == null || isStableResult(result)) {
+            validFramesInRow++;
+        } else {
+            validFramesInRow = 0;
+        }
+        lastResult = result;
+
+        if (validFramesInRow < 3) {
+            // Result is unstable
+            return false;
+        }
+
+        // Stable result
+        Pose3D pose = lastResult.getBotpose();
+        Position pos = pose.getPosition();
+        double heading = pose.getOrientation().getYaw(AngleUnit.RADIANS);
+        lastKnownPose = new Pose2D(pos.unit, pos.x, pos.y, AngleUnit.RADIANS, heading);
+        return true;
+    }
+
+    private void printDetectionInfo(LLResult result) {
+        Pose3D pose = result.getBotpose();
+        Position pos = pose.getPosition();
+
+        globalTelemetry.addLine("--- Detected Tags ---");
+        globalTelemetry.addData("Number of tags", lastDetectedTags.size());
+        globalTelemetry.addData(
+                "Tag IDs",
+                lastDetectedTags.stream()
+                        .map(LLResultTypes.FiducialResult::getFiducialId)
+                        .collect(Collectors.toList()));
+
+        globalTelemetry.addLine("--- Camera Localization ---");
+        globalTelemetry.addData("Unit", pos.unit);
+        globalTelemetry.addData("Robot X", pos.x);
+        globalTelemetry.addData("Robot Y", pos.y);
+        globalTelemetry.addData("Heading (deg)", pose.getOrientation().getYaw(AngleUnit.DEGREES));
     }
 
     private void handleNoDetection() {
