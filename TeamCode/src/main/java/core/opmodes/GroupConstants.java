@@ -1,6 +1,5 @@
 package core.opmodes;
 
-
 public class GroupConstants {
     public static final String MAIN_MODES_GROUP = "Main";
     public static final String CALIBRATION_MODES_GROUP = "Calibration";
