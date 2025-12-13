@@ -26,6 +26,11 @@ public class Distance {
         this(DistanceUnit.MM, 0);
     }
 
+    /** Creates a new Distance object from millimeters input */
+    public static Distance fromMillimeters(double millimeters) {
+        return new Distance(DistanceUnit.MM, millimeters);
+    }
+
     /**
      * Gets the distance value in the desired distance unit
      *
@@ -34,6 +39,11 @@ public class Distance {
      */
     public double getValue(DistanceUnit unit) {
         return unit.fromUnit(this.unit, value);
+    }
+
+    /** Gets the distance value converted to millimeters */
+    public double toMillimeters() {
+        return getValue(DistanceUnit.MM);
     }
 
     /**

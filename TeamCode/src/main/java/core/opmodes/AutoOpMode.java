@@ -78,10 +78,6 @@ public class AutoOpMode extends LinearOpMode {
         robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
 
         runtime.reset();
-
-        if (startPosition == Constants.StartPosition.NORMAL) {
-            drive.localizer.setPose(robotPosition.getPose().toRoadrunner());
-        }
     }
 
     public void runStep() {
@@ -89,9 +85,10 @@ public class AutoOpMode extends LinearOpMode {
 
         switch (currentState) {
             case TURN_TOWARDS_GOAL:
+                // TODO: Use real robot pose
                 registerAction(
                         new SequentialAction(
-                                driveActions.turnTowardsGoal(drive.localizer.getPose(), team),
+                                driveActions.turnTowardsGoal(new Pose2d(0, 0, 0), team),
                                 queueState(State.IDLE)));
                 break;
             case IDLE:

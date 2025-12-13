@@ -58,7 +58,7 @@ public class RobotPosition {
 
         if (limelightHandler.update()) {
             pose = limelightHandler.getLastKnownPose();
-            odometryHandler.setPoseBase(pose);
+            odometryHandler.setPose(pose);
         } else {
             pose = odometryHandler.getPose();
         }
