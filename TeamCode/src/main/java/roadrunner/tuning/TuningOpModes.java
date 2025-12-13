@@ -280,7 +280,6 @@ public final class TuningOpModes {
                 new DeadWheelDirectionDebugger(dvf));
 
         manager.register(metaForClass(SplineTest.class), SplineTest.class);
-        manager.register(metaForClass(LocalizationTest.class), LocalizationTest.class);
 
         manager.register(
                 metaForClass(OTOSAngularScalarTuner.class), new OTOSAngularScalarTuner(dvf));
