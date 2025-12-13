@@ -37,15 +37,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
+
 import roadrunner.GoBildaPinpointDriver;
 import roadrunner.MecanumDrive;
 import roadrunner.OTOSLocalizer;
 import roadrunner.PinpointLocalizer;
 import roadrunner.TankDrive;
-import roadrunner.ThreeDeadWheelLocalizer;
-import roadrunner.TwoDeadWheelLocalizer;
-
-import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -159,23 +157,6 @@ public final class TuningOpModes {
                             leftEncs.add(new EncoderRef(0, 1));
                             rightEncs.add(new EncoderRef(0, 2));
                             rightEncs.add(new EncoderRef(0, 3));
-                        } else if (md.localizer instanceof ThreeDeadWheelLocalizer) {
-                            ThreeDeadWheelLocalizer dl = (ThreeDeadWheelLocalizer) md.localizer;
-                            encoderGroups.add(
-                                    new LynxQuadratureEncoderGroup(
-                                            hardwareMap.getAll(LynxModule.class),
-                                            Arrays.asList(dl.par0, dl.par1, dl.perp)));
-                            parEncs.add(new EncoderRef(0, 0));
-                            parEncs.add(new EncoderRef(0, 1));
-                            perpEncs.add(new EncoderRef(0, 2));
-                        } else if (md.localizer instanceof TwoDeadWheelLocalizer) {
-                            TwoDeadWheelLocalizer dl = (TwoDeadWheelLocalizer) md.localizer;
-                            encoderGroups.add(
-                                    new LynxQuadratureEncoderGroup(
-                                            hardwareMap.getAll(LynxModule.class),
-                                            Arrays.asList(dl.par, dl.perp)));
-                            parEncs.add(new EncoderRef(0, 0));
-                            perpEncs.add(new EncoderRef(0, 1));
                         } else if (md.localizer instanceof OTOSLocalizer) {
                             OTOSLocalizer ol = (OTOSLocalizer) md.localizer;
                             encoderGroups.add(new OTOSEncoderGroup(ol.otos));
@@ -241,23 +222,6 @@ public final class TuningOpModes {
                             for (int i = 0; i < dl.rightEncs.size(); i++) {
                                 rightEncs.add(new EncoderRef(0, dl.leftEncs.size() + i));
                             }
-                        } else if (td.localizer instanceof ThreeDeadWheelLocalizer) {
-                            ThreeDeadWheelLocalizer dl = (ThreeDeadWheelLocalizer) td.localizer;
-                            encoderGroups.add(
-                                    new LynxQuadratureEncoderGroup(
-                                            hardwareMap.getAll(LynxModule.class),
-                                            Arrays.asList(dl.par0, dl.par1, dl.perp)));
-                            parEncs.add(new EncoderRef(0, 0));
-                            parEncs.add(new EncoderRef(0, 1));
-                            perpEncs.add(new EncoderRef(0, 2));
-                        } else if (td.localizer instanceof TwoDeadWheelLocalizer) {
-                            TwoDeadWheelLocalizer dl = (TwoDeadWheelLocalizer) td.localizer;
-                            encoderGroups.add(
-                                    new LynxQuadratureEncoderGroup(
-                                            hardwareMap.getAll(LynxModule.class),
-                                            Arrays.asList(dl.par, dl.perp)));
-                            parEncs.add(new EncoderRef(0, 0));
-                            perpEncs.add(new EncoderRef(0, 1));
                         } else if (td.localizer instanceof PinpointLocalizer) {
                             PinpointView pv = makePinpointView((PinpointLocalizer) td.localizer);
                             encoderGroups.add(new PinpointEncoderGroup(pv));
@@ -315,7 +279,6 @@ public final class TuningOpModes {
                 metaForClass(DeadWheelDirectionDebugger.class),
                 new DeadWheelDirectionDebugger(dvf));
 
-        manager.register(metaForClass(ManualFeedbackTuner.class), ManualFeedbackTuner.class);
         manager.register(metaForClass(SplineTest.class), SplineTest.class);
         manager.register(metaForClass(LocalizationTest.class), LocalizationTest.class);
 
@@ -336,8 +299,7 @@ public final class TuningOpModes {
                                             ForwardRampLogger.class,
                                             LateralRampLogger.class,
                                             ManualFeedforwardTuner.class,
-                                            MecanumMotorDirectionDebugger.class,
-                                            ManualFeedbackTuner.class)) {
+                                            MecanumMotorDirectionDebugger.class)) {
                                 configRoot.putVariable(
                                         c.getSimpleName(),
                                         ReflectionConfig.createVariableFromClass(c));
