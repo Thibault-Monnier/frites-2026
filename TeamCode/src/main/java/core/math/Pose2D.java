@@ -72,22 +72,6 @@ public class Pose2D {
     }
 
     /**
-     * This adds two Pose2D objects together and returns a new Pose2D object as the result. The x
-     * and y values are added together, and the headings are added together and normalized.
-     *
-     * @param other the other Pose2D object to add
-     * @return a new Pose2D object that is the result of adding the two Pose2D objects together
-     */
-    public Pose2D add(Pose2D other) {
-        double newX = getX(DistanceUnit.MM) + other.getX(DistanceUnit.MM);
-        double newY = getY(DistanceUnit.MM) + other.getY(DistanceUnit.MM);
-        double newHeading =
-                AngleUnit.normalizeRadians(
-                        getHeading(AngleUnit.RADIANS) + other.getHeading(AngleUnit.RADIANS));
-        return new Pose2D(DistanceUnit.MM, newX, newY, AngleUnit.RADIANS, newHeading);
-    }
-
-    /**
      * This returns a string representation of the object in a human readable format for debugging
      * purposes.
      *
@@ -133,5 +117,35 @@ public class Pose2D {
                 pose2d.position.y,
                 angleUnit,
                 pose2d.heading.toDouble());
+    }
+
+    /**
+     * Converts this Pose2D to an FTC navigation Pose2D object.
+     *
+     * @return a new FTC navigation Pose2D with the same values as this Pose2D
+     */
+    public org.firstinspires.ftc.robotcore.external.navigation.Pose2D toNavigationPose2D() {
+        return new org.firstinspires.ftc.robotcore.external.navigation.Pose2D(
+                DistanceUnit.MM,
+                getX(DistanceUnit.MM),
+                getY(DistanceUnit.MM),
+                AngleUnit.RADIANS,
+                getHeading(AngleUnit.RADIANS));
+    }
+
+    /**
+     * Converts an FTC navigation Pose2D object to a Pose2D object.
+     *
+     * @param navPose the FTC navigation Pose2D object to convert
+     * @return a new Pose2D object the same values as the navPose
+     */
+    public static Pose2D fromNavigationPose2D(
+            org.firstinspires.ftc.robotcore.external.navigation.Pose2D navPose) {
+        return new Pose2D(
+                DistanceUnit.MM,
+                navPose.getX(DistanceUnit.MM),
+                navPose.getY(DistanceUnit.MM),
+                AngleUnit.RADIANS,
+                navPose.getHeading(AngleUnit.RADIANS));
     }
 }
