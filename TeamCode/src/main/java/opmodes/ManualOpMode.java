@@ -146,16 +146,19 @@ public class ManualOpMode extends LinearOpMode {
         gamepad.update();
         if (calculatePose) robotPosition.updatePose();
 
-        if (calculatePose && sequence == null) {
-            try {
-                sequence = Sequence.findCurrentSequence(robotPosition.getLimelightHandler());
-                globalTelemetry.addData("NO PATTERN FOUND (YET)", sequence);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        if (calculatePose) {
+            if (sequence == null) {
+                try {
+                    sequence = Sequence.findCurrentSequence(robotPosition.getLimelightHandler());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-        } else if (calculatePose) {
-            // Show the current sequence
-            globalTelemetry.addData("PATTERN", sequence.toString());
+
+            if (sequence != null) {
+                // Show the current sequence
+                globalTelemetry.addData("PATTERN", sequence.toString());
+            }
         }
 
         /*

@@ -10,12 +10,13 @@ import java.util.List;
 
 /** A sequence represents a set of 3 artifacts with differing colors and ordering. */
 public class Sequence {
-    Artifact[] artifacts = new Artifact[3];
+    Artifact[] artifacts;
 
-    public Sequence(Artifact[] artifacts) throws Exception {
+    public Sequence(Artifact[] artifacts) {
         if (artifacts.length != 3) {
-            throw new Exception("Sequence should be three artifacts long");
+            throw new IllegalArgumentException("A sequence must consist of exactly 3 artifacts.");
         }
+        this.artifacts = artifacts;
     }
 
     /**
@@ -23,7 +24,7 @@ public class Sequence {
      *
      * @return the sequence if found; otherwise {@code null}
      */
-    public static Sequence findCurrentSequence(LimelightHandler limelightHandler) throws Exception {
+    public static Sequence findCurrentSequence(LimelightHandler limelightHandler) {
         List<LLResultTypes.FiducialResult> tags = limelightHandler.getLastDetectedTags();
         if (tags == null || tags.isEmpty()) return null;
 

@@ -52,7 +52,10 @@ public class RobotPosition {
         limelightHandler.start();
     }
 
-    /// Updates the robot pose
+    /**
+     * Updates the robot pose. This MUST be called each step to ensure the information is
+     * up-to-date.
+     */
     public void updatePose() {
         odometryHandler.update();
 
