@@ -16,17 +16,17 @@ public class FieldConstants {
     public static final Pose2D BLUE_START_POSE =
             new Pose2D(
                     DistanceUnit.INCH,
+                    FIELD_WIDTH / 2 - TILE_DEPTH / 2,
                     -TILE_WIDTH / 2,
-                    -FIELD_WIDTH / 2 + TILE_DEPTH / 2,
                     AngleUnit.DEGREES,
-                    90);
+                    180);
     public static final Pose2D RED_START_POSE =
             new Pose2D(
                     DistanceUnit.INCH,
+                    FIELD_WIDTH / 2 - TILE_DEPTH / 2,
                     TILE_WIDTH / 2,
-                    -FIELD_WIDTH / 2 + TILE_DEPTH / 2,
                     AngleUnit.DEGREES,
-                    90);
+                    180);
 
     /* --- Goal constants --- */
     public static final double GOAL_HEIGHT = 54.0;
