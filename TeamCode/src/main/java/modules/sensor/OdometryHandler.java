@@ -4,15 +4,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import math.Distance;
 import math.Pose2D;
+
 import modules.HardwareConstants;
+
 import roadrunner.GoBildaPinpointDriver;
 
 public final class OdometryHandler {
     /** The offset of the x encoder along the y axis */
-    private static final Distance ENCODER_X_Y_OFFSET = Distance.fromMillimeters(95);
+    private static final Distance ENCODER_X_Y_OFFSET = Distance.fromMillimeters(-95);
 
     /** The offset of the y encoder along the x axis */
-    private static final Distance ENCODER_Y_X_OFFSET = Distance.fromMillimeters(200);
+    private static final Distance ENCODER_Y_X_OFFSET = Distance.fromMillimeters(-200);
 
     public final GoBildaPinpointDriver driver;
 
@@ -21,7 +23,7 @@ public final class OdometryHandler {
 
         driver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         driver.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.FORWARD,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
         driver.setOffsets(ENCODER_X_Y_OFFSET.toMillimeters(), ENCODER_Y_X_OFFSET.toMillimeters());
