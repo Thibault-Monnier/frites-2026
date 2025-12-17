@@ -194,6 +194,7 @@ public class ManualOpMode extends LinearOpMode {
 
         if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
         if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
+        if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
 
         /* --- OPMODE TELEMETRY --- */
         globalTelemetry.addLine("--- MANUAL MODE ---");

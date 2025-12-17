@@ -1,19 +1,21 @@
 package modules.actuator;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.HashMap;
 
+@Config
 public class IntakeSwitcher implements RobotActuatorModule {
     private final Telemetry globalTelemetry;
     private final Servo servo;
     private boolean isAtLeftPos = false;
     private boolean isAtCenter = true;
 
-    private final float CENTER_POS = 0.5F;
-    private final float OFFSET = 0.125F;
+    private static float CENTER_POS = 0.5F;
+    private static float OFFSET = 0.35F;
 
     public IntakeSwitcher(Telemetry globalTelemetry, Servo servo) {
         this.globalTelemetry = globalTelemetry;
