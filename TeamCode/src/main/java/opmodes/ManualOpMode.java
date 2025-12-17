@@ -77,7 +77,8 @@ public class ManualOpMode extends LinearOpMode {
         waitForStart();
 
         runtime.reset();
-        robotPosition.maybeStart();
+
+        if (calculatePose) robotPosition.maybeStart();
 
         while (opModeIsActive()) {
             runStep();
