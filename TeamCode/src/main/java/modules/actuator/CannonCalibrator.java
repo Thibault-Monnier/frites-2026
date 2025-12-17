@@ -6,12 +6,13 @@ import math.Distance;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class CannonCalibrator extends Cannon {
     private static final double SPEED_CHANGE_OFFSET = 0.05;
 
-    private Map<Distance, Double> savedCalibrationData;
+    private final Map<Distance, Double> savedCalibrationData = new HashMap<>();
 
     public CannonCalibrator(Telemetry globalTelemetry, DcMotor motorLeft, DcMotor motorRight) {
         super(globalTelemetry, motorLeft, motorRight);
