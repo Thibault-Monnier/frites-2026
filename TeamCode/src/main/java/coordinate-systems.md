@@ -56,7 +56,7 @@ Relative to the robot
 
 ### Gobilda Pinpoint Driver coordinate system
 
-Can operator in either absolute or relative mode.
+Can operate in either absolute or relative mode.
 
 #### Absolute mode
 
