@@ -11,7 +11,15 @@ import java.util.HashMap;
 
 public class Cannon implements RobotActuatorModule {
     private static final double[][] DIST_CM_TO_POWER = {
-        {0, 0.0}, {50, 0.2}, {100, 0.4}, {175, 0.6}, {250, 0.8}, {350, 1.0}
+        {0, 0.0},
+        {50, 0.40},
+        {80, 0.41},
+        {100, 0.45},
+        {140, 0.45},
+        {175, 0.50},
+        {200, 0.55},
+        {250, 0.8},
+        {350, 0.85}
     };
 
     protected final Telemetry globalTelemetry;
