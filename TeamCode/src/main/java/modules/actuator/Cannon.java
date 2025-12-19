@@ -1,53 +1,38 @@
 package modules.actuator;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import math.Distance;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.HashMap;
 
 public class Cannon implements RobotActuatorModule {
     private static final double[][] DIST_CM_TO_POWER = {
-        {0, 0.0}, {50, 0.40}, {80, 0.41}, {100, 0.45}, {140, 0.45}, {175, 0.50}, {200, 0.55}, {250, 0.8}, {350, 0.85}
+        {0, 0.0}, {50, 0.2}, {100, 0.4}, {175, 0.6}, {250, 0.8}, {350, 1.0}
     };
 
     protected final Telemetry globalTelemetry;
 
-    private final DcMotorEx motorLeft;
-    private final DcMotorEx motorRight;
+    private final DcMotor motorLeft;
+    private final DcMotor motorRight;
 
     protected double motorTargetPower;
 
     private boolean isRunning = false;
 
-    public Cannon(Telemetry globalTelemetry, DcMotorEx motorLeft, DcMotorEx motorRight) {
+    public Cannon(Telemetry globalTelemetry, DcMotor motorLeft, DcMotor motorRight) {
         this.globalTelemetry = globalTelemetry;
         this.motorLeft = motorLeft;
         this.motorRight = motorRight;
-
-        this.motorLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        this.motorRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
-        this.motorLeft.setDirection(DcMotorEx.Direction.REVERSE);
-        this.motorRight.setDirection(DcMotorEx.Direction.FORWARD);
     }
 
     @Override
     public void apply() {
-        this.motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        motorLeft.setPower(-motorTargetPower); // Motors are mirrored
-//        motorRight.setPower(motorTargetPower);
-//        motorLeft.setVelocity(-motorTargetPower);
-//        motorRight.setVelocity(motorTargetPower);
-        motorLeft.setVelocity(50);
-        motorRight.setVelocity(50);
-        globalTelemetry.addData("velocity", motorLeft.getVelocity());
+        motorLeft.setPower(-motorTargetPower); // Motors are mirrored
+        motorRight.setPower(motorTargetPower);
     }
 
     /// Toggle cannon motor on/off.

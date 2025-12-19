@@ -1,19 +1,17 @@
 package modules.actuator;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.HashMap;
 
-@Config
 public class Intake implements RobotActuatorModule {
 
     private final Telemetry globalTelemetry;
     private final DcMotor motor;
 
-    private static double MOVING_SPEED = -1f;
+    private static final double MOVING_SPEED = -1.0f;
     private double motorTargetPower;
     private boolean isRunning = false;
 
@@ -33,16 +31,6 @@ public class Intake implements RobotActuatorModule {
         update();
 
         globalTelemetry.addData("Intake Motor Power", motorTargetPower);
-    }
-
-    public void on() {
-        isRunning = true;
-        update();
-    }
-
-    public void off() {
-        isRunning = false;
-        update();
     }
 
     /// Update motor power.
