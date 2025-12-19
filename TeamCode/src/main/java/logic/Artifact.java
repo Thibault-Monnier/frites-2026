@@ -1,5 +1,7 @@
 package logic;
 
+import androidx.annotation.NonNull;
+
 import math.Position2D;
 
 public class Artifact extends FieldElement {
@@ -19,7 +21,19 @@ public class Artifact extends FieldElement {
     }
 
     public enum Color {
-        PURPLE,
-        GREEN
+        PURPLE {
+            @NonNull
+            @Override
+            public String toString() {
+                return "P";
+            }
+        },
+        GREEN {
+            @NonNull
+            @Override
+            public String toString() {
+                return "G";
+            }
+        }
     }
 }

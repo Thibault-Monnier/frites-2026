@@ -148,16 +148,12 @@ public class ManualOpMode extends LinearOpMode {
 
         if (calculatePose) {
             if (sequence == null) {
-                try {
-                    sequence = Sequence.findCurrentSequence(robotPosition.getLimelightHandler());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                sequence = Sequence.findCurrentSequence(robotPosition.getLimelightHandler());
             }
 
             if (sequence != null) {
                 // Show the current sequence
-                globalTelemetry.addData("PATTERN", sequence.toString());
+                globalTelemetry.addData("Pattern", sequence.toString());
             }
         }
 
