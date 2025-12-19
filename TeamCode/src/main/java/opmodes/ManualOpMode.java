@@ -186,11 +186,8 @@ public class ManualOpMode extends LinearOpMode {
 
         if (gamepad.isPressed(GamepadController.Button.TRIGGER_LEFT)) cannon.toggle();
 
-        if (gamepad.isPressing(GamepadController.Button.DPAD_LEFT)) cannonBufferLeft.on();
-        else cannonBufferLeft.off();
-
-        if (gamepad.isPressing(GamepadController.Button.DPAD_RIGHT)) cannonBufferRight.on();
-        else cannonBufferRight.off();
+        cannonBufferLeft.set(gamepad.isPressing(GamepadController.Button.DPAD_LEFT));
+        cannonBufferRight.set(gamepad.isPressing(GamepadController.Button.DPAD_RIGHT));
 
         if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT)) {
             cannonBufferLeft.on();

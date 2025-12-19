@@ -41,6 +41,10 @@ public class CannonBuffer implements RobotActuatorModule {
         isRunning = !isRunning;
     }
 
+    public void set(boolean running) {
+        isRunning = running;
+    }
+
     @Override
     public HashMap<String, Object> getCurrentState() {
         throw new UnsupportedOperationException("Cannon module does not support state saving.");
