@@ -169,7 +169,10 @@ public class ManualOpMode extends LinearOpMode {
 
         // Translation : unpressed (fast) and pressed (slow)
         move.joystickTranslate(
-                gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK), robotPosition);
+                gamepad1,
+                gamepad.isPressing(GamepadController.Button.LEFT_STICK),
+                robotPosition,
+                team);
 
         // Rotation : bumpers (fast) and triggers (slow)
         move.bumperTurn(gamepad1);

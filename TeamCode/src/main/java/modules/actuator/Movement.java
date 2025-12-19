@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
 import logic.RobotPosition;
+import logic.Team;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -92,7 +93,7 @@ public class Movement implements RobotActuatorModule {
     }
 
     public void joystickTranslate(
-            Gamepad gamepad, boolean slow, @Nullable RobotPosition robotPosition) {
+            Gamepad gamepad, boolean slow, @Nullable RobotPosition robotPosition, Team team) {
         double speedMultiplier = slow ? 0.5 : 1;
 
         double sideways = gamepad.left_stick_x * speedMultiplier;
@@ -107,7 +108,7 @@ public class Movement implements RobotActuatorModule {
                 throw new IllegalArgumentException(
                         "Robot position cannot be null in field-centric mode");
             }
-            moveFieldCentric(front, sideways, robotPosition);
+            moveFieldCentric(front, sideways, robotPosition, team);
         } else {
             move(front, sideways, 0);
         }
@@ -126,8 +127,12 @@ public class Movement implements RobotActuatorModule {
         return 0;
     }
 
-    private void moveFieldCentric(double front, double sideways, RobotPosition robotPosition) {
+    private void moveFieldCentric(
+            double front, double sideways, RobotPosition robotPosition, Team team) {
         double robotAngle = robotPosition.getPose().getHeading(AngleUnit.RADIANS);
+
+        if (team.isBlue()) robotAngle -= Math.PI / 2;
+        if (team.isRed()) robotAngle += Math.PI / 2;
 
         double newFront = -front * Math.cos(robotAngle) - sideways * Math.sin(robotAngle);
         double newSideways = front * Math.sin(robotAngle) - sideways * Math.cos(robotAngle);
