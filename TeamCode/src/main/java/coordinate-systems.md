@@ -38,7 +38,7 @@ to [Coordinate systems](#coordinate-systems) for details on each coordinate syst
 
 - Origin: Center of the field
 - X axis: Positive X points toward the audience side
-- Y axis: Positive Y points toward the red alliance side
+- Y axis: Positive Y points toward the blue alliance side
 - Zero rotation: Direction of the +X axis
 - Rotation direction: Positive rotation is counter-clockwise
 - Units: Inches, degrees. Usually they are auto-converted upon access.
