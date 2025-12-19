@@ -50,6 +50,7 @@ Relative to the robot
 - Origin: Center of the robot
 - X axis: Positive X points toward the right side of the robot
 - Y axis: Positive Y points toward the front of the robot
+- Zero rotation: Direction of the +Y axis
 - Rotation direction: Positive rotation is counter-clockwise
 - Units: Radians. It does not impose any distance unit, so we use auto-converting classes (e.g.
   `Pose2D`, `Distance`, etc.)
