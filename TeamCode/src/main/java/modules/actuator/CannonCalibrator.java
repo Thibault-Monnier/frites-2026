@@ -41,11 +41,7 @@ public class CannonCalibrator extends Cannon {
     }
 
     public void printCalibrationData() {
-        for (Map.Entry<Distance, Double> entry : savedCalibrationData.entrySet()) {
-            globalTelemetry.addData("Distance", entry.getKey().toString());
-            globalTelemetry.addData("Motor Power", entry.getValue());
-            globalTelemetry.addLine("-------------------");
-        }
-        globalTelemetry.update();
+        globalTelemetry.addLine("--- Saved Calibration Data ---");
+        globalTelemetry.addData("Values", savedCalibrationData.toString());
     }
 }

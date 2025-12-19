@@ -133,7 +133,6 @@ public class CannonCalibrationOpMode extends LinearOpMode {
         if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) cannonCalibrator.slowdown();
         if (gamepad.isPressed(GamepadController.Button.B)) {
             cannonCalibrator.saveCurrentCalibrationData(targetDistance);
-            cannonCalibrator.printCalibrationData();
         }
 
         if (gamepad.isPressing(GamepadController.Button.DPAD_LEFT)) {
@@ -151,6 +150,7 @@ public class CannonCalibrationOpMode extends LinearOpMode {
 
         globalTelemetry.addLine("--- CALIBRATION MODE ---");
         globalTelemetry.addData("Team", team);
+        cannonCalibrator.printCalibrationData();
 
         /* --- APPLY --- */
         move.apply();
@@ -167,5 +167,6 @@ public class CannonCalibrationOpMode extends LinearOpMode {
 
     public void runStop() {
         cannonCalibrator.printCalibrationData();
+        globalTelemetry.update();
     }
 }
