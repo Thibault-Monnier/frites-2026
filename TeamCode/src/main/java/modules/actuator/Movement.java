@@ -96,6 +96,7 @@ public class Movement implements RobotActuatorModule {
         move(0, 0, turn);
     }
 
+
     public void joystickTranslate(Gamepad gamepad, boolean slow) {
         double speedMultiplier = slow ? 0.5 : 1;
 
@@ -107,6 +108,16 @@ public class Movement implements RobotActuatorModule {
         front = smooth(front);
 
         move(front, sideways, 0);
+    }
+
+    public void rotateWithRightStick(Gamepad gamepad, boolean slow) {
+        double speedMultiplier = slow ? BUMPER_TURN_VALUE : 1;
+
+        double turn = gamepad.right_stick_x * speedMultiplier;
+
+        turn = smooth(turn);
+
+        move(0, 0, turn);
     }
 
     private double smooth(double input) {

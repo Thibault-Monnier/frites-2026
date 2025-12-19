@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -89,8 +90,8 @@ public class CannonCalibrationOpMode extends LinearOpMode {
         cannonCalibrator =
                 new CannonCalibrator(
                         globalTelemetry,
-                        hardwareMap.get(DcMotor.class, HardwareConstants.CANNON_MOTOR_LEFT_ID),
-                        hardwareMap.get(DcMotor.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID));
+                        hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_LEFT_ID),
+                        hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID));
 
         cannonBufferLeft =
                 new CannonBuffer(
@@ -129,8 +130,8 @@ public class CannonCalibrationOpMode extends LinearOpMode {
         Distance targetDistance = playingField.distanceToGoal(robotPosition.getPosition(), team);
 
         if (gamepad.isPressed(GamepadController.Button.X)) cannonCalibrator.toggle();
-        if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) cannonCalibrator.speedup();
-        if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) cannonCalibrator.slowdown();
+        if (gamepad.isPressed(GamepadController.Button.Y)) cannonCalibrator.speedup();
+        if (gamepad.isPressed(GamepadController.Button.RIGHT_STICK)) cannonCalibrator.slowdown();
         if (gamepad.isPressed(GamepadController.Button.B)) {
             cannonCalibrator.saveCurrentCalibrationData(targetDistance);
             cannonCalibrator.printCalibrationData();

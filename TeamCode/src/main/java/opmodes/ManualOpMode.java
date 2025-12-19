@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -112,8 +113,8 @@ public class ManualOpMode extends LinearOpMode {
         cannon =
                 new Cannon(
                         globalTelemetry,
-                        hardwareMap.get(DcMotor.class, HardwareConstants.CANNON_MOTOR_LEFT_ID),
-                        hardwareMap.get(DcMotor.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID));
+                        hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_LEFT_ID),
+                        hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID));
 
         cannonBufferLeft =
                 new CannonBuffer(
@@ -175,7 +176,9 @@ public class ManualOpMode extends LinearOpMode {
         move.joystickTranslate(gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK));
 
         // Rotation : bumpers (fast) and triggers (slow)
-        move.bumperTurn(gamepad1);
+//        move.bumperTurn(gamepad1);
+        // Rotation: right stick
+        move.rotateWithRightStick(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
 
         /* --- ACTIONS --- */
         Distance targetDistance = new Distance(DistanceUnit.CM, 130); // Default distance
@@ -184,7 +187,8 @@ public class ManualOpMode extends LinearOpMode {
         globalTelemetry.addData("target dist", targetDistance.toString());
         cannon.update(targetDistance);
 
-        if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
+        if (gamepad.isPressed(GamepadController.Button.TRIGGER_LEFT)) cannon.toggle();
+
 
         if (gamepad.isPressing(GamepadController.Button.DPAD_LEFT)) cannonBufferLeft.on();
         else cannonBufferLeft.off();
@@ -192,7 +196,16 @@ public class ManualOpMode extends LinearOpMode {
         if (gamepad.isPressing(GamepadController.Button.DPAD_RIGHT)) cannonBufferRight.on();
         else cannonBufferRight.off();
 
-        if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
+        if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT)) {
+            cannonBufferLeft.on();
+            cannonBufferRight.on();
+        } else {
+            cannonBufferLeft.off();
+            cannonBufferRight.off();
+        }
+
+        if (gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) intake.on();
+        else intake.off();
         if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
         if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
 

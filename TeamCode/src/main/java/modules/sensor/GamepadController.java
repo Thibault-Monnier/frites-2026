@@ -9,7 +9,7 @@ public class GamepadController {
     public static double LONG_PRESS_TIME = 0.5;
     public static double DOUBLE_PRESS_INTERVAL = 0.3;
 
-    protected final Gamepad gamepad;
+    public final Gamepad gamepad;
     protected final ElapsedTime runtime;
 
     public GamepadController(ElapsedTime globalRuntime, Gamepad globalGamepad) {
@@ -65,7 +65,11 @@ public class GamepadController {
         RIGHT_STICK(gamepad -> gamepad.right_stick_button),
         OPTIONS(gamepad -> gamepad.options),
         SHARE(gamepad -> gamepad.share),
-        HOME(gamepad -> gamepad.guide);
+        HOME(gamepad -> gamepad.guide),
+        TRIGGER_RIGHT(gamepad -> gamepad.right_trigger > 0.5),
+        TRIGGER_LEFT(gamepad -> gamepad.left_trigger > 0.5),
+        BUMPER_RIGHT(gamepad -> gamepad.right_bumper),
+        BUMPER_LEFT(gamepad -> gamepad.left_bumper);
 
         private final java.util.function.Function<Gamepad, Boolean> accessor;
 

@@ -1,6 +1,7 @@
 package modules.actuator;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import math.Distance;
 
@@ -14,7 +15,7 @@ public class CannonCalibrator extends Cannon {
 
     private final Map<Distance, Double> savedCalibrationData = new HashMap<>();
 
-    public CannonCalibrator(Telemetry globalTelemetry, DcMotor motorLeft, DcMotor motorRight) {
+    public CannonCalibrator(Telemetry globalTelemetry, DcMotorEx motorLeft, DcMotorEx motorRight) {
         super(globalTelemetry, motorLeft, motorRight);
     }
 
