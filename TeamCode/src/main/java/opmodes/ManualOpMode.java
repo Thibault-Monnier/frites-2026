@@ -99,6 +99,10 @@ public class ManualOpMode extends LinearOpMode {
 
         gamepad = new GamepadController(runtime, gamepad1);
 
+        Movement.MovementMode movementMode =
+                calculatePose
+                        ? Movement.MovementMode.FIELD_CENTRIC
+                        : Movement.MovementMode.ROBOT_CENTRIC;
         IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConstants.IMU_ID);
         move =
                 new Movement(
@@ -107,6 +111,7 @@ public class ManualOpMode extends LinearOpMode {
                         hardwareMap.get(DcMotor.class, HardwareConstants.FRONT_RIGHT_MOTOR_ID),
                         hardwareMap.get(DcMotor.class, HardwareConstants.BACK_LEFT_MOTOR_ID),
                         hardwareMap.get(DcMotor.class, HardwareConstants.BACK_RIGHT_MOTOR_ID),
+                        movementMode,
                         onBoardIMU);
 
         cannon =
@@ -157,18 +162,9 @@ public class ManualOpMode extends LinearOpMode {
             }
         }
 
-        /*
-        if (gamepad.isPressed(GamepadController.Button.LEFT_STICK)) {
-            if (move.getMovementMode() == Movement.MovementMode.ROBOT_CENTRIC) {
-                move.setMovementMode(Movement.MovementMode.FIELD_CENTRIC);
-            } else {
-                move.setMovementMode(Movement.MovementMode.ROBOT_CENTRIC);
-            }
-        }
-        */
-
         // Translation : unpressed (fast) and pressed (slow)
-        move.joystickTranslate(gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK));
+        move.joystickTranslate(
+                gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK), robotPosition);
 
         // Rotation : bumpers (fast) and triggers (slow)
         move.bumperTurn(gamepad1);
