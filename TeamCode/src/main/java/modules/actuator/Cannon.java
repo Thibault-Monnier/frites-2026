@@ -32,6 +32,9 @@ public class Cannon implements RobotActuatorModule {
 
         this.motorLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         this.motorRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        this.motorLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        this.motorRight.setDirection(DcMotorEx.Direction.FORWARD);
     }
 
     @Override
@@ -42,8 +45,8 @@ public class Cannon implements RobotActuatorModule {
 //        motorRight.setPower(motorTargetPower);
 //        motorLeft.setVelocity(-motorTargetPower);
 //        motorRight.setVelocity(motorTargetPower);
-        motorLeft.setVelocity(-1.7);
-        motorRight.setVelocity(1.7);
+        motorLeft.setVelocity(50);
+        motorRight.setVelocity(50);
         globalTelemetry.addData("velocity", motorLeft.getVelocity());
     }
 
