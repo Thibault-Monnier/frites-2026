@@ -22,6 +22,7 @@ import modules.actuator.CannonCalibrator;
 import modules.actuator.Intake;
 import modules.actuator.IntakeSwitcher;
 import modules.actuator.Movement;
+import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -33,6 +34,8 @@ public class CannonCalibrationOpMode extends LinearOpMode {
 
     private RobotPosition robotPosition;
     private final PlayingField playingField;
+
+    private BatteryMonitor batteryMonitor;
 
     private GamepadController gamepad;
     private Movement move;
@@ -73,6 +76,8 @@ public class CannonCalibrationOpMode extends LinearOpMode {
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
+
+        batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
 
         gamepad = new GamepadController(runtime, gamepad1);
 

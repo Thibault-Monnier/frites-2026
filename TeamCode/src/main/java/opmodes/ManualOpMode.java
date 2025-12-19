@@ -26,6 +26,7 @@ import modules.actuator.Intake;
 import modules.actuator.IntakeSwitcher;
 import modules.actuator.Movement;
 import modules.actuator.RobotActuatorModule;
+import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -41,6 +42,8 @@ public class ManualOpMode extends LinearOpMode {
 
     private RobotPosition robotPosition;
     private final PlayingField playingField;
+
+    private BatteryMonitor batteryMonitor;
 
     private GamepadController gamepad;
     private Movement move;
@@ -96,6 +99,8 @@ public class ManualOpMode extends LinearOpMode {
 
         if (calculatePose)
             robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
+
+        batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
 
         gamepad = new GamepadController(runtime, gamepad1);
 
@@ -191,6 +196,8 @@ public class ManualOpMode extends LinearOpMode {
         /* --- OPMODE TELEMETRY --- */
         globalTelemetry.addLine("--- MANUAL MODE ---");
         globalTelemetry.addData("Team", team);
+
+        batteryMonitor.log();
 
         /* --- APPLY --- */
         move.apply();
