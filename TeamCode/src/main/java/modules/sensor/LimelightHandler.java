@@ -47,7 +47,7 @@ public class LimelightHandler {
 
     public void start() {
         limelight.start();
-        dashboard.startCameraStream(limelight, 0);
+        dashboard.startCameraStream(limelight, 5);
     }
 
     public void stop() {
