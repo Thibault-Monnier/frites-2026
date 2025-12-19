@@ -174,8 +174,8 @@ public class ManualOpMode extends LinearOpMode {
                 robotPosition,
                 team);
 
-        // Rotation : bumpers (fast) and triggers (slow)
-        move.bumperTurn(gamepad1);
+        // Rotation : unpressed (fast) and pressed (slow)
+        move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
 
         /* --- ACTIONS --- */
         Distance targetDistance = new Distance(DistanceUnit.CM, 130); // Default distance
@@ -184,7 +184,7 @@ public class ManualOpMode extends LinearOpMode {
         globalTelemetry.addData("target dist", targetDistance.toString());
         cannon.update(targetDistance);
 
-        if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
+        if (gamepad.isPressed(GamepadController.Button.TRIGGER_LEFT)) cannon.toggle();
 
         if (gamepad.isPressing(GamepadController.Button.DPAD_LEFT)) cannonBufferLeft.on();
         else cannonBufferLeft.off();
@@ -192,7 +192,16 @@ public class ManualOpMode extends LinearOpMode {
         if (gamepad.isPressing(GamepadController.Button.DPAD_RIGHT)) cannonBufferRight.on();
         else cannonBufferRight.off();
 
-        if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
+        if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT)) {
+            cannonBufferLeft.on();
+            cannonBufferRight.on();
+        } else {
+            cannonBufferLeft.off();
+            cannonBufferRight.off();
+        }
+
+        if (gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) intake.on();
+        else intake.off();
         if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
         if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
 

@@ -29,9 +29,6 @@ public class Movement implements RobotActuatorModule {
     public static double BACK_LEFT_COEFF = 1;
     public static double BACK_RIGHT_COEFF = 1;
 
-    public static double BUMPER_TURN_VALUE = 0.5; // 0.3;
-    public static double TRIGGER_TURN_VALUE = 0.8;
-
     /* --- CLASS FIELDS --- */
 
     // CONSTRUCTOR FIELDS
@@ -81,17 +78,18 @@ public class Movement implements RobotActuatorModule {
         globalImu.initialize(parameters);
     }
 
-    public void bumperTurn(Gamepad gamepad) {
-        if (gamepad.left_bumper || gamepad.right_bumper) {
-            if (gamepad.left_bumper) turn -= BUMPER_TURN_VALUE;
-            if (gamepad.right_bumper) turn += BUMPER_TURN_VALUE;
-        } else {
-            turn += gamepad.right_trigger * TRIGGER_TURN_VALUE;
-            turn -= gamepad.left_trigger * TRIGGER_TURN_VALUE;
-        }
+    /// Rotates the robot using input from the *right* joystick of the gamepad.
+    public void joystickRotate(Gamepad gamepad, boolean slow) {
+        double speedMultiplier = slow ? 0.5 : 1;
+
+        double turn = gamepad.right_stick_x * speedMultiplier;
+
+        turn = smooth(turn);
+
         move(0, 0, turn);
     }
 
+    /// Translates the robot using input from the *left* joystick of the gamepad.
     public void joystickTranslate(
             Gamepad gamepad, boolean slow, @Nullable RobotPosition robotPosition, Team team) {
         double speedMultiplier = slow ? 0.5 : 1;

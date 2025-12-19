@@ -29,13 +29,24 @@ public class Intake implements RobotActuatorModule {
     public void toggle() {
         isRunning = !isRunning;
         update();
+    }
 
-        globalTelemetry.addData("Intake Motor Power", motorTargetPower);
+    /// Turn intake motor on.
+    public void on() {
+        isRunning = true;
+        update();
+    }
+
+    /// Turn intake motor off.
+    public void off() {
+        isRunning = false;
+        update();
     }
 
     /// Update motor power.
     private void update() {
         motorTargetPower = isRunning ? MOVING_SPEED : 0;
+        globalTelemetry.addData("Intake Motor Power", motorTargetPower);
     }
 
     @Override

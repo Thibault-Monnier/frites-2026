@@ -133,13 +133,13 @@ public class CannonCalibrationOpMode extends LinearOpMode {
                 robotPosition,
                 team);
 
-        // Rotation : bumpers (fast) and triggers (slow)
-        move.bumperTurn(gamepad1);
+        // Rotation : unpressed (fast) and pressed (slow)
+        move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
 
         /* --- ACTIONS --- */
         Distance targetDistance = playingField.distanceToGoal(robotPosition.getPosition(), team);
 
-        if (gamepad.isPressed(GamepadController.Button.X)) cannonCalibrator.toggle();
+        if (gamepad.isPressed(GamepadController.Button.TRIGGER_LEFT)) cannonCalibrator.toggle();
         if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) cannonCalibrator.speedup();
         if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) cannonCalibrator.slowdown();
         if (gamepad.isPressed(GamepadController.Button.B)) {
