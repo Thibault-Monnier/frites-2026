@@ -98,7 +98,20 @@ public class Cannon implements RobotActuatorModule {
         } else {
             motorTargetVelocity = 0.0;
         }
-        globalTelemetry.addData("Cannon Motor Velocity/target", motorRight.getVelocity(velocityAngleUnit) + "/" + motorTargetVelocity);
+        globalTelemetry.addData("Cannon Motor Velocity/target", this.getVelocity() + "/" + motorTargetVelocity);
+    }
+
+    /**
+     * @return Average velocity between the two motors
+     */
+    public double getVelocity() {
+        return (motorLeft.getVelocity(velocityAngleUnit) + motorRight.getVelocity(velocityAngleUnit)) / 2;
+    }
+
+    public boolean isReadyToShoot() {
+        // Allow ~100 deg/sec of error, as this.getVelocity isn't perfect.
+        double error = 100;
+        return this.getVelocity() >= this.motorTargetVelocity - error;
     }
 
     protected double computeVelocity(Distance target2dDistance) {

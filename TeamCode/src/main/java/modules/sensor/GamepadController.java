@@ -52,6 +52,10 @@ public class GamepadController {
         return isPressed(button) && intervalSeconds <= DOUBLE_PRESS_INTERVAL;
     }
 
+    public void rumble(int i) {
+        this.gamepad.rumble(i);
+    }
+
     public enum Button {
         A(gamepad -> gamepad.a),
         B(gamepad -> gamepad.b),

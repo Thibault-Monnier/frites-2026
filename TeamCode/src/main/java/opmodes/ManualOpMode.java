@@ -190,12 +190,18 @@ public class ManualOpMode extends LinearOpMode {
         cannonBufferLeft.set(gamepad.isPressing(GamepadController.Button.DPAD_LEFT));
         cannonBufferRight.set(gamepad.isPressing(GamepadController.Button.DPAD_RIGHT));
 
-        if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT)) {
+        // Make sure the cannon reached it's target velocity
+        if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot()) {
             cannonBufferLeft.on();
             cannonBufferRight.on();
         } else {
             cannonBufferLeft.off();
             cannonBufferRight.off();
+
+            if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT)) {
+                // Cannon ain't ready!
+                gamepad.rumble(200);
+            }
         }
 
         if (gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT)) intake.on();
