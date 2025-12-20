@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -122,8 +123,8 @@ public class ManualOpMode extends LinearOpMode {
         cannon =
                 new Cannon(
                         globalTelemetry,
-                        hardwareMap.get(DcMotor.class, HardwareConstants.CANNON_MOTOR_LEFT_ID),
-                        hardwareMap.get(DcMotor.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID));
+                        hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_LEFT_ID),
+                        hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID));
 
         cannonBufferLeft =
                 new CannonBuffer(
@@ -184,7 +185,7 @@ public class ManualOpMode extends LinearOpMode {
         globalTelemetry.addData("target dist", targetDistance.toString());
         cannon.update(targetDistance);
 
-        if (gamepad.isPressed(GamepadController.Button.TRIGGER_LEFT)) cannon.toggle();
+        if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
 
         cannonBufferLeft.set(gamepad.isPressing(GamepadController.Button.DPAD_LEFT));
         cannonBufferRight.set(gamepad.isPressing(GamepadController.Button.DPAD_RIGHT));
@@ -197,7 +198,7 @@ public class ManualOpMode extends LinearOpMode {
             cannonBufferRight.off();
         }
 
-        if (gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) intake.on();
+        if (gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT)) intake.on();
         else intake.off();
         if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
         if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
