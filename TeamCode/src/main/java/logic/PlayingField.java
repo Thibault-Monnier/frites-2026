@@ -36,7 +36,7 @@ public class PlayingField {
         return color.isBlue() ? FieldConstants.BLUE_START_POSE : FieldConstants.RED_START_POSE;
     }
 
-    private static Position2D goalPos(Team color) {
+    public static Position2D goalPos(Team color) {
         return color.isBlue() ? BLUE_GOAL.position : RED_GOAL.position;
     }
 

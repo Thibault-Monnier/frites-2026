@@ -148,7 +148,7 @@ public class ManualOpMode extends LinearOpMode {
                         hardwareMap.get(Servo.class, HardwareConstants.INTAKE_SWITCHER_SERVO));
 
         if (replay) {
-            replaySaver = new Replayer.Logger(runtime, new RobotActuatorModule[] {move});
+            replaySaver = new Replayer.Logger(runtime, new RobotActuatorModule[]{move});
         }
     }
 
@@ -168,15 +168,21 @@ public class ManualOpMode extends LinearOpMode {
             }
         }
 
-        // Translation : unpressed (fast) and pressed (slow)
-        move.joystickTranslate(
-                gamepad1,
-                gamepad.isPressing(GamepadController.Button.LEFT_STICK),
-                robotPosition,
-                team);
+        if (calculatePose && gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) {
+            // Lock towards the goal
+            move.lockTowardsPoint(
+                    PlayingField.goalPos(team), robotPosition.getPose(), gamepad1);
+        } else {
+            // Translation : unpressed (fast) and pressed (slow)
+            move.joystickTranslate(
+                    gamepad1,
+                    gamepad.isPressing(GamepadController.Button.LEFT_STICK),
+                    robotPosition,
+                    team);
 
-        // Rotation : unpressed (fast) and pressed (slow)
-        move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
+            // Rotation : unpressed (fast) and pressed (slow)
+            move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
+        }
 
         /* --- ACTIONS --- */
         Distance targetDistance = new Distance(DistanceUnit.CM, 130); // Default distance
