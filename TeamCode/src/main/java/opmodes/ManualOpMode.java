@@ -196,6 +196,14 @@ public class ManualOpMode extends LinearOpMode {
         cannonBufferLeft.set(gamepad.isPressing(GamepadController.Button.DPAD_LEFT));
         cannonBufferRight.set(gamepad.isPressing(GamepadController.Button.DPAD_RIGHT));
 
+        // LED indication for cannon readiness
+        gamepad.gamepad.setLedColor(
+                cannon.isReadyToShoot() ? 0f : 1f,
+                cannon.isReadyToShoot() ? 1f : 0f,
+                0f,
+                50
+        );
+
         // Make sure the cannon reached it's target velocity
         if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot()) {
             cannonBufferLeft.on();

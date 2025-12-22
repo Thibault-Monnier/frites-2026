@@ -9,7 +9,7 @@ public class GamepadController {
     public static double LONG_PRESS_TIME = 0.5;
     public static double DOUBLE_PRESS_INTERVAL = 0.3;
 
-    private final Gamepad gamepad;
+    public final Gamepad gamepad;
     private final ElapsedTime runtime;
 
     public GamepadController(ElapsedTime globalRuntime, Gamepad globalGamepad) {
