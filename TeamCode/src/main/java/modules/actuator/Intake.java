@@ -43,6 +43,11 @@ public class Intake implements RobotActuatorModule {
         update();
     }
 
+    /// Set intake motor state.
+    public void set(boolean isRunning) {
+        this.isRunning = isRunning;
+    }
+
     /// Update motor power.
     private void update() {
         motorTargetPower = isRunning ? MOVING_SPEED : 0;

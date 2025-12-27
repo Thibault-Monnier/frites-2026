@@ -37,7 +37,7 @@ public class CannonCalibrator extends Cannon {
     }
 
     public void saveCurrentCalibrationData(Distance target2dDistance) {
-        savedCalibrationData.put(target2dDistance, this.motorLeft.getVelocity());
+        savedCalibrationData.put(target2dDistance, getAverageVelocity());
     }
 
     public void printCalibrationData() {

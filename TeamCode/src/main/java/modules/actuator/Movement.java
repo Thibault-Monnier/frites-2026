@@ -1,11 +1,10 @@
 package modules.actuator;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -15,6 +14,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import logic.RobotPosition;
 import logic.Team;
+
 import math.Pose2D;
 import math.Position2D;
 
@@ -98,24 +98,62 @@ public class Movement implements RobotActuatorModule {
     /// Translates the robot using input from the *left* joystick of the gamepad.
     public void joystickTranslate(
             Gamepad gamepad, boolean slow, @Nullable RobotPosition robotPosition, Team team) {
-        double speedMultiplier = slow ? 0.5 : 1;
-
-        double sideways = gamepad.left_stick_x * speedMultiplier;
-        double front = gamepad.left_stick_y * speedMultiplier;
-
-        // Gradual speed increase
-        sideways = smooth(sideways);
-        front = smooth(front);
+        Pair<Double, Double> speed = getTranslationSpeed(gamepad, slow);
 
         if (movementMode == MovementMode.FIELD_CENTRIC) {
             if (robotPosition == null) {
                 throw new IllegalArgumentException(
                         "Robot position cannot be null in field-centric mode");
             }
-            moveFieldCentric(front, sideways, robotPosition, team);
+            moveFieldCentric(speed.first, speed.second, robotPosition, team);
         } else {
-            move(front, sideways, 0);
+            move(speed.first, speed.second, 0);
         }
+    }
+
+    /// Moves while turning towards a target position.
+    public void lockTowardsPoint(
+            Gamepad gamepad,
+            boolean slow,
+            RobotPosition robotPosition,
+            Team team,
+            Position2D targetPos) {
+        Pair<Double, Double> speed = getTranslationSpeed(gamepad, slow);
+
+        Pose2D robotPose = robotPosition.getPose();
+
+        double dx = targetPos.getX(DistanceUnit.INCH) - robotPose.getX(DistanceUnit.INCH);
+        double dy = targetPos.getY(DistanceUnit.INCH) - robotPose.getY(DistanceUnit.INCH);
+        double targetDirection = Math.atan2(dy, dx);
+        double angleError =
+                AngleUnit.normalizeRadians(
+                        targetDirection - robotPose.getHeading(AngleUnit.RADIANS));
+
+        double kP = 1.0; // tune for smoothness
+        double turnSpeed = angleError * kP;
+        turnSpeed = Math.clamp(turnSpeed, -1, 1);
+
+        if (movementMode == MovementMode.FIELD_CENTRIC) {
+            moveFieldCentric(speed.first, speed.second, robotPosition, team);
+        } else {
+            move(speed.first, speed.second, turnSpeed);
+        }
+    }
+
+    /// Computes translation speed forward and sideways. Returns the pair (forward, strafe).
+    private Pair<Double, Double> getTranslationSpeed(Gamepad gamepad, boolean slow) {
+        double forward = gamepad.left_stick_y * speedMultiplier(slow);
+        forward = smooth(forward);
+
+        double strafe = gamepad.left_stick_x * speedMultiplier(slow);
+        strafe = smooth(strafe);
+
+        return new Pair<>(forward, strafe);
+    }
+
+    /// Get movement speed multiplier
+    private double speedMultiplier(boolean slow) {
+        return slow ? 0.5 : 1;
     }
 
     private double smooth(double input) {
@@ -163,28 +201,6 @@ public class Movement implements RobotActuatorModule {
         backLeftPower = 0;
         backRightPower = 0;
         turn = 0;
-    }
-
-    public void lockTowardsPoint(Position2D targetPos, Pose2D robotPos, Gamepad gamepad) {
-        double forward = -gamepad.left_stick_y; // forward/back
-        double strafe = gamepad.left_stick_x;   // left/right
-
-        forward = smooth(forward);
-        strafe = smooth(strafe);
-
-        double dx = targetPos.getX(DistanceUnit.INCH) - robotPos.getX(DistanceUnit.INCH);
-        double dy = targetPos.getY(DistanceUnit.INCH) - robotPos.getY(DistanceUnit.INCH);
-
-        double targetHeading = Math.atan2(dy, dx);
-
-        double angleError = targetHeading - robotPos.getHeading(AngleUnit.RADIANS);
-        angleError = Math.atan2(Math.sin(angleError), Math.cos(angleError)); // wrap [-pi, pi]
-
-        double kP = 1.0; // tune for smoothness
-        double turnPower = angleError * kP;
-        turnPower = Math.max(-1, Math.min(1, turnPower));
-
-        move(forward, strafe, turnPower);
     }
 
     public boolean isMoving() {

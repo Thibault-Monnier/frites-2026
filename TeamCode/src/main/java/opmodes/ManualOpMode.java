@@ -148,7 +148,7 @@ public class ManualOpMode extends LinearOpMode {
                         hardwareMap.get(Servo.class, HardwareConstants.INTAKE_SWITCHER_SERVO));
 
         if (replay) {
-            replaySaver = new Replayer.Logger(runtime, new RobotActuatorModule[]{move});
+            replaySaver = new Replayer.Logger(runtime, new RobotActuatorModule[] {move});
         }
     }
 
@@ -169,9 +169,14 @@ public class ManualOpMode extends LinearOpMode {
         }
 
         if (calculatePose && gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) {
+            // Translation : unpressed (fast) and pressed (slow)
             // Lock towards the goal
             move.lockTowardsPoint(
-                    PlayingField.goalPos(team), robotPosition.getPose(), gamepad1);
+                    gamepad1,
+                    gamepad.isPressing(GamepadController.Button.LEFT_STICK),
+                    robotPosition,
+                    team,
+                    PlayingField.goalPos(team));
         } else {
             // Translation : unpressed (fast) and pressed (slow)
             move.joystickTranslate(
@@ -198,13 +203,9 @@ public class ManualOpMode extends LinearOpMode {
 
         // LED indication for cannon readiness
         gamepad.gamepad.setLedColor(
-                cannon.isReadyToShoot() ? 0f : 1f,
-                cannon.isReadyToShoot() ? 1f : 0f,
-                0f,
-                50
-        );
+                cannon.isReadyToShoot() ? 0f : 1f, cannon.isReadyToShoot() ? 1f : 0f, 0f, 50);
 
-        // Make sure the cannon reached it's target velocity
+        // Make sure the cannon reached its target velocity
         if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot()) {
             cannonBufferLeft.on();
             cannonBufferRight.on();
@@ -213,13 +214,12 @@ public class ManualOpMode extends LinearOpMode {
             cannonBufferRight.off();
 
             if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT)) {
-                // Cannon ain't ready!
+                // Cannon isn't ready
                 gamepad.rumble(200);
             }
         }
 
-        if (gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT)) intake.on();
-        else intake.off();
+        intake.set(gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT));
         if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
         if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
 
