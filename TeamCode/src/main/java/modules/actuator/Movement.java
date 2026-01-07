@@ -135,10 +135,6 @@ public class Movement implements RobotActuatorModule {
         double turnSpeed = -angleError * kP;
         turnSpeed = Math.clamp(turnSpeed, -1, 1);
 
-        if (Math.abs(turnSpeed) < minTurn && Math.abs(angleError) > Math.toRadians(1)) {
-            turnSpeed = Math.copySign(minTurn, turnSpeed);
-        }
-
         if (movementMode == MovementMode.FIELD_CENTRIC) {
             moveFieldCentric(speed.first, speed.second, turnSpeed, robotPosition, team);
         } else {
@@ -176,11 +172,7 @@ public class Movement implements RobotActuatorModule {
     }
 
     private void moveFieldCentric(
-            double front,
-            double sideways,
-            double turn,
-            RobotPosition robotPosition,
-            Team team) {
+            double front, double sideways, double turn, RobotPosition robotPosition, Team team) {
         double robotAngle = robotPosition.getPose().getHeading(AngleUnit.RADIANS);
 
         if (team.isBlue()) robotAngle -= Math.PI / 2;
