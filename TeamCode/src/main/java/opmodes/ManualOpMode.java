@@ -63,8 +63,6 @@ public class ManualOpMode extends LinearOpMode {
 
     private Replayer.Logger replaySaver;
 
-    private long currentFrame = 0;
-
     public ManualOpMode(Team team, boolean replay, boolean calculatePose) {
         this.team = team;
         this.replay = replay;
@@ -196,7 +194,6 @@ public class ManualOpMode extends LinearOpMode {
         if (calculatePose)
             targetDistance = playingField.distanceToGoal(robotPosition.getPosition(), team);
         globalTelemetry.addData("target dist", targetDistance.toString());
-//        cannon.update(targetDistance, currentFrame % 100 == 0);
         cannon.update(targetDistance);
 
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
@@ -209,7 +206,8 @@ public class ManualOpMode extends LinearOpMode {
                 cannon.isReadyToShoot() ? 0f : 1f, cannon.isReadyToShoot() ? 1f : 0f, 0f, 50);
 
         // Make sure the cannon reached its target velocity
-        if ((gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot()) || gamepad.isPressing(GamepadController.Button.BUMPER_RIGHT)) {
+        if ((gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot())
+                || gamepad.isPressing(GamepadController.Button.BUMPER_RIGHT)) {
             cannonBufferLeft.on();
             cannonBufferRight.on();
         } else {
@@ -222,13 +220,12 @@ public class ManualOpMode extends LinearOpMode {
             }
         }
 
-
         if (gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
             intake.on();
         } else {
             intake.off();
         }
-//        intake.set(gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT));
+        //        intake.set(gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT));
         if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
         if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
 
@@ -254,7 +251,5 @@ public class ManualOpMode extends LinearOpMode {
         if (replay) {
             replaySaver.logCurrentState();
         }
-
-        currentFrame++;
     }
 }
