@@ -105,7 +105,7 @@ public class Movement implements RobotActuatorModule {
                 throw new IllegalArgumentException(
                         "Robot position cannot be null in field-centric mode");
             }
-            moveFieldCentric(speed.first, speed.second, robotPosition, team);
+            moveFieldCentric(speed.first, speed.second, 0, robotPosition, team);
         } else {
             move(speed.first, speed.second, 0);
         }
@@ -129,12 +129,18 @@ public class Movement implements RobotActuatorModule {
                 AngleUnit.normalizeRadians(
                         targetDirection - robotPose.getHeading(AngleUnit.RADIANS));
 
-        double kP = 1.0; // tune for smoothness
-        double turnSpeed = angleError * kP;
+        double kP = 0.8;
+        double minTurn = 0.05;
+
+        double turnSpeed = -angleError * kP;
         turnSpeed = Math.clamp(turnSpeed, -1, 1);
 
+        if (Math.abs(turnSpeed) < minTurn && Math.abs(angleError) > Math.toRadians(1)) {
+            turnSpeed = Math.copySign(minTurn, turnSpeed);
+        }
+
         if (movementMode == MovementMode.FIELD_CENTRIC) {
-            moveFieldCentric(speed.first, speed.second, robotPosition, team);
+            moveFieldCentric(speed.first, speed.second, turnSpeed, robotPosition, team);
         } else {
             move(speed.first, speed.second, turnSpeed);
         }
@@ -170,7 +176,11 @@ public class Movement implements RobotActuatorModule {
     }
 
     private void moveFieldCentric(
-            double front, double sideways, RobotPosition robotPosition, Team team) {
+            double front,
+            double sideways,
+            double turn,
+            RobotPosition robotPosition,
+            Team team) {
         double robotAngle = robotPosition.getPose().getHeading(AngleUnit.RADIANS);
 
         if (team.isBlue()) robotAngle -= Math.PI / 2;
@@ -179,7 +189,7 @@ public class Movement implements RobotActuatorModule {
         double newFront = -front * Math.cos(robotAngle) - sideways * Math.sin(robotAngle);
         double newSideways = front * Math.sin(robotAngle) - sideways * Math.cos(robotAngle);
 
-        move(newFront, newSideways, 0);
+        move(newFront, newSideways, turn);
     }
 
     private void move(double front, double sideways, double turn) {

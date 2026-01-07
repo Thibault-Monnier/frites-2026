@@ -2,6 +2,8 @@ package modules.sensor;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import math.Distance;
 import math.Pose2D;
 
@@ -10,15 +12,23 @@ import modules.HardwareConstants;
 import roadrunner.GoBildaPinpointDriver;
 
 public final class OdometryHandler {
-    /** The offset of the x encoder along the y axis */
+    /**
+     * The offset of the x encoder along the y axis
+     */
     private static final Distance ENCODER_X_Y_OFFSET = Distance.fromMillimeters(-95);
 
-    /** The offset of the y encoder along the x axis */
+    /**
+     * The offset of the y encoder along the x axis
+     */
     private static final Distance ENCODER_Y_X_OFFSET = Distance.fromMillimeters(-200);
 
     public final GoBildaPinpointDriver driver;
 
-    public OdometryHandler(HardwareMap hardwareMap, Pose2D initialPose) {
+    private Telemetry globalTelemetry;
+
+    public OdometryHandler(HardwareMap hardwareMap, Pose2D initialPose, Telemetry globalTelemetry) {
+        this.globalTelemetry = globalTelemetry;
+
         driver = hardwareMap.get(GoBildaPinpointDriver.class, HardwareConstants.ODOMETRY_POD_ID);
 
         driver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
@@ -40,16 +50,34 @@ public final class OdometryHandler {
      * @return the current pose estimate
      */
     public Pose2D getPose() {
-        return Pose2D.fromNavigationPose2D(driver.getPosition());
+        Pose2D pose = null;
+        try {
+            pose = Pose2D.fromNavigationPose2D(driver.getPosition());
+        } catch (Exception e) {
+            globalTelemetry.addData("ERROR:", e.toString());
+        }
+        return pose;
     }
 
-    /** Overrides the current pose estimate. */
+    /**
+     * Overrides the current pose estimate.
+     */
     public void setPose(Pose2D pose) {
-        driver.setPosition(pose.toNavigationPose2D());
+        try {
+            driver.setPosition(pose.toNavigationPose2D());
+        } catch (Exception e) {
+            globalTelemetry.addData("ERROR:", e.toString());
+        }
     }
 
-    /** Updates the pose estimate. */
+    /**
+     * Updates the pose estimate.
+     */
     public void update() {
-        driver.update();
+        try {
+            driver.update();
+        } catch (Exception e) {
+            globalTelemetry.addData("ERROR:", e.toString());
+        }
     }
 }

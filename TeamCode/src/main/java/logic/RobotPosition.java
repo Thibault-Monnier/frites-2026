@@ -39,7 +39,7 @@ public class RobotPosition {
 
         pose = PlayingField.startPose(color);
         limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
-        odometryHandler = new OdometryHandler(hardwareMap, pose);
+        odometryHandler = new OdometryHandler(hardwareMap, pose, globalTelemetry);
 
         limelightHandler.init();
     }
