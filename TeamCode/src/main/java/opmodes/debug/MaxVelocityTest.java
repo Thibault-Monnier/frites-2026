@@ -5,9 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.opencv.core.Mat;
+import logic.PIDCoefficients;
+import logic.PIDController;
 
 import modules.HardwareConstants;
 
@@ -16,50 +17,40 @@ import modules.HardwareConstants;
 public class MaxVelocityTest extends LinearOpMode {
     DcMotorEx motorLeft;
     DcMotorEx motorRight;
-    double currentVelocityLeft = 0;
-    double currentVelocityRight = 0;
-    double maxVelocityLeft = 0;
-    double maxVelocityRight = 0;
+
+    PIDController pidControllerLeft;
+    PIDController pidControllerRight;
+
     public static double TARGET_VELOCITY = 1800;
 
-    public static PIDFCoefficients TARGET_PIDF = new PIDFCoefficients(0, 0, 0, 13.5);
+    public static PIDCoefficients TARGET_PID = new PIDCoefficients(50.0, 0.0, 0.0);
 
     @Override
     public void runOpMode() {
         this.motorLeft = hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_LEFT_ID);
         this.motorRight = hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID);
 
-//        PIDFCoefficients pidf = new PIDFCoefficients(0, 0,0, 28.75);
+        this.motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
+        motorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        this.motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        pidControllerLeft = new PIDController(motorLeft, telemetry);
+        pidControllerRight = new PIDController(motorRight, telemetry);
 
         waitForStart();
 
-        motorLeft.setVelocity(-TARGET_VELOCITY);
-        motorRight.setVelocity(TARGET_VELOCITY);
-
         while (opModeIsActive()) {
-            PIDFCoefficients pidf = TARGET_PIDF;
-            this.motorLeft.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
-            this.motorRight.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+            pidControllerLeft.setCoefficients(TARGET_PID);
+            pidControllerRight.setCoefficients(TARGET_PID);
+            telemetry.addData("PIDF", TARGET_PID.toString());
 
-            currentVelocityLeft = Math.abs(motorLeft.getVelocity());
-            currentVelocityRight = Math.abs(motorRight.getVelocity());
-
-            if (currentVelocityLeft > maxVelocityLeft) {
-                maxVelocityLeft = currentVelocityLeft;
-            }
-            if (currentVelocityRight > maxVelocityRight) {
-                maxVelocityRight = currentVelocityRight;
-            }
-
-            telemetry.addData("PIDF", pidf.toString());
-            telemetry.addData("currentVelocityLeft", currentVelocityLeft);
-            telemetry.addData("maxVelocityLeft", maxVelocityLeft);
-            telemetry.addData("currentVelocityRight", currentVelocityRight);
-            telemetry.addData("maxVelocityRight", maxVelocityRight);
+            motorLeft.setPower(pidControllerLeft.get(TARGET_VELOCITY));
+            motorRight.setPower(pidControllerRight.get(TARGET_VELOCITY));
 
             telemetry.update();
         }
