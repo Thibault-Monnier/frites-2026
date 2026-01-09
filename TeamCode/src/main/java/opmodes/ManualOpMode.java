@@ -185,6 +185,9 @@ public class ManualOpMode extends LinearOpMode {
             move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
         }
 
+        if (gamepad.isLongPressed(GamepadController.Button.Y) && calculatePose)
+            robotPosition.resetPose();
+
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
 
         // LED indication for cannon readiness

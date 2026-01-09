@@ -48,7 +48,7 @@ public class RobotPosition {
     }
 
     /** Resets the robot pose to the starting position. */
-    private void resetPose() {
+    public void resetPose() {
         pose = PlayingField.startPose(color);
         odometryHandler.setPose(pose);
     }
