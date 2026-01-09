@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -203,7 +204,7 @@ public class ManualOpMode extends LinearOpMode {
 
         // LED indication for cannon readiness
         gamepad.gamepad.setLedColor(
-                cannon.isReadyToShoot() ? 0f : 1f, cannon.isReadyToShoot() ? 1f : 0f, 0f, 50);
+                cannon.isReadyToShoot() ? 0f : 1f, cannon.isReadyToShoot() ? 1f : 0f, 0f, Gamepad.LED_DURATION_CONTINUOUS);
 
         // Make sure the cannon reached its target velocity
         if ((gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot())
