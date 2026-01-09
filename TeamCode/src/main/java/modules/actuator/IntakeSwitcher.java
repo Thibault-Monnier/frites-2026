@@ -11,11 +11,11 @@ import java.util.HashMap;
 public class IntakeSwitcher implements RobotActuatorModule {
     private final Telemetry globalTelemetry;
     private final Servo servo;
-    private boolean isAtLeftPos = false;
-    private boolean isAtCenter = true;
 
-    private static float CENTER_POS = 0.5F;
-    private static float OFFSET = 0.35F;
+    private Position currentPosition = Position.CENTER;
+
+    private static final double CENTER_POS = 0.49;
+    private static final double OFFSET = 0.105;
 
     public IntakeSwitcher(Telemetry globalTelemetry, Servo servo) {
         this.globalTelemetry = globalTelemetry;
@@ -26,28 +26,28 @@ public class IntakeSwitcher implements RobotActuatorModule {
 
     @Override
     public void apply() {
-        if (isAtCenter) {
+        if (currentPosition == Position.CENTER) {
             servo.setPosition(CENTER_POS);
+        } else if (currentPosition == Position.LEFT) {
+            servo.setPosition(CENTER_POS - OFFSET);
         } else {
-            if (isAtLeftPos) {
-                servo.setPosition(CENTER_POS - OFFSET);
-            } else {
-                servo.setPosition(CENTER_POS + OFFSET);
-            }
+            servo.setPosition(CENTER_POS + OFFSET);
         }
 
-        double pos = servo.getPosition();
-
-        globalTelemetry.addData("SERVO POSITION", pos);
+        globalTelemetry.addData("Intake Switcher Position", servo.getPosition());
     }
 
     public void toggle() {
-        isAtCenter = false;
-        isAtLeftPos = !isAtLeftPos;
+        if (currentPosition == Position.LEFT) {
+            currentPosition = Position.RIGHT;
+        } else {
+            currentPosition = Position.LEFT;
+        }
     }
 
+    /// Sets the intake switcher to the center position.
     public void center() {
-        isAtCenter = true;
+        currentPosition = Position.CENTER;
     }
 
     @Override
@@ -58,5 +58,11 @@ public class IntakeSwitcher implements RobotActuatorModule {
     @Override
     public void setState(HashMap<String, String> state) {
         throw new UnsupportedOperationException("Cannon module does not support state loading.");
+    }
+
+    enum Position {
+        LEFT,
+        CENTER,
+        RIGHT
     }
 }

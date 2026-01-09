@@ -62,7 +62,6 @@ public class CannonCalibrationOpMode extends LinearOpMode {
         waitForStart();
 
         runtime.reset();
-        robotPosition.maybeStart();
 
         while (opModeIsActive()) {
             runStep();

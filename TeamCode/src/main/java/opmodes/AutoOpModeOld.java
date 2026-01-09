@@ -57,7 +57,6 @@ public class AutoOpModeOld extends LinearOpMode {
         waitForStart();
 
         runtime.reset();
-        robotPosition.maybeStart();
 
         while (opModeIsActive()) {
             runStep();

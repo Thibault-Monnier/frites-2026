@@ -41,8 +41,7 @@ public class AutoOpMode extends LinearOpMode {
     }
 
     @Override
-    public void runOpMode() throws InterruptedException {
-
+    public void runOpMode() {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -70,8 +69,6 @@ public class AutoOpMode extends LinearOpMode {
                         globalTelemetry,
                         hardwareMap.get(com.qualcomm.robotcore.hardware.CRServo.class, HardwareConstants.CANNON_BUFFER_RIGHT),
                         com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD);
-
-        robotPosition.maybeStart();
 
         telemetry.addLine("Ready");
         telemetry.update();

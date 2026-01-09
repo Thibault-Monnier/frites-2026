@@ -22,25 +22,23 @@ public class Intake implements RobotActuatorModule {
 
     @Override
     public void apply() {
+        update();
         motor.setPower(motorTargetPower);
     }
 
     /// Toggle intake motor on/off.
     public void toggle() {
         isRunning = !isRunning;
-        update();
     }
 
     /// Turn intake motor on.
     public void on() {
         isRunning = true;
-        update();
     }
 
     /// Turn intake motor off.
     public void off() {
         isRunning = false;
-        update();
     }
 
     /// Set intake motor state.

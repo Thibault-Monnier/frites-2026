@@ -22,19 +22,18 @@ public final class OdometryHandler {
 
     private final Telemetry globalTelemetry;
 
-    public OdometryHandler(HardwareMap hardwareMap, Pose2D initialPose, Telemetry globalTelemetry) {
+    public OdometryHandler(HardwareMap hardwareMap, Telemetry globalTelemetry, Pose2D initialPose) {
         this.globalTelemetry = globalTelemetry;
 
         driver = hardwareMap.get(GoBildaPinpointDriver.class, HardwareConstants.ODOMETRY_POD_ID);
 
+        driver.resetPosAndIMU();
         driver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         driver.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
         driver.setOffsets(ENCODER_X_Y_OFFSET.toMillimeters(), ENCODER_Y_X_OFFSET.toMillimeters());
-
-        driver.resetPosAndIMU();
 
         setPose(initialPose);
     }

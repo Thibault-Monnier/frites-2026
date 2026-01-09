@@ -16,13 +16,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class RobotPosition {
     private static RobotPosition instance;
-    private static boolean started = false;
 
     private final Telemetry globalTelemetry;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private final LimelightHandler limelightHandler;
     private final OdometryHandler odometryHandler;
+
+    private final Team color;
 
     private Pose2D pose;
 
@@ -36,20 +37,20 @@ public class RobotPosition {
 
     private RobotPosition(Telemetry globalTelemetry, HardwareMap hardwareMap, Team color) {
         this.globalTelemetry = globalTelemetry;
+        this.color = color;
 
         pose = PlayingField.startPose(color);
         limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
-        odometryHandler = new OdometryHandler(hardwareMap, pose, globalTelemetry);
+        odometryHandler = new OdometryHandler(hardwareMap, globalTelemetry, pose);
 
         limelightHandler.init();
+        limelightHandler.start();
     }
 
-    /// Starts internal handlers if not already started (e.g. if another opmode used this).
-    /// This should be called in the start phase of each opmode.
-    public void maybeStart() {
-        if (started) return;
-        started = true;
-        limelightHandler.start();
+    /** Resets the robot pose to the starting position. */
+    private void resetPose() {
+        pose = PlayingField.startPose(color);
+        odometryHandler.setPose(pose);
     }
 
     /**

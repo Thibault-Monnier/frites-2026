@@ -83,8 +83,6 @@ public class ManualOpMode extends LinearOpMode {
 
         runtime.reset();
 
-        if (calculatePose) robotPosition.maybeStart();
-
         while (opModeIsActive()) {
             runStep();
         }
@@ -221,12 +219,8 @@ public class ManualOpMode extends LinearOpMode {
             }
         }
 
-        if (gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
-            intake.on();
-        } else {
-            intake.off();
-        }
-        //        intake.set(gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT));
+        intake.set(gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT));
+
         if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
         if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
 
