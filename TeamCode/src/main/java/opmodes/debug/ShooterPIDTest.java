@@ -49,7 +49,7 @@ public class ShooterPIDTest extends LinearOpMode {
         while (opModeIsActive()) {
             pidControllerLeft.setCoefficients(TARGET_PID);
             pidControllerRight.setCoefficients(TARGET_PID);
-            telemetry.addData("PIDF", TARGET_PID.toString());
+            telemetry.addData("PID", TARGET_PID.toString());
 
             motorLeft.setPower(pidControllerLeft.get(TARGET_VELOCITY, true));
             motorRight.setPower(pidControllerRight.get(TARGET_VELOCITY, true));
