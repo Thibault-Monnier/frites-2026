@@ -10,14 +10,26 @@ public class PIDController {
     private final Telemetry telemetry;
 
     private final DcMotorEx motor;
-    private static final double MAX_MOTOR_SPEED = 2450;
-
-    public PIDController(DcMotorEx motor, Telemetry telemetry) {
-        this.telemetry = telemetry;
-        this.motor = motor;
-    }
+    private final double maxMotorVelocity;
 
     private PIDCoefficients coefficients = new PIDCoefficients(0.0, 0.0, 0.0);
+
+    public PIDController(DcMotorEx motor, double maxMotorVelocity, Telemetry telemetry) {
+        this.telemetry = telemetry;
+        this.motor = motor;
+        this.maxMotorVelocity = maxMotorVelocity;
+    }
+
+    public PIDController(
+            DcMotorEx motor,
+            double maxMotorVelocity,
+            Telemetry telemetry,
+            PIDCoefficients initialCoeffs) {
+        this.telemetry = telemetry;
+        this.motor = motor;
+        this.maxMotorVelocity = maxMotorVelocity;
+        this.coefficients = initialCoeffs;
+    }
 
     /// Sets the PID coefficients.
     public void setCoefficients(PIDCoefficients coeffs) {
@@ -31,6 +43,10 @@ public class PIDController {
     /// Calculates the PID output for the given target velocity.
     /// The output is normalized in \[-1, 1\] and should be used in a setPower.
     public double get(double targetVelocity, boolean debugInfo) {
+        if (Math.abs(targetVelocity) < maxMotorVelocity / 100.0) {
+            return 0.0;
+        }
+
         double currentTime = TimeHelpers.getRuntime();
         double deltaTime = currentTime - lastTime;
         lastTime = currentTime;
@@ -45,7 +61,7 @@ public class PIDController {
         integral += error * deltaTime;
         double derivative = (error - previousError) / deltaTime;
 
-        double pTerm = coefficients.Kp * error / MAX_MOTOR_SPEED;
+        double pTerm = coefficients.Kp * error / maxMotorVelocity;
         double iTerm = coefficients.Ki * integral;
         double dTerm = coefficients.Kd * derivative;
 

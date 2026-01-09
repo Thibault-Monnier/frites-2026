@@ -4,9 +4,13 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+
+import logic.PIDCoefficients;
+import logic.PIDController;
 
 import math.Distance;
+
+import modules.HardwareConstants;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -28,12 +32,14 @@ public class Cannon implements RobotActuatorModule {
         {350, 1500}
     };
     */
-    // MAX VEL = 2600
 
     protected final Telemetry globalTelemetry;
 
     private final DcMotorEx motorLeft;
     private final DcMotorEx motorRight;
+
+    private final PIDController pidControllerLeft;
+    private final PIDController pidControllerRight;
 
     protected double motorTargetVelocity;
 
@@ -47,37 +53,31 @@ public class Cannon implements RobotActuatorModule {
         this.motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        this.motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        // F = 32 * 3600 / maxVelocity
-        //        double F = 32.0 * 3600.0 / 2800.0;  // ≈ 41.14
-        // P = 0.1 * F
-        //        double P = 0.1 * F;  // ≈ 4.11
-        // I = 0.1 * P
-        //        double I = 0.1 * P;  // ≈ 0.41
-        // D = 0 (start with zero)
-        //        double D = 0.0;
+        this.motorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // maxV = 2600
-        // F = 32767 / maxV = 32767/2600
+        PIDCoefficients pid = new PIDCoefficients(50.0, 0.0, 0.0);
 
-        // P = 0.1 * F = 32767/26000
-        // I = 0.1 * P = 32767/260000
-        // D = 0
-
-        PIDFCoefficients pidf = new PIDFCoefficients(0.135, 0, 1.35, 13.5);
-        this.motorLeft.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
-        this.motorRight.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
-
-        this.motorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        this.motorRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.pidControllerLeft =
+                new PIDController(
+                        motorLeft, HardwareConstants.SHOOTER_MAX_VELOCITY, globalTelemetry, pid);
+        this.pidControllerRight =
+                new PIDController(
+                        motorRight, HardwareConstants.SHOOTER_MAX_VELOCITY, globalTelemetry, pid);
     }
 
     @Override
     public void apply() {
-        motorLeft.setVelocity(motorTargetVelocity);
-        motorRight.setVelocity(motorTargetVelocity);
+        motorLeft.setPower(pidControllerLeft.get(motorTargetVelocity));
+        motorRight.setPower(pidControllerRight.get(motorTargetVelocity));
+
+        globalTelemetry.addData(
+                "Cannon Motor velocity/target", getAverageVelocity() + "/" + motorTargetVelocity);
+        globalTelemetry.addData("Cannon MotorLeft velocity", motorLeft.getVelocity());
+        globalTelemetry.addData("Cannon MotorRight velocity", motorRight.getVelocity());
     }
 
     /// Toggle cannon motor on/off.
@@ -92,8 +92,6 @@ public class Cannon implements RobotActuatorModule {
         } else {
             motorTargetVelocity = 0.0;
         }
-        globalTelemetry.addData(
-                "Cannon Motor velocity/target", getAverageVelocity() + "/" + motorTargetVelocity);
     }
 
     /**
@@ -102,19 +100,11 @@ public class Cannon implements RobotActuatorModule {
     protected double getAverageVelocity() {
         double velocityLeft = motorLeft.getVelocity();
         double velocityRight = motorRight.getVelocity();
-        globalTelemetry.addData("MotorLeft velocity", velocityLeft);
-        globalTelemetry.addData("MotorRight velocity", velocityRight);
-
-        globalTelemetry.addData(
-                "Speed/demand ratio",
-                0.5
-                        * ((motorTargetVelocity / velocityLeft)
-                                + (motorTargetVelocity / velocityRight)));
         return Math.abs(velocityLeft + velocityRight) / 2;
     }
 
     private boolean velocitiesEqual(double velocity, double target) {
-        double errorMargin = 50;
+        double errorMargin = 40;
         return Math.abs(velocity - target) <= errorMargin;
     }
 

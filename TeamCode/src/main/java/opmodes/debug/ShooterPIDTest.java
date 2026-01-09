@@ -39,8 +39,10 @@ public class ShooterPIDTest extends LinearOpMode {
         motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        pidControllerLeft = new PIDController(motorLeft, telemetry);
-        pidControllerRight = new PIDController(motorRight, telemetry);
+        pidControllerLeft =
+                new PIDController(motorLeft, HardwareConstants.SHOOTER_MAX_VELOCITY, telemetry);
+        pidControllerRight =
+                new PIDController(motorRight, HardwareConstants.SHOOTER_MAX_VELOCITY, telemetry);
 
         waitForStart();
 
