@@ -14,7 +14,7 @@ import modules.HardwareConstants;
 
 @Config
 @TeleOp
-public class MaxVelocityTest extends LinearOpMode {
+public class ShooterPIDTest extends LinearOpMode {
     DcMotorEx motorLeft;
     DcMotorEx motorRight;
 
@@ -49,8 +49,8 @@ public class MaxVelocityTest extends LinearOpMode {
             pidControllerRight.setCoefficients(TARGET_PID);
             telemetry.addData("PIDF", TARGET_PID.toString());
 
-            motorLeft.setPower(pidControllerLeft.get(TARGET_VELOCITY));
-            motorRight.setPower(pidControllerRight.get(TARGET_VELOCITY));
+            motorLeft.setPower(pidControllerLeft.get(TARGET_VELOCITY, true));
+            motorRight.setPower(pidControllerRight.get(TARGET_VELOCITY, true));
 
             telemetry.update();
         }
