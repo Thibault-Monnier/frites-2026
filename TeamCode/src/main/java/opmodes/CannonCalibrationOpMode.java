@@ -34,7 +34,6 @@ public class CannonCalibrationOpMode extends LinearOpMode {
     private Telemetry globalTelemetry;
 
     private RobotPosition robotPosition;
-    private final PlayingField playingField;
 
     private BatteryMonitor batteryMonitor;
 
@@ -52,7 +51,6 @@ public class CannonCalibrationOpMode extends LinearOpMode {
 
     public CannonCalibrationOpMode(Team team) {
         this.team = team;
-        this.playingField = new PlayingField();
     }
 
     @Override
@@ -137,7 +135,7 @@ public class CannonCalibrationOpMode extends LinearOpMode {
         move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
 
         /* --- ACTIONS --- */
-        Distance targetDistance = playingField.distanceToGoal(robotPosition.getPosition(), team);
+        Distance targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
 
         if (gamepad.isPressed(GamepadController.Button.TRIGGER_LEFT)) cannonCalibrator.toggle();
         if (gamepad.isPressed(GamepadController.Button.Y)) cannonCalibrator.speedup();

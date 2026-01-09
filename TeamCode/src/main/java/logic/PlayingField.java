@@ -7,6 +7,10 @@ import math.Position2D;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class PlayingField {
+    private PlayingField() {
+        // Prevent instantiation
+    }
+
     private static final FieldElement FIELD =
             new FieldElement(
                     new Position2D(), FieldConstants.FIELD_WIDTH, FieldConstants.FIELD_DEPTH, 0);
@@ -29,8 +33,6 @@ public class PlayingField {
                     FieldConstants.GOAL_WIDTH,
                     FieldConstants.GOAL_DEPTH,
                     FieldConstants.GOAL_HEIGHT);
-
-    public PlayingField() {}
 
     public static Pose2D startPose(Team color) {
         return color.isBlue() ? FieldConstants.BLUE_START_POSE : FieldConstants.RED_START_POSE;
@@ -56,7 +58,7 @@ public class PlayingField {
     /// @param robotPos The current position of the robot.
     /// @param color The color of the goal to target.
     /// @return The distance to the center of the specified goal.
-    public Distance distanceToGoal(Position2D robotPos, Team color) {
+    public static Distance distanceToGoal(Position2D robotPos, Team color) {
         Position2D goalPos = goalPos(color);
         DistanceUnit unit = DistanceUnit.MM;
         double dist =

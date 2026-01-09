@@ -50,8 +50,6 @@ public class Movement implements RobotActuatorModule {
     public double backLeftPower = 0;
     public double backRightPower = 0;
 
-    private double turn = 0f;
-
     // OTHER FIELDS
     private final MovementMode movementMode;
 
@@ -112,7 +110,7 @@ public class Movement implements RobotActuatorModule {
     }
 
     /// Moves while turning towards a target position.
-    public void lockTowardsPoint(
+    public void lockedJoystickTranslate(
             Gamepad gamepad,
             boolean slow,
             RobotPosition robotPosition,
@@ -130,8 +128,6 @@ public class Movement implements RobotActuatorModule {
                         targetDirection - robotPose.getHeading(AngleUnit.RADIANS));
 
         double kP = 0.8;
-        double minTurn = 0.05;
-
         double turnSpeed = -angleError * kP;
         turnSpeed = Math.clamp(turnSpeed, -1, 1);
 
@@ -202,7 +198,6 @@ public class Movement implements RobotActuatorModule {
         frontRightPower = 0;
         backLeftPower = 0;
         backRightPower = 0;
-        turn = 0;
     }
 
     public boolean isMoving() {

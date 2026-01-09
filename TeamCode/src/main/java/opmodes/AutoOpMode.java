@@ -28,7 +28,6 @@ public class AutoOpMode extends LinearOpMode {
 
     private Telemetry globalTelemetry;
     private RobotPosition robotPosition;
-    private final PlayingField field;
 
     private Cannon cannon;
     private CannonBuffer bufferLeft, bufferRight;
@@ -38,7 +37,6 @@ public class AutoOpMode extends LinearOpMode {
     private final RobotPosition.StartPosition startPosition = RobotPosition.StartPosition.NORMAL;
 
     public AutoOpMode() {
-        field = new PlayingField();
     }
 
     @Override

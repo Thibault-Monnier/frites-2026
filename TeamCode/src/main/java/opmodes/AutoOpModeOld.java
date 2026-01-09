@@ -40,7 +40,6 @@ public class AutoOpModeOld extends LinearOpMode {
     private DriveActions driveActions;
 
     private RobotPosition robotPosition;
-    private final PlayingField playingField;
 
     private State previousState;
     private State currentState;
@@ -49,7 +48,6 @@ public class AutoOpModeOld extends LinearOpMode {
     public AutoOpModeOld(Team team, RobotPosition.StartPosition position) {
         this.team = team;
         this.startPosition = position;
-        this.playingField = new PlayingField();
     }
 
     @Override

@@ -12,6 +12,6 @@ import opmodes.ManualOpMode;
         group = GroupConstants.MAIN_MODES_GROUP)
 public class Blue_No_Pose_Calculation extends ManualOpMode {
     public Blue_No_Pose_Calculation() {
-        super(Team.BLUE, false, false);
+        super(Team.BLUE, false);
     }
 }
