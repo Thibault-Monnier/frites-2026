@@ -26,7 +26,9 @@ public class LimelightHandler {
     private Limelight3A limelight;
     private int validFramesInRow = 0;
     private LLResult lastResult = null;
-    private final double STABILITY_THRESHOLD_METERS = 0.15;
+
+    private final double STABILITY_THRESHOLD_METERS = 0.12;
+    private final int FRAMES_IN_A_ROW_THRESHOLD = 4;
 
     private Pose2D lastKnownPose = null;
 
@@ -91,7 +93,7 @@ public class LimelightHandler {
         }
         lastResult = result;
 
-        if (validFramesInRow < 3) {
+        if (validFramesInRow < FRAMES_IN_A_ROW_THRESHOLD) {
             // Result is unstable
             return false;
         }
