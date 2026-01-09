@@ -50,6 +50,16 @@ public class IntakeSwitcher implements RobotActuatorModule {
         currentPosition = Position.CENTER;
     }
 
+    /// Sets the intake switcher to the left position.
+    public void left() {
+        currentPosition = Position.LEFT;
+    }
+
+    /// Sets the intake switcher to the right position.
+    public void right() {
+        currentPosition = Position.RIGHT;
+    }
+
     @Override
     public HashMap<String, Object> getCurrentState() {
         throw new UnsupportedOperationException("Cannon module does not support state saving.");

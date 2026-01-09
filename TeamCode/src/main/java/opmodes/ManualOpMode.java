@@ -206,8 +206,9 @@ public class ManualOpMode extends LinearOpMode {
 
         intake.set(gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT));
 
-        if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) intakeSwitcher.toggle();
-        if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
+        if (gamepad.isPressed(GamepadController.Button.DPAD_LEFT)) intakeSwitcher.left();
+        else if (gamepad.isPressed(GamepadController.Button.DPAD_RIGHT)) intakeSwitcher.right();
+        else if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
     }
 
     private void apply() {
