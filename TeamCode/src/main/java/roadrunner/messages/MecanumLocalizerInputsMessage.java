@@ -15,7 +15,12 @@ public final class MecanumLocalizerInputsMessage {
     public double pitch;
     public double roll;
 
-    public MecanumLocalizerInputsMessage(PositionVelocityPair leftFront, PositionVelocityPair leftBack, PositionVelocityPair rightBack, PositionVelocityPair rightFront, YawPitchRollAngles angles) {
+    public MecanumLocalizerInputsMessage(
+            PositionVelocityPair leftFront,
+            PositionVelocityPair leftBack,
+            PositionVelocityPair rightBack,
+            PositionVelocityPair rightFront,
+            YawPitchRollAngles angles) {
         this.timestamp = System.nanoTime();
         this.leftFront = leftFront;
         this.leftBack = leftBack;

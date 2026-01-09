@@ -5,9 +5,9 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import roadrunner.GoBildaPinpointDriver;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import roadrunner.GoBildaPinpointDriver;
 
 @TeleOp(name = "Odometry OpMode", group = "concept")
 public class OdometryOpMode extends LinearOpMode {
