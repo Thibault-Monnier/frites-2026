@@ -73,7 +73,15 @@ public class ManualOpMode extends LinearOpMode {
 
         runtime.reset();
 
+        double prevTime = runtime.milliseconds();
         while (opModeIsActive()) {
+            // Consistent step duration for better PIDs
+            double time = runtime.milliseconds();
+            while (time - prevTime < 100) {
+                time = runtime.milliseconds();
+            }
+            prevTime = time;
+
             runStep();
         }
     }
@@ -212,6 +220,13 @@ public class ManualOpMode extends LinearOpMode {
         if (gamepad.isPressed(GamepadController.Button.DPAD_LEFT)) intakeSwitcher.left();
         else if (gamepad.isPressed(GamepadController.Button.DPAD_RIGHT)) intakeSwitcher.right();
         else if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
+
+        if (gamepad.isPressing(GamepadController.Button.A)) {
+            intakeSwitcher.center();
+            intake.clear();
+            cannonBufferLeft.clear();
+            cannonBufferRight.clear();
+        }
     }
 
     private void apply() {

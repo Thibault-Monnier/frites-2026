@@ -14,6 +14,7 @@ public class Intake implements RobotActuatorModule {
     private static final double MOVING_SPEED = -1.0f;
     private double motorTargetPower;
     private boolean isRunning = false;
+    private boolean isClearing = false;
 
     public Intake(Telemetry globalTelemetry, DcMotor motor) {
         this.globalTelemetry = globalTelemetry;
@@ -46,9 +47,21 @@ public class Intake implements RobotActuatorModule {
         this.isRunning = isRunning;
     }
 
+    /// Clear the intake by running it in reverse for one cycle.
+    public void clear() {
+        off();
+        isClearing = true;
+    }
+
     /// Update motor power.
     private void update() {
-        motorTargetPower = isRunning ? MOVING_SPEED : 0;
+        motorTargetPower = 0;
+        if (isRunning) {
+            motorTargetPower = MOVING_SPEED;
+        } else if (isClearing) {
+            motorTargetPower = -MOVING_SPEED;
+            isClearing = false;
+        }
         globalTelemetry.addData("Intake Motor Power", motorTargetPower);
     }
 

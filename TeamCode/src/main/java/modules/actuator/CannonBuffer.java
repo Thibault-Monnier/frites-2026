@@ -10,7 +10,10 @@ import java.util.HashMap;
 public class CannonBuffer implements RobotActuatorModule {
     private final Telemetry globalTelemetry;
     private final CRServo servo;
+
+    private static final double MOVING_SPEED = 1.0f;
     private boolean isRunning = false;
+    private boolean isClearing = false;
 
     public CannonBuffer(
             Telemetry globalTelemetry, CRServo servo, DcMotorSimple.Direction direction) {
@@ -22,27 +25,40 @@ public class CannonBuffer implements RobotActuatorModule {
 
     @Override
     public void apply() {
+        double servoTargetPower = 0;
         if (isRunning) {
-            servo.setPower(1.0); // Full speed
-        } else {
-            servo.setPower(0); // Stop
+            servoTargetPower = MOVING_SPEED;
+        } else if (isClearing) {
+            servoTargetPower = -MOVING_SPEED;
+            isClearing = false;
         }
+        servo.setPower(servoTargetPower);
     }
 
+    /// Turn buffer servo on.
     public void on() {
         isRunning = true;
     }
 
+    /// Turn buffer servo off.
     public void off() {
         isRunning = false;
     }
 
+    /// Toggle buffer servo on/off.
     public void toggle() {
         isRunning = !isRunning;
     }
 
+    /// Sets buffer servo state.
     public void set(boolean running) {
         isRunning = running;
+    }
+
+    /// Clears the buffer by running it in reverse for one cycle.
+    public void clear() {
+        off();
+        isClearing = true;
     }
 
     @Override
