@@ -45,16 +45,6 @@ public class CannonBuffer implements RobotActuatorModule {
         isRunning = false;
     }
 
-    /// Toggle buffer servo on/off.
-    public void toggle() {
-        isRunning = !isRunning;
-    }
-
-    /// Sets buffer servo state.
-    public void set(boolean running) {
-        isRunning = running;
-    }
-
     /// Clears the buffer by running it in reverse for one cycle.
     public void clear() {
         off();

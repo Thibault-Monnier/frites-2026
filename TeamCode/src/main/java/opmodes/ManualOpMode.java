@@ -23,6 +23,7 @@ import math.Distance;
 import modules.HardwareConstants;
 import modules.actuator.Cannon;
 import modules.actuator.CannonBuffer;
+import modules.actuator.CannonBuffersHandler;
 import modules.actuator.Intake;
 import modules.actuator.IntakeSwitcher;
 import modules.actuator.Movement;
@@ -47,9 +48,7 @@ public class ManualOpMode extends LinearOpMode {
     private Movement move;
 
     private Cannon cannon;
-
-    private CannonBuffer cannonBufferLeft;
-    private CannonBuffer cannonBufferRight;
+    private CannonBuffersHandler cannonBuffers;
 
     private Intake intake;
     private IntakeSwitcher intakeSwitcher;
@@ -125,12 +124,13 @@ public class ManualOpMode extends LinearOpMode {
 
         cannon = new Cannon(globalTelemetry, cannonLeft, cannonRight);
 
-        this.cannonBufferLeft =
+        CannonBuffer leftBuffer =
                 new CannonBuffer(
                         globalTelemetry, cannonBufferLeft, DcMotorSimple.Direction.REVERSE);
-        this.cannonBufferRight =
+        CannonBuffer rightBuffer =
                 new CannonBuffer(
                         globalTelemetry, cannonBufferRight, DcMotorSimple.Direction.FORWARD);
+        this.cannonBuffers = new CannonBuffersHandler(leftBuffer, rightBuffer);
 
         this.intake = new Intake(globalTelemetry, intake);
         this.intakeSwitcher = new IntakeSwitcher(globalTelemetry, intakeSwitcher);
@@ -205,14 +205,13 @@ public class ManualOpMode extends LinearOpMode {
         // Make sure the cannon reached its target velocity
         if ((gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot())
                 || gamepad.isPressing(GamepadController.Button.BUMPER_RIGHT)) {
-            cannonBufferLeft.on();
-            cannonBufferRight.on();
+            cannonBuffers.shootContinue();
         } else {
-            cannonBufferLeft.off();
-            cannonBufferRight.off();
+            cannonBuffers.shootDontContinue();
 
             if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT))
                 gamepad.rumble(50); // Cannon isn't ready
+            else cannonBuffers.shootReset();
         }
 
         intake.set(gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT));
@@ -224,8 +223,7 @@ public class ManualOpMode extends LinearOpMode {
         if (gamepad.isPressing(GamepadController.Button.A)) {
             intakeSwitcher.center();
             intake.clear();
-            cannonBufferLeft.clear();
-            cannonBufferRight.clear();
+            cannonBuffers.clear();
         }
     }
 
@@ -236,7 +234,6 @@ public class ManualOpMode extends LinearOpMode {
         intakeSwitcher.apply();
 
         cannon.apply();
-        cannonBufferRight.apply();
-        cannonBufferLeft.apply();
+        cannonBuffers.apply();
     }
 }
