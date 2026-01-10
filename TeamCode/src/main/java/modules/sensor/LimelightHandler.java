@@ -6,7 +6,10 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import logic.PlayingField;
+
 import math.Pose2D;
+import math.Position2D;
 
 import modules.HardwareConstants;
 
@@ -143,6 +146,7 @@ public class LimelightHandler {
     private boolean isStableResult(LLResult newResult) {
         Position newPos = newResult.getBotpose().getPosition();
         Position prevPos = lastResult.getBotpose().getPosition();
-        return distance(newPos, prevPos) < STABILITY_THRESHOLD_METERS;
+        return distance(newPos, prevPos) < STABILITY_THRESHOLD_METERS
+                && PlayingField.isInField(Position2D.fromPosition(newPos));
     }
 }

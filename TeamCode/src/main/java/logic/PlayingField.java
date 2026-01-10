@@ -67,4 +67,13 @@ public class PlayingField {
                         goalPos.getY(unit) - robotPos.getY(unit));
         return new Distance(unit, dist);
     }
+
+    public static boolean isInField(Position2D pos) {
+        double x = pos.getX(DistanceUnit.INCH);
+        double y = pos.getY(DistanceUnit.INCH);
+        return x >= -FieldConstants.FIELD_WIDTH / 2
+                && x <= FieldConstants.FIELD_WIDTH / 2
+                && y >= -FieldConstants.FIELD_DEPTH / 2
+                && y <= FieldConstants.FIELD_DEPTH / 2;
+    }
 }

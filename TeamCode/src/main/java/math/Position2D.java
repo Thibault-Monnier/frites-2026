@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 import java.util.Locale;
 
@@ -88,5 +89,15 @@ public class Position2D {
                 DistanceUnit.METER,
                 getY(DistanceUnit.METER),
                 DistanceUnit.METER);
+    }
+
+    /**
+     * Converts a Position object to a Position2D object by extracting its x and y values
+     *
+     * @param position the Position object to convert
+     * @return the resulting Position2D object
+     */
+    public static Position2D fromPosition(Position position) {
+        return new Position2D(position.unit, position.x, position.y);
     }
 }
