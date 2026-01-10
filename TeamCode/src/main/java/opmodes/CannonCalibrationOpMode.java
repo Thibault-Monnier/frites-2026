@@ -124,22 +124,29 @@ public class CannonCalibrationOpMode extends LinearOpMode {
         gamepad.update();
         robotPosition.updatePose();
 
-        // Translation : unpressed (fast) and pressed (slow)
-        move.joystickTranslate(
-                gamepad1,
-                gamepad.isPressing(GamepadController.Button.LEFT_STICK),
-                robotPosition,
-                team);
-
-        // Rotation : unpressed (fast) and pressed (slow)
-        move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
+        if (gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) {
+            // Lock towards the goal
+            move.lockedJoystickTranslate(
+                    gamepad1,
+                    gamepad.isPressing(GamepadController.Button.LEFT_STICK),
+                    robotPosition,
+                    team,
+                    PlayingField.goalPos(team));
+        } else {
+            move.joystickTranslate(
+                    gamepad1,
+                    gamepad.isPressing(GamepadController.Button.LEFT_STICK),
+                    robotPosition,
+                    team);
+            move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
+        }
 
         /* --- ACTIONS --- */
         Distance targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
 
-        if (gamepad.isPressed(GamepadController.Button.TRIGGER_LEFT)) cannonCalibrator.toggle();
+        if (gamepad.isPressed(GamepadController.Button.X)) cannonCalibrator.toggle();
         if (gamepad.isPressed(GamepadController.Button.Y)) cannonCalibrator.speedup();
-        if (gamepad.isPressed(GamepadController.Button.RIGHT_STICK)) cannonCalibrator.slowdown();
+        if (gamepad.isPressed(GamepadController.Button.A)) cannonCalibrator.slowdown();
         if (gamepad.isPressed(GamepadController.Button.B)) {
             cannonCalibrator.saveCurrentCalibrationData(targetDistance);
         }
@@ -155,7 +162,7 @@ public class CannonCalibrationOpMode extends LinearOpMode {
             cannonBufferRight.off();
         }
 
-        if (gamepad.isPressed(GamepadController.Button.A)) intake.toggle();
+        if (gamepad.isPressed(GamepadController.Button.TRIGGER_LEFT)) intake.toggle();
 
         globalTelemetry.addLine("--- CALIBRATION MODE ---");
         globalTelemetry.addData("Team", team);

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CannonCalibrator extends Cannon {
-    private static final double SPEED_CHANGE_OFFSET = 50;
+    private static final double SPEED_CHANGE_OFFSET = 25;
 
     private final Map<Distance, Double> savedCalibrationData = new HashMap<>();
 
