@@ -127,8 +127,10 @@ public class Movement implements RobotActuatorModule {
                 AngleUnit.normalizeRadians(
                         targetDirection - robotPose.getHeading(AngleUnit.RADIANS));
 
-        double kP = 0.8;
+        double kP = 1.3;
         double turnSpeed = -angleError * kP;
+        globalTelemetry.addData("Angle Error (deg)", Math.toDegrees(angleError));
+        globalTelemetry.addData("Turn Speed", turnSpeed);
         turnSpeed = Math.clamp(turnSpeed, -1, 1);
 
         if (movementMode == MovementMode.FIELD_CENTRIC) {
