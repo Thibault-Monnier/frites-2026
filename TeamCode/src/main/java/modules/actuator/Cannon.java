@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import logic.PIDCoefficients;
-import logic.PIDController;
+import logic.PIDFCoefficients;
+import logic.PIDFController;
 
 import math.Distance;
 
@@ -38,8 +38,8 @@ public class Cannon implements RobotActuatorModule {
     private final DcMotorEx motorLeft;
     private final DcMotorEx motorRight;
 
-    private final PIDController pidControllerLeft;
-    private final PIDController pidControllerRight;
+    private final PIDFController PIDFControllerLeft;
+    private final PIDFController PIDFControllerRight;
 
     protected double motorTargetVelocity;
 
@@ -50,8 +50,9 @@ public class Cannon implements RobotActuatorModule {
         this.motorLeft = motorLeft;
         this.motorRight = motorRight;
 
-        this.motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // Without encoders is important to prevent the library from adding an extra PID over ours
+        this.motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         this.motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         this.motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -59,20 +60,20 @@ public class Cannon implements RobotActuatorModule {
         this.motorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         this.motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        PIDCoefficients pid = new PIDCoefficients(50.0, 0.0, 0.0);
+        PIDFCoefficients pid = new PIDFCoefficients(0.02, 0.0, 0.0, -0.5);
 
-        this.pidControllerLeft =
-                new PIDController(
+        this.PIDFControllerLeft =
+                new PIDFController(
                         motorLeft, HardwareConstants.SHOOTER_MAX_VELOCITY, globalTelemetry, pid);
-        this.pidControllerRight =
-                new PIDController(
+        this.PIDFControllerRight =
+                new PIDFController(
                         motorRight, HardwareConstants.SHOOTER_MAX_VELOCITY, globalTelemetry, pid);
     }
 
     @Override
     public void apply() {
-        motorLeft.setPower(pidControllerLeft.get(motorTargetVelocity));
-        motorRight.setPower(pidControllerRight.get(motorTargetVelocity));
+        motorLeft.setPower(PIDFControllerLeft.get(motorTargetVelocity));
+        motorRight.setPower(PIDFControllerRight.get(motorTargetVelocity));
 
         globalTelemetry.addData(
                 "Cannon Motor velocity/target", getAverageVelocity() + "/" + motorTargetVelocity);

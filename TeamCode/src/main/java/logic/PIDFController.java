@@ -6,25 +6,25 @@ import math.TimeHelpers;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class PIDController {
+public class PIDFController {
     private final Telemetry telemetry;
 
     private final DcMotorEx motor;
     private final double maxMotorVelocity;
 
-    private PIDCoefficients coefficients = new PIDCoefficients(0.0, 0.0, 0.0);
+    private PIDFCoefficients coefficients = new PIDFCoefficients(0.0, 0.0, 0.0, 0.0);
 
-    public PIDController(DcMotorEx motor, double maxMotorVelocity, Telemetry telemetry) {
+    public PIDFController(DcMotorEx motor, double maxMotorVelocity, Telemetry telemetry) {
         this.telemetry = telemetry;
         this.motor = motor;
         this.maxMotorVelocity = maxMotorVelocity;
     }
 
-    public PIDController(
+    public PIDFController(
             DcMotorEx motor,
             double maxMotorVelocity,
             Telemetry telemetry,
-            PIDCoefficients initialCoeffs) {
+            PIDFCoefficients initialCoeffs) {
         this.telemetry = telemetry;
         this.motor = motor;
         this.maxMotorVelocity = maxMotorVelocity;
@@ -32,7 +32,7 @@ public class PIDController {
     }
 
     /// Sets the PID coefficients.
-    public void setCoefficients(PIDCoefficients coeffs) {
+    public void setCoefficients(PIDFCoefficients coeffs) {
         this.coefficients = coeffs;
     }
 
@@ -61,13 +61,14 @@ public class PIDController {
         integral += error * deltaTime;
         double derivative = (error - previousError) / deltaTime;
 
-        double pTerm = coefficients.Kp * error / maxMotorVelocity;
+        double pTerm = coefficients.Kp * error;
         double iTerm = coefficients.Ki * integral;
         double dTerm = coefficients.Kd * derivative;
+        double fTerm = coefficients.Kf;
 
         previousError = error;
 
-        double sum = pTerm + iTerm + dTerm;
+        double sum = pTerm + iTerm + dTerm + fTerm;
 
         if (debugInfo) {
             telemetry.addData("Integral", integral);
@@ -75,15 +76,22 @@ public class PIDController {
             telemetry.addData("P Term", pTerm);
             telemetry.addData("I Term", iTerm);
             telemetry.addData("D Term", dTerm);
+            telemetry.addData("F Term", fTerm);
+
             telemetry.addData("PID Output (before clamp)", sum);
         }
 
-        return Math.clamp(sum, -1.0, 1.0);
+        return clamp(sum);
     }
 
     /// Calculates the PID output for the given target velocity.
     /// The output is normalized in \[-1, 1\] and should be used in a setPower.
     public double get(double targetVelocity) {
         return get(targetVelocity, false);
+    }
+
+    /// Clamps the given value to the range \[-1, 1\].
+    private double clamp(double v) {
+        return Math.clamp(v, -1.0, 1.0);
     }
 }

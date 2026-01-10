@@ -7,8 +7,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import logic.PIDCoefficients;
-import logic.PIDController;
+import logic.PIDFCoefficients;
+import logic.PIDFController;
+
+import math.TimeHelpers;
 
 import modules.HardwareConstants;
 
@@ -18,12 +20,14 @@ public class ShooterPIDTest extends LinearOpMode {
     DcMotorEx motorLeft;
     DcMotorEx motorRight;
 
-    PIDController pidControllerLeft;
-    PIDController pidControllerRight;
+    PIDFController PIDFControllerLeft;
+    PIDFController PIDFControllerRight;
 
     public static double TARGET_VELOCITY = 1800;
 
-    public static PIDCoefficients TARGET_PID = new PIDCoefficients(50.0, 0.0, 0.0);
+    public static PIDFCoefficients TARGET_PIDF = new PIDFCoefficients(0.02, 0.0, 0.0, -0.5);
+
+    public static double stepInterval = 0.02;
 
     @Override
     public void runOpMode() {
@@ -36,23 +40,32 @@ public class ShooterPIDTest extends LinearOpMode {
         motorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Important to avoid an extra PID layer
+        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Important to avoid an extra PID layer
 
-        pidControllerLeft =
-                new PIDController(motorLeft, HardwareConstants.SHOOTER_MAX_VELOCITY, telemetry);
-        pidControllerRight =
-                new PIDController(motorRight, HardwareConstants.SHOOTER_MAX_VELOCITY, telemetry);
+        PIDFControllerLeft =
+                new PIDFController(motorLeft, HardwareConstants.SHOOTER_MAX_VELOCITY, telemetry);
+        PIDFControllerRight =
+                new PIDFController(motorRight, HardwareConstants.SHOOTER_MAX_VELOCITY, telemetry);
 
         waitForStart();
 
+        double prevTime = TimeHelpers.getRuntime();
         while (opModeIsActive()) {
-            pidControllerLeft.setCoefficients(TARGET_PID);
-            pidControllerRight.setCoefficients(TARGET_PID);
-            telemetry.addData("PID", TARGET_PID.toString());
+            while (true) {
+                double time = TimeHelpers.getRuntime();
+                if (time - prevTime >= stepInterval) {
+                    telemetry.addData("Delta time", time - prevTime);
+                    prevTime = time;
+                    break;
+                }
+            }
+            PIDFControllerLeft.setCoefficients(TARGET_PIDF);
+            PIDFControllerRight.setCoefficients(TARGET_PIDF);
+            telemetry.addData("PID", TARGET_PIDF.toString());
 
-            motorLeft.setPower(pidControllerLeft.get(TARGET_VELOCITY, true));
-            motorRight.setPower(pidControllerRight.get(TARGET_VELOCITY, true));
+            motorLeft.setPower(PIDFControllerLeft.get(TARGET_VELOCITY, true));
+            motorRight.setPower(PIDFControllerRight.get(TARGET_VELOCITY, true));
 
             telemetry.update();
         }
