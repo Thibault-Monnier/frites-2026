@@ -49,6 +49,5 @@ public class CameraLocalizerOpMode extends LinearOpMode {
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
-        limelightHandler.init();
     }
 }

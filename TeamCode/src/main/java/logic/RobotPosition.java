@@ -43,8 +43,10 @@ public class RobotPosition {
         limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
         odometryHandler = new OdometryHandler(hardwareMap, globalTelemetry, pose);
 
-        limelightHandler.init();
         limelightHandler.start();
+
+        this.globalTelemetry.addData("Initialized RobotPosition", pose.toString());
+        this.globalTelemetry.update();
     }
 
     /** Resets the robot pose to the starting position. */
@@ -61,9 +63,11 @@ public class RobotPosition {
         odometryHandler.update();
 
         if (limelightHandler.update()) {
+            globalTelemetry.addLine("Using pose from Limelight");
             pose = limelightHandler.getLastKnownPose();
             odometryHandler.setPose(pose);
         } else {
+            globalTelemetry.addLine("Using pose from Odometry");
             pose = odometryHandler.getPose();
         }
 

@@ -36,6 +36,7 @@ public final class OdometryHandler {
         driver.setOffsets(ENCODER_X_Y_OFFSET.toMillimeters(), ENCODER_Y_X_OFFSET.toMillimeters());
 
         setPose(initialPose);
+        update();
     }
 
     /**

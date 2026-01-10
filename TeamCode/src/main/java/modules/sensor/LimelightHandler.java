@@ -23,7 +23,7 @@ public class LimelightHandler {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
     private final HardwareMap hardwareMap;
 
-    private Limelight3A limelight;
+    private final Limelight3A limelight;
     private int validFramesInRow = 0;
     private LLResult lastResult = null;
 
@@ -41,14 +41,11 @@ public class LimelightHandler {
     public LimelightHandler(Telemetry globalTelemetry, HardwareMap hardwareMap) {
         this.globalTelemetry = globalTelemetry;
         this.hardwareMap = hardwareMap;
-    }
-
-    public void init() {
-        limelight = hardwareMap.get(Limelight3A.class, HardwareConstants.LIMELIGHT_CAMERA_ID);
-        limelight.pipelineSwitch(0);
+        this.limelight = hardwareMap.get(Limelight3A.class, HardwareConstants.LIMELIGHT_CAMERA_ID);
     }
 
     public void start() {
+        limelight.pipelineSwitch(0);
         limelight.start();
         dashboard.startCameraStream(limelight, 0);
     }
