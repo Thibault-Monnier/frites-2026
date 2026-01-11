@@ -23,7 +23,8 @@ public class MeepMeepTesting {
                 myBot.getDrive()
                         .actionBuilder(new Pose2d(60, -15, Math.toRadians(180))) // Start pose
                         .splineToLinearHeading(
-                                new Pose2d(-10, -10, Math.toRadians(-135)), Math.toRadians(-135)) // Shooting position
+                                new Pose2d(-10, -10, Math.toRadians(-135)),
+                                Math.toRadians(-135)) // Shooting position
                         // Shoot artifacts
                         .waitSeconds(2.5)
                         // Go back
@@ -32,15 +33,18 @@ public class MeepMeepTesting {
                         .strafeTo(new Vector2d(12, -52))
                         .waitSeconds(1)
                         .strafeTo(new Vector2d(12, -30))
-                        .splineToLinearHeading(new Pose2d(-10, -10, Math.toRadians(-135)), Math.toRadians(-135))
+                        .splineToLinearHeading(
+                                new Pose2d(-10, -10, Math.toRadians(-135)), Math.toRadians(-135))
                         // Shoot artifacts
                         .waitSeconds(2.5)
                         // Go back
-                        .splineToLinearHeading(new Pose2d( -11, -30, Math.toRadians(270)), Math.toRadians(270))
+                        .splineToLinearHeading(
+                                new Pose2d(-11, -30, Math.toRadians(270)), Math.toRadians(270))
                         .strafeTo(new Vector2d(-11, -52))
                         .waitSeconds(1)
                         .strafeTo(new Vector2d(-11, -30))
-                        .splineToLinearHeading(new Pose2d(-10, -10, Math.toRadians(-135)), Math.toRadians(45))
+                        .splineToLinearHeading(
+                                new Pose2d(-10, -10, Math.toRadians(-135)), Math.toRadians(45))
                         // Shoot artifacts
                         .waitSeconds(2.5)
                         .splineToLinearHeading(
