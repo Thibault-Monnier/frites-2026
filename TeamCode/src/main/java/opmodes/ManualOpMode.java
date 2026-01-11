@@ -13,9 +13,9 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import logic.ArtifactSequence;
 import logic.PlayingField;
 import logic.RobotPosition;
-import logic.Sequence;
 import logic.Team;
 
 import math.Distance;
@@ -53,7 +53,7 @@ public class ManualOpMode extends LinearOpMode {
     private Intake intake;
     private IntakeSwitcher intakeSwitcher;
 
-    private Sequence sequence;
+    private ArtifactSequence artifactSequence;
 
     public ManualOpMode(Team team, boolean calculatePose) {
         this.team = team;
@@ -159,12 +159,12 @@ public class ManualOpMode extends LinearOpMode {
         if (calculatePose) robotPosition.updatePose();
 
         if (calculatePose) {
-            if (sequence == null) {
-                sequence = Sequence.findCurrentSequence(robotPosition.getLimelightHandler());
+            if (artifactSequence == null) {
+                artifactSequence = ArtifactSequence.findCurrentSequence(robotPosition.getLimelightHandler());
             }
-            if (sequence != null) {
-                // Show the current sequence
-                globalTelemetry.addData("Pattern", sequence.toString());
+            if (artifactSequence != null) {
+                // Show the current artifactSequence
+                globalTelemetry.addData("Pattern", artifactSequence.toString());
             }
         }
 

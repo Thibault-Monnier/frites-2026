@@ -9,10 +9,10 @@ import modules.sensor.LimelightHandler;
 import java.util.List;
 
 /** A sequence represents a set of 3 artifacts with differing colors and ordering. */
-public class Sequence {
+public class ArtifactSequence {
     Artifact[] artifacts;
 
-    public Sequence(Artifact[] artifacts) {
+    public ArtifactSequence(Artifact[] artifacts) {
         if (artifacts.length != 3) {
             throw new IllegalArgumentException("A sequence must consist of exactly 3 artifacts.");
         }
@@ -24,7 +24,7 @@ public class Sequence {
      *
      * @return the sequence if found; otherwise {@code null}
      */
-    public static Sequence findCurrentSequence(LimelightHandler limelightHandler) {
+    public static ArtifactSequence findCurrentSequence(LimelightHandler limelightHandler) {
         List<LLResultTypes.FiducialResult> tags = limelightHandler.getLastDetectedTags();
         if (tags == null || tags.isEmpty()) return null;
 
@@ -34,21 +34,21 @@ public class Sequence {
              */
             switch (tag.getFiducialId()) {
                 case 21:
-                    return new Sequence(
+                    return new ArtifactSequence(
                             new Artifact[] {
                                 new Artifact(Artifact.Color.GREEN),
                                 new Artifact(Artifact.Color.PURPLE),
                                 new Artifact(Artifact.Color.PURPLE)
                             });
                 case 22:
-                    return new Sequence(
+                    return new ArtifactSequence(
                             new Artifact[] {
                                 new Artifact(Artifact.Color.PURPLE),
                                 new Artifact(Artifact.Color.GREEN),
                                 new Artifact(Artifact.Color.PURPLE)
                             });
                 case 23:
-                    return new Sequence(
+                    return new ArtifactSequence(
                             new Artifact[] {
                                 new Artifact(Artifact.Color.PURPLE),
                                 new Artifact(Artifact.Color.PURPLE),
