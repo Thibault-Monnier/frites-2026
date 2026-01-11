@@ -23,11 +23,6 @@ public class MeepMeepTesting {
                 myBot.getDrive()
                         .actionBuilder(new Pose2d(60, -15, Math.toRadians(180))) // Start pose
                         .splineToLinearHeading(
-                                new Pose2d(35, -30, Math.toRadians(270)), Math.toRadians(270))
-                        .strafeTo(new Vector2d(35, -52))
-                        .waitSeconds(1)
-                        .strafeTo(new Vector2d(35, -30))
-                        .splineToLinearHeading(
                                 new Pose2d(-10, -10, Math.toRadians(-135)), Math.toRadians(-135)) // Shooting position
                         // Shoot artifacts
                         .waitSeconds(2.5)
