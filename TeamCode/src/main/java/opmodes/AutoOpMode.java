@@ -16,9 +16,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import logic.Artifact;
 import logic.ArtifactSequence;
 import logic.DriveActions;
+import logic.PlayingField;
 import logic.RobotPosition;
 import logic.SimpleAction;
 import logic.Team;
+
+import math.Distance;
 
 import modules.HardwareConstants;
 import modules.actuator.Cannon;
@@ -53,7 +56,7 @@ public class AutoOpMode extends LinearOpMode {
 
     private ArtifactSequence artifactSequence;
 
-    private final Deque<Action> actionsToRun = new ArrayDeque<>();
+    private final Deque<Action> actionSequence = new ArrayDeque<>();
 
     public AutoOpMode(Team team) {
         this.team = team;
@@ -69,7 +72,7 @@ public class AutoOpMode extends LinearOpMode {
         runtime.reset();
 
         double prevTime = runtime.milliseconds();
-        while (opModeIsActive()) {
+        while (opModeIsActive() && !actionSequence.isEmpty()) {
             // Consistent step duration for better PIDs
             double time = runtime.milliseconds();
             while (time - prevTime < 100) {
@@ -154,7 +157,7 @@ public class AutoOpMode extends LinearOpMode {
     }
 
     private Action shoot() {
-        return telemetryPacket -> cannonBuffers.shootContinue();
+        return telemetryPacket -> !cannonBuffers.shootContinue();
     }
 
     private Action intakeOn() {
@@ -166,23 +169,37 @@ public class AutoOpMode extends LinearOpMode {
     }
 
     private void registerAction(Action action) {
-        actionsToRun.addLast(action);
+        actionSequence.addLast(action);
     }
 
     private void runStep() {
+        update();
+
         TelemetryPacket packet = new TelemetryPacket();
 
-        //        Action currentAction = actionsToRun.getFirst();
-        //
-        //        currentAction.preview(packet.fieldOverlay());
-        //        currentAction.run(packet);
+        Action currentAction = actionSequence.getFirst();
 
-        //
-        //        runningActions = newActions;
-        //
-        //        globalTelemetry.addLine("--- Main Auto Mode ---");
-        //        globalTelemetry.addData("State", currentState);
-        //        globalTelemetry.addData("State Start Time", stateStartTime);
-        //        globalTelemetry.addData("Runtime", runtime.seconds());
+        currentAction.preview(packet.fieldOverlay());
+
+        if (!currentAction.run(packet)) {
+            actionSequence.removeFirst();
+        }
+
+        globalTelemetry.addLine("--- Main Auto Mode ---");
+        globalTelemetry.addData("Runtime", runtime.seconds());
+    }
+
+    private void update() {
+        robotPosition.updatePose();
+
+        if (artifactSequence == null)
+            artifactSequence =
+                    ArtifactSequence.findCurrentSequence(robotPosition.getLimelightHandler());
+        if (artifactSequence != null)
+            globalTelemetry.addData("Pattern", artifactSequence.toString());
+
+        Distance targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
+        globalTelemetry.addData("Target Dist", targetDistance.toString());
+        cannon.update(targetDistance);
     }
 }

@@ -15,6 +15,6 @@ public class SimpleAction implements Action {
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
         fn.run();
-        return true;
+        return false; // Action is complete after one run
     }
 }
