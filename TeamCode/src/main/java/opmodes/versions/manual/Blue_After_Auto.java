@@ -8,10 +8,10 @@ import opmodes.GroupConstants;
 import opmodes.ManualOpMode;
 
 @TeleOp(
-        name = GroupConstants.MAIN_MODES_GROUP + ": No Pose Calculation - RED Team",
+        name = GroupConstants.MAIN_MODES_GROUP + ": Normal Manual After Auto - BLUE Team",
         group = GroupConstants.MAIN_MODES_GROUP)
-public class Red_No_Pose_Calculation extends ManualOpMode {
-    public Red_No_Pose_Calculation() {
-        super(Team.RED, false, false);
+public class Blue_After_Auto extends ManualOpMode {
+    public Blue_After_Auto() {
+        super(Team.BLUE, true);
     }
 }

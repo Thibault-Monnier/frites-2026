@@ -12,6 +12,6 @@ import opmodes.ManualOpMode;
         group = GroupConstants.MAIN_MODES_GROUP)
 public class Red extends ManualOpMode {
     public Red() {
-        super(Team.RED);
+        super(Team.RED, false);
     }
 }

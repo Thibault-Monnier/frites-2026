@@ -28,11 +28,19 @@ public class RobotPosition {
     private Pose2D pose;
 
     public static RobotPosition getInstance(
-            Telemetry globalTelemetry, HardwareMap hardwareMap, Team color) {
-        if (instance == null) {
+            Telemetry globalTelemetry,
+            HardwareMap hardwareMap,
+            Team color,
+            boolean forceNewInstance) {
+        if (instance == null || forceNewInstance) {
             instance = new RobotPosition(globalTelemetry, hardwareMap, color);
         }
         return instance;
+    }
+
+    public static RobotPosition getInstance(
+            Telemetry globalTelemetry, HardwareMap hardwareMap, Team color) {
+        return getInstance(globalTelemetry, hardwareMap, color, false);
     }
 
     private RobotPosition(Telemetry globalTelemetry, HardwareMap hardwareMap, Team color) {

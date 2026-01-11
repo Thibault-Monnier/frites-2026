@@ -37,6 +37,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class ManualOpMode extends LinearOpMode {
     private final Team team;
     private final boolean calculatePose;
+    private final boolean isAfterAuto;
+
     private ElapsedTime runtime;
     private Telemetry globalTelemetry;
 
@@ -55,13 +57,14 @@ public class ManualOpMode extends LinearOpMode {
 
     private ArtifactSequence artifactSequence;
 
-    public ManualOpMode(Team team, boolean calculatePose) {
+    public ManualOpMode(Team team, boolean isAfterAuto, boolean calculatePose) {
         this.team = team;
         this.calculatePose = calculatePose;
+        this.isAfterAuto = isAfterAuto;
     }
 
-    public ManualOpMode(Team team) {
-        this(team, true);
+    public ManualOpMode(Team team, boolean isAfterAuto) {
+        this(team, isAfterAuto, true);
     }
 
     @Override
@@ -91,7 +94,8 @@ public class ManualOpMode extends LinearOpMode {
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         if (calculatePose)
-            robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
+            robotPosition =
+                    RobotPosition.getInstance(globalTelemetry, hardwareMap, team, !isAfterAuto);
 
         batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
 
@@ -160,7 +164,8 @@ public class ManualOpMode extends LinearOpMode {
 
         if (calculatePose) {
             if (artifactSequence == null) {
-                artifactSequence = ArtifactSequence.findCurrentSequence(robotPosition.getLimelightHandler());
+                artifactSequence =
+                        ArtifactSequence.findCurrentSequence(robotPosition.getLimelightHandler());
             }
             if (artifactSequence != null) {
                 // Show the current artifactSequence
