@@ -31,7 +31,7 @@ public class MeepMeepTesting {
                         .splineToLinearHeading(
                                 new Pose2d(12, -30, Math.toRadians(270)), Math.toRadians(270))
                         .strafeTo(new Vector2d(12, -52))
-                        .waitSeconds(1)
+                        .waitSeconds(0.5)
                         .strafeTo(new Vector2d(12, -30))
                         .splineToLinearHeading(
                                 new Pose2d(-12, -12, Math.toRadians(-135)), Math.toRadians(-135))
@@ -41,10 +41,10 @@ public class MeepMeepTesting {
                         .splineToLinearHeading(
                                 new Pose2d(-12, -30, Math.toRadians(270)), Math.toRadians(270))
                         .strafeTo(new Vector2d(-12, -52))
-                        .waitSeconds(1)
+                        .waitSeconds(0.5)
                         .strafeTo(new Vector2d(-12, -30))
                         .splineToLinearHeading(
-                                new Pose2d(-12, -12, Math.toRadians(-135)), Math.toRadians(0))
+                                new Pose2d(-12, -12, Math.toRadians(-135)), Math.toRadians(90))
                         // Shoot artifacts
                         .waitSeconds(2.5)
                         .splineToLinearHeading(

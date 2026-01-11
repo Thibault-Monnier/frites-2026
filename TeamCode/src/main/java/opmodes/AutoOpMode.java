@@ -129,7 +129,7 @@ public class AutoOpMode extends LinearOpMode {
         shootSequence(Math.toRadians(-135));
 
         collectArtifactRowSequence(Artifact.Row.BACK);
-        shootSequence(Math.toRadians(0));
+        shootSequence(Math.toRadians(90));
 
         registerAction(driveActions.driveToLeavePose());
     }
