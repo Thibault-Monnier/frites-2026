@@ -2,96 +2,187 @@ package opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import logic.PlayingField;
+import logic.Artifact;
+import logic.ArtifactSequence;
+import logic.DriveActions;
 import logic.RobotPosition;
+import logic.SimpleAction;
 import logic.Team;
 
 import modules.HardwareConstants;
 import modules.actuator.Cannon;
 import modules.actuator.CannonBuffer;
+import modules.actuator.CannonBuffersHandler;
+import modules.actuator.Intake;
+import modules.actuator.IntakeSwitcher;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import roadrunner.MecanumDrive;
 
-@Autonomous(name = "Auto Mode")
-public class AutoOpMode extends LinearOpMode {
+import java.util.ArrayDeque;
+import java.util.Deque;
 
+public class AutoOpMode extends LinearOpMode {
+    private final Team team;
+
+    private ElapsedTime runtime;
     private Telemetry globalTelemetry;
+
     private RobotPosition robotPosition;
 
+    private MecanumDrive drive;
+    private DriveActions driveActions;
+
     private Cannon cannon;
-    private CannonBuffer bufferLeft, bufferRight;
+    private CannonBuffersHandler cannonBuffers;
 
-    // FTC requires a no-arg constructor
-    private final Team team = Team.RED;
-    private final RobotPosition.StartPosition startPosition = RobotPosition.StartPosition.NORMAL;
+    private Intake intake;
+    private IntakeSwitcher intakeSwitcher;
 
-    public AutoOpMode() {
+    private ArtifactSequence artifactSequence;
+
+    private final Deque<Action> actionsToRun = new ArrayDeque<>();
+
+    public AutoOpMode(Team team) {
+        this.team = team;
     }
 
     @Override
     public void runOpMode() {
-        globalTelemetry =
-                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        // --- Position tracking ---
-        robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
-
-        // --- IMU ---
-        IMU imu = hardwareMap.get(IMU.class, HardwareConstants.IMU_ID);
-
-        // --- Cannon ---
-        cannon =
-                new Cannon(
-                        globalTelemetry,
-                        hardwareMap.get(
-                                com.qualcomm.robotcore.hardware.DcMotorEx.class,
-                                HardwareConstants.CANNON_MOTOR_LEFT_ID),
-                        hardwareMap.get(
-                                com.qualcomm.robotcore.hardware.DcMotorEx.class,
-                                HardwareConstants.CANNON_MOTOR_RIGHT_ID));
-
-        bufferLeft =
-                new CannonBuffer(
-                        globalTelemetry,
-                        hardwareMap.get(
-                                com.qualcomm.robotcore.hardware.CRServo.class,
-                                HardwareConstants.CANNON_BUFFER_LEFT),
-                        com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE);
-
-        bufferRight =
-                new CannonBuffer(
-                        globalTelemetry,
-                        hardwareMap.get(
-                                com.qualcomm.robotcore.hardware.CRServo.class,
-                                HardwareConstants.CANNON_BUFFER_RIGHT),
-                        com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD);
-
-        telemetry.addLine("Ready");
-        telemetry.update();
+        initialize();
+        initSequence();
 
         waitForStart();
 
-        // ---------------- AFTER START ----------------
+        runtime.reset();
 
-        Pose2d startPose = robotPosition.getPose().toPose2d(DistanceUnit.METER, AngleUnit.RADIANS);
+        double prevTime = runtime.milliseconds();
+        while (opModeIsActive()) {
+            // Consistent step duration for better PIDs
+            double time = runtime.milliseconds();
+            while (time - prevTime < 100) {
+                time = runtime.milliseconds();
+            }
+            prevTime = time;
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
-
-        for (int i = 0; i < 4 && opModeIsActive(); i++) {
-            Action spin = drive.actionBuilder(drive.localizer.getPose()).turn(Math.PI / 2).build();
-
-            Actions.runBlocking(spin);
+            runStep();
         }
+    }
+
+    private void initialize() {
+        runtime = new ElapsedTime();
+        globalTelemetry =
+                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
+
+        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        driveActions = new DriveActions(drive, robotPosition, team);
+
+        DcMotorEx cannonLeft =
+                hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_LEFT_ID);
+        DcMotorEx cannonRight =
+                hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID);
+        CRServo cannonBufferLeft =
+                hardwareMap.get(CRServo.class, HardwareConstants.CANNON_BUFFER_LEFT);
+        CRServo cannonBufferRight =
+                hardwareMap.get(CRServo.class, HardwareConstants.CANNON_BUFFER_RIGHT);
+        DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConstants.INTAKE_MOTOR_ID);
+        Servo intakeSwitcher =
+                hardwareMap.get(Servo.class, HardwareConstants.INTAKE_SWITCHER_SERVO);
+
+        cannon = new Cannon(globalTelemetry, cannonLeft, cannonRight);
+
+        CannonBuffer leftBuffer =
+                new CannonBuffer(
+                        globalTelemetry, cannonBufferLeft, DcMotorSimple.Direction.REVERSE);
+        CannonBuffer rightBuffer =
+                new CannonBuffer(
+                        globalTelemetry, cannonBufferRight, DcMotorSimple.Direction.FORWARD);
+        this.cannonBuffers = new CannonBuffersHandler(leftBuffer, rightBuffer);
+
+        this.intake = new Intake(globalTelemetry, intake);
+        this.intakeSwitcher = new IntakeSwitcher(globalTelemetry, intakeSwitcher);
+    }
+
+    private void initSequence() {
+        registerAction(powerOnCannon());
+
+        shootSequence(Math.toRadians(-135));
+
+        collectArtifactRowSequence(Artifact.Row.MIDDLE);
+        shootSequence(Math.toRadians(-135));
+
+        collectArtifactRowSequence(Artifact.Row.BACK);
+        shootSequence(Math.toRadians(0));
+
+        registerAction(driveActions.driveToLeavePose());
+    }
+
+    private void shootSequence(double tangentAngleRadians) {
+        registerAction(driveActions.driveToGoalShootPosition(tangentAngleRadians));
+        registerAction(prepareToShoot());
+        registerAction(shoot());
+    }
+
+    private void collectArtifactRowSequence(Artifact.Row row) {
+        registerAction(driveActions.driveToArtifactRowEntryPose(row));
+        registerAction(intakeOn());
+        registerAction(driveActions.collectArtifactsFromRow(row));
+        registerAction(intakeOff());
+        registerAction(driveActions.driveBackToArtifactRowEntryPose(row));
+    }
+
+    private Action powerOnCannon() {
+        return new SimpleAction(() -> cannon.on());
+    }
+
+    private Action prepareToShoot() {
+        return new SimpleAction(() -> cannonBuffers.shootReset());
+    }
+
+    private Action shoot() {
+        return telemetryPacket -> cannonBuffers.shootContinue();
+    }
+
+    private Action intakeOn() {
+        return new SimpleAction(() -> intake.on());
+    }
+
+    private Action intakeOff() {
+        return new SimpleAction(() -> intake.off());
+    }
+
+    private void registerAction(Action action) {
+        actionsToRun.addLast(action);
+    }
+
+    private void runStep() {
+        TelemetryPacket packet = new TelemetryPacket();
+
+        //        Action currentAction = actionsToRun.getFirst();
+        //
+        //        currentAction.preview(packet.fieldOverlay());
+        //        currentAction.run(packet);
+
+        //
+        //        runningActions = newActions;
+        //
+        //        globalTelemetry.addLine("--- Main Auto Mode ---");
+        //        globalTelemetry.addData("State", currentState);
+        //        globalTelemetry.addData("State Start Time", stateStartTime);
+        //        globalTelemetry.addData("Runtime", runtime.seconds());
     }
 }

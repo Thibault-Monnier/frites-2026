@@ -42,6 +42,37 @@ public class PlayingField {
         return color.isBlue() ? BLUE_GOAL.position : RED_GOAL.position;
     }
 
+    public static Pose2D autoModeLeavePose(Team color) {
+        return color.isBlue()
+                ? FieldConstants.AUTO_MODE_LEAVE_POS_BLUE
+                : FieldConstants.AUTO_MODE_LEAVE_POS_RED;
+    }
+
+    public static Pose2D autoModeShootPose(Team color) {
+        return color.isBlue()
+                ? FieldConstants.AUTO_MODE_SHOOT_POS_BLUE
+                : FieldConstants.AUTO_MODE_SHOOT_POS_RED;
+    }
+
+    public static Pose2D artifactRowEntryPose(Team color, Artifact.Row row) {
+        switch (row) {
+            case FRONT:
+                return color.isBlue()
+                        ? FieldConstants.BLUE_ARTIFACT_FRONT_ROW_ENTRY_POSE
+                        : FieldConstants.RED_ARTIFACT_FRONT_ROW_ENTRY_POSE;
+            case MIDDLE:
+                return color.isBlue()
+                        ? FieldConstants.BLUE_ARTIFACT_MIDDLE_ROW_ENTRY_POSE
+                        : FieldConstants.RED_ARTIFACT_MIDDLE_ROW_ENTRY_POSE;
+            case BACK:
+                return color.isBlue()
+                        ? FieldConstants.BLUE_ARTIFACT_BACK_ROW_ENTRY_POSE
+                        : FieldConstants.RED_ARTIFACT_BACK_ROW_ENTRY_POSE;
+            default:
+                throw new IllegalArgumentException("Invalid artifact row: " + row);
+        }
+    }
+
     /// Calculates the angle from the robot's current position to the center of the specified goal.
     /// @param robotPos The current position of the robot.
     /// @param color The color of the goal to target.
@@ -68,6 +99,9 @@ public class PlayingField {
         return new Distance(unit, dist);
     }
 
+    /// Checks if a given position is within the boundaries of the playing field.
+    /// @param pos The position to check.
+    /// @return True if the position is within the field, false otherwise.
     public static boolean isInField(Position2D pos) {
         double x = pos.getX(DistanceUnit.INCH);
         double y = pos.getY(DistanceUnit.INCH);

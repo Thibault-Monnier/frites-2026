@@ -36,4 +36,10 @@ public class Artifact extends FieldElement {
             }
         }
     }
+
+    public enum Row {
+        FRONT,
+        MIDDLE,
+        BACK
+    }
 }

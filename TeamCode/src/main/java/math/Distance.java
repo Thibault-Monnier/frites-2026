@@ -46,6 +46,16 @@ public class Distance {
         return getValue(DistanceUnit.MM);
     }
 
+    /** Gets the distance value converted to inches */
+    public double toInches() {
+        return getValue(DistanceUnit.INCH);
+    }
+
+    /** Creates a new Distance object from inches input */
+    public static Distance fromInches(double inches) {
+        return new Distance(DistanceUnit.INCH, inches);
+    }
+
     /**
      * Returns a string representation of the object in a human readable format for debugging
      * purposes.

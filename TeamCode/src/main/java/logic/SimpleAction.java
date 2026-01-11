@@ -1,0 +1,20 @@
+package logic;
+
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+
+public class SimpleAction implements Action {
+    private final Runnable fn;
+
+    public SimpleAction(Runnable fn) {
+        this.fn = fn;
+    }
+
+    @Override
+    public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+        fn.run();
+        return true;
+    }
+}

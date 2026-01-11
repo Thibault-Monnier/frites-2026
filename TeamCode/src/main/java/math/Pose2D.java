@@ -103,6 +103,15 @@ public class Pose2D {
     }
 
     /**
+     * Converts this Pose2D to a Roadrunner Pose2d object with inches and radians.
+     *
+     * @return a new Roadrunner Pose2d with x, y in inches and heading in radians
+     */
+    public Pose2d toRoadrunnerPose2d() {
+        return toPose2d(DistanceUnit.INCH, AngleUnit.RADIANS);
+    }
+
+    /**
      * Converts a Roadrunner Pose2d object to a Pose2D object.
      *
      * @param pose2d the Roadrunner Pose2d object to convert
@@ -131,6 +140,15 @@ public class Pose2D {
                 getY(DistanceUnit.MM),
                 AngleUnit.RADIANS,
                 getHeading(AngleUnit.RADIANS));
+    }
+
+    /**
+     * Converts this Pose2D to a Position2D object.
+     *
+     * @return a new Position2D object with the same x and y values as this Pose2D
+     */
+    public Position2D toPosition2D() {
+        return new Position2D(distanceUnit, getX(distanceUnit), getY(distanceUnit));
     }
 
     /**

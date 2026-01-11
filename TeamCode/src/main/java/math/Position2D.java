@@ -100,4 +100,13 @@ public class Position2D {
     public static Position2D fromPosition(Position position) {
         return new Position2D(position.unit, position.x, position.y);
     }
+
+    /**
+     * Converts this Position2D object to a Roadrunner Vector2d object in inches
+     *
+     * @return the resulting Vector2d object
+     */
+    public Vector2d toRoadrunnerVector() {
+        return new Vector2d(getX(DistanceUnit.INCH), getY(DistanceUnit.INCH));
+    }
 }

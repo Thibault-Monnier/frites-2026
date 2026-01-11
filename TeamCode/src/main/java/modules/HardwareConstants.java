@@ -2,6 +2,10 @@ package modules;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import math.Distance;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 @Config
 public class HardwareConstants {
     public static String FRONT_LEFT_MOTOR_ID = "front_left";
@@ -19,6 +23,8 @@ public class HardwareConstants {
     public static String IMU_ID = "imu";
 
     public static double SHOOTER_MAX_VELOCITY = 2450.0;
+
+    public static Distance ROBOT_SIZE = new Distance(DistanceUnit.INCH, 18.0);
 
     public static String TEST_MOTOR_1_ID = "test_motor_1";
     public static String TEST_MOTOR_2_ID = "test_motor_2";

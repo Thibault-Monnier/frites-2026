@@ -36,9 +36,10 @@ public class CannonBuffersHandler implements RobotActuatorModule {
     }
 
     /// Continues current round or shoots next round if done.
-    public void shootContinue() {
+    /// Returns true if the shooting sequence is finished, false otherwise.
+    public boolean shootContinue() {
         if (!isRoundFinished()) {
-            return;
+            return false;
         }
 
         lastRoundStartTime = TimeHelpers.getRuntime();
@@ -54,7 +55,10 @@ public class CannonBuffersHandler implements RobotActuatorModule {
             shootingStage = ShootingStage.FINISHED;
         } else {
             off();
+            return true;
         }
+
+        return false;
     }
 
     /// Continues current round or stops if done.
