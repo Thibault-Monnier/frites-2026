@@ -20,17 +20,11 @@ import java.util.HashMap;
 @Config
 public class Cannon implements RobotActuatorModule {
     /*
-    public static double[][] DIST_CM_TO_VELOCITY = {
-        {0, 0.0},
-        {50, 900},
-        {80, 1000},
-        {100, 1100},
-        {140, 1150},
-        {175, 1200},
-        {200, 1375},
-        {250, 1450},
-        {350, 1500}
-    };
+    Measure points:
+        1.353 -> 1180
+        1.988 -> 1230
+        2.547 -> 1260
+        3.231 -> 1380
     */
 
     protected final Telemetry globalTelemetry;
@@ -137,7 +131,7 @@ public class Cannon implements RobotActuatorModule {
         //        }
 
         // Polynomial that approximates ideal power
-        return 736.2669 + 4.2335 * x - 0.0063 * x * x;
+        return x * x * x / 190000.0 + x * x / 10000.0 + x / 8.0 + 1150.0;
     }
 
     @Override
