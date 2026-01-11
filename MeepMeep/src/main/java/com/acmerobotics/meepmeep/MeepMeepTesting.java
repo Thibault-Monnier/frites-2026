@@ -12,39 +12,41 @@ public class MeepMeepTesting {
 
         MeepMeep meepMeep = new MeepMeep(800);
 
-        RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
-                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-                .build();
+        RoadRunnerBotEntity myBot =
+                new DefaultBotBuilder(meepMeep)
+                        // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track
+                        // width
+                        .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                        .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(60, -15, Math.toRadians(180)))
-                .splineTo(new Vector2d(35, -30), Math.toRadians(270))
-                .strafeTo(new Vector2d(35, -40))
-                .strafeTo(new Vector2d(35, -30))
-                .splineTo(new Vector2d(-25, -25), Math.toRadians(45))
-                // Start flywheel
-                        .waitSeconds(2)
-                // Shoot artifacts
-                        .waitSeconds(2)
-                // Go back
-                .splineTo(new Vector2d(12, -30), Math.toRadians(270))
-                .strafeTo(new Vector2d(12, -40))
-                .strafeTo(new Vector2d(12, -30))
-                .splineTo(new Vector2d(-25, -25), Math.toRadians(45))
-                // Start flywheel
-                .waitSeconds(2)
-                // Shoot artifacts
-                .waitSeconds(2)
-                // Go back
-                .splineTo(new Vector2d(-11, -30), Math.toRadians(270))
-                .strafeTo(new Vector2d(-11, -40))
-                .strafeTo(new Vector2d(-11, -30))
-                .splineTo(new Vector2d(-25, -25), Math.toRadians(45))
-                // Start flywheel
-                .waitSeconds(2)
-                // Shoot artifacts
-                .waitSeconds(2)
-                .build());
+        myBot.runAction(
+                myBot.getDrive()
+                        .actionBuilder(new Pose2d(60, -15, Math.toRadians(180))) // Start pose
+                        .splineTo(new Vector2d(35, -30), Math.toRadians(270))
+                        .strafeTo(new Vector2d(35, -52))
+                        .waitSeconds(1)
+                        .strafeTo(new Vector2d(35, -30))
+                        .splineTo(new Vector2d(-10, -10), Math.toRadians(45)) // Shooting position
+                        // Shoot artifacts
+                        .waitSeconds(2.5)
+                        // Go back
+                        .splineTo(new Vector2d(12, -30), Math.toRadians(270))
+                        .strafeTo(new Vector2d(12, -52))
+                        .waitSeconds(1)
+                        .strafeTo(new Vector2d(12, -30))
+                        .splineTo(new Vector2d(-10, -10), Math.toRadians(45))
+                        // Shoot artifacts
+                        .waitSeconds(2.5)
+                        // Go back
+                        .splineTo(new Vector2d(-11, -30), Math.toRadians(270))
+                        .strafeTo(new Vector2d(-11, -52))
+                        .waitSeconds(1)
+                        .strafeTo(new Vector2d(-11, -30))
+                        .splineTo(new Vector2d(-10, -10), Math.toRadians(45))
+                        // Shoot artifacts
+                        .waitSeconds(2.5)
+                        .splineTo(new Vector2d(12, -12), Math.toRadians(-90))
+                        .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_OFFICIAL)
                 .setDarkMode(true)
