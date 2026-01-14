@@ -185,6 +185,10 @@ public class AutoOpMode extends LinearOpMode {
             actionSequence.removeFirst();
         }
 
+        apply();
+
+        FtcDashboard.getInstance().sendTelemetryPacket(packet);
+
         globalTelemetry.addLine("--- Main Auto Mode ---");
         globalTelemetry.addData("Runtime", runtime.seconds());
     }
@@ -201,5 +205,13 @@ public class AutoOpMode extends LinearOpMode {
         Distance targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
         globalTelemetry.addData("Target Dist", targetDistance.toString());
         cannon.update(targetDistance);
+    }
+
+    private void apply() {
+        intake.apply();
+        intakeSwitcher.apply();
+
+        cannon.apply();
+        cannonBuffers.apply();
     }
 }
