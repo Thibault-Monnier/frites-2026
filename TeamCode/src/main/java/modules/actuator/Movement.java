@@ -53,6 +53,12 @@ public class Movement implements RobotActuatorModule {
     // OTHER FIELDS
     private final MovementMode movementMode;
 
+    private boolean isSuperSlow = false;
+
+    private final double speedMultiplier = 1.0;
+    private final double slowSpeedMultiplier = 0.5;
+    private final double superSlowSpeedMultiplier = 0.15;
+
     public Movement(
             Telemetry globalTelemetry,
             DcMotor FL,
@@ -84,9 +90,7 @@ public class Movement implements RobotActuatorModule {
 
     /// Rotates the robot using input from the *right* joystick of the gamepad.
     public void joystickRotate(Gamepad gamepad, boolean slow) {
-        double speedMultiplier = slow ? 0.5 : 1;
-
-        double turn = gamepad.right_stick_x * speedMultiplier;
+        double turn = gamepad.right_stick_x * speedMultiplier(slow);
 
         turn = smooth(turn);
 
@@ -153,7 +157,10 @@ public class Movement implements RobotActuatorModule {
 
     /// Get movement speed multiplier
     private double speedMultiplier(boolean slow) {
-        return slow ? 0.5 : 1;
+        if (isSuperSlow) {
+            return superSlowSpeedMultiplier;
+        }
+        return slow ? slowSpeedMultiplier : speedMultiplier;
     }
 
     private double smooth(double input) {
@@ -202,11 +209,9 @@ public class Movement implements RobotActuatorModule {
         backRightPower = 0;
     }
 
-    public boolean isMoving() {
-        return Math.abs(frontLeftPower) > 0.1
-                || Math.abs(frontRightPower) > 0.1
-                || Math.abs(backLeftPower) > 0.1
-                || Math.abs(backRightPower) > 0.1;
+    /// Toggles super slow mode
+    public void toggleSuperSlow() {
+        isSuperSlow = !isSuperSlow;
     }
 
     public void apply() {

@@ -230,6 +230,8 @@ public class ManualOpMode extends LinearOpMode {
             intake.clear();
             cannonBuffers.clear();
         }
+
+        if (gamepad.isDoublePressed(GamepadController.Button.B)) move.toggleSuperSlow();
     }
 
     private void apply() {
