@@ -31,13 +31,12 @@ simultaneously.
 
 ## Op Modes
 
-For the competition, choose the "**Normal Auto** - [team color]" op mode, then preselect the "*
-*Normal
-Manual After Auto** - [team color]" op mode for teleop. This will ensure the position isn't reset
-when
-switching between auto and teleop.
+For the competition, choose the "**Normal Auto** - [team color]" op mode, then preselect the "
+**Normal Manual After Auto** - [team color]" op mode for teleop. This will ensure the position isn't
+reset when switching between auto and teleop.
 
-For testing purposes, use the "Normal Manual - [team color]" op mode for teleop, which force resets
+For testing purposes, use the "**Normal Manual** - [team color]" op mode for teleop, which force
+resets
 to the starting pose.
 
 If having problems with positioning, use the "**No Pose Calculation Manual** - [team color]" op
