@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -91,7 +90,7 @@ public class AutoOpMode extends LinearOpMode {
 
         robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
 
-        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        drive = new MecanumDrive(hardwareMap, robotPosition);
         driveActions = new DriveActions(drive, robotPosition, team);
 
         DcMotorEx cannonLeft =
@@ -195,7 +194,6 @@ public class AutoOpMode extends LinearOpMode {
 
     private void update() {
         robotPosition.updatePose();
-        drive.setPoseEstimate(robotPosition.getPose().toRoadrunnerPose2d());
 
         if (artifactSequence == null)
             artifactSequence =

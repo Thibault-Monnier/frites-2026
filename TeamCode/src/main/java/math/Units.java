@@ -10,4 +10,8 @@ public class Units {
     public static double metersToInches(double meters) {
         return meters / INCHES_TO_METERS;
     }
+
+    public static double mmToInches(double mm) {
+        return inchesToMeters(mm / 1000.0);
+    }
 }
