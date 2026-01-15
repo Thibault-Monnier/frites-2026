@@ -26,7 +26,6 @@ import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.acmerobotics.roadrunner.ftc.FlightRecorder;
 import com.acmerobotics.roadrunner.ftc.LazyHardwareMapImu;
 import com.acmerobotics.roadrunner.ftc.LazyImu;
-import com.acmerobotics.roadrunner.ftc.LynxFirmware;
 import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import com.acmerobotics.roadrunner.ftc.RawEncoder;
@@ -194,13 +193,13 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
         // drive model parameters
-        public double inPerTick = 120.0 / 2468.0;
-        public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 0;
+        public double inPerTick = 96.0 / 4004.0;
+        public double lateralInPerTick = 96.0 / 3793.0;
+        public double trackWidthTicks = 1279.2340137890499;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.2545468908801851;
-        public double kV = 0.004197437795979249;
+        public double kS = 1.3144192536593708;
+        public double kV = 0.0041835050710925395;
         public double kA = 0;
 
         // path profile parameters (in inches)
