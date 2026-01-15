@@ -197,8 +197,8 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
         // drive model parameters
-        public double inPerTick = 96.0 / 4004.0;
-        public double lateralInPerTick = 96.0 / 3793.0;
+        public double inPerTick = 96.0 / 3978.25;
+        public double lateralInPerTick = 96.0 / 3753.0;
         public double trackWidthTicks = 1279.2340137890499;
 
         // feedforward parameters (in tick units)
