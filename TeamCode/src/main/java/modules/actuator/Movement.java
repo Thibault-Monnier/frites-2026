@@ -57,7 +57,7 @@ public class Movement implements RobotActuatorModule {
 
     private final double speedMultiplier = 1.0;
     private final double slowSpeedMultiplier = 0.5;
-    private final double superSlowSpeedMultiplier = 0.15;
+    private final double superSlowSpeedMultiplier = 0.2;
 
     public Movement(
             Telemetry globalTelemetry,

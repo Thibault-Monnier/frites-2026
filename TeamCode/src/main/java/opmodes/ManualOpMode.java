@@ -198,9 +198,6 @@ public class ManualOpMode extends LinearOpMode {
             move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
         }
 
-        if (gamepad.isLongPressed(GamepadController.Button.Y) && calculatePose)
-            robotPosition.resetPose();
-
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
 
         // LED indication for cannon readiness
@@ -211,6 +208,7 @@ public class ManualOpMode extends LinearOpMode {
         if ((gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot())
                 || gamepad.isPressing(GamepadController.Button.BUMPER_RIGHT)) {
             cannonBuffers.shootContinue();
+            intake.on();
         } else {
             cannonBuffers.shootDontContinue();
 
@@ -219,19 +217,24 @@ public class ManualOpMode extends LinearOpMode {
             else cannonBuffers.shootReset();
         }
 
-        intake.set(gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT));
+        if (gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
+            intake.on();
+            cannonBuffers.clear();
+        } else {
+            intake.off();
+        }
 
-        if (gamepad.isPressed(GamepadController.Button.DPAD_LEFT)) intakeSwitcher.left();
-        else if (gamepad.isPressed(GamepadController.Button.DPAD_RIGHT)) intakeSwitcher.right();
+        if (gamepad.isPressed(GamepadController.Button.Y)) intakeSwitcher.toggle();
         else if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
 
         if (gamepad.isPressing(GamepadController.Button.A)) {
-            intakeSwitcher.center();
             intake.clear();
             cannonBuffers.clear();
         }
 
         if (gamepad.isDoublePressed(GamepadController.Button.B)) move.toggleSuperSlow();
+        if (gamepad.isLongPressed(GamepadController.Button.B) && calculatePose)
+            robotPosition.resetPose();
     }
 
     private void apply() {
