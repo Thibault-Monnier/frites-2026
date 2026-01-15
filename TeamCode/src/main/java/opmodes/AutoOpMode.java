@@ -156,7 +156,7 @@ public class AutoOpMode extends LinearOpMode {
     }
 
     private Action shoot() {
-        return telemetryPacket -> !cannonBuffers.shootContinue();
+        return telemetryPacket -> !cannonBuffers.shootContinue(true);
     }
 
     private Action intakeOn() {

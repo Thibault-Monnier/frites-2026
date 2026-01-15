@@ -207,7 +207,8 @@ public class ManualOpMode extends LinearOpMode {
         // Make sure the cannon reached its target velocity
         if ((gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot())
                 || gamepad.isPressing(GamepadController.Button.BUMPER_RIGHT)) {
-            cannonBuffers.shootContinue();
+            cannonBuffers.shootContinue(
+                    intakeSwitcher.getCurrentPosition() == IntakeSwitcher.Position.RIGHT);
             intake.on();
         } else {
             cannonBuffers.shootDontContinue();

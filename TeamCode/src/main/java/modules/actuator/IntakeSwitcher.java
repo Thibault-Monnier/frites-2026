@@ -60,6 +60,10 @@ public class IntakeSwitcher implements RobotActuatorModule {
         currentPosition = Position.RIGHT;
     }
 
+    public Position getCurrentPosition() {
+        return currentPosition;
+    }
+
     @Override
     public HashMap<String, Object> getCurrentState() {
         throw new UnsupportedOperationException("Cannon module does not support state saving.");
@@ -70,7 +74,7 @@ public class IntakeSwitcher implements RobotActuatorModule {
         throw new UnsupportedOperationException("Cannon module does not support state loading.");
     }
 
-    enum Position {
+    public enum Position {
         LEFT,
         CENTER,
         RIGHT

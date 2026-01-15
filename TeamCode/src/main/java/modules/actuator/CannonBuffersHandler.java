@@ -37,7 +37,9 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
     /// Continues current round or shoots next round if done.
     /// Returns true if the shooting sequence is finished, false otherwise.
-    public boolean shootContinue() {
+    ///
+    /// @param startLeft Whether to start shooting with the left or right buffer.
+    public boolean shootContinue(boolean startLeft) {
         if (!isRoundFinished()) {
             return false;
         }
@@ -45,7 +47,8 @@ public class CannonBuffersHandler implements RobotActuatorModule {
         lastRoundStartTime = TimeHelpers.getRuntime();
 
         if (shootingStage == ShootingStage.IDLE) {
-            leftOnly();
+            if (startLeft) leftOnly();
+            else rightOnly();
             shootingStage = ShootingStage.SHOT_ONCE;
         } else if (shootingStage == ShootingStage.SHOT_ONCE) {
             rightOnly();

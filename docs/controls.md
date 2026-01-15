@@ -29,6 +29,15 @@ simultaneously.
     - Double press: Toggles super slow mode, used for moving to end position.
     - Long press: Resets the robot's position to the starting pose.
 
+## Shooting
+
+The shooting starts with the side opposite to the intake sorter, to avoid shooting from the side
+with only one ball. It then shoots right, then left.
+
+The shots are spaced out by ~0.5 seconds. If the cannon isn't ready to shoot, the robot will wait
+until it is ready before shooting the next ball. As soon as the shooting button is released, the
+shooting state is reset (so the next time it will start this sequence from the beginning).
+
 ## Op Modes
 
 For the competition, choose the "**Normal Auto** - [team color]" op mode, then preselect the "
