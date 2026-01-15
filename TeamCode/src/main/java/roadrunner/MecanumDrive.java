@@ -140,6 +140,10 @@ public final class MecanumDrive {
         rightFront.setPower(wheelVels.rightFront.get(0) / maxPowerMag);
     }
 
+    public void setPoseEstimate(Pose2d newPose) {
+        localizer.setPose(newPose);
+    }
+
     public PoseVelocity2d updatePoseEstimate() {
         PoseVelocity2d vel = localizer.update();
         poseHistory.add(localizer.getPose());
@@ -328,7 +332,7 @@ public final class MecanumDrive {
 
             lastHeading = heading;
 
-            pose = pose.plus(new Twist2d(twist.line.value(), headingDelta));
+            // pose = pose.plus(new Twist2d(twist.line.value(), headingDelta));
 
             return twist.velocity().value();
         }
