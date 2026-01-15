@@ -195,7 +195,7 @@ public class AutoOpMode extends LinearOpMode {
 
     private void update() {
         robotPosition.updatePose();
-        drive.localizer.setPose(robotPosition.getPose().toRoadrunnerPose2d());
+        drive.setPoseEstimate(robotPosition.getPose().toRoadrunnerPose2d());
 
         if (artifactSequence == null)
             artifactSequence =
