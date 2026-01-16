@@ -9,12 +9,14 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import logic.Artifact;
 import logic.ArtifactSequence;
 import logic.DriveActions;
+import logic.FieldElement;
 import logic.PlayingField;
 import logic.RobotPosition;
 import logic.SimpleAction;
@@ -30,7 +32,9 @@ import modules.actuator.Intake;
 import modules.actuator.IntakeSwitcher;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+import modules.actuator.Movement;
 import roadrunner.MecanumDrive;
 
 import java.util.ArrayDeque;
@@ -44,6 +48,7 @@ public class AutoOpMode extends LinearOpMode {
 
     private RobotPosition robotPosition;
 
+    private Movement move;
     private MecanumDrive drive;
     private DriveActions driveActions;
 
@@ -88,11 +93,12 @@ public class AutoOpMode extends LinearOpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team);
+        robotPosition = RobotPosition.getInstance(globalTelemetry, hardwareMap, team, true);
 
-        drive = new MecanumDrive(hardwareMap, robotPosition);
-        driveActions = new DriveActions(drive, robotPosition, team);
-
+        DcMotor moveFL = hardwareMap.get(DcMotor.class, HardwareConstants.FRONT_LEFT_MOTOR_ID);
+        DcMotor moveFR = hardwareMap.get(DcMotor.class, HardwareConstants.FRONT_RIGHT_MOTOR_ID);
+        DcMotor moveBL = hardwareMap.get(DcMotor.class, HardwareConstants.BACK_LEFT_MOTOR_ID);
+        DcMotor moveBR = hardwareMap.get(DcMotor.class, HardwareConstants.BACK_RIGHT_MOTOR_ID);
         DcMotorEx cannonLeft =
                 hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_LEFT_ID);
         DcMotorEx cannonRight =
@@ -104,6 +110,20 @@ public class AutoOpMode extends LinearOpMode {
         DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConstants.INTAKE_MOTOR_ID);
         Servo intakeSwitcher =
                 hardwareMap.get(Servo.class, HardwareConstants.INTAKE_SWITCHER_SERVO);
+
+        IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConstants.IMU_ID);
+        move =
+                new Movement(
+                        globalTelemetry,
+                        moveFL,
+                        moveFR,
+                        moveBL,
+                        moveBR,
+                        Movement.MovementMode.FIELD_CENTRIC,
+                        onBoardIMU);
+
+        drive = new MecanumDrive(hardwareMap, robotPosition);
+        driveActions = new DriveActions(drive, robotPosition, team);
 
         cannon = new Cannon(globalTelemetry, cannonLeft, cannonRight);
 
@@ -122,25 +142,27 @@ public class AutoOpMode extends LinearOpMode {
     private void initSequence() {
         registerAction(powerOnCannon());
 
-        shootSequence(Math.toRadians(-135));
+        shootSequence();
 
         collectArtifactRowSequence(Artifact.Row.MIDDLE);
-        shootSequence(Math.toRadians(-135));
+        shootSequence();
 
         collectArtifactRowSequence(Artifact.Row.BACK);
-        shootSequence(Math.toRadians(90));
+        shootSequence();
 
         registerAction(driveActions.driveToLeavePose());
     }
 
-    private void shootSequence(double tangentAngleRadians) {
-        registerAction(driveActions.driveToGoalShootPosition(tangentAngleRadians));
+    private void shootSequence() {
+        registerAction(driveActions.driveToGoalShootPosition());
+        registerAction(turnTowardsGoal());
         registerAction(prepareToShoot());
         registerAction(shoot());
     }
 
     private void collectArtifactRowSequence(Artifact.Row row) {
         registerAction(driveActions.driveToArtifactRowEntryPose(row));
+        registerAction(turnTowardsArtifactRow(row));
         registerAction(intakeOn());
         registerAction(driveActions.collectArtifactsFromRow(row));
         registerAction(intakeOff());
@@ -157,6 +179,16 @@ public class AutoOpMode extends LinearOpMode {
 
     private Action shoot() {
         return telemetryPacket -> !cannonBuffers.shootContinue(true);
+    }
+
+    private Action turnTowardsGoal() {
+        return telemetryPacket -> move.turnTowards(robotPosition, PlayingField.goalPos(team));
+    }
+
+    private Action turnTowardsArtifactRow(Artifact.Row row) {
+        return telemetryPacket ->
+                move.turnTowardsHeading(
+                        robotPosition, PlayingField.artifactRowEntryPose(team, row).getHeading(AngleUnit.RADIANS));
     }
 
     private Action intakeOn() {
@@ -193,7 +225,10 @@ public class AutoOpMode extends LinearOpMode {
     }
 
     private void update() {
+        move.reset();
+
         robotPosition.updatePose();
+        System.out.println("Robot Pose: " + robotPosition.getPose().toString());
 
         if (artifactSequence == null)
             artifactSequence =
@@ -204,6 +239,8 @@ public class AutoOpMode extends LinearOpMode {
         Distance targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
         globalTelemetry.addData("Target Dist", targetDistance.toString());
         cannon.update(targetDistance);
+
+        drive.updatePoseEstimate();
     }
 
     private void apply() {

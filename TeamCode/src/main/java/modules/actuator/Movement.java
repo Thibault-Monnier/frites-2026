@@ -144,6 +144,49 @@ public class Movement implements RobotActuatorModule {
         }
     }
 
+    public boolean turnTowards(RobotPosition robotPosition, Position2D targetPos) {
+        Pose2D robotPose = robotPosition.getPose();
+
+        double dx = targetPos.getX(DistanceUnit.INCH) - robotPose.getX(DistanceUnit.INCH);
+        double dy = targetPos.getY(DistanceUnit.INCH) - robotPose.getY(DistanceUnit.INCH);
+        double targetDirection = Math.atan2(dy, dx);
+        double angleError =
+                AngleUnit.normalizeRadians(
+                        targetDirection - robotPose.getHeading(AngleUnit.RADIANS));
+
+        double kP = 1.35;
+        double turnSpeed = angleError * kP;
+        globalTelemetry.addData("Angle Error (deg)", Math.toDegrees(angleError));
+        globalTelemetry.addData("Turn Speed", turnSpeed);
+        turnSpeed = Math.clamp(turnSpeed, -1, 1);
+
+        move(0, 0, turnSpeed);
+
+        apply();
+
+        return Math.abs(angleError) > Math.toRadians(3);
+    }
+
+    public boolean turnTowardsHeading(RobotPosition robotPosition, double targetHeadingRadians) {
+        Pose2D robotPose = robotPosition.getPose();
+
+        double angleError =
+                AngleUnit.normalizeRadians(
+                        targetHeadingRadians - robotPose.getHeading(AngleUnit.RADIANS));
+
+        double kP = 1.35;
+        double turnSpeed = angleError * kP;
+        globalTelemetry.addData("Angle Error (deg)", Math.toDegrees(angleError));
+        globalTelemetry.addData("Turn Speed", turnSpeed);
+        turnSpeed = Math.clamp(turnSpeed, -1, 1);
+
+        move(0, 0, turnSpeed);
+
+        apply();
+
+        return Math.abs(angleError) > Math.toRadians(3);
+    }
+
     /// Computes translation speed forward and sideways. Returns the pair (forward, strafe).
     private Pair<Double, Double> getTranslationSpeed(Gamepad gamepad, boolean slow) {
         double forward = gamepad.left_stick_y * speedMultiplier(slow);

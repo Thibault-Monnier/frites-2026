@@ -25,41 +25,58 @@ public class DriveActions {
         this.team = team;
     }
 
-    public Action driveToGoalShootPosition(double tangentAngleRadians) {
-        Pose2D goalShootPosition = PlayingField.autoModeShootPose(team);
-        return baseActionBuilder()
-                .splineToLinearHeading(goalShootPosition.toRoadrunnerPose2d(), tangentAngleRadians)
-                .build();
+    public DeferredAction driveToGoalShootPosition() {
+        return new DeferredAction(
+                () -> {
+                    Pose2D goalShootPosition = PlayingField.autoModeShootPose(team);
+                    return baseActionBuilder()
+                            .strafeTo(goalShootPosition.toPosition2D().toRoadrunnerVector())
+                            .build();
+                });
     }
 
-    public Action driveToLeavePose() {
-        Pose2D leavePose = PlayingField.autoModeLeavePose(team);
-        double tangentAngle = Math.toRadians(270);
-        return baseActionBuilder()
-                .splineToLinearHeading(leavePose.toRoadrunnerPose2d(), tangentAngle)
-                .build();
+    public DeferredAction driveToLeavePose() {
+        return new DeferredAction(
+                () -> {
+                    Pose2D leavePose = PlayingField.autoModeLeavePose(team);
+                    return baseActionBuilder()
+                            .strafeTo(leavePose.toPosition2D().toRoadrunnerVector())
+                            .turnTo(leavePose.getHeading(AngleUnit.RADIANS))
+                            .build();
+                });
     }
 
-    public Action driveToArtifactRowEntryPose(Artifact.Row row) {
-        Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
-        double tangentAngle = entryPose.getHeading(AngleUnit.RADIANS);
-        return baseActionBuilder()
-                .splineToLinearHeading(entryPose.toRoadrunnerPose2d(), tangentAngle)
-                .build();
+    public DeferredAction driveToArtifactRowEntryPose(Artifact.Row row) {
+        return new DeferredAction(
+                () -> {
+                    Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
+                    return baseActionBuilder()
+                            .strafeTo(entryPose.toPosition2D().toRoadrunnerVector())
+                            .build();
+                });
     }
 
-    public Action collectArtifactsFromRow(Artifact.Row row) {
-        Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
+    public DeferredAction collectArtifactsFromRow(Artifact.Row row) {
+        return new DeferredAction(
+                () -> {
+                    Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
 
-        Vector2d forwardVector = moveForwardVector(ARTIFACT_COLLECTION_DISTANCE);
-        Vector2d endPos = entryPose.toPosition2D().toRoadrunnerVector().plus(forwardVector);
+                    Vector2d forwardVector = moveForwardVector(ARTIFACT_COLLECTION_DISTANCE);
+                    Vector2d endPos =
+                            entryPose.toPosition2D().toRoadrunnerVector().plus(forwardVector);
 
-        return baseActionBuilder().strafeTo(endPos).waitSeconds(0.5).build();
+                    return baseActionBuilder().strafeTo(endPos).waitSeconds(0.5).build();
+                });
     }
 
-    public Action driveBackToArtifactRowEntryPose(Artifact.Row row) {
-        Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
-        return baseActionBuilder().strafeTo(entryPose.toPosition2D().toRoadrunnerVector()).build();
+    public DeferredAction driveBackToArtifactRowEntryPose(Artifact.Row row) {
+        return new DeferredAction(
+                () -> {
+                    Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
+                    return baseActionBuilder()
+                            .strafeTo(entryPose.toPosition2D().toRoadrunnerVector())
+                            .build();
+                });
     }
 
     private Vector2d moveForwardVector(Distance distance) {
@@ -69,6 +86,7 @@ public class DriveActions {
     }
 
     private TrajectoryActionBuilder baseActionBuilder() {
-        return drive.actionBuilder(robotPosition.getPose().toRoadrunnerPose2d());
+        System.out.println("Building action at pose: " + drive.localizer.getPose());
+        return drive.actionBuilder(drive.localizer.getPose().toRoadrunnerPose2d());
     }
 }
