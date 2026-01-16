@@ -204,6 +204,13 @@ public class ManualOpMode extends LinearOpMode {
         double r = cannon.isReadyToShoot() ? 0.0 : 1.0;
         gamepad.gamepad.setLedColor(r, 1.0 - r, 0.0, Gamepad.LED_DURATION_CONTINUOUS);
 
+        if (gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
+            intake.on();
+            cannonBuffers.clear();
+        } else {
+            intake.off();
+        }
+
         // Make sure the cannon reached its target velocity
         if ((gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot())
                 || gamepad.isPressing(GamepadController.Button.BUMPER_RIGHT)) {
@@ -216,13 +223,6 @@ public class ManualOpMode extends LinearOpMode {
             if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT))
                 gamepad.rumble(50); // Cannon isn't ready
             else cannonBuffers.shootReset();
-        }
-
-        if (gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
-            intake.on();
-            cannonBuffers.clear();
-        } else {
-            intake.off();
         }
 
         if (gamepad.isPressed(GamepadController.Button.Y)) intakeSwitcher.toggle();
