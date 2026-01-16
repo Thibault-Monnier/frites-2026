@@ -1,6 +1,5 @@
 package logic;
 
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 
@@ -17,7 +16,7 @@ public class DriveActions {
 
     private final Team team;
 
-    private static final Distance ARTIFACT_COLLECTION_DISTANCE = Distance.fromInches(22);
+    private static final Distance ARTIFACT_COLLECTION_DISTANCE = Distance.fromInches(12);
 
     public DriveActions(MecanumDrive drive, RobotPosition robotPosition, Team team) {
         this.drive = drive;
@@ -65,7 +64,7 @@ public class DriveActions {
                     Vector2d endPos =
                             entryPose.toPosition2D().toRoadrunnerVector().plus(forwardVector);
 
-                    return baseActionBuilder().strafeTo(endPos).waitSeconds(0.5).build();
+                    return baseActionBuilder().strafeTo(endPos).waitSeconds(0.4).build();
                 });
     }
 

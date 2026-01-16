@@ -141,13 +141,14 @@ public class AutoOpMode extends LinearOpMode {
 
     private void initSequence() {
         registerAction(powerOnCannon());
+        registerAction(intakeSwitcherRight());
 
-        shootSequence();
-
-        collectArtifactRowSequence(Artifact.Row.MIDDLE);
         shootSequence();
 
         collectArtifactRowSequence(Artifact.Row.BACK);
+        shootSequence();
+
+        collectArtifactRowSequence(Artifact.Row.MIDDLE);
         shootSequence();
 
         registerAction(driveActions.driveToLeavePose());
@@ -156,13 +157,17 @@ public class AutoOpMode extends LinearOpMode {
     private void shootSequence() {
         registerAction(driveActions.driveToGoalShootPosition());
         registerAction(turnTowardsGoal());
+
         registerAction(prepareToShoot());
+        registerAction(intakeOn());
         registerAction(shoot());
+        registerAction(intakeOff());
     }
 
     private void collectArtifactRowSequence(Artifact.Row row) {
         registerAction(driveActions.driveToArtifactRowEntryPose(row));
         registerAction(turnTowardsArtifactRow(row));
+
         registerAction(intakeOn());
         registerAction(driveActions.collectArtifactsFromRow(row));
         registerAction(intakeOff());
@@ -178,7 +183,9 @@ public class AutoOpMode extends LinearOpMode {
     }
 
     private Action shoot() {
-        return telemetryPacket -> !cannonBuffers.shootContinue(true);
+        return telemetryPacket ->
+                !cannonBuffers.shootContinue(
+                        intakeSwitcher.getCurrentPosition() == IntakeSwitcher.Position.RIGHT);
     }
 
     private Action turnTowardsGoal() {
@@ -188,15 +195,36 @@ public class AutoOpMode extends LinearOpMode {
     private Action turnTowardsArtifactRow(Artifact.Row row) {
         return telemetryPacket ->
                 move.turnTowardsHeading(
-                        robotPosition, PlayingField.artifactRowEntryPose(team, row).getHeading(AngleUnit.RADIANS));
+                        robotPosition,
+                        PlayingField.artifactRowEntryPose(team, row).getHeading(AngleUnit.RADIANS));
     }
 
     private Action intakeOn() {
-        return new SimpleAction(() -> intake.on());
+        return new SimpleAction(
+                () -> {
+                    intake.on();
+                    cannonBuffers.reverse();
+                });
     }
 
     private Action intakeOff() {
-        return new SimpleAction(() -> intake.off());
+        return new SimpleAction(
+                () -> {
+                    intake.off();
+                    cannonBuffers.off();
+                });
+    }
+
+    private Action intakeSwitcherRight() {
+        return new SimpleAction(() -> intakeSwitcher.right());
+    }
+
+    private Action intakeSwitcherLeft() {
+        return new SimpleAction(() -> intakeSwitcher.left());
+    }
+
+    private Action intakeSwitcherCenter() {
+        return new SimpleAction(() -> intakeSwitcher.center());
     }
 
     private void registerAction(Action action) {
@@ -222,6 +250,8 @@ public class AutoOpMode extends LinearOpMode {
 
         globalTelemetry.addLine("--- Main Auto Mode ---");
         globalTelemetry.addData("Runtime", runtime.seconds());
+        globalTelemetry.addData("Ran", currentAction.toString());
+        globalTelemetry.update();
     }
 
     private void update() {

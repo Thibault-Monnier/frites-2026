@@ -14,6 +14,7 @@ public class CannonBuffer implements RobotActuatorModule {
     private static final double MOVING_SPEED = 1.0f;
     private boolean isRunning = false;
     private boolean isClearing = false;
+    private boolean isReversing = false;
 
     public CannonBuffer(
             Telemetry globalTelemetry, CRServo servo, DcMotorSimple.Direction direction) {
@@ -26,7 +27,9 @@ public class CannonBuffer implements RobotActuatorModule {
     @Override
     public void apply() {
         double servoTargetPower = 0;
-        if (isRunning) {
+        if (isReversing) {
+            servoTargetPower = -MOVING_SPEED;
+        } else if (isRunning) {
             servoTargetPower = MOVING_SPEED;
         } else if (isClearing) {
             servoTargetPower = -MOVING_SPEED;
@@ -43,12 +46,18 @@ public class CannonBuffer implements RobotActuatorModule {
     /// Turn buffer servo off.
     public void off() {
         isRunning = false;
+        isReversing = false;
     }
 
     /// Clears the buffer by running it in reverse for one cycle.
     public void clear() {
         off();
         isClearing = true;
+    }
+
+    public void reverse() {
+        off();
+        isReversing = true;
     }
 
     @Override

@@ -35,6 +35,11 @@ public class CannonBuffersHandler implements RobotActuatorModule {
         rightBuffer.clear();
     }
 
+    public void reverse() {
+        leftBuffer.reverse();
+        rightBuffer.reverse();
+    }
+
     /// Continues current round or shoots next round if done.
     /// Returns true if the shooting sequence is finished, false otherwise.
     ///

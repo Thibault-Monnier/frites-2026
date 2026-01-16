@@ -150,22 +150,11 @@ public class Movement implements RobotActuatorModule {
         double dx = targetPos.getX(DistanceUnit.INCH) - robotPose.getX(DistanceUnit.INCH);
         double dy = targetPos.getY(DistanceUnit.INCH) - robotPose.getY(DistanceUnit.INCH);
         double targetDirection = Math.atan2(dy, dx);
-        double angleError =
-                AngleUnit.normalizeRadians(
-                        targetDirection - robotPose.getHeading(AngleUnit.RADIANS));
 
-        double kP = 1.35;
-        double turnSpeed = angleError * kP;
-        globalTelemetry.addData("Angle Error (deg)", Math.toDegrees(angleError));
-        globalTelemetry.addData("Turn Speed", turnSpeed);
-        turnSpeed = Math.clamp(turnSpeed, -1, 1);
-
-        move(0, 0, turnSpeed);
-
-        apply();
-
-        return Math.abs(angleError) > Math.toRadians(3);
+        return turnTowardsHeading(robotPosition, targetDirection);
     }
+
+    private double lastAngleError = 0;
 
     public boolean turnTowardsHeading(RobotPosition robotPosition, double targetHeadingRadians) {
         Pose2D robotPose = robotPosition.getPose();
@@ -184,7 +173,12 @@ public class Movement implements RobotActuatorModule {
 
         apply();
 
-        return Math.abs(angleError) > Math.toRadians(3);
+        boolean isFinished =
+                Math.abs(angleError) <= Math.toRadians(5)
+                        && Math.abs(lastAngleError - angleError) < 0.04;
+        globalTelemetry.addData("dist change", lastAngleError - angleError);
+        lastAngleError = angleError;
+        return !isFinished;
     }
 
     /// Computes translation speed forward and sideways. Returns the pair (forward, strafe).
