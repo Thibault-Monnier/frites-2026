@@ -27,7 +27,6 @@ public final class OdometryHandler {
 
         driver = hardwareMap.get(GoBildaPinpointDriver.class, HardwareConstants.ODOMETRY_POD_ID);
 
-        driver.resetPosAndIMU();
         driver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         driver.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.REVERSED,
