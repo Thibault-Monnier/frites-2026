@@ -418,7 +418,7 @@ public final class MecanumDrive {
             rightFront.setPower(rightFrontPower);
 
             p.put("x", localizer.getPose().getX(DistanceUnit.INCH));
-            p.put("y", localizer.getPose().getX(DistanceUnit.INCH));
+            p.put("y", localizer.getPose().getY(DistanceUnit.INCH));
             p.put(
                     "heading (deg)",
                     Math.toDegrees(localizer.getPose().getHeading(AngleUnit.RADIANS)));
