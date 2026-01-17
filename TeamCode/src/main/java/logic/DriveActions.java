@@ -16,7 +16,7 @@ public class DriveActions {
 
     private final Team team;
 
-    private static final Distance ARTIFACT_COLLECTION_DISTANCE = Distance.fromInches(15);
+    private static final Distance ARTIFACT_COLLECTION_DISTANCE = Distance.fromInches(13.75);
 
     public DriveActions(MecanumDrive drive, RobotPosition robotPosition, Team team) {
         this.drive = drive;
@@ -63,7 +63,7 @@ public class DriveActions {
                     Vector2d endPos =
                             entryPose.toPosition2D().toRoadrunnerVector().plus(forwardVector);
 
-                    return baseActionBuilder().strafeTo(endPos).waitSeconds(0.2).build();
+                    return baseActionBuilder().strafeTo(endPos).build();
                 });
     }
 

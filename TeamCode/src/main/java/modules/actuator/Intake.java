@@ -67,7 +67,9 @@ public class Intake implements RobotActuatorModule {
 
     @Override
     public HashMap<String, Object> getCurrentState() {
-        throw new UnsupportedOperationException("Intake module does not support state saving.");
+        HashMap<String, Object> state = new HashMap<>();
+        state.put("isRunning", isRunning);
+        return state;
     }
 
     @Override

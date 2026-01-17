@@ -66,7 +66,10 @@ public class IntakeSwitcher implements RobotActuatorModule {
 
     @Override
     public HashMap<String, Object> getCurrentState() {
-        throw new UnsupportedOperationException("Cannon module does not support state saving.");
+        HashMap<String, Object> state = new HashMap<>();
+        state.put("currentPosition", currentPosition.toString());
+        state.put("servoPosition", servo.getPosition());
+        return state;
     }
 
     @Override
