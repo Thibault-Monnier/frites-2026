@@ -152,6 +152,7 @@ public class AutoOpMode extends LinearOpMode {
         shootSequence();
 
         registerAction(driveActions.driveToLeavePose());
+        registerAction(turnTowardsLeavePose());
     }
 
     private void shootSequence() {
@@ -197,6 +198,13 @@ public class AutoOpMode extends LinearOpMode {
                 move.turnTowardsHeading(
                         robotPosition,
                         PlayingField.artifactRowEntryPose(team, row).getHeading(AngleUnit.RADIANS));
+    }
+
+    private Action turnTowardsLeavePose() {
+        return telemetryPacket ->
+                move.turnTowardsHeading(
+                        robotPosition,
+                        PlayingField.autoModeLeavePose(team).getHeading(AngleUnit.RADIANS));
     }
 
     private Action intakeOn() {

@@ -43,15 +43,9 @@ public class FieldConstants {
                     135);
 
     public static final Pose2D AUTO_MODE_LEAVE_POS_BLUE =
-            new Pose2D(
-                    DistanceUnit.INCH,
-                    TILE_WIDTH / 2,
-                    -TILE_WIDTH / 2 - 10,
-                    AngleUnit.DEGREES,
-                    -90);
+            new Pose2D(DistanceUnit.INCH, TILE_WIDTH / 2, -TILE_WIDTH, AngleUnit.DEGREES, -90);
     public static final Pose2D AUTO_MODE_LEAVE_POS_RED =
-            new Pose2D(
-                    DistanceUnit.INCH, TILE_WIDTH / 2, TILE_WIDTH / 2 + 10, AngleUnit.DEGREES, 90);
+            new Pose2D(DistanceUnit.INCH, TILE_WIDTH / 2, TILE_WIDTH, AngleUnit.DEGREES, 90);
 
     // Front is the row closest to the audience, back is the row furthest from the audience, middle
     // is in between

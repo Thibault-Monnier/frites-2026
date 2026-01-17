@@ -40,7 +40,6 @@ public class DriveActions {
                     Pose2D leavePose = PlayingField.autoModeLeavePose(team);
                     return baseActionBuilder()
                             .strafeTo(leavePose.toPosition2D().toRoadrunnerVector())
-                            .turnTo(leavePose.getHeading(AngleUnit.RADIANS))
                             .build();
                 });
     }
