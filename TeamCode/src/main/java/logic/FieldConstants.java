@@ -28,40 +28,60 @@ public class FieldConstants {
             new Pose2D(DistanceUnit.METER, -1.215, 1.215, AngleUnit.DEGREES, 138.0);
 
     public static final Pose2D AUTO_MODE_SHOOT_POS_BLUE =
-            new Pose2D(
-                    DistanceUnit.INCH,
-                    -TILE_WIDTH - TILE_WIDTH / 3.0,
-                    -TILE_WIDTH,
-                    AngleUnit.DEGREES,
-                    -135);
+            new Pose2D(DistanceUnit.INCH, -TILE_WIDTH, -TILE_WIDTH, AngleUnit.DEGREES, -135);
     public static final Pose2D AUTO_MODE_SHOOT_POS_RED =
-            new Pose2D(
-                    DistanceUnit.INCH,
-                    -TILE_WIDTH - TILE_WIDTH / 3.0,
-                    TILE_WIDTH,
-                    AngleUnit.DEGREES,
-                    135);
+            new Pose2D(DistanceUnit.INCH, -TILE_WIDTH, TILE_WIDTH, AngleUnit.DEGREES, 135);
 
     public static final Pose2D AUTO_MODE_LEAVE_POS_BLUE =
-            new Pose2D(DistanceUnit.INCH, TILE_WIDTH / 2, -TILE_WIDTH, AngleUnit.DEGREES, -90);
+            new Pose2D(DistanceUnit.INCH, TILE_WIDTH, -TILE_WIDTH, AngleUnit.DEGREES, -90);
     public static final Pose2D AUTO_MODE_LEAVE_POS_RED =
-            new Pose2D(DistanceUnit.INCH, TILE_WIDTH / 2, TILE_WIDTH, AngleUnit.DEGREES, 90);
+            new Pose2D(DistanceUnit.INCH, TILE_WIDTH, TILE_WIDTH, AngleUnit.DEGREES, 90);
 
     // Front is the row closest to the audience, back is the row furthest from the audience, middle
     // is in between
     public static final Pose2D BLUE_ARTIFACT_FRONT_ROW_ENTRY_POSE =
-            new Pose2D(DistanceUnit.INCH, TILE_WIDTH * 1.5 + 3.0, -32.0, AngleUnit.DEGREES, 270);
+            new Pose2D(
+                    DistanceUnit.INCH,
+                    TILE_WIDTH * 1.5 + TILE_WIDTH / 2.0,
+                    -32.0,
+                    AngleUnit.DEGREES,
+                    270);
     public static final Pose2D BLUE_ARTIFACT_MIDDLE_ROW_ENTRY_POSE =
-            new Pose2D(DistanceUnit.INCH, TILE_WIDTH * 0.5 + 3.0, -32.0, AngleUnit.DEGREES, 270);
+            new Pose2D(
+                    DistanceUnit.INCH,
+                    TILE_WIDTH * 0.5 + TILE_WIDTH / 2.0,
+                    -32.0,
+                    AngleUnit.DEGREES,
+                    270);
     public static final Pose2D BLUE_ARTIFACT_BACK_ROW_ENTRY_POSE =
-            new Pose2D(DistanceUnit.INCH, -TILE_WIDTH * 0.5, -32.0, AngleUnit.DEGREES, 270);
+            new Pose2D(
+                    DistanceUnit.INCH,
+                    -TILE_WIDTH * 0.5 + TILE_WIDTH / 2.0,
+                    -32.0,
+                    AngleUnit.DEGREES,
+                    270);
 
     // Front is the row closest to the audience, back is the row furthest from the audience, middle
     // is in between
     public static final Pose2D RED_ARTIFACT_FRONT_ROW_ENTRY_POSE =
-            new Pose2D(DistanceUnit.INCH, TILE_WIDTH * 1.5 + 3.0, 32.0, AngleUnit.DEGREES, 90);
+            new Pose2D(
+                    DistanceUnit.INCH,
+                    TILE_WIDTH * 1.5 + TILE_WIDTH / 2.0,
+                    32.0,
+                    AngleUnit.DEGREES,
+                    90);
     public static final Pose2D RED_ARTIFACT_MIDDLE_ROW_ENTRY_POSE =
-            new Pose2D(DistanceUnit.INCH, TILE_WIDTH * 0.5 + 3.0, 32.0, AngleUnit.DEGREES, 90);
+            new Pose2D(
+                    DistanceUnit.INCH,
+                    TILE_WIDTH * 0.5 + TILE_WIDTH / 2.0,
+                    32.0,
+                    AngleUnit.DEGREES,
+                    90);
     public static final Pose2D RED_ARTIFACT_BACK_ROW_ENTRY_POSE =
-            new Pose2D(DistanceUnit.INCH, -TILE_WIDTH * 0.5, 32.0, AngleUnit.DEGREES, 90);
+            new Pose2D(
+                    DistanceUnit.INCH,
+                    -TILE_WIDTH * 0.5 + TILE_WIDTH / 2.0,
+                    32.0,
+                    AngleUnit.DEGREES,
+                    90);
 }

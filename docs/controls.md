@@ -29,6 +29,7 @@ simultaneously.
     - Double press: Toggles super slow mode, used for moving to end position.
     - Long press: Resets the robot's position to the starting pose.
 - **DPAD-DOWN** single press: Center the intake sorter.
+
 ## Shooting
 
 The shooting starts with the side opposite to the intake sorter, to avoid shooting from the side
@@ -43,6 +44,8 @@ shooting state is reset (so the next time it will start this sequence from the b
 For the competition, choose the "**Normal Auto** - [team color]" op mode, then preselect the "
 **Normal Manual After Auto** - [team color]" op mode for teleop. This will ensure the position isn't
 reset when switching between auto and teleop.
+
+> NOTE: For Auto Op Mode, think about putting **two** balls left and **one** ball right.
 
 For testing purposes, use the "**Normal Manual** - [team color]" op mode for teleop, which force
 resets

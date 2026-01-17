@@ -174,8 +174,8 @@ public class Movement implements RobotActuatorModule {
         apply();
 
         boolean isFinished =
-                Math.abs(angleError) <= Math.toRadians(5)
-                        && Math.abs(lastAngleError - angleError) < 0.04;
+                Math.abs(angleError) <= Math.toRadians(4)
+                        && Math.abs(lastAngleError - angleError) < 0.0075;
         globalTelemetry.addData("dist change", lastAngleError - angleError);
         lastAngleError = angleError;
         return !isFinished;
