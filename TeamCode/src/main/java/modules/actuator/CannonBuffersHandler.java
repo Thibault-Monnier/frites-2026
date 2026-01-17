@@ -105,8 +105,12 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
     @Override
     public HashMap<String, Object> getCurrentState() {
-        throw new UnsupportedOperationException(
-                "Cannon buffers handler does not support state saving.");
+        HashMap<String, Object> state = new HashMap<>();
+        state.put("leftBuffer", leftBuffer.getCurrentState());
+        state.put("rightBuffer", rightBuffer.getCurrentState());
+        state.put("shootingStage", shootingStage.name());
+        state.put("lastRoundStartTime", lastRoundStartTime);
+        return state;
     }
 
     @Override

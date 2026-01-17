@@ -148,11 +148,14 @@ public class AutoOpMode extends LinearOpMode {
         collectArtifactRowSequence(Artifact.Row.BACK);
         shootSequence();
 
-        collectArtifactRowSequence(Artifact.Row.MIDDLE);
-        shootSequence();
+        registerAction(driveActions.driveToArtifactRowEntryPose(Artifact.Row.MIDDLE));
+        registerAction(turnTowardsArtifactRow(Artifact.Row.MIDDLE));
 
-        registerAction(driveActions.driveToLeavePose());
-        registerAction(turnTowardsLeavePose());
+        // collectArtifactRowSequence(Artifact.Row.MIDDLE);
+        // shootSequence();
+
+        // registerAction(driveActions.driveToLeavePose());
+        // registerAction(turnTowardsLeavePose());
     }
 
     private void shootSequence() {
@@ -260,6 +263,14 @@ public class AutoOpMode extends LinearOpMode {
         globalTelemetry.addData("Runtime", runtime.seconds());
         globalTelemetry.addData("Ran", currentAction.toString());
         globalTelemetry.update();
+
+        System.out.println("------------------------------------------------ AUTO");
+        System.out.println("move status: " + move.getCurrentState().toString());
+        System.out.println("cannon status: " + cannon.getCurrentState().toString());
+        System.out.println("cannonBuffers status: " + cannonBuffers.getCurrentState().toString());
+        System.out.println("intake status: " + intake.getCurrentState().toString());
+        System.out.println("intakeSwitcher status: " + intakeSwitcher.getCurrentState().toString());
+        System.out.println("------------------------------------------------ AUTO");
     }
 
     private void update() {

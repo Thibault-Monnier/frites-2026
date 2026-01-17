@@ -141,7 +141,10 @@ public class Cannon implements RobotActuatorModule {
 
     @Override
     public HashMap<String, Object> getCurrentState() {
-        throw new UnsupportedOperationException("Cannon module does not support state saving.");
+        HashMap<String, Object> state = new HashMap<>();
+        state.put("motorTargetVelocity", motorTargetVelocity);
+        state.put("isRunning", isRunning);
+        return state;
     }
 
     @Override

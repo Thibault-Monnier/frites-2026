@@ -236,6 +236,14 @@ public class ManualOpMode extends LinearOpMode {
         if (gamepad.isDoublePressed(GamepadController.Button.B)) move.toggleSuperSlow();
         if (gamepad.isLongPressed(GamepadController.Button.B) && calculatePose)
             robotPosition.resetPose();
+
+        System.out.println("------------------------------------------------ MANUAL");
+        System.out.println("move status: " + move.getCurrentState().toString());
+        System.out.println("cannon status: " + cannon.getCurrentState().toString());
+        System.out.println("cannonBuffers status: " + cannonBuffers.getCurrentState().toString());
+        System.out.println("intake status: " + intake.getCurrentState().toString());
+        System.out.println("intakeSwitcher status: " + intakeSwitcher.getCurrentState().toString());
+        System.out.println("------------------------------------------------ MANUAL");
     }
 
     private void apply() {
