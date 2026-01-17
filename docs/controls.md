@@ -28,7 +28,7 @@ simultaneously.
 - **B = Circle**:
     - Double press: Toggles super slow mode, used for moving to end position.
     - Long press: Resets the robot's position to the starting pose.
-
+- **DPAD-DOWN** single press: Center the intake sorter.
 ## Shooting
 
 The shooting starts with the side opposite to the intake sorter, to avoid shooting from the side
