@@ -10,9 +10,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import java.util.Locale;
 
 public class Position2D {
-    protected final double x;
-    protected final double y;
-    protected final DistanceUnit unit;
+    private final double x;
+    private final double y;
+    private final DistanceUnit unit;
 
     /**
      * Creates a new Position2D object.
@@ -80,7 +80,6 @@ public class Position2D {
      * @return a string representation of the object
      */
     @NonNull
-    @Override
     public String toString() {
         return String.format(
                 Locale.ENGLISH,

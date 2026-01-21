@@ -7,8 +7,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import java.util.Locale;
 
 public class Distance {
-    protected final double value;
-    protected final DistanceUnit unit;
+    private final double value;
+    private final DistanceUnit unit;
 
     /**
      * Creates a new Distance object.
@@ -63,7 +63,6 @@ public class Distance {
      * @return a string representation of the object
      */
     @NonNull
-    @Override
     public String toString() {
         return String.format(
                 Locale.ENGLISH,

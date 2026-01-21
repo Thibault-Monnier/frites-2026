@@ -23,6 +23,7 @@ import com.qualcomm.robotcore.util.Range;
 import logic.RobotPosition;
 import logic.Team;
 
+import math.Angle;
 import math.Pose2D;
 import math.Position2D;
 
@@ -150,19 +151,19 @@ public class Movement implements RobotActuatorModule {
 
         double dx = targetPos.getX(DistanceUnit.INCH) - robotPose.getX(DistanceUnit.INCH);
         double dy = targetPos.getY(DistanceUnit.INCH) - robotPose.getY(DistanceUnit.INCH);
-        double targetDirection = Math.atan2(dy, dx);
+        Angle targetDirection = Angle.fromRadians(Math.atan2(dy, dx));
 
         return turnTowardsHeading(robotPosition, targetDirection);
     }
 
     private double lastAngleError = 0;
 
-    public boolean turnTowardsHeading(RobotPosition robotPosition, double targetHeadingRadians) {
+    public boolean turnTowardsHeading(RobotPosition robotPosition, Angle targetHeading) {
         Pose2D robotPose = robotPosition.getPose();
 
         double angleError =
                 AngleUnit.normalizeRadians(
-                        targetHeadingRadians - robotPose.getHeading(AngleUnit.RADIANS));
+                        targetHeading.toRadians() - robotPose.getHeading(AngleUnit.RADIANS));
 
         double kP = 1.35;
         double turnSpeed = angleError * kP;

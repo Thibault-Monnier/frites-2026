@@ -31,7 +31,6 @@ import modules.actuator.Intake;
 import modules.actuator.IntakeSwitcher;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import modules.actuator.Movement;
 import roadrunner.MecanumDrive;
@@ -198,15 +197,13 @@ public class AutoOpMode extends LinearOpMode {
     private Action turnTowardsArtifactRow(Artifact.Row row) {
         return telemetryPacket ->
                 move.turnTowardsHeading(
-                        robotPosition,
-                        PlayingField.artifactRowEntryPose(team, row).getHeading(AngleUnit.RADIANS));
+                        robotPosition, PlayingField.artifactRowEntryPose(team, row).getHeading());
     }
 
     private Action turnTowardsLeavePose() {
         return telemetryPacket ->
                 move.turnTowardsHeading(
-                        robotPosition,
-                        PlayingField.autoModeLeavePose(team).getHeading(AngleUnit.RADIANS));
+                        robotPosition, PlayingField.autoModeLeavePose(team).getHeading());
     }
 
     private Action intakeOn() {

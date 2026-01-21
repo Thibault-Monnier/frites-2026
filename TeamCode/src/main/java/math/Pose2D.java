@@ -11,11 +11,11 @@ import java.util.Locale;
 
 /** Pose2D represents the position and heading of an object in 2D space. */
 public class Pose2D {
-    protected final double x;
-    protected final double y;
-    protected final DistanceUnit distanceUnit;
-    protected final double heading;
-    protected final AngleUnit headingUnit;
+    private final double x;
+    private final double y;
+    private final DistanceUnit distanceUnit;
+    private final double heading;
+    private final AngleUnit headingUnit;
 
     /**
      * Creates a new Pose2D object.
@@ -72,13 +72,21 @@ public class Pose2D {
     }
 
     /**
+     * This gets the heading as an Angle object
+     *
+     * @return the heading as an Angle object
+     */
+    public Angle getHeading() {
+        return new Angle(headingUnit, heading);
+    }
+
+    /**
      * This returns a string representation of the object in a human readable format for debugging
      * purposes.
      *
      * @return a string representation of the object
      */
     @NonNull
-    @Override
     public String toString() {
         return String.format(
                 Locale.ENGLISH,
