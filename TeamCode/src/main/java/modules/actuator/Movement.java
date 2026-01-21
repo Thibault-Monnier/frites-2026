@@ -204,12 +204,12 @@ public class Movement implements RobotActuatorModule {
     private double smooth(double input) {
         if (Math.abs(input) < 0.1) {
             return 0;
-        } else if (Math.abs(input) >= 0.1 || Math.abs(input) < 0.7) {
+        } else if (Math.abs(input) >= 0.1 && Math.abs(input) < 0.7) {
             return 0.83 * input + 0.02;
-        } else if (Math.abs(input) >= 0.7 || Math.abs(input) < 0.9) {
+        } else if (Math.abs(input) >= 0.7 && Math.abs(input) < 0.9) {
             return 2 * input - 0.8;
         } else if (Math.abs(input) >= 0.9) {
-            return 1;
+            return Math.signum(input); // full speed
         }
         return 0;
     }
@@ -227,7 +227,7 @@ public class Movement implements RobotActuatorModule {
         move(newFront, newSideways, turn);
     }
 
-    public void move(double front, double sideways, double turn) {
+    private void move(double front, double sideways, double turn) {
         double denominator = Math.max(Math.abs(front) + Math.abs(sideways) + Math.abs(turn), 1);
         frontLeftPower += (front - sideways - turn) / denominator;
         backLeftPower += (front + sideways - turn) / denominator;
@@ -258,10 +258,10 @@ public class Movement implements RobotActuatorModule {
         backLeftDrive.setZeroPowerBehavior(DEFAULT_BEHAVIOR);
         backRightDrive.setZeroPowerBehavior(DEFAULT_BEHAVIOR);
 
-        frontLeftDrive.setPower(Range.clip(frontLeftPower, -1.0, 1.0));
-        frontRightDrive.setPower(Range.clip(frontRightPower, -1.0, 1.0));
-        backLeftDrive.setPower(Range.clip(backLeftPower, -1.0, 1.0));
-        backRightDrive.setPower(Range.clip(backRightPower, -1.0, 1.0));
+        frontLeftDrive.setPower(Math.clamp(frontLeftPower, -1.0, 1.0));
+        frontRightDrive.setPower(Math.clamp(frontRightPower, -1.0, 1.0));
+        backLeftDrive.setPower(Math.clamp(backLeftPower, -1.0, 1.0));
+        backRightDrive.setPower(Math.clamp(backRightPower, -1.0, 1.0));
 
         globalTelemetry.addLine("--- MOVEMENT ---");
         globalTelemetry.addData("Mode", movementMode);
