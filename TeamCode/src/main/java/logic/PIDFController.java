@@ -1,33 +1,20 @@
 package logic;
 
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
 import math.TimeHelpers;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class PIDFController {
-    private final Telemetry telemetry;
+    protected final Telemetry telemetry;
 
-    private final DcMotorEx motor;
-    private final double maxMotorVelocity;
+    protected PIDFCoefficients coefficients = new PIDFCoefficients(0.0, 0.0, 0.0, 0.0);
 
-    private PIDFCoefficients coefficients = new PIDFCoefficients(0.0, 0.0, 0.0, 0.0);
-
-    public PIDFController(DcMotorEx motor, double maxMotorVelocity, Telemetry telemetry) {
+    public PIDFController(Telemetry telemetry) {
         this.telemetry = telemetry;
-        this.motor = motor;
-        this.maxMotorVelocity = maxMotorVelocity;
     }
 
-    public PIDFController(
-            DcMotorEx motor,
-            double maxMotorVelocity,
-            Telemetry telemetry,
-            PIDFCoefficients initialCoeffs) {
+    public PIDFController(Telemetry telemetry, PIDFCoefficients initialCoeffs) {
         this.telemetry = telemetry;
-        this.motor = motor;
-        this.maxMotorVelocity = maxMotorVelocity;
         this.coefficients = initialCoeffs;
     }
 
@@ -36,25 +23,28 @@ public class PIDFController {
         this.coefficients = coeffs;
     }
 
-    private double lastTime = TimeHelpers.getRuntime();
-    private double integral = 0.0;
-    private double previousError = 0.0;
+    protected double lastTime = TimeHelpers.getRuntime();
+    protected double integral = 0.0;
+    protected double previousError = 0.0;
 
-    /// Calculates the PID output for the given target velocity.
-    /// The output is normalized in \[-1, 1\] and should be used in a setPower.
-    public double get(double targetVelocity, boolean debugInfo) {
-        if (Math.abs(targetVelocity) < maxMotorVelocity / 100.0) {
-            return 0.0;
-        }
+    protected double error = 0.0;
 
+    public void setError(double error) {
+        this.error = error;
+    }
+
+    /// Returns the change in error for the last two frames.
+    public double getErrorChange() {
+        return error - previousError;
+    }
+
+    /// Calculates the PID output for the saved error. The output is normalized to \[-1, 1\].
+    public double get(boolean debugInfo) {
         double currentTime = TimeHelpers.getRuntime();
         double deltaTime = currentTime - lastTime;
         lastTime = currentTime;
-        double error = motor.getVelocity() - targetVelocity;
 
         if (debugInfo) {
-            telemetry.addData("Current Velocity", motor.getVelocity());
-            telemetry.addData("Target Velocity", targetVelocity);
             telemetry.addData("Error", error);
         }
 
@@ -84,14 +74,13 @@ public class PIDFController {
         return clamp(sum);
     }
 
-    /// Calculates the PID output for the given target velocity.
-    /// The output is normalized in \[-1, 1\] and should be used in a setPower.
-    public double get(double targetVelocity) {
-        return get(targetVelocity, false);
+    /// Calculates the PID output for the saved error. The output is normalized to \[-1, 1\].
+    public double get() {
+        return get(false);
     }
 
     /// Clamps the given value to the range \[-1, 1\].
-    private double clamp(double v) {
+    protected double clamp(double v) {
         return Math.clamp(v, -1.0, 1.0);
     }
 }

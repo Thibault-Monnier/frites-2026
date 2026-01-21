@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import logic.PIDFCoefficients;
-import logic.PIDFController;
+import logic.PIDFControllerMotor;
 
 import math.TimeHelpers;
 
@@ -20,8 +20,8 @@ public class ShooterPIDTest extends LinearOpMode {
     DcMotorEx motorLeft;
     DcMotorEx motorRight;
 
-    PIDFController PIDFControllerLeft;
-    PIDFController PIDFControllerRight;
+    PIDFControllerMotor PIDFControllerLeft;
+    PIDFControllerMotor PIDFControllerRight;
 
     public static double TARGET_VELOCITY = 1800;
 
@@ -46,9 +46,9 @@ public class ShooterPIDTest extends LinearOpMode {
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Important to avoid an extra PID layer
 
         PIDFControllerLeft =
-                new PIDFController(motorLeft, HardwareConfig.SHOOTER_MAX_VELOCITY, telemetry);
+                new PIDFControllerMotor(motorLeft, HardwareConfig.SHOOTER_MAX_VELOCITY, telemetry);
         PIDFControllerRight =
-                new PIDFController(motorRight, HardwareConfig.SHOOTER_MAX_VELOCITY, telemetry);
+                new PIDFControllerMotor(motorRight, HardwareConfig.SHOOTER_MAX_VELOCITY, telemetry);
 
         waitForStart();
 

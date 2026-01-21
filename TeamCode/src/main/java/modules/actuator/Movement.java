@@ -4,9 +4,12 @@ import static config.MovementConfig.BACK_LEFT_COEFF;
 import static config.MovementConfig.BACK_RIGHT_COEFF;
 import static config.MovementConfig.FRONT_LEFT_COEFF;
 import static config.MovementConfig.FRONT_RIGHT_COEFF;
+import static config.MovementConfig.NOT_TURNING_THRESHOLD;
 import static config.MovementConfig.SLOW_SPEED_MULTIPLIER;
 import static config.MovementConfig.SPEED_MULTIPLIER;
 import static config.MovementConfig.SUPER_SLOW_SPEED_MULTIPLIER;
+import static config.MovementConfig.TURN_PIDF_COEFFICIENTS;
+import static config.MovementConfig.TURN_TOLERANCE;
 
 import android.util.Pair;
 
@@ -18,10 +21,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.util.Range;
 
-import logic.position.RobotPosition;
+import logic.PIDFController;
 import logic.Team;
+import logic.position.RobotPosition;
 
 import math.Angle;
 import math.Pose2D;
@@ -36,26 +39,20 @@ import java.util.Objects;
 
 @Config
 public class Movement implements RobotActuatorModule {
-    /* --- CONSTANTS --- */
-    private static final DcMotor.ZeroPowerBehavior DEFAULT_BEHAVIOR =
-            DcMotor.ZeroPowerBehavior.BRAKE;
-
-    /* --- CLASS FIELDS --- */
-
-    // CONSTRUCTOR FIELDS
     private final Telemetry globalTelemetry;
+
     private final DcMotor frontLeftDrive;
     private final DcMotor frontRightDrive;
     private final DcMotor backLeftDrive;
     private final DcMotor backRightDrive;
 
-    // NUMERIC FIELDS
     public double frontLeftPower = 0;
     public double frontRightPower = 0;
     public double backLeftPower = 0;
     public double backRightPower = 0;
 
-    // OTHER FIELDS
+    private final PIDFController turnController;
+
     private final MovementMode movementMode;
 
     private boolean isSuperSlow = false;
@@ -78,6 +75,13 @@ public class Movement implements RobotActuatorModule {
         frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        this.turnController = new PIDFController(globalTelemetry, TURN_PIDF_COEFFICIENTS);
 
         this.movementMode = movementMode;
 
@@ -108,7 +112,7 @@ public class Movement implements RobotActuatorModule {
                 throw new IllegalArgumentException(
                         "Robot position cannot be null in field-centric mode");
             }
-            moveFieldCentric(speed.first, speed.second, 0, robotPosition, team);
+            moveFieldCentric(speed.first, speed.second, robotPosition, team);
         } else {
             move(speed.first, speed.second, 0);
         }
@@ -128,20 +132,13 @@ public class Movement implements RobotActuatorModule {
         double dx = targetPos.getX(DistanceUnit.INCH) - robotPose.getX(DistanceUnit.INCH);
         double dy = targetPos.getY(DistanceUnit.INCH) - robotPose.getY(DistanceUnit.INCH);
         double targetDirection = Math.atan2(dy, dx);
-        double angleError =
-                AngleUnit.normalizeRadians(
-                        targetDirection - robotPose.getHeading(AngleUnit.RADIANS));
 
-        double kP = 1.3;
-        double turnSpeed = -angleError * kP;
-        globalTelemetry.addData("Angle Error (deg)", Math.toDegrees(angleError));
-        globalTelemetry.addData("Turn Speed", turnSpeed);
-        turnSpeed = Math.clamp(turnSpeed, -1, 1);
+        turnTowardsHeading(robotPosition, Angle.fromRadians(targetDirection));
 
         if (movementMode == MovementMode.FIELD_CENTRIC) {
-            moveFieldCentric(speed.first, speed.second, turnSpeed, robotPosition, team);
+            moveFieldCentric(speed.first, speed.second, robotPosition, team);
         } else {
-            move(speed.first, speed.second, turnSpeed);
+            move(speed.first, speed.second, 0);
         }
     }
 
@@ -155,30 +152,23 @@ public class Movement implements RobotActuatorModule {
         return turnTowardsHeading(robotPosition, targetDirection);
     }
 
-    private double lastAngleError = 0;
-
     public boolean turnTowardsHeading(RobotPosition robotPosition, Angle targetHeading) {
         Pose2D robotPose = robotPosition.getPose();
 
         double angleError =
                 AngleUnit.normalizeRadians(
                         targetHeading.toRadians() - robotPose.getHeading(AngleUnit.RADIANS));
-
-        double kP = 1.35;
-        double turnSpeed = angleError * kP;
-        globalTelemetry.addData("Angle Error (deg)", Math.toDegrees(angleError));
-        globalTelemetry.addData("Turn Speed", turnSpeed);
-        turnSpeed = Math.clamp(turnSpeed, -1, 1);
+        turnController.setError(angleError);
+        double turnSpeed = turnController.get(true);
 
         move(0, 0, turnSpeed);
 
-        apply();
-
+        double errorChange = turnController.getErrorChange();
         boolean isFinished =
-                Math.abs(angleError) <= Math.toRadians(4)
-                        && Math.abs(lastAngleError - angleError) < 0.0075;
-        globalTelemetry.addData("dist change", lastAngleError - angleError);
-        lastAngleError = angleError;
+                Math.abs(angleError) < TURN_TOLERANCE.toRadians()
+                        && Math.abs(errorChange) < NOT_TURNING_THRESHOLD.toRadians();
+        globalTelemetry.addData("Turn Speed", turnSpeed);
+        globalTelemetry.addData("Error change", errorChange);
         return !isFinished;
     }
 
@@ -215,7 +205,7 @@ public class Movement implements RobotActuatorModule {
     }
 
     private void moveFieldCentric(
-            double front, double sideways, double turn, RobotPosition robotPosition, Team team) {
+            double front, double sideways, RobotPosition robotPosition, Team team) {
         double robotAngle = robotPosition.getPose().getHeading(AngleUnit.RADIANS);
 
         if (team.isBlue()) robotAngle -= Math.PI / 2;
@@ -224,7 +214,7 @@ public class Movement implements RobotActuatorModule {
         double newFront = -front * Math.cos(robotAngle) - sideways * Math.sin(robotAngle);
         double newSideways = front * Math.sin(robotAngle) - sideways * Math.cos(robotAngle);
 
-        move(newFront, newSideways, turn);
+        move(newFront, newSideways, 0);
     }
 
     private void move(double front, double sideways, double turn) {
@@ -253,11 +243,6 @@ public class Movement implements RobotActuatorModule {
     }
 
     public void apply() {
-        frontLeftDrive.setZeroPowerBehavior(DEFAULT_BEHAVIOR);
-        frontRightDrive.setZeroPowerBehavior(DEFAULT_BEHAVIOR);
-        backLeftDrive.setZeroPowerBehavior(DEFAULT_BEHAVIOR);
-        backRightDrive.setZeroPowerBehavior(DEFAULT_BEHAVIOR);
-
         frontLeftDrive.setPower(Math.clamp(frontLeftPower, -1.0, 1.0));
         frontRightDrive.setPower(Math.clamp(frontRightPower, -1.0, 1.0));
         backLeftDrive.setPower(Math.clamp(backLeftPower, -1.0, 1.0));
