@@ -1,66 +1,18 @@
 package opmodes;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import logic.ArtifactSequence;
 import logic.PlayingField;
-import logic.position.RobotPosition;
 import logic.Team;
 
-import math.Distance;
-
-import config.HardwareConfig;
-import modules.actuator.Cannon;
-import modules.actuator.CannonBuffer;
-import modules.actuator.CannonBuffersHandler;
-import modules.actuator.Intake;
 import modules.actuator.IntakeSwitcher;
-import modules.actuator.Movement;
-import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 @Config
-public class ManualOpMode extends LinearOpMode {
-    private final Team team;
-    private final boolean calculatePose;
-    private final boolean isAfterAuto;
-
-    private ElapsedTime runtime;
-    private Telemetry globalTelemetry;
-
-    private RobotPosition robotPosition;
-
-    private BatteryMonitor batteryMonitor;
-
-    private GamepadController gamepad;
-    private Movement move;
-
-    private Cannon cannon;
-    private CannonBuffersHandler cannonBuffers;
-
-    private Intake intake;
-    private IntakeSwitcher intakeSwitcher;
-
-    private ArtifactSequence artifactSequence;
-
+public class ManualOpMode extends OpModeBase {
     public ManualOpMode(Team team, boolean isAfterAuto, boolean calculatePose) {
-        this.team = team;
-        this.calculatePose = calculatePose;
-        this.isAfterAuto = isAfterAuto;
+        super(team, !isAfterAuto, calculatePose);
     }
 
     public ManualOpMode(Team team, boolean isAfterAuto) {
@@ -88,95 +40,13 @@ public class ManualOpMode extends LinearOpMode {
         }
     }
 
-    private void initialize() {
-        runtime = new ElapsedTime();
-        globalTelemetry =
-                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        if (calculatePose)
-            robotPosition =
-                    RobotPosition.getInstance(globalTelemetry, hardwareMap, team, !isAfterAuto);
-
-        batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
-
-        gamepad = new GamepadController(runtime, gamepad1);
-
-        DcMotor moveFL = hardwareMap.get(DcMotor.class, HardwareConfig.FRONT_LEFT_MOTOR_ID);
-        DcMotor moveFR = hardwareMap.get(DcMotor.class, HardwareConfig.FRONT_RIGHT_MOTOR_ID);
-        DcMotor moveBL = hardwareMap.get(DcMotor.class, HardwareConfig.BACK_LEFT_MOTOR_ID);
-        DcMotor moveBR = hardwareMap.get(DcMotor.class, HardwareConfig.BACK_RIGHT_MOTOR_ID);
-        DcMotorEx cannonLeft =
-                hardwareMap.get(DcMotorEx.class, HardwareConfig.CANNON_MOTOR_LEFT_ID);
-        DcMotorEx cannonRight =
-                hardwareMap.get(DcMotorEx.class, HardwareConfig.CANNON_MOTOR_RIGHT_ID);
-        CRServo cannonBufferLeft =
-                hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_LEFT);
-        CRServo cannonBufferRight =
-                hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_RIGHT);
-        DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConfig.INTAKE_MOTOR_ID);
-        Servo intakeSwitcher = hardwareMap.get(Servo.class, HardwareConfig.INTAKE_SWITCHER_SERVO);
-
-        IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConfig.IMU_ID);
-        Movement.MovementMode movementMode =
-                calculatePose
-                        ? Movement.MovementMode.FIELD_CENTRIC
-                        : Movement.MovementMode.ROBOT_CENTRIC;
-        move =
-                new Movement(
-                        globalTelemetry, moveFL, moveFR, moveBL, moveBR, movementMode, onBoardIMU);
-
-        cannon = new Cannon(globalTelemetry, cannonLeft, cannonRight);
-
-        CannonBuffer leftBuffer =
-                new CannonBuffer(
-                        globalTelemetry, cannonBufferLeft, DcMotorSimple.Direction.REVERSE);
-        CannonBuffer rightBuffer =
-                new CannonBuffer(
-                        globalTelemetry, cannonBufferRight, DcMotorSimple.Direction.FORWARD);
-        this.cannonBuffers = new CannonBuffersHandler(leftBuffer, rightBuffer);
-
-        this.intake = new Intake(globalTelemetry, intake);
-        this.intakeSwitcher = new IntakeSwitcher(globalTelemetry, intakeSwitcher);
-    }
-
     private void runStep() {
-        resetNeeded();
         update();
 
         executeActions();
 
-        globalTelemetry.addData("Team", team);
-        batteryMonitor.log();
-
         apply();
-
-        globalTelemetry.update();
-    }
-
-    private void resetNeeded() {
-        move.reset();
-    }
-
-    private void update() {
-        gamepad.update();
-        if (calculatePose) robotPosition.updatePose();
-
-        if (calculatePose) {
-            if (artifactSequence == null) {
-                artifactSequence =
-                        ArtifactSequence.findCurrentSequence(robotPosition.getLimelightHandler());
-            }
-            if (artifactSequence != null) {
-                // Show the current artifactSequence
-                globalTelemetry.addData("Pattern", artifactSequence.toString());
-            }
-        }
-
-        Distance targetDistance = new Distance(DistanceUnit.CM, 200); // Default distance
-        if (calculatePose)
-            targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
-        globalTelemetry.addData("Target Dist", targetDistance.toString());
-        cannon.update(targetDistance);
+        log();
     }
 
     private void executeActions() {
@@ -235,23 +105,5 @@ public class ManualOpMode extends LinearOpMode {
         if (gamepad.isDoublePressed(GamepadController.Button.B)) move.toggleSuperSlow();
         if (gamepad.isLongPressed(GamepadController.Button.B) && calculatePose)
             robotPosition.resetPose();
-
-        System.out.println("------------------------------------------------ MANUAL");
-        System.out.println("move status: " + move.getCurrentState().toString());
-        System.out.println("cannon status: " + cannon.getCurrentState().toString());
-        System.out.println("cannonBuffers status: " + cannonBuffers.getCurrentState().toString());
-        System.out.println("intake status: " + intake.getCurrentState().toString());
-        System.out.println("intakeSwitcher status: " + intakeSwitcher.getCurrentState().toString());
-        System.out.println("------------------------------------------------ MANUAL");
-    }
-
-    private void apply() {
-        move.apply();
-
-        intake.apply();
-        intakeSwitcher.apply();
-
-        cannon.apply();
-        cannonBuffers.apply();
     }
 }

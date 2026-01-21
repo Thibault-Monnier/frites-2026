@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class GamepadController {
-
     public final Gamepad gamepad;
     private final ElapsedTime runtime;
 
@@ -40,7 +39,7 @@ public class GamepadController {
 
     /** Returns true if the button has been held down for LONG_PRESS_TIME seconds. */
     public boolean isLongPressed(Button button) {
-        double elapsedSeconds = (runtime.milliseconds() - button.lastTimePressed) / 1000.0;
+        double elapsedSeconds = (runtime.milliseconds() - button.lastTimePressed);
         return isPressing(button) && elapsedSeconds >= LONG_PRESS_TIME;
     }
 
@@ -49,7 +48,7 @@ public class GamepadController {
      * true only once.
      */
     public boolean isDoublePressed(Button button) {
-        double intervalSeconds = (button.lastTimePressed - button.previousTimePressed) / 1000.0;
+        double intervalSeconds = (button.lastTimePressed - button.previousTimePressed);
         return isPressed(button) && intervalSeconds <= DOUBLE_PRESS_INTERVAL;
     }
 
