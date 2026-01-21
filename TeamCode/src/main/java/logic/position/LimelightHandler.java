@@ -1,4 +1,4 @@
-package modules.sensor;
+package logic.position;
 
 import static config.LimelightConfig.FRAMES_IN_A_ROW_THRESHOLD;
 import static config.LimelightConfig.STABILITY_THRESHOLD_METERS;

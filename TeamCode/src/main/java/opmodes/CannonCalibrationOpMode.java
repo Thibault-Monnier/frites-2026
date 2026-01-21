@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import logic.PlayingField;
-import logic.RobotPosition;
+import logic.position.RobotPosition;
 import logic.Team;
 
 import math.Distance;

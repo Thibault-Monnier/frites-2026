@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import logic.ArtifactSequence;
 import logic.PlayingField;
-import logic.RobotPosition;
+import logic.position.RobotPosition;
 import logic.Team;
 
 import math.Distance;

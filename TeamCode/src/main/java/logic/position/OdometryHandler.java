@@ -1,4 +1,4 @@
-package modules.sensor;
+package logic.position;
 
 import static config.OdometryConfig.ENCODER_X_Y_OFFSET;
 import static config.OdometryConfig.ENCODER_Y_X_OFFSET;
@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import math.Pose2D;
 
 import config.HardwareConfig;
+import modules.sensor.GoBildaPinpointDriver;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 

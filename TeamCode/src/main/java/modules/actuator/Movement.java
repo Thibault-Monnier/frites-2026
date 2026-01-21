@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
-import logic.RobotPosition;
+import logic.position.RobotPosition;
 import logic.Team;
 
 import math.Angle;

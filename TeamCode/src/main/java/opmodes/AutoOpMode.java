@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import logic.ArtifactSequence;
 import logic.DriveActions;
 import logic.PlayingField;
-import logic.RobotPosition;
+import logic.position.RobotPosition;
 import logic.Team;
 
 import math.Distance;
@@ -30,9 +30,6 @@ import modules.actuator.IntakeSwitcher;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import modules.actuator.Movement;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
 
 public class AutoOpMode extends LinearOpMode {
     private final Team team;

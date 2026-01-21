@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 
-import modules.sensor.LimelightHandler;
+import logic.position.LimelightHandler;
 
 import java.util.List;
 
