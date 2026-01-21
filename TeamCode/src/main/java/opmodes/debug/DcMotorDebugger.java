@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import modules.HardwareConstants;
+import config.HardwareConfig;
 
 import opmodes.GroupConstants;
 
@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
         name = GroupConstants.DEBUGGER_MODES_GROUP + ": DcMotor",
         group = GroupConstants.DEBUGGER_MODES_GROUP)
 public class DcMotorDebugger extends OpMode {
-    public static String motorId = HardwareConstants.TEST_MOTOR_1_ID;
+    public static String motorId = HardwareConfig.TEST_MOTOR_1_ID;
 
     private DcMotor motor;
     private Telemetry globalTelemetry;

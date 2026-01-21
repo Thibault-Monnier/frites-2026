@@ -1,23 +1,24 @@
 package modules.actuator;
 
-import com.acmerobotics.dashboard.config.Config;
+import static config.CannonConfig.CANNON_MAX_POWER;
+import static config.CannonConfig.CANNON_MIN_POWER;
+import static config.CannonConfig.CANNON_PID;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import logic.PIDFCoefficients;
 import logic.PIDFController;
 
 import math.Distance;
 
-import modules.HardwareConstants;
+import config.HardwareConfig;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.HashMap;
 
-@Config
 public class Cannon implements RobotActuatorModule {
     /*
     Measure points:
@@ -54,20 +55,18 @@ public class Cannon implements RobotActuatorModule {
         this.motorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         this.motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        PIDFCoefficients pid = new PIDFCoefficients(0.02, 0.0, 0.0, -0.5);
-
         this.PIDFControllerLeft =
                 new PIDFController(
-                        motorLeft, HardwareConstants.SHOOTER_MAX_VELOCITY, globalTelemetry, pid);
+                        motorLeft, HardwareConfig.SHOOTER_MAX_VELOCITY, globalTelemetry, CANNON_PID);
         this.PIDFControllerRight =
                 new PIDFController(
-                        motorRight, HardwareConstants.SHOOTER_MAX_VELOCITY, globalTelemetry, pid);
+                        motorRight, HardwareConfig.SHOOTER_MAX_VELOCITY, globalTelemetry, CANNON_PID);
     }
 
     @Override
     public void apply() {
-        motorLeft.setPower(Math.clamp(PIDFControllerLeft.get(motorTargetVelocity), -0.75, 0.75));
-        motorRight.setPower(Math.clamp(PIDFControllerRight.get(motorTargetVelocity), -0.75, 0.75));
+        motorLeft.setPower(Math.clamp(PIDFControllerLeft.get(motorTargetVelocity), CANNON_MIN_POWER, CANNON_MAX_POWER));
+        motorRight.setPower(Math.clamp(PIDFControllerRight.get(motorTargetVelocity), CANNON_MIN_POWER, CANNON_MAX_POWER));
 
         globalTelemetry.addData(
                 "Cannon Motor velocity/target", getAverageVelocity() + "/" + motorTargetVelocity);

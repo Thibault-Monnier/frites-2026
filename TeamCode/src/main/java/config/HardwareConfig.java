@@ -1,4 +1,4 @@
-package modules;
+package config;
 
 import com.acmerobotics.dashboard.config.Config;
 
@@ -7,7 +7,7 @@ import math.Distance;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
-public class HardwareConstants {
+public class HardwareConfig {
     public static String FRONT_LEFT_MOTOR_ID = "front_left";
     public static String FRONT_RIGHT_MOTOR_ID = "front_right";
     public static String BACK_LEFT_MOTOR_ID = "back_left";

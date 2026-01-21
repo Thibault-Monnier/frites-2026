@@ -1,5 +1,7 @@
 package modules.actuator;
 
+import static config.IntakeConfig.INTAKE_MOVING_SPEED;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -10,8 +12,6 @@ public class Intake implements RobotActuatorModule {
 
     private final Telemetry globalTelemetry;
     private final DcMotor motor;
-
-    private static final double MOVING_SPEED = -1.0f;
     private double motorTargetPower;
     private boolean isRunning = false;
     private boolean isClearing = false;
@@ -57,9 +57,9 @@ public class Intake implements RobotActuatorModule {
     private void update() {
         motorTargetPower = 0;
         if (isRunning) {
-            motorTargetPower = MOVING_SPEED;
+            motorTargetPower = INTAKE_MOVING_SPEED;
         } else if (isClearing) {
-            motorTargetPower = -MOVING_SPEED;
+            motorTargetPower = -INTAKE_MOVING_SPEED;
             isClearing = false;
         }
         globalTelemetry.addData("Intake Motor Power", motorTargetPower);

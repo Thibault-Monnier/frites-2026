@@ -20,7 +20,7 @@ import logic.Team;
 
 import math.Distance;
 
-import modules.HardwareConstants;
+import config.HardwareConfig;
 import modules.actuator.Cannon;
 import modules.actuator.CannonBuffer;
 import modules.actuator.CannonBuffersHandler;
@@ -101,23 +101,23 @@ public class ManualOpMode extends LinearOpMode {
 
         gamepad = new GamepadController(runtime, gamepad1);
 
-        DcMotor moveFL = hardwareMap.get(DcMotor.class, HardwareConstants.FRONT_LEFT_MOTOR_ID);
-        DcMotor moveFR = hardwareMap.get(DcMotor.class, HardwareConstants.FRONT_RIGHT_MOTOR_ID);
-        DcMotor moveBL = hardwareMap.get(DcMotor.class, HardwareConstants.BACK_LEFT_MOTOR_ID);
-        DcMotor moveBR = hardwareMap.get(DcMotor.class, HardwareConstants.BACK_RIGHT_MOTOR_ID);
+        DcMotor moveFL = hardwareMap.get(DcMotor.class, HardwareConfig.FRONT_LEFT_MOTOR_ID);
+        DcMotor moveFR = hardwareMap.get(DcMotor.class, HardwareConfig.FRONT_RIGHT_MOTOR_ID);
+        DcMotor moveBL = hardwareMap.get(DcMotor.class, HardwareConfig.BACK_LEFT_MOTOR_ID);
+        DcMotor moveBR = hardwareMap.get(DcMotor.class, HardwareConfig.BACK_RIGHT_MOTOR_ID);
         DcMotorEx cannonLeft =
-                hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_LEFT_ID);
+                hardwareMap.get(DcMotorEx.class, HardwareConfig.CANNON_MOTOR_LEFT_ID);
         DcMotorEx cannonRight =
-                hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID);
+                hardwareMap.get(DcMotorEx.class, HardwareConfig.CANNON_MOTOR_RIGHT_ID);
         CRServo cannonBufferLeft =
-                hardwareMap.get(CRServo.class, HardwareConstants.CANNON_BUFFER_LEFT);
+                hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_LEFT);
         CRServo cannonBufferRight =
-                hardwareMap.get(CRServo.class, HardwareConstants.CANNON_BUFFER_RIGHT);
-        DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConstants.INTAKE_MOTOR_ID);
+                hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_RIGHT);
+        DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConfig.INTAKE_MOTOR_ID);
         Servo intakeSwitcher =
-                hardwareMap.get(Servo.class, HardwareConstants.INTAKE_SWITCHER_SERVO);
+                hardwareMap.get(Servo.class, HardwareConfig.INTAKE_SWITCHER_SERVO);
 
-        IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConstants.IMU_ID);
+        IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConfig.IMU_ID);
         Movement.MovementMode movementMode =
                 calculatePose
                         ? Movement.MovementMode.FIELD_CENTRIC

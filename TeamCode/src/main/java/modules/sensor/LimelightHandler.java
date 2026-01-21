@@ -1,5 +1,8 @@
 package modules.sensor;
 
+import static config.LimelightConfig.FRAMES_IN_A_ROW_THRESHOLD;
+import static config.LimelightConfig.STABILITY_THRESHOLD_METERS;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -11,7 +14,7 @@ import logic.PlayingField;
 import math.Pose2D;
 import math.Position2D;
 
-import modules.HardwareConstants;
+import config.HardwareConfig;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -30,9 +33,6 @@ public class LimelightHandler {
     private int validFramesInRow = 0;
     private LLResult lastResult = null;
 
-    private final double STABILITY_THRESHOLD_METERS = 0.12;
-    private final int FRAMES_IN_A_ROW_THRESHOLD = 4;
-
     private Pose2D lastKnownPose = null;
 
     private List<LLResultTypes.FiducialResult> lastDetectedTags = null;
@@ -44,7 +44,7 @@ public class LimelightHandler {
     public LimelightHandler(Telemetry globalTelemetry, HardwareMap hardwareMap) {
         this.globalTelemetry = globalTelemetry;
         this.hardwareMap = hardwareMap;
-        this.limelight = hardwareMap.get(Limelight3A.class, HardwareConstants.LIMELIGHT_CAMERA_ID);
+        this.limelight = hardwareMap.get(Limelight3A.class, HardwareConfig.LIMELIGHT_CAMERA_ID);
     }
 
     public void start() {

@@ -1,5 +1,7 @@
 package modules.actuator;
 
+import static config.CannonConfig.SHOOT_DELAY;
+
 import math.TimeHelpers;
 
 import java.util.HashMap;
@@ -10,7 +12,7 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
     private ShootingStage shootingStage = ShootingStage.IDLE;
     private double lastRoundStartTime = 0.0;
-    private static final double SHOOT_DELAY = 0.5; // seconds
+     // seconds
 
     public CannonBuffersHandler(CannonBuffer leftBuffer, CannonBuffer rightBuffer) {
         this.leftBuffer = leftBuffer;

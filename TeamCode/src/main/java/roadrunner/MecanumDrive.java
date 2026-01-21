@@ -44,7 +44,7 @@ import messages.MecanumCommandMessage;
 import messages.MecanumLocalizerInputsMessage;
 import messages.PoseMessage;
 
-import modules.HardwareConstants;
+import config.HardwareConfig;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -95,10 +95,10 @@ public final class MecanumDrive {
         // TODO: make sure your config has motors with these names (or change them)
         //   see
         // https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, HardwareConstants.FRONT_LEFT_MOTOR_ID);
-        leftBack = hardwareMap.get(DcMotorEx.class, HardwareConstants.BACK_LEFT_MOTOR_ID);
-        rightBack = hardwareMap.get(DcMotorEx.class, HardwareConstants.BACK_RIGHT_MOTOR_ID);
-        rightFront = hardwareMap.get(DcMotorEx.class, HardwareConstants.FRONT_RIGHT_MOTOR_ID);
+        leftFront = hardwareMap.get(DcMotorEx.class, HardwareConfig.FRONT_LEFT_MOTOR_ID);
+        leftBack = hardwareMap.get(DcMotorEx.class, HardwareConfig.BACK_LEFT_MOTOR_ID);
+        rightBack = hardwareMap.get(DcMotorEx.class, HardwareConfig.BACK_RIGHT_MOTOR_ID);
+        rightFront = hardwareMap.get(DcMotorEx.class, HardwareConfig.FRONT_RIGHT_MOTOR_ID);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

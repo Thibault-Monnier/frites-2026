@@ -1,5 +1,7 @@
 package modules.actuator;
 
+import static config.CannonConfig.MOVING_SPEED;
+
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -10,8 +12,6 @@ import java.util.HashMap;
 public class CannonBuffer implements RobotActuatorModule {
     private final Telemetry globalTelemetry;
     private final CRServo servo;
-
-    private static final double MOVING_SPEED = 1.0f;
     private boolean isRunning = false;
     private boolean isClearing = false;
     private boolean isReversing = false;

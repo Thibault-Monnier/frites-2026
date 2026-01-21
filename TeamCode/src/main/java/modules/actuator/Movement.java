@@ -1,5 +1,13 @@
 package modules.actuator;
 
+import static config.MovementConfig.BACK_LEFT_COEFF;
+import static config.MovementConfig.BACK_RIGHT_COEFF;
+import static config.MovementConfig.FRONT_LEFT_COEFF;
+import static config.MovementConfig.FRONT_RIGHT_COEFF;
+import static config.MovementConfig.SLOW_SPEED_MULTIPLIER;
+import static config.MovementConfig.SPEED_MULTIPLIER;
+import static config.MovementConfig.SUPER_SLOW_SPEED_MULTIPLIER;
+
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
@@ -30,10 +38,6 @@ public class Movement implements RobotActuatorModule {
     /* --- CONSTANTS --- */
     private static final DcMotor.ZeroPowerBehavior DEFAULT_BEHAVIOR =
             DcMotor.ZeroPowerBehavior.BRAKE;
-    public static double FRONT_LEFT_COEFF = 1;
-    public static double FRONT_RIGHT_COEFF = 1;
-    public static double BACK_LEFT_COEFF = 1;
-    public static double BACK_RIGHT_COEFF = 1;
 
     /* --- CLASS FIELDS --- */
 
@@ -55,9 +59,6 @@ public class Movement implements RobotActuatorModule {
 
     private boolean isSuperSlow = false;
 
-    private final double speedMultiplier = 1.0;
-    private final double slowSpeedMultiplier = 0.5;
-    private final double superSlowSpeedMultiplier = 0.2;
 
     public Movement(
             Telemetry globalTelemetry,
@@ -195,9 +196,9 @@ public class Movement implements RobotActuatorModule {
     /// Get movement speed multiplier
     private double speedMultiplier(boolean slow) {
         if (isSuperSlow) {
-            return superSlowSpeedMultiplier;
+            return SUPER_SLOW_SPEED_MULTIPLIER;
         }
-        return slow ? slowSpeedMultiplier : speedMultiplier;
+        return slow ? SLOW_SPEED_MULTIPLIER : SPEED_MULTIPLIER;
     }
 
     private double smooth(double input) {
@@ -226,7 +227,7 @@ public class Movement implements RobotActuatorModule {
         move(newFront, newSideways, turn);
     }
 
-    private void move(double front, double sideways, double turn) {
+    public void move(double front, double sideways, double turn) {
         double denominator = Math.max(Math.abs(front) + Math.abs(sideways) + Math.abs(turn), 1);
         frontLeftPower += (front - sideways - turn) / denominator;
         backLeftPower += (front + sideways - turn) / denominator;

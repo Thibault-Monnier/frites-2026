@@ -1,5 +1,6 @@
 package logic;
 
+import config.FieldConfig;
 import math.Distance;
 import math.Pose2D;
 import math.Position2D;
@@ -13,29 +14,29 @@ public class PlayingField {
 
     private static final FieldElement FIELD =
             new FieldElement(
-                    new Position2D(), FieldConstants.FIELD_WIDTH, FieldConstants.FIELD_DEPTH, 0);
+                    new Position2D(), FieldConfig.FIELD_WIDTH, FieldConfig.FIELD_DEPTH, 0);
 
     private static final FieldElement BLUE_GOAL =
             new FieldElement(
                     new Position2D(
                             DistanceUnit.INCH,
-                            -FIELD.halfWidth() + FieldConstants.GOAL_WIDTH / 2,
-                            -FIELD.halfDepth() + FieldConstants.GOAL_DEPTH / 2),
-                    FieldConstants.GOAL_WIDTH,
-                    FieldConstants.GOAL_DEPTH,
-                    FieldConstants.GOAL_HEIGHT);
+                            -FIELD.halfWidth() + FieldConfig.GOAL_WIDTH / 2,
+                            -FIELD.halfDepth() + FieldConfig.GOAL_DEPTH / 2),
+                    FieldConfig.GOAL_WIDTH,
+                    FieldConfig.GOAL_DEPTH,
+                    FieldConfig.GOAL_HEIGHT);
     private static final FieldElement RED_GOAL =
             new FieldElement(
                     new Position2D(
                             DistanceUnit.INCH,
-                            -FIELD.halfWidth() + FieldConstants.GOAL_WIDTH / 2,
-                            FIELD.halfDepth() - FieldConstants.GOAL_DEPTH / 2),
-                    FieldConstants.GOAL_WIDTH,
-                    FieldConstants.GOAL_DEPTH,
-                    FieldConstants.GOAL_HEIGHT);
+                            -FIELD.halfWidth() + FieldConfig.GOAL_WIDTH / 2,
+                            FIELD.halfDepth() - FieldConfig.GOAL_DEPTH / 2),
+                    FieldConfig.GOAL_WIDTH,
+                    FieldConfig.GOAL_DEPTH,
+                    FieldConfig.GOAL_HEIGHT);
 
     public static Pose2D startPose(Team color) {
-        return color.isBlue() ? FieldConstants.BLUE_START_POSE : FieldConstants.RED_START_POSE;
+        return color.isBlue() ? FieldConfig.BLUE_START_POSE : FieldConfig.RED_START_POSE;
     }
 
     public static Position2D goalPos(Team color) {
@@ -44,30 +45,30 @@ public class PlayingField {
 
     public static Pose2D autoModeLeavePose(Team color) {
         return color.isBlue()
-                ? FieldConstants.AUTO_MODE_LEAVE_POS_BLUE
-                : FieldConstants.AUTO_MODE_LEAVE_POS_RED;
+                ? FieldConfig.AUTO_MODE_LEAVE_POS_BLUE
+                : FieldConfig.AUTO_MODE_LEAVE_POS_RED;
     }
 
     public static Pose2D autoModeShootPose(Team color) {
         return color.isBlue()
-                ? FieldConstants.AUTO_MODE_SHOOT_POS_BLUE
-                : FieldConstants.AUTO_MODE_SHOOT_POS_RED;
+                ? FieldConfig.AUTO_MODE_SHOOT_POS_BLUE
+                : FieldConfig.AUTO_MODE_SHOOT_POS_RED;
     }
 
     public static Pose2D artifactRowEntryPose(Team color, Artifact.Row row) {
         switch (row) {
             case FRONT:
                 return color.isBlue()
-                        ? FieldConstants.BLUE_ARTIFACT_FRONT_ROW_ENTRY_POSE
-                        : FieldConstants.RED_ARTIFACT_FRONT_ROW_ENTRY_POSE;
+                        ? FieldConfig.BLUE_ARTIFACT_FRONT_ROW_ENTRY_POSE
+                        : FieldConfig.RED_ARTIFACT_FRONT_ROW_ENTRY_POSE;
             case MIDDLE:
                 return color.isBlue()
-                        ? FieldConstants.BLUE_ARTIFACT_MIDDLE_ROW_ENTRY_POSE
-                        : FieldConstants.RED_ARTIFACT_MIDDLE_ROW_ENTRY_POSE;
+                        ? FieldConfig.BLUE_ARTIFACT_MIDDLE_ROW_ENTRY_POSE
+                        : FieldConfig.RED_ARTIFACT_MIDDLE_ROW_ENTRY_POSE;
             case BACK:
                 return color.isBlue()
-                        ? FieldConstants.BLUE_ARTIFACT_BACK_ROW_ENTRY_POSE
-                        : FieldConstants.RED_ARTIFACT_BACK_ROW_ENTRY_POSE;
+                        ? FieldConfig.BLUE_ARTIFACT_BACK_ROW_ENTRY_POSE
+                        : FieldConfig.RED_ARTIFACT_BACK_ROW_ENTRY_POSE;
             default:
                 throw new IllegalArgumentException("Invalid artifact row: " + row);
         }
@@ -105,9 +106,9 @@ public class PlayingField {
     public static boolean isInField(Position2D pos) {
         double x = pos.getX(DistanceUnit.INCH);
         double y = pos.getY(DistanceUnit.INCH);
-        return x >= -FieldConstants.FIELD_WIDTH / 2
-                && x <= FieldConstants.FIELD_WIDTH / 2
-                && y >= -FieldConstants.FIELD_DEPTH / 2
-                && y <= FieldConstants.FIELD_DEPTH / 2;
+        return x >= -FieldConfig.FIELD_WIDTH / 2
+                && x <= FieldConfig.FIELD_WIDTH / 2
+                && y >= -FieldConfig.FIELD_DEPTH / 2
+                && y <= FieldConfig.FIELD_DEPTH / 2;
     }
 }

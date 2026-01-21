@@ -1,5 +1,9 @@
 package modules.actuator;
 
+import static com.sun.tools.javac.api.DiagnosticFormatter.PositionKind.OFFSET;
+import static config.IntakeConfig.SWITCHER_CENTER_POS;
+import static config.IntakeConfig.SWITCHER_OFFSET;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -14,24 +18,21 @@ public class IntakeSwitcher implements RobotActuatorModule {
 
     private Position currentPosition = Position.CENTER;
 
-    private static final double CENTER_POS = 0.49;
-    private static final double OFFSET = 0.105;
-
     public IntakeSwitcher(Telemetry globalTelemetry, Servo servo) {
         this.globalTelemetry = globalTelemetry;
         this.servo = servo;
 
-        servo.setPosition(CENTER_POS);
+        servo.setPosition(SWITCHER_CENTER_POS);
     }
 
     @Override
     public void apply() {
         if (currentPosition == Position.CENTER) {
-            servo.setPosition(CENTER_POS);
+            servo.setPosition(SWITCHER_CENTER_POS);
         } else if (currentPosition == Position.LEFT) {
-            servo.setPosition(CENTER_POS - OFFSET);
+            servo.setPosition(SWITCHER_CENTER_POS - SWITCHER_OFFSET);
         } else {
-            servo.setPosition(CENTER_POS + OFFSET);
+            servo.setPosition(SWITCHER_CENTER_POS + SWITCHER_OFFSET);
         }
 
         globalTelemetry.addData("Intake Switcher Position", servo.getPosition());

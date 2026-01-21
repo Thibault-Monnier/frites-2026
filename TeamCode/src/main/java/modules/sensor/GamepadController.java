@@ -1,13 +1,14 @@
 package modules.sensor;
 
+import static config.GamepadConfig.DOUBLE_PRESS_INTERVAL;
+import static config.GamepadConfig.LONG_PRESS_TIME;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class GamepadController {
-    public static double LONG_PRESS_TIME = 0.5;
-    public static double DOUBLE_PRESS_INTERVAL = 0.3;
 
     public final Gamepad gamepad;
     private final ElapsedTime runtime;

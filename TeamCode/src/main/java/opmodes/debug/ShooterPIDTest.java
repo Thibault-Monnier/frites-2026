@@ -12,7 +12,7 @@ import logic.PIDFController;
 
 import math.TimeHelpers;
 
-import modules.HardwareConstants;
+import config.HardwareConfig;
 
 @Config
 @TeleOp
@@ -31,8 +31,8 @@ public class ShooterPIDTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        this.motorLeft = hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_LEFT_ID);
-        this.motorRight = hardwareMap.get(DcMotorEx.class, HardwareConstants.CANNON_MOTOR_RIGHT_ID);
+        this.motorLeft = hardwareMap.get(DcMotorEx.class, HardwareConfig.CANNON_MOTOR_LEFT_ID);
+        this.motorRight = hardwareMap.get(DcMotorEx.class, HardwareConfig.CANNON_MOTOR_RIGHT_ID);
 
         this.motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         this.motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -44,9 +44,9 @@ public class ShooterPIDTest extends LinearOpMode {
         motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Important to avoid an extra PID layer
 
         PIDFControllerLeft =
-                new PIDFController(motorLeft, HardwareConstants.SHOOTER_MAX_VELOCITY, telemetry);
+                new PIDFController(motorLeft, HardwareConfig.SHOOTER_MAX_VELOCITY, telemetry);
         PIDFControllerRight =
-                new PIDFController(motorRight, HardwareConstants.SHOOTER_MAX_VELOCITY, telemetry);
+                new PIDFController(motorRight, HardwareConfig.SHOOTER_MAX_VELOCITY, telemetry);
 
         waitForStart();
 
