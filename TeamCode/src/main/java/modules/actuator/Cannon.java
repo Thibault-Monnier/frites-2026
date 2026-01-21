@@ -66,8 +66,8 @@ public class Cannon implements RobotActuatorModule {
 
     @Override
     public void apply() {
-        motorLeft.setPower(PIDFControllerLeft.get(motorTargetVelocity));
-        motorRight.setPower(PIDFControllerRight.get(motorTargetVelocity));
+        motorLeft.setPower(Math.clamp(PIDFControllerLeft.get(motorTargetVelocity), -0.75, 0.75));
+        motorRight.setPower(Math.clamp(PIDFControllerRight.get(motorTargetVelocity), -0.75, 0.75));
 
         globalTelemetry.addData(
                 "Cannon Motor velocity/target", getAverageVelocity() + "/" + motorTargetVelocity);
@@ -136,7 +136,7 @@ public class Cannon implements RobotActuatorModule {
         //        }
 
         // Polynomial that approximates ideal power
-        return x * x * x / 190000.0 + x * x / 10000.0 + x / 8.0 + 1150.0;
+        return Math.min(x * x * x / 190000.0 + x * x / 10000.0 + x / 8.0 + 1150.0, 1500);
     }
 
     @Override

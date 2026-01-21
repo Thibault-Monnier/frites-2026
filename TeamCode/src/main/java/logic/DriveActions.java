@@ -16,7 +16,7 @@ public class DriveActions {
 
     private final Team team;
 
-    private static final Distance ARTIFACT_COLLECTION_DISTANCE = Distance.fromInches(13.75);
+    private static final Distance ARTIFACT_COLLECTION_DISTANCE = Distance.fromInches(13.5);
 
     public DriveActions(MecanumDrive drive, RobotPosition robotPosition, Team team) {
         this.drive = drive;
