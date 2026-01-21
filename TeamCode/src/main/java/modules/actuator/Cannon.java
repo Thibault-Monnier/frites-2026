@@ -57,16 +57,30 @@ public class Cannon implements RobotActuatorModule {
 
         this.PIDFControllerLeft =
                 new PIDFController(
-                        motorLeft, HardwareConfig.SHOOTER_MAX_VELOCITY, globalTelemetry, CANNON_PID);
+                        motorLeft,
+                        HardwareConfig.SHOOTER_MAX_VELOCITY,
+                        globalTelemetry,
+                        CANNON_PID);
         this.PIDFControllerRight =
                 new PIDFController(
-                        motorRight, HardwareConfig.SHOOTER_MAX_VELOCITY, globalTelemetry, CANNON_PID);
+                        motorRight,
+                        HardwareConfig.SHOOTER_MAX_VELOCITY,
+                        globalTelemetry,
+                        CANNON_PID);
     }
 
     @Override
     public void apply() {
-        motorLeft.setPower(Math.clamp(PIDFControllerLeft.get(motorTargetVelocity), CANNON_MIN_POWER, CANNON_MAX_POWER));
-        motorRight.setPower(Math.clamp(PIDFControllerRight.get(motorTargetVelocity), CANNON_MIN_POWER, CANNON_MAX_POWER));
+        motorLeft.setPower(
+                Math.clamp(
+                        PIDFControllerLeft.get(motorTargetVelocity),
+                        CANNON_MIN_POWER,
+                        CANNON_MAX_POWER));
+        motorRight.setPower(
+                Math.clamp(
+                        PIDFControllerRight.get(motorTargetVelocity),
+                        CANNON_MIN_POWER,
+                        CANNON_MAX_POWER));
 
         globalTelemetry.addData(
                 "Cannon Motor velocity/target", getAverageVelocity() + "/" + motorTargetVelocity);

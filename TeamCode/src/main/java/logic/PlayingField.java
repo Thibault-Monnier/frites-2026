@@ -14,8 +14,7 @@ public class PlayingField {
     }
 
     private static final FieldElement FIELD =
-            new FieldElement(
-                    new Position2D(), FieldConfig.FIELD_WIDTH, FieldConfig.FIELD_DEPTH, 0);
+            new FieldElement(new Position2D(), FieldConfig.FIELD_WIDTH, FieldConfig.FIELD_DEPTH, 0);
 
     private static final FieldElement BLUE_GOAL =
             new FieldElement(

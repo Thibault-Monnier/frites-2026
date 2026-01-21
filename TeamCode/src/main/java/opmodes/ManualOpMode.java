@@ -114,8 +114,7 @@ public class ManualOpMode extends LinearOpMode {
         CRServo cannonBufferRight =
                 hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_RIGHT);
         DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConfig.INTAKE_MOTOR_ID);
-        Servo intakeSwitcher =
-                hardwareMap.get(Servo.class, HardwareConfig.INTAKE_SWITCHER_SERVO);
+        Servo intakeSwitcher = hardwareMap.get(Servo.class, HardwareConfig.INTAKE_SWITCHER_SERVO);
 
         IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConfig.IMU_ID);
         Movement.MovementMode movementMode =

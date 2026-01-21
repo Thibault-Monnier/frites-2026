@@ -12,7 +12,6 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
     private ShootingStage shootingStage = ShootingStage.IDLE;
     private double lastRoundStartTime = 0.0;
-     // seconds
 
     public CannonBuffersHandler(CannonBuffer leftBuffer, CannonBuffer rightBuffer) {
         this.leftBuffer = leftBuffer;

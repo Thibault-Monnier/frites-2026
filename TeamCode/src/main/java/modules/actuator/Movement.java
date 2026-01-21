@@ -60,7 +60,6 @@ public class Movement implements RobotActuatorModule {
 
     private boolean isSuperSlow = false;
 
-
     public Movement(
             Telemetry globalTelemetry,
             DcMotor FL,

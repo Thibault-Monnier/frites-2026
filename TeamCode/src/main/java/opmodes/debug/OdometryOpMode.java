@@ -32,7 +32,8 @@ public class OdometryOpMode extends LinearOpMode {
 
         pinpoint = hardwareMap.get(modules.sensor.GoBildaPinpointDriver.class, "pinpoint");
 
-        pinpoint.setEncoderResolution(modules.sensor.GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        pinpoint.setEncoderResolution(
+                modules.sensor.GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
 
         pinpoint.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.FORWARD,

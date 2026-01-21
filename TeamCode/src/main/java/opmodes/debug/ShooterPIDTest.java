@@ -40,8 +40,10 @@ public class ShooterPIDTest extends LinearOpMode {
         motorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Important to avoid an extra PID layer
-        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Important to avoid an extra PID layer
+        motorLeft.setMode(
+                DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Important to avoid an extra PID layer
+        motorRight.setMode(
+                DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Important to avoid an extra PID layer
 
         PIDFControllerLeft =
                 new PIDFController(motorLeft, HardwareConfig.SHOOTER_MAX_VELOCITY, telemetry);
