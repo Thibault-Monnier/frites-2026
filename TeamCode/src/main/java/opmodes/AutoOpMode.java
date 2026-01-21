@@ -3,7 +3,6 @@ package opmodes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,12 +12,10 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import logic.Artifact;
 import logic.ArtifactSequence;
 import logic.DriveActions;
 import logic.PlayingField;
 import logic.RobotPosition;
-import logic.SimpleAction;
 import logic.Team;
 
 import math.Distance;
@@ -33,7 +30,6 @@ import modules.actuator.IntakeSwitcher;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import modules.actuator.Movement;
-import roadrunner.MecanumDrive;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -47,7 +43,6 @@ public class AutoOpMode extends LinearOpMode {
     private RobotPosition robotPosition;
 
     private Movement move;
-    private MecanumDrive drive;
     private DriveActions driveActions;
 
     private Cannon cannon;
@@ -58,7 +53,7 @@ public class AutoOpMode extends LinearOpMode {
 
     private ArtifactSequence artifactSequence;
 
-    private final Deque<Action> actionSequence = new ArrayDeque<>();
+    // private final Deque<Action> actionSequence = new ArrayDeque<>();
 
     public AutoOpMode(Team team) {
         this.team = team;
@@ -67,14 +62,14 @@ public class AutoOpMode extends LinearOpMode {
     @Override
     public void runOpMode() {
         initialize();
-        initSequence();
+        // initSequence();
 
         waitForStart();
 
         runtime.reset();
 
         double prevTime = runtime.milliseconds();
-        while (opModeIsActive() && !actionSequence.isEmpty()) {
+        while (opModeIsActive() /*&& !actionSequence.isEmpty()*/) {
             // Consistent step duration for better PIDs
             double time = runtime.milliseconds();
             while (time - prevTime < 100) {
@@ -106,8 +101,7 @@ public class AutoOpMode extends LinearOpMode {
         CRServo cannonBufferRight =
                 hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_RIGHT);
         DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConfig.INTAKE_MOTOR_ID);
-        Servo intakeSwitcher =
-                hardwareMap.get(Servo.class, HardwareConfig.INTAKE_SWITCHER_SERVO);
+        Servo intakeSwitcher = hardwareMap.get(Servo.class, HardwareConfig.INTAKE_SWITCHER_SERVO);
 
         IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConfig.IMU_ID);
         move =
@@ -120,8 +114,7 @@ public class AutoOpMode extends LinearOpMode {
                         Movement.MovementMode.FIELD_CENTRIC,
                         onBoardIMU);
 
-        drive = new MecanumDrive(hardwareMap, robotPosition);
-        driveActions = new DriveActions(drive, robotPosition, team);
+        driveActions = new DriveActions(robotPosition, team);
 
         cannon = new Cannon(globalTelemetry, cannonLeft, cannonRight);
 
@@ -137,7 +130,7 @@ public class AutoOpMode extends LinearOpMode {
         this.intakeSwitcher = new IntakeSwitcher(globalTelemetry, intakeSwitcher);
     }
 
-    private void initSequence() {
+    /*private void initSequence() {
         registerAction(powerOnCannon());
         registerAction(intakeSwitcherRight());
 
@@ -236,20 +229,20 @@ public class AutoOpMode extends LinearOpMode {
 
     private void registerAction(Action action) {
         actionSequence.addLast(action);
-    }
+    }*/
 
     private void runStep() {
         update();
 
         TelemetryPacket packet = new TelemetryPacket();
 
-        Action currentAction = actionSequence.getFirst();
+        /*Action currentAction = actionSequence.getFirst();
 
         currentAction.preview(packet.fieldOverlay());
 
         if (!currentAction.run(packet)) {
             actionSequence.removeFirst();
-        }
+        }*/
 
         apply();
 
@@ -257,7 +250,7 @@ public class AutoOpMode extends LinearOpMode {
 
         globalTelemetry.addLine("--- Main Auto Mode ---");
         globalTelemetry.addData("Runtime", runtime.seconds());
-        globalTelemetry.addData("Ran", currentAction.toString());
+        // globalTelemetry.addData("Ran", currentAction.toString());
         globalTelemetry.update();
 
         System.out.println("------------------------------------------------ AUTO");
@@ -285,7 +278,7 @@ public class AutoOpMode extends LinearOpMode {
         globalTelemetry.addData("Target Dist", targetDistance.toString());
         cannon.update(targetDistance);
 
-        drive.updatePoseEstimate();
+        // drive.updatePoseEstimate();
     }
 
     private void apply() {

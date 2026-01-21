@@ -1,30 +1,23 @@
 package logic;
 
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.Vector2d;
-
 import math.Distance;
 import math.Pose2D;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-import roadrunner.MecanumDrive;
-
 public class DriveActions {
-    private final MecanumDrive drive;
     private final RobotPosition robotPosition;
 
     private final Team team;
 
     private static final Distance ARTIFACT_COLLECTION_DISTANCE = Distance.fromInches(13.5);
 
-    public DriveActions(MecanumDrive drive, RobotPosition robotPosition, Team team) {
-        this.drive = drive;
+    public DriveActions(RobotPosition robotPosition, Team team) {
         this.robotPosition = robotPosition;
         this.team = team;
     }
 
-    public DeferredAction driveToGoalShootPosition() {
+    /*public DeferredAction driveToGoalShootPosition() {
         return new DeferredAction(
                 () -> {
                     Pose2D goalShootPosition = PlayingField.autoModeShootPose(team);
@@ -87,4 +80,5 @@ public class DriveActions {
         System.out.println("Building action at pose: " + drive.localizer.getPose());
         return drive.actionBuilder(drive.localizer.getPose().toRoadrunnerPose2d());
     }
+    */
 }

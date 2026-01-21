@@ -2,8 +2,6 @@ package math;
 
 import androidx.annotation.NonNull;
 
-import com.acmerobotics.roadrunner.Pose2d;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -97,43 +95,6 @@ public class Pose2D {
                 DistanceUnit.METER,
                 getHeading(AngleUnit.DEGREES),
                 AngleUnit.DEGREES);
-    }
-
-    /**
-     * Converts this Pose2D to a Roadrunner Pose2d object.
-     *
-     * @param distanceUnit the unit to convert x and y into
-     * @param angleUnit the unit to convert heading into
-     * @return a new Roadrunner Pose2d with x, y and heading converted to the desired units
-     */
-    public Pose2d toPose2d(DistanceUnit distanceUnit, AngleUnit angleUnit) {
-        return new Pose2d(getX(distanceUnit), getY(distanceUnit), getHeading(angleUnit));
-    }
-
-    /**
-     * Converts this Pose2D to a Roadrunner Pose2d object with inches and radians.
-     *
-     * @return a new Roadrunner Pose2d with x, y in inches and heading in radians
-     */
-    public Pose2d toRoadrunnerPose2d() {
-        return toPose2d(DistanceUnit.INCH, AngleUnit.RADIANS);
-    }
-
-    /**
-     * Converts a Roadrunner Pose2d object to a Pose2D object.
-     *
-     * @param pose2d the Roadrunner Pose2d object to convert
-     * @param distanceUnit the distance unit used in pose2d
-     * @param angleUnit the angle unit used in pose2d
-     * @return a new Pose2D object with x, y and heading from the Pose2d
-     */
-    public static Pose2D fromPose2d(Pose2d pose2d, DistanceUnit distanceUnit, AngleUnit angleUnit) {
-        return new Pose2D(
-                distanceUnit,
-                pose2d.position.x,
-                pose2d.position.y,
-                angleUnit,
-                pose2d.heading.toDouble());
     }
 
     /**

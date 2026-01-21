@@ -2,14 +2,10 @@ package logic;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.PoseVelocity2d;
-import com.acmerobotics.roadrunner.Rotation2d;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import math.Pose2D;
 import math.Position2D;
-import math.Units;
 
 import modules.sensor.LimelightHandler;
 import modules.sensor.OdometryHandler;
@@ -71,7 +67,7 @@ public class RobotPosition {
      * Updates the robot pose. This MUST be called each step to ensure the information is
      * up-to-date.
      */
-    public PoseVelocity2d updatePose() {
+    public void updatePose() {
         odometryHandler.update();
 
         if (limelightHandler.update()) {
@@ -85,14 +81,6 @@ public class RobotPosition {
 
         globalTelemetry.addData("Computed pose", pose.toString());
         renderFieldOverlayInDashboard();
-
-        Vector2d worldVelocity =
-                new Vector2d(
-                        Units.mmToInches(odometryHandler.driver.getVelX()),
-                        Units.mmToInches(odometryHandler.driver.getVelY()));
-        Vector2d robotVelocity =
-                Rotation2d.fromDouble(-odometryHandler.driver.getHeading()).times(worldVelocity);
-        return new PoseVelocity2d(robotVelocity, odometryHandler.driver.getHeadingVelocity());
     }
 
     /// Gets the current robot pose as a Pose2D

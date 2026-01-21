@@ -2,8 +2,6 @@ package math;
 
 import androidx.annotation.NonNull;
 
-import com.acmerobotics.roadrunner.Vector2d;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
@@ -25,16 +23,6 @@ public class Position2D {
         this.x = x;
         this.y = y;
         this.unit = unit;
-    }
-
-    /**
-     * Creates a new Position2D object from a Vector2d
-     *
-     * @param unit the unit of distance for both x and y
-     * @param vec the vector containing x and y
-     */
-    public Position2D(DistanceUnit unit, Vector2d vec) {
-        this(unit, vec.x, vec.y);
     }
 
     /**
@@ -98,14 +86,5 @@ public class Position2D {
      */
     public static Position2D fromPosition(Position position) {
         return new Position2D(position.unit, position.x, position.y);
-    }
-
-    /**
-     * Converts this Position2D object to a Roadrunner Vector2d object in inches
-     *
-     * @return the resulting Vector2d object
-     */
-    public Vector2d toRoadrunnerVector() {
-        return new Vector2d(getX(DistanceUnit.INCH), getY(DistanceUnit.INCH));
     }
 }

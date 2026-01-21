@@ -1,26 +1,24 @@
-/*   MIT License
-*   Copyright (c) [2024] [Base 10 Assets, LLC]
-*
-*   Permission is hereby granted, free of charge, to any person obtaining a copy
-*   of this software and associated documentation files (the "Software"), to deal
-*   in the Software without restriction, including without limitation the rights
-*   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*   copies of the Software, and to permit persons to whom the Software is
-*   furnished to do so, subject to the following conditions:
+package modules.sensor; /*   MIT License
+                        *   Copyright (c) [2024] [Base 10 Assets, LLC]
+                        *
+                        *   Permission is hereby granted, free of charge, to any person obtaining a copy
+                        *   of this software and associated documentation files (the "Software"), to deal
+                        *   in the Software without restriction, including without limitation the rights
+                        *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                        *   copies of the Software, and to permit persons to whom the Software is
+                        *   furnished to do so, subject to the following conditions:
 
-*   The above copyright notice and this permission notice shall be included in all
-*   copies or substantial portions of the Software.
+                        *   The above copyright notice and this permission notice shall be included in all
+                        *   copies or substantial portions of the Software.
 
-*   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-*   SOFTWARE.
-*/
-
-package roadrunner;
+                        *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                        *   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                        *   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                        *   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                        *   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                        *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                        *   SOFTWARE.
+                        */
 
 import static com.qualcomm.robotcore.util.TypeConversion.byteArrayToInt;
 
@@ -47,7 +45,6 @@ import java.util.Arrays;
         description =
                 "goBILDA® Pinpoint Odometry Computer (IMU Sensor Fusion for 2 Wheel Odometry)")
 public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSimple> {
-
     // i2c address of the device
     public static final byte DEFAULT_ADDRESS = 0x31;
     private static final float goBILDA_SWINGARM_POD =
@@ -215,7 +212,7 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
      * the update() function which allows a narrower range of data to be read from the device for
      * faster read times. Currently ONLY_UPDATE_HEADING is supported.
      *
-     * @param data GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING
+     * @param data modules.sensor.GoBildaPinpointDriver.readData.ONLY_UPDATE_HEADING
      */
     public void update(readData data) {
         if (data == readData.ONLY_UPDATE_HEADING) {

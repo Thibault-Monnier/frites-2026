@@ -3,11 +3,10 @@ package logic;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 
 import java.util.function.Supplier;
 
-public class DeferredAction implements Action {
+/*public class DeferredAction implements Action {
     private final Supplier<Action> actionFactory;
     private Action builtAction = null;
 
@@ -25,3 +24,4 @@ public class DeferredAction implements Action {
         return builtAction.run(packet);
     }
 }
+*/

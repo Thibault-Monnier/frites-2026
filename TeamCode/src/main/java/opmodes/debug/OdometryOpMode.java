@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import roadrunner.GoBildaPinpointDriver;
+import modules.sensor.GoBildaPinpointDriver;
 
 @TeleOp(name = "Odometry OpMode", group = "concept")
 public class OdometryOpMode extends LinearOpMode {
@@ -30,9 +30,9 @@ public class OdometryOpMode extends LinearOpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        pinpoint = hardwareMap.get(modules.sensor.GoBildaPinpointDriver.class, "pinpoint");
 
-        pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        pinpoint.setEncoderResolution(modules.sensor.GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
 
         pinpoint.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.FORWARD,
