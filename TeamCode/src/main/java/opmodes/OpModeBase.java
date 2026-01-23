@@ -11,16 +11,16 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 import config.HardwareConfig;
+
 import logic.ArtifactSequence;
 import logic.DriveActions;
 import logic.PlayingField;
 import logic.Team;
 import logic.position.RobotPosition;
+
 import math.Distance;
+
 import modules.actuator.Cannon;
 import modules.actuator.CannonBuffer;
 import modules.actuator.CannonBuffersHandler;
@@ -29,6 +29,9 @@ import modules.actuator.IntakeSwitcher;
 import modules.actuator.Movement;
 import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class OpModeBase extends LinearOpMode {
     protected ElapsedTime runtime;
@@ -145,7 +148,16 @@ public class OpModeBase extends LinearOpMode {
         globalTelemetry.addData("Team", team);
         globalTelemetry.addData("Runtime", runtime.seconds());
 
-        globalTelemetry.update();
+        // Log state
+        System.out.println("------- Robot State Log -------");
+        System.out.println("Cannon State: " + cannon.getCurrentState().toString());
+        System.out.println("Cannon Buffers State: " + cannonBuffers.getCurrentState().toString());
+        System.out.println(
+                "Intake Switcher Position: " + intakeSwitcher.getCurrentPosition().toString());
+        System.out.println("Intake State: " + intake.getCurrentState().toString());
+        System.out.println("Move State: " + move.getCurrentState().toString());
+        System.out.println("Robot Position: " + robotPosition.getPose().toString());
+        System.out.println("-----------------------------------");
     }
 
     protected void apply() {

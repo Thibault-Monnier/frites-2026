@@ -56,6 +56,24 @@ public class PIDFController {
         double dTerm = coefficients.Kd * derivative;
         double fTerm = coefficients.Kf;
 
+        if (Double.isNaN(pTerm)
+                || Double.isNaN(iTerm)
+                || Double.isNaN(dTerm)
+                || Double.isNaN(fTerm)) {
+            throw new RuntimeException(
+                    "PIDF calculation resulted in NaN "
+                            + "(P: "
+                            + pTerm
+                            + ", I: "
+                            + iTerm
+                            + ", D: "
+                            + dTerm
+                            + ", F: "
+                            + fTerm
+                            + "); deltaTime: "
+                            + deltaTime);
+        }
+
         previousError = error;
 
         double sum = pTerm + iTerm + dTerm + fTerm;
