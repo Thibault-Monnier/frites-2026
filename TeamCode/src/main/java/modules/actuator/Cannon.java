@@ -69,8 +69,8 @@ public class Cannon implements RobotActuatorModule {
 
     @Override
     public void apply() {
-        motorLeft.setPower(PIDFControllerLeft.get(motorTargetVelocity, true));
-        motorRight.setPower(PIDFControllerRight.get(motorTargetVelocity, true));
+        motorLeft.setPower(PIDFControllerLeft.get(motorTargetVelocity));
+        motorRight.setPower(PIDFControllerRight.get(motorTargetVelocity));
 
         globalTelemetry.addData(
                 "Cannon Motor velocity/target", getAverageVelocity() + "/" + motorTargetVelocity);

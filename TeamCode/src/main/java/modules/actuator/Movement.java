@@ -159,8 +159,9 @@ public class Movement implements RobotActuatorModule {
                 AngleUnit.normalizeRadians(
                         targetHeading.toRadians() - robotPose.getHeading(AngleUnit.RADIANS));
         turnController.setError(angleError);
-        double turnSpeed = turnController.get(true);
 
+        // Standard coordinate system direction is CCW but for movement is is CW.
+        double turnSpeed = -turnController.get(true);
         move(0, 0, turnSpeed);
 
         double errorChange = turnController.getErrorChange();
