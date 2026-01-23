@@ -1,18 +1,16 @@
 package modules.actuator;
 
-import static config.CannonConfig.CANNON_MAX_POWER;
-import static config.CannonConfig.CANNON_MIN_POWER;
 import static config.CannonConfig.CANNON_PID;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import config.HardwareConfig;
+
 import logic.PIDFControllerMotor;
 
 import math.Distance;
-
-import config.HardwareConfig;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -59,28 +57,20 @@ public class Cannon implements RobotActuatorModule {
                 new PIDFControllerMotor(
                         motorLeft,
                         HardwareConfig.SHOOTER_MAX_VELOCITY,
-                        globalTelemetry,
+                        this.globalTelemetry,
                         CANNON_PID);
         this.PIDFControllerRight =
                 new PIDFControllerMotor(
                         motorRight,
                         HardwareConfig.SHOOTER_MAX_VELOCITY,
-                        globalTelemetry,
+                        this.globalTelemetry,
                         CANNON_PID);
     }
 
     @Override
     public void apply() {
-        motorLeft.setPower(
-                Math.clamp(
-                        PIDFControllerLeft.get(motorTargetVelocity),
-                        CANNON_MIN_POWER,
-                        CANNON_MAX_POWER));
-        motorRight.setPower(
-                Math.clamp(
-                        PIDFControllerRight.get(motorTargetVelocity),
-                        CANNON_MIN_POWER,
-                        CANNON_MAX_POWER));
+        motorLeft.setPower(PIDFControllerLeft.get(motorTargetVelocity, true));
+        motorRight.setPower(PIDFControllerRight.get(motorTargetVelocity, true));
 
         globalTelemetry.addData(
                 "Cannon Motor velocity/target", getAverageVelocity() + "/" + motorTargetVelocity);
@@ -149,7 +139,7 @@ public class Cannon implements RobotActuatorModule {
         //        }
 
         // Polynomial that approximates ideal power
-        return Math.min(x * x * x / 190000.0 + x * x / 10000.0 + x / 8.0 + 1150.0, 1500);
+        return x * x * x / 190000.0 + x * x / 10000.0 + x / 8.0 + 1150.0;
     }
 
     @Override
