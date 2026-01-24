@@ -164,12 +164,11 @@ public class Movement implements RobotActuatorModule {
         double turnSpeed = -turnController.get(true);
         move(0, 0, turnSpeed);
 
-        double errorChange = turnController.getErrorChange();
         boolean isFinished =
-                Math.abs(angleError) < TURN_TOLERANCE.toRadians()
-                        && Math.abs(errorChange) < NOT_TURNING_THRESHOLD.toRadians();
+                turnController.isStableAtTarget(
+                        TURN_TOLERANCE.toRadians(), NOT_TURNING_THRESHOLD.toRadians());
         globalTelemetry.addData("Turn Speed", turnSpeed);
-        globalTelemetry.addData("Error change", errorChange);
+        globalTelemetry.addData("Error change", turnController.getErrorChange());
         return !isFinished;
     }
 

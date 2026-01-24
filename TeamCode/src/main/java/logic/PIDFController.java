@@ -23,6 +23,13 @@ public class PIDFController {
         this.coefficients = coeffs;
     }
 
+    /// Returns whether the controller is stable at the target, meaning it will probably stay within
+    /// the given error thresholds.
+    public boolean isStableAtTarget(double errorThreshold, double errorChangeThreshold) {
+        return Math.abs(error) < errorThreshold
+                && Math.abs(getErrorChange()) < errorChangeThreshold;
+    }
+
     protected double lastTime = TimeHelpers.getRuntime();
     protected double integral = 0.0;
     protected double previousError = 0.0;

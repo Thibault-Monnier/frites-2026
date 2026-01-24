@@ -1,6 +1,8 @@
 package modules.actuator;
 
 import static config.CannonConfig.CANNON_PID;
+import static config.CannonConfig.ERROR_MARGIN;
+import static config.CannonConfig.STABLE_THRESHOLD;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -106,14 +108,13 @@ public class Cannon implements RobotActuatorModule {
         return Math.abs(velocityLeft + velocityRight) / 2;
     }
 
-    private boolean velocitiesEqual(double velocity, double target) {
-        double errorMargin = 40;
-        return Math.abs(velocity - target) <= errorMargin;
-    }
-
+    /**
+     * @return Whether the cannon is ready to shoot (at target velocity and stable)
+     */
     public boolean isReadyToShoot() {
-        return velocitiesEqual(this.getAverageVelocity(), motorTargetVelocity)
-                && this.getAverageVelocity() >= 100;
+        return PIDFControllerLeft.isStableAtTarget(ERROR_MARGIN, STABLE_THRESHOLD)
+                && PIDFControllerRight.isStableAtTarget(ERROR_MARGIN, STABLE_THRESHOLD)
+                && getAverageVelocity() >= 100; // Not stopped
     }
 
     protected double computeVelocity(Distance target2dDistance) {
