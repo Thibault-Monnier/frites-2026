@@ -13,6 +13,9 @@ public class CannonBuffersHandler implements RobotActuatorModule {
     private ShootingStage shootingStage = ShootingStage.IDLE;
     private double lastRoundStartTime = 0.0;
 
+    private boolean lastShotLeft = true;
+    private int shotsFired = 0;
+
     public CannonBuffersHandler(CannonBuffer leftBuffer, CannonBuffer rightBuffer) {
         this.leftBuffer = leftBuffer;
         this.rightBuffer = rightBuffer;
@@ -52,22 +55,26 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
         lastRoundStartTime = TimeHelpers.getRuntime();
 
-        if (shootingStage == ShootingStage.IDLE) {
-            if (startLeft) leftOnly();
-            else rightOnly();
-            shootingStage = ShootingStage.SHOT_ONCE;
-        } else if (shootingStage == ShootingStage.SHOT_ONCE) {
-            rightOnly();
-            shootingStage = ShootingStage.SHOT_TWICE;
-        } else if (shootingStage == ShootingStage.SHOT_TWICE) {
-            leftOnly();
-            shootingStage = ShootingStage.FINISHED;
-        } else {
-            off();
-            return true;
-        }
+        switch (shootingStage) {
+            case IDLE:
+                lastShotLeft = !startLeft;
+                shootingStage = ShootingStage.SHOOTING;
+            // fall through
+            case SHOOTING:
+                if (shotsFired < 4) {
+                    nextShoot();
+                    return false;
+                }
 
-        return false;
+                shootingStage = ShootingStage.FINISHED;
+            // fall through
+            case FINISHED:
+                off();
+                return true;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + shootingStage);
+        }
     }
 
     /// Continues current round or stops if done.
@@ -84,8 +91,20 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
     /// Resets the shooting stage and turns both buffers off.
     public void shootReset() {
+        lastRoundStartTime = 0.0;
         shootingStage = ShootingStage.IDLE;
+        shotsFired = 0;
         off();
+    }
+
+    private void nextShoot() {
+        if (lastShotLeft) {
+            rightOnly();
+        } else {
+            leftOnly();
+        }
+        lastShotLeft = !lastShotLeft;
+        shotsFired++;
     }
 
     private void leftOnly() {
@@ -122,8 +141,7 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
     enum ShootingStage {
         IDLE,
-        SHOT_ONCE,
-        SHOT_TWICE,
+        SHOOTING,
         FINISHED
     }
 }
