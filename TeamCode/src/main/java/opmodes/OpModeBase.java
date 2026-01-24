@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import config.HardwareConfig;
@@ -25,7 +24,6 @@ import modules.actuator.Cannon;
 import modules.actuator.CannonBuffer;
 import modules.actuator.CannonBuffersHandler;
 import modules.actuator.Intake;
-import modules.actuator.IntakeSwitcher;
 import modules.actuator.Movement;
 import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
@@ -53,7 +51,6 @@ public class OpModeBase extends LinearOpMode {
     protected CannonBuffersHandler cannonBuffers;
 
     protected Intake intake;
-    protected IntakeSwitcher intakeSwitcher;
 
     protected ArtifactSequence artifactSequence;
 
@@ -94,7 +91,6 @@ public class OpModeBase extends LinearOpMode {
         CRServo cannonBufferRight =
                 hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_RIGHT);
         DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConfig.INTAKE_MOTOR_ID);
-        Servo intakeSwitcher = hardwareMap.get(Servo.class, HardwareConfig.INTAKE_SWITCHER_SERVO);
 
         IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConfig.IMU_ID);
         Movement.MovementMode movementMode =
@@ -118,7 +114,6 @@ public class OpModeBase extends LinearOpMode {
         this.cannonBuffers = new CannonBuffersHandler(leftBuffer, rightBuffer);
 
         this.intake = new Intake(globalTelemetry, intake);
-        this.intakeSwitcher = new IntakeSwitcher(globalTelemetry, intakeSwitcher);
     }
 
     protected void update() {
@@ -152,8 +147,6 @@ public class OpModeBase extends LinearOpMode {
         System.out.println("------- Robot State Log -------");
         System.out.println("Cannon State: " + cannon.getCurrentState().toString());
         System.out.println("Cannon Buffers State: " + cannonBuffers.getCurrentState().toString());
-        System.out.println(
-                "Intake Switcher Position: " + intakeSwitcher.getCurrentPosition().toString());
         System.out.println("Intake State: " + intake.getCurrentState().toString());
         System.out.println("Move State: " + move.getCurrentState().toString());
         System.out.println("Robot Position: " + robotPosition.getPose().toString());
@@ -164,7 +157,6 @@ public class OpModeBase extends LinearOpMode {
         move.apply();
 
         intake.apply();
-        intakeSwitcher.apply();
 
         cannon.apply();
         cannonBuffers.apply();

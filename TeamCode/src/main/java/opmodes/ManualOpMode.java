@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import logic.PlayingField;
 import logic.Team;
 
-import modules.actuator.IntakeSwitcher;
 import modules.sensor.GamepadController;
 
 @Config
@@ -83,8 +82,7 @@ public class ManualOpMode extends OpModeBase {
         // Make sure the cannon reached its target velocity
         if ((gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot())
                 || gamepad.isPressing(GamepadController.Button.BUMPER_RIGHT)) {
-            cannonBuffers.shootContinue(
-                    intakeSwitcher.getCurrentPosition() == IntakeSwitcher.Position.RIGHT);
+            cannonBuffers.shootContinue(true);
             intake.on();
         } else {
             cannonBuffers.shootDontContinue();
@@ -93,9 +91,6 @@ public class ManualOpMode extends OpModeBase {
                 gamepad.rumble(50); // Cannon isn't ready
             else cannonBuffers.shootReset();
         }
-
-        if (gamepad.isPressed(GamepadController.Button.Y)) intakeSwitcher.toggle();
-        else if (gamepad.isPressed(GamepadController.Button.DPAD_DOWN)) intakeSwitcher.center();
 
         if (gamepad.isPressing(GamepadController.Button.A)) {
             intake.clear();
