@@ -120,25 +120,6 @@ public class Cannon implements RobotActuatorModule {
     protected double computeVelocity(Distance target2dDistance) {
         double x = target2dDistance.getValue(DistanceUnit.CM);
 
-        //        // clamp below minimum
-        //        if (x <= DIST_CM_TO_VELOCITY[0][0]) return DIST_CM_TO_VELOCITY[0][1];
-        //
-        //        // clamp above maximum
-        //        if (x >= DIST_CM_TO_VELOCITY[DIST_CM_TO_VELOCITY.length - 1][0])
-        //            return DIST_CM_TO_VELOCITY[DIST_CM_TO_VELOCITY.length - 1][1];
-        //
-        //        for (int i = 0; i < DIST_CM_TO_VELOCITY.length - 1; i++) {
-        //            double x0 = DIST_CM_TO_VELOCITY[i][0];
-        //            double y0 = DIST_CM_TO_VELOCITY[i][1];
-        //            double x1 = DIST_CM_TO_VELOCITY[i + 1][0];
-        //            double y1 = DIST_CM_TO_VELOCITY[i + 1][1];
-        //
-        //            if (x >= x0 && x <= x1) {
-        //                double t = (x - x0) / (x1 - x0);
-        //                return y0 + t * (y1 - y0);
-        //            }
-        //        }
-
         // Polynomial that approximates ideal power
         return x * x * x / 190000.0 + x * x / 10000.0 + x / 8.0 + 1150.0;
     }
