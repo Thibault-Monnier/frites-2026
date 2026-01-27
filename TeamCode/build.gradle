@@ -32,7 +32,7 @@ repositories {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation "com.acmerobotics.dashboard:dashboard:0.5.0"
+    implementation "com.acmerobotics.dashboard:dashboard:0.5.1"
 }
 
 configurations.implementation {
