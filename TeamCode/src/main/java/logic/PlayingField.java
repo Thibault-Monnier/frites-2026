@@ -20,8 +20,8 @@ public class PlayingField {
             new FieldElement(
                     new Position2D(
                             DistanceUnit.INCH,
-                            -FIELD.halfWidth() + FieldConfig.GOAL_WIDTH / 2,
-                            -FIELD.halfDepth() + FieldConfig.GOAL_DEPTH / 2),
+                            -FIELD.halfWidth(),
+                            -FIELD.halfDepth()),
                     FieldConfig.GOAL_WIDTH,
                     FieldConfig.GOAL_DEPTH,
                     FieldConfig.GOAL_HEIGHT);
@@ -29,8 +29,8 @@ public class PlayingField {
             new FieldElement(
                     new Position2D(
                             DistanceUnit.INCH,
-                            -FIELD.halfWidth() + FieldConfig.GOAL_WIDTH / 2,
-                            FIELD.halfDepth() - FieldConfig.GOAL_DEPTH / 2),
+                            -FIELD.halfWidth(),
+                            FIELD.halfDepth()),
                     FieldConfig.GOAL_WIDTH,
                     FieldConfig.GOAL_DEPTH,
                     FieldConfig.GOAL_HEIGHT);
