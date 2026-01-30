@@ -1,5 +1,6 @@
 package modules.actuator;
 
+import static config.CannonConfig.SHOOT_BALLS_AMOUNT;
 import static config.CannonConfig.SHOOT_DELAY;
 
 import math.TimeHelpers;
@@ -61,7 +62,7 @@ public class CannonBuffersHandler implements RobotActuatorModule {
                 shootingStage = ShootingStage.SHOOTING;
             // fall through
             case SHOOTING:
-                if (shotsFired < 4) {
+                if (shotsFired < SHOOT_BALLS_AMOUNT) {
                     nextShoot();
                     return false;
                 }
@@ -98,7 +99,9 @@ public class CannonBuffersHandler implements RobotActuatorModule {
     }
 
     private void nextShoot() {
-        if (lastShotLeft) {
+        if (shotsFired == SHOOT_BALLS_AMOUNT - 1) {
+            both();
+        } else if (lastShotLeft) {
             rightOnly();
         } else {
             leftOnly();
@@ -114,6 +117,11 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
     private void rightOnly() {
         leftBuffer.off();
+        rightBuffer.on();
+    }
+
+    private void both() {
+        leftBuffer.on();
         rightBuffer.on();
     }
 
