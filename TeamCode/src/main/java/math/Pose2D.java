@@ -79,6 +79,15 @@ public class Pose2D {
     }
 
     /**
+     * This checks if any of the members are NaN
+     *
+     * @return true if any member is NaN, false otherwise
+     */
+    public boolean hasNaN() {
+        return Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(heading);
+    }
+
+    /**
      * This returns a string representation of the object in a human readable format for debugging
      * purposes.
      *

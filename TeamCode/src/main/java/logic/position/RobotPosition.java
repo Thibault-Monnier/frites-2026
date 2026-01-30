@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import logic.PlayingField;
 import logic.Team;
+
 import math.Pose2D;
 import math.Position2D;
 
@@ -69,6 +70,7 @@ public class RobotPosition {
     public void updatePose() {
         odometryHandler.update();
 
+        Pose2D previousPose = pose;
         if (limelightHandler.update()) {
             globalTelemetry.addLine("Using pose from Limelight");
             pose = limelightHandler.getLastKnownPose();
@@ -76,6 +78,12 @@ public class RobotPosition {
         } else {
             globalTelemetry.addLine("Using pose from Odometry");
             pose = odometryHandler.getPose();
+        }
+
+        if (pose.hasNaN()) {
+            globalTelemetry.addLine("Computed pose has NaN values, using previous pose");
+            pose = previousPose;
+            odometryHandler.setPose(pose);
         }
 
         globalTelemetry.addData("Computed pose", pose.toString());
