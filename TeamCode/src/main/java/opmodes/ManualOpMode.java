@@ -30,7 +30,8 @@ public class ManualOpMode extends OpModeBase {
         while (opModeIsActive()) {
             // Consistent step duration for better PIDs
             double time = runtime.milliseconds();
-            while (time - prevTime < 100) {
+            globalTelemetry.addData("Delta time", time - prevTime);
+            while (time - prevTime < 35) {
                 time = runtime.milliseconds();
             }
             prevTime = time;

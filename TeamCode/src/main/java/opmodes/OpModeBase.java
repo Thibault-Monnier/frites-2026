@@ -2,6 +2,7 @@ package opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -31,9 +32,13 @@ import modules.sensor.GamepadController;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import java.util.List;
+
 public class OpModeBase extends LinearOpMode {
     protected ElapsedTime runtime;
     protected Telemetry globalTelemetry;
+
+    protected List<LynxModule> hubs;
 
     protected final Team team;
     protected final boolean calculatePose;
@@ -66,6 +71,12 @@ public class OpModeBase extends LinearOpMode {
     }
 
     protected void initialize() {
+        // For better performance, update only once per frame
+        hubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : hubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+
         runtime = new ElapsedTime();
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -117,6 +128,10 @@ public class OpModeBase extends LinearOpMode {
     }
 
     protected void update() {
+        for (LynxModule hub : hubs) {
+            hub.clearBulkCache();
+        }
+
         move.reset();
 
         gamepad.update();
@@ -142,6 +157,7 @@ public class OpModeBase extends LinearOpMode {
         batteryMonitor.log();
         globalTelemetry.addData("Team", team);
         globalTelemetry.addData("Runtime", runtime.seconds());
+        globalTelemetry.update();
 
         // Log state
         System.out.println("------- Robot State Log -------");
