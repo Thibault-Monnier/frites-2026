@@ -311,7 +311,7 @@
         \centering
         \includegraphics[width=0.5\linewidth]{ROBOT-BOTTOM-WHEELS.png}
         \caption{Plateforme de base du robot après installation des roues et moteurs}
-        \label{fig:robot-bottom}
+        \label{fig:robot-bottom-wheels}
     \end{figure}
 
     \subsection{Entrée (\enquote{intake})}
@@ -363,27 +363,25 @@
         \centering
         \includegraphics[width=0.4\linewidth]{ROBOT-LAUNCHER.png}
         \caption{Lanceur du robot}
-        \label{fig:robot-intake}
+        \label{fig:robot-launcher}
     \end{figure}
 
 
     \section{Diagrammes et CAD}
 
-    Des diagrammes pour le robot sont disponibles. Ceux-ci sont distribués au format .easm, qui peut être lu par SOLIDWORKS ou eDrawings.
+    Des diagrammes pour le robot sont disponibles. Ceux-ci sont distribués au format .step, un format standard et libre pour les fichiers CAD.
 
-    \begin{mydefinition}{Comment obtenir ces logiciels?}
-        SOLIDWORKS est une application payante qui permet de modifier le fichier, il n'est donc pas recommandé de l'utiliser uniquement pour la lecture de ce fichier.
+    \begin{mydefinition}{Comment lire un fichier .step?}
+        La majorité des logiciels de CAO (Conception Assistée par Ordinateur) supportent le format .step. Parmi les plus populaires, on retrouve \textit{Fusion 360}, \textit{SolidWorks}, \textit{OnShape} et \textit{FreeCAD}. Il suffit généralement d'ouvrir le fichier directement dans le logiciel pour pouvoir le visualiser et l'éditer.
 
-        En parallèle, eDrawings Viewer et un logiciel de la même entreprise qui permet de lire ce fichier et obtenir les références de toutes les pièces. Il est recommandé d'utiliser la version Windows pour avoir plus de performance.
-
-        Téléchargez le ici: \url{https://www.edrawingsviewer.com/download-edrawings}.
+        Pour visualiser rapidement le modèle 3D sans installer de logiciel, il est aussi possible d'utiliser des visionneuses en ligne comme \url{https://www.viewstl.com/} ou \url{https://3dviewer.net/}. Cependant, le modèle 3D est très lourd (500+ Mo), il est donc recommandé d'utiliser un logiciel local pour une meilleure performance.
     \end{mydefinition}
 
     \begin{figure}[h]
         \centering
-        \includegraphics[width=1\linewidth]{ROBOT-EDRAWINGS.png}
-        \caption{Robot prévisualisé dans le lecteur eDrawings}
-        \label{fig:robot-intake}
+        \includegraphics[width=1\linewidth]{ROBOT-FUSION360.png}
+        \caption{Robot prévisualisé dans Fusion 360}
+        \label{fig:robot-fusion360}
     \end{figure}
 
     \subsection{Dessins CAD}
@@ -398,6 +396,11 @@ Les modèles 3D peuvent être retrouvés sur OnShape :
     \includepdf[pages=-,landscape=true]{Drawings/IntakeStaticSorter.pdf}
     \includepdf[pages=-,landscape=true]{Drawings/LLCameraHolder.pdf}
     \includepdf[pages=-,landscape=true]{Drawings/MecanumBase.pdf}
+    \includepdf[pages=-,landscape=true]{Drawings/BatteryHolder.pdf}
+    \includepdf[pages=-,landscape=true]{Drawings/NumberPlate.pdf}
+    \includepdf[pages=-,landscape=true]{Drawings/GlobalRobotModel.pdf}
+    \includepdf[pages=-,landscape=true]{Drawings/Drivetrain.pdf}
+    \includepdf[pages=-,landscape=true]{Drawings/IntakeBar.pdf}
 
     \chapter{Système Électrique}
 
@@ -601,13 +604,7 @@ git clone git@gitlab.com:ftc-civ/frites/2026.git
             \item \texttt{opmodes} : OpModes autonomes et téléop, avec versions par équipe/couleur
         \end{itemize}
 
-        \begin{mydefinition}{Roadrunner}
-            Une librairie de trajectoire et de cinématique pour robots FTC. Elle fournit des localisateurs (localizers), des calculs de trajectoire et des abstractions pour différents types de châssis (tank, mecanum, etc.).
-            Elle est utilisée pour la navigation précise et l’exécution des trajectoires autonomes.
-        \end{mydefinition}
-
         \begin{itemize}
-            \item \texttt{roadrunner} : code de trajectoire et localisateurs
             \item \texttt{debug} : outils de test et d’inspection
             \item \texttt{messages} : classes pour échanger des données entre modules
         \end{itemize}
@@ -642,7 +639,7 @@ git clone git@gitlab.com:ftc-civ/frites/2026.git
 
     La base de code utilise plusieurs systèmes de coordonnées avec différentes directions d'axes,
     origines et sens de rotation. Ces différences sont imposées par des bibliothèques tierces
-    (par exemple, le SDK FTC, Road Runner, les pilotes matériels) et ne peuvent pas être modifiées.
+    (par exemple, le SDK FTC, les pilotes matériels) et ne peuvent pas être modifiées.
 
     Mélanger des systèmes de coordonnées sans conversion appropriée entraîne des bogues difficiles à déboguer et à comprendre, compromettant tout le système de navigation. Ce document vise à clarifier les systèmes de coordonnées et à établir des directives strictes pour éviter tout problème.
 
@@ -692,19 +689,6 @@ git clone git@gitlab.com:ftc-civ/frites/2026.git
     \end{figure}
 
     \needspace{1\baselineskip}
-
-    \paragraph{Système de coordonnées Road Runner}
-
-    Relatif au robot
-
-    \begin{itemize}
-        \item Origine : Centre du robot
-        \item Axe X : X positif pointant vers la droite du robot
-        \item Axe Y : Y positif pointant vers l'avant du robot
-        \item Rotation zéro : Direction de l'axe +Y
-        \item Sens de rotation : Rotation positive dans le sens anti-horaire
-        \item Unités : Radians. Il n'impose pas d'unité de distance, nous utilisons donc des classes auto-convertibles (par ex. \texttt{Pose2D}, \texttt{Distance}, etc.)
-    \end{itemize}
 
     \paragraph{Système de coordonnées du pilote Gobilda Pinpoint}
 
