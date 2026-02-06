@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import config.HardwareConfig;
 
-import logic.PIDFControllerMotor;
+import logic.pidf.PIDFControllerMotor;
 
 import math.Distance;
 

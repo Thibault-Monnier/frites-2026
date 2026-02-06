@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import logic.PIDFCoefficients;
-import logic.PIDFControllerMotor;
+import logic.pidf.PIDFCoefficients;
+import logic.pidf.PIDFControllerMotor;
 
 import math.TimeHelpers;
 

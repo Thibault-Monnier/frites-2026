@@ -2,7 +2,7 @@ package config;
 
 import com.acmerobotics.dashboard.config.Config;
 
-import logic.PIDFCoefficients;
+import logic.pidf.PIDFCoefficients;
 
 import math.Angle;
 

@@ -22,8 +22,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 
-import logic.PIDFController;
 import logic.Team;
+import logic.pidf.PIDFController;
 import logic.position.RobotPosition;
 
 import math.Angle;
@@ -161,7 +161,7 @@ public class Movement implements RobotActuatorModule {
         turnController.setError(angleError);
 
         // Standard coordinate system direction is CCW but for movement is is CW.
-        double turnSpeed = -turnController.get(true);
+        double turnSpeed = -turnController.get();
         move(0, 0, turnSpeed);
 
         boolean isFinished =
