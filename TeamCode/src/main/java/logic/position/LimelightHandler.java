@@ -9,12 +9,12 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import config.HardwareConfig;
+
 import logic.PlayingField;
 
 import math.Pose2D;
 import math.Position2D;
-
-import config.HardwareConfig;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 public class LimelightHandler {
     private final Telemetry globalTelemetry;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
-    private final HardwareMap hardwareMap;
 
     private final Limelight3A limelight;
     private int validFramesInRow = 0;
@@ -43,7 +42,6 @@ public class LimelightHandler {
 
     public LimelightHandler(Telemetry globalTelemetry, HardwareMap hardwareMap) {
         this.globalTelemetry = globalTelemetry;
-        this.hardwareMap = hardwareMap;
         this.limelight = hardwareMap.get(Limelight3A.class, HardwareConfig.LIMELIGHT_CAMERA_ID);
     }
 

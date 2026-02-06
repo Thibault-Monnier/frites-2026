@@ -56,6 +56,18 @@ public class Angle {
         return getValue(AngleUnit.RADIANS);
     }
 
+    /** Adds another Angle to this Angle and returns the result as a new Angle object. */
+    public Angle add(Angle other) {
+        double otherValueInThisUnit = other.getValue(this.unit);
+        return new Angle(this.unit, this.value + otherValueInThisUnit);
+    }
+
+    /** Subtracts another Angle from this Angle and returns the result as a new Angle object. */
+    public Angle subtract(Angle other) {
+        double otherValueInThisUnit = other.getValue(this.unit);
+        return new Angle(this.unit, this.value - otherValueInThisUnit);
+    }
+
     /**
      * Returns a string representation of the object in a human readable format for debugging
      * purposes.
