@@ -127,6 +127,10 @@ public class OpModeBase extends LinearOpMode {
         this.intake = new Intake(globalTelemetry, intake);
     }
 
+    protected void runStart() {
+        runtime.reset();
+    }
+
     protected void update() {
         for (LynxModule hub : hubs) {
             hub.clearBulkCache();

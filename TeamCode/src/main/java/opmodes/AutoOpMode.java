@@ -19,7 +19,7 @@ public class AutoOpMode extends OpModeBase {
 
         waitForStart();
 
-        runtime.reset();
+        runStart();
 
         double prevTime = runtime.milliseconds();
         while (opModeIsActive() /*&& !actionSequence.isEmpty()*/) {

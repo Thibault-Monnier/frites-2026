@@ -24,7 +24,7 @@ public class ManualOpMode extends OpModeBase {
 
         waitForStart();
 
-        runtime.reset();
+        runStart();
 
         double prevTime = runtime.milliseconds();
         while (opModeIsActive()) {
