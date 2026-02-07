@@ -126,7 +126,7 @@ public class CannonCalibrationOpMode extends LinearOpMode {
 
         if (gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) {
             // Lock towards the goal
-            move.lockedJoystickTranslate(
+            move.lockedJoystickMove(
                     gamepad1,
                     gamepad.isPressing(GamepadController.Button.LEFT_STICK),
                     robotPosition,

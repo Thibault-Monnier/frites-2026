@@ -11,8 +11,6 @@ import static config.MovementConfig.SUPER_SLOW_SPEED_MULTIPLIER;
 import static config.MovementConfig.TURN_PIDF_COEFFICIENTS;
 import static config.MovementConfig.TURN_TOLERANCE;
 
-import android.util.Pair;
-
 import androidx.annotation.Nullable;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -95,50 +93,43 @@ public class Movement implements RobotActuatorModule {
 
     /// Rotates the robot using input from the *right* joystick of the gamepad.
     public void joystickRotate(Gamepad gamepad, boolean slow) {
-        double turn = gamepad.right_stick_x * speedMultiplier(slow);
+        double turn = -gamepad.right_stick_x * speedMultiplier(slow);
 
         turn = smooth(turn);
-
-        move(0, 0, turn);
+        turn(turn);
     }
 
     /// Translates the robot using input from the *left* joystick of the gamepad.
     public void joystickTranslate(
             Gamepad gamepad, boolean slow, @Nullable RobotPosition robotPosition, Team team) {
-        Pair<Double, Double> speed = getTranslationSpeed(gamepad, slow);
+        Translation velocity = getTranslationVelocity(gamepad, slow);
 
         if (movementMode == MovementMode.FIELD_CENTRIC) {
             if (robotPosition == null) {
                 throw new IllegalArgumentException(
                         "Robot position cannot be null in field-centric mode");
             }
-            moveFieldCentric(speed.first, speed.second, robotPosition, team);
+            translateFieldCentric(velocity, robotPosition, team);
         } else {
-            move(speed.first, speed.second, 0);
+            translate(velocity);
         }
     }
 
     /// Moves while turning towards a target position.
-    public void lockedJoystickTranslate(
+    public void lockedJoystickMove(
             Gamepad gamepad,
             boolean slow,
             RobotPosition robotPosition,
             Team team,
             Position2D targetPos) {
-        Pair<Double, Double> speed = getTranslationSpeed(gamepad, slow);
+        Translation velocity = getTranslationVelocity(gamepad, slow);
 
-        Pose2D robotPose = robotPosition.getPose();
-
-        double dx = targetPos.getX(DistanceUnit.INCH) - robotPose.getX(DistanceUnit.INCH);
-        double dy = targetPos.getY(DistanceUnit.INCH) - robotPose.getY(DistanceUnit.INCH);
-        double targetDirection = Math.atan2(dy, dx);
-
-        turnTowardsHeading(robotPosition, Angle.fromRadians(targetDirection));
+        turnTowards(robotPosition, targetPos);
 
         if (movementMode == MovementMode.FIELD_CENTRIC) {
-            moveFieldCentric(speed.first, speed.second, robotPosition, team);
+            translateFieldCentric(velocity, robotPosition, team);
         } else {
-            move(speed.first, speed.second, 0);
+            translate(velocity);
         }
     }
 
@@ -155,14 +146,11 @@ public class Movement implements RobotActuatorModule {
     public boolean turnTowardsHeading(RobotPosition robotPosition, Angle targetHeading) {
         Pose2D robotPose = robotPosition.getPose();
 
-        double angleError =
-                AngleUnit.normalizeRadians(
-                        targetHeading.toRadians() - robotPose.getHeading(AngleUnit.RADIANS));
-        turnController.setError(angleError);
+        Angle angleError = targetHeading.subtract(robotPose.getHeading());
+        turnController.setError(angleError.toRadians());
 
-        // Standard coordinate system direction is CCW but for movement is is CW.
-        double turnSpeed = -turnController.get();
-        move(0, 0, turnSpeed);
+        double turnSpeed = turnController.get();
+        turn(turnSpeed);
 
         boolean isFinished =
                 turnController.isStableAtTarget(
@@ -173,14 +161,14 @@ public class Movement implements RobotActuatorModule {
     }
 
     /// Computes translation speed forward and sideways. Returns the pair (forward, strafe).
-    private Pair<Double, Double> getTranslationSpeed(Gamepad gamepad, boolean slow) {
+    private Translation getTranslationVelocity(Gamepad gamepad, boolean slow) {
         double forward = gamepad.left_stick_y * speedMultiplier(slow);
         forward = smooth(forward);
 
         double strafe = gamepad.left_stick_x * speedMultiplier(slow);
         strafe = smooth(strafe);
 
-        return new Pair<>(forward, strafe);
+        return new Translation(forward, strafe);
     }
 
     /// Get movement speed multiplier
@@ -204,25 +192,41 @@ public class Movement implements RobotActuatorModule {
         return 0;
     }
 
-    private void moveFieldCentric(
-            double front, double sideways, RobotPosition robotPosition, Team team) {
+    private void translateFieldCentric(
+            Translation translation, RobotPosition robotPosition, Team team) {
         double robotAngle = robotPosition.getPose().getHeading(AngleUnit.RADIANS);
 
         if (team.isBlue()) robotAngle -= Math.PI / 2;
         if (team.isRed()) robotAngle += Math.PI / 2;
 
-        double newFront = -front * Math.cos(robotAngle) - sideways * Math.sin(robotAngle);
-        double newSideways = front * Math.sin(robotAngle) - sideways * Math.cos(robotAngle);
+        double forward = translation.forward;
+        double strafe = translation.strafe;
 
-        move(newFront, newSideways, 0);
+        translation.forward = -forward * Math.cos(robotAngle) - strafe * Math.sin(robotAngle);
+        translation.strafe = forward * Math.sin(robotAngle) - strafe * Math.cos(robotAngle);
+
+        translate(translation);
     }
 
-    private void move(double front, double sideways, double turn) {
-        double denominator = Math.max(Math.abs(front) + Math.abs(sideways) + Math.abs(turn), 1);
-        frontLeftPower += (front - sideways - turn) / denominator;
-        backLeftPower += (front + sideways - turn) / denominator;
-        frontRightPower += (front + sideways + turn) / denominator;
-        backRightPower += (front - sideways + turn) / denominator;
+    private void turn(double turnSpeed) {
+        move(new Translation(), turnSpeed);
+    }
+
+    private void translate(Translation translation) {
+        move(translation, 0);
+    }
+
+    private void move(Translation translation, double turnSpeed) {
+        double forward = translation.forward;
+        double strafe = translation.strafe;
+
+        double denominator =
+                Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(turnSpeed), 1);
+
+        frontLeftPower += (forward - strafe + turnSpeed) / denominator;
+        frontRightPower += (forward + strafe - turnSpeed) / denominator;
+        backLeftPower += (forward + strafe + turnSpeed) / denominator;
+        backRightPower += (forward - strafe - turnSpeed) / denominator;
 
         frontLeftPower *= FRONT_LEFT_COEFF;
         frontRightPower *= FRONT_RIGHT_COEFF;
@@ -279,5 +283,19 @@ public class Movement implements RobotActuatorModule {
     public enum MovementMode {
         ROBOT_CENTRIC,
         FIELD_CENTRIC
+    }
+
+    private static class Translation {
+        public double forward;
+        public double strafe;
+
+        public Translation(double forward, double strafe) {
+            this.forward = forward;
+            this.strafe = strafe;
+        }
+
+        public Translation() {
+            this(0, 0);
+        }
     }
 }

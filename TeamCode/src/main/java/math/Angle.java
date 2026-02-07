@@ -21,7 +21,7 @@ public class Angle {
         this.unit = unit;
     }
 
-    /** Creates a new default Angle object at 0 */
+    /** Creates a new default Angle object with 0 degrees. */
     public Angle() {
         this(AngleUnit.DEGREES, 0);
     }
