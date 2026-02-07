@@ -136,8 +136,6 @@ public class OpModeBase extends LinearOpMode {
             hub.clearBulkCache();
         }
 
-        move.reset();
-
         gamepad.update();
         if (calculatePose) robotPosition.updatePose();
         System.out.println("Robot Pose: " + robotPosition.getPose().toString());

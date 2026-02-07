@@ -234,18 +234,12 @@ public class Movement implements RobotActuatorModule {
         backRightPower *= BACK_RIGHT_COEFF;
     }
 
-    public void reset() {
-        frontLeftPower = 0;
-        frontRightPower = 0;
-        backLeftPower = 0;
-        backRightPower = 0;
-    }
-
     /// Toggles super slow mode
     public void toggleSuperSlow() {
         isSuperSlow = !isSuperSlow;
     }
 
+    /// Applies the computed motor powers to the motors, then resets them.
     public void apply() {
         frontLeftDrive.setPower(Math.clamp(frontLeftPower, -1.0, 1.0));
         frontRightDrive.setPower(Math.clamp(frontRightPower, -1.0, 1.0));
@@ -258,6 +252,15 @@ public class Movement implements RobotActuatorModule {
         globalTelemetry.addData("Front Right", frontRightDrive.getPower());
         globalTelemetry.addData("Back Left", backLeftDrive.getPower());
         globalTelemetry.addData("Back Right", backRightDrive.getPower());
+
+        reset();
+    }
+
+    private void reset() {
+        frontLeftPower = 0;
+        frontRightPower = 0;
+        backLeftPower = 0;
+        backRightPower = 0;
     }
 
     @Override

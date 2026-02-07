@@ -11,13 +11,14 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import config.HardwareConfig;
+
 import logic.PlayingField;
-import logic.position.RobotPosition;
 import logic.Team;
+import logic.position.RobotPosition;
 
 import math.Distance;
 
-import config.HardwareConfig;
 import modules.actuator.CannonBuffer;
 import modules.actuator.CannonCalibrator;
 import modules.actuator.Intake;
@@ -120,7 +121,6 @@ public class CannonCalibrationOpMode extends LinearOpMode {
     }
 
     public void runStep() {
-        move.reset();
         gamepad.update();
         robotPosition.updatePose();
 
