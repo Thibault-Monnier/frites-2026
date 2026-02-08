@@ -1,6 +1,7 @@
 package logic;
 
 import config.FieldConfig;
+
 import math.Angle;
 import math.Distance;
 import math.Pose2D;
@@ -74,10 +75,10 @@ public class PlayingField {
         }
     }
 
-    /// Calculates the angle from the robot's current position to the center of the specified goal.
+    /// Calculates the angle from the robot's current position to the targeting point of the specified goal.
     /// @param robotPos The current position of the robot.
     /// @param color The color of the goal to target.
-    /// @return The angle to the center of the specified goal.
+    /// @return The angle to the targeting point of the specified goal.
     public static Angle angleToGoal(Position2D robotPos, Team color) {
         Position2D goalPos = goalPos(color);
         DistanceUnit unit = DistanceUnit.MM;
@@ -86,11 +87,11 @@ public class PlayingField {
         return Angle.fromRadians(Math.atan2(dy, dx));
     }
 
-    /// Calculates the distance from the robot's current position to the center of the specified
+    /// Calculates the distance from the robot's current position to the targeting point of the specified
     /// goal.
     /// @param robotPos The current position of the robot.
     /// @param color The color of the goal to target.
-    /// @return The distance to the center of the specified goal.
+    /// @return The distance to the targeting point of the specified goal.
     public static Distance distanceToGoal(Position2D robotPos, Team color) {
         Position2D goalPos = goalPos(color);
         DistanceUnit unit = DistanceUnit.MM;
