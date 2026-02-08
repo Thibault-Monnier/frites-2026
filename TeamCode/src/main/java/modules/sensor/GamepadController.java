@@ -1,5 +1,6 @@
 package modules.sensor;
 
+import static config.GamepadConfig.DEBOUNCE_TIME;
 import static config.GamepadConfig.DOUBLE_PRESS_INTERVAL;
 import static config.GamepadConfig.LONG_PRESS_TIME;
 
@@ -27,20 +28,20 @@ public class GamepadController {
         }
     }
 
-    /** Returns true if the button was pressed since last update. Returns true only once. */
-    public boolean isPressed(Button button) {
-        return isPressing(button) && !button.lastPressed;
-    }
-
     /** Returns true if the button is currently being pressed. */
     public boolean isPressing(Button button) {
-        return button.get(gamepad);
+        return button.down;
+    }
+
+    /** Returns true if the button was pressed since last update. Returns true only once. */
+    public boolean isPressed(Button button) {
+        return button.pressed;
     }
 
     /** Returns true if the button has been held down for LONG_PRESS_TIME seconds. */
     public boolean isLongPressed(Button button) {
-        double elapsedSeconds = (runtime.milliseconds() - button.lastTimePressed);
-        return isPressing(button) && elapsedSeconds >= LONG_PRESS_TIME;
+        double elapsedMs = (runtime.milliseconds() - button.lastTimePressed);
+        return isPressing(button) && elapsedMs >= LONG_PRESS_TIME;
     }
 
     /**
@@ -48,8 +49,8 @@ public class GamepadController {
      * true only once.
      */
     public boolean isDoublePressed(Button button) {
-        double intervalSeconds = (button.lastTimePressed - button.previousTimePressed);
-        return isPressed(button) && intervalSeconds <= DOUBLE_PRESS_INTERVAL;
+        double intervalMs = (button.lastTimePressed - button.previousTimePressed);
+        return isPressed(button) && intervalMs <= DOUBLE_PRESS_INTERVAL;
     }
 
     public void rumble(int i) {
@@ -77,10 +78,13 @@ public class GamepadController {
 
         private final java.util.function.Function<Gamepad, Boolean> accessor;
 
-        private boolean lastPressed = false;
-        private boolean currentPressed = false;
-        private double previousTimePressed = -10000.0;
+        private boolean pressed = false;
+
+        private boolean down = false;
+
+        private double debounceStartTime = -10000.0;
         private double lastTimePressed = -10000.0;
+        private double previousTimePressed = -10000.0;
 
         Button(java.util.function.Function<Gamepad, Boolean> accessor) {
             this.accessor = accessor;
@@ -92,10 +96,25 @@ public class GamepadController {
 
         /** Update internal state for this button */
         public void update(Gamepad gamepad, ElapsedTime runtime) {
-            lastPressed = currentPressed;
-            currentPressed = get(gamepad);
-            if (currentPressed && !lastPressed) {
+            boolean lastDown = down;
+            down = get(gamepad);
+
+            if (lastDown && !down) {
+                // Just released now
+                debounceStartTime = runtime.milliseconds();
+            }
+
+            pressed = false;
+
+            if (down && !lastDown) {
+                if (runtime.milliseconds() - debounceStartTime < DEBOUNCE_TIME) {
+                    // Debouncing, ignore this press
+                    return;
+                }
+
                 // Just pressed now
+                pressed = true;
+
                 previousTimePressed = lastTimePressed;
                 lastTimePressed = runtime.milliseconds();
             }
