@@ -1,9 +1,12 @@
 package logic;
 
+import static config.MovementConfig.NOT_TRANSLATING_THRESHOLD;
 import static config.MovementConfig.NOT_TURNING_THRESHOLD;
 import static config.MovementConfig.SLOW_SPEED_MULTIPLIER;
 import static config.MovementConfig.SPEED_MULTIPLIER;
 import static config.MovementConfig.SUPER_SLOW_SPEED_MULTIPLIER;
+import static config.MovementConfig.TRANSLATION_PIDF_COEFFICIENTS;
+import static config.MovementConfig.TRANSLATION_TOLERANCE;
 import static config.MovementConfig.TURN_PIDF_COEFFICIENTS;
 import static config.MovementConfig.TURN_TOLERANCE;
 
@@ -17,8 +20,10 @@ import logic.pidf.PIDFController;
 import logic.position.RobotPosition;
 
 import math.Angle;
+import math.Distance;
 import math.Pose2D;
 import math.Position2D;
+import math.Vector2D;
 
 import modules.actuator.MecanumDrive;
 import modules.actuator.RobotActuatorModule;
@@ -36,6 +41,7 @@ public class Movement implements RobotActuatorModule {
     private final MecanumDrive mecanumDrive;
 
     private final PIDFController turnController;
+    private final PIDFController translationController;
 
     private final MovementMode movementMode;
     private boolean isSuperSlow = false;
@@ -51,6 +57,8 @@ public class Movement implements RobotActuatorModule {
 
         this.mecanumDrive = new MecanumDrive(globalTelemetry, FL, FR, BL, BR);
         this.turnController = new PIDFController(globalTelemetry, TURN_PIDF_COEFFICIENTS);
+        this.translationController =
+                new PIDFController(globalTelemetry, TRANSLATION_PIDF_COEFFICIENTS);
         this.movementMode = movementMode;
     }
 
@@ -108,11 +116,11 @@ public class Movement implements RobotActuatorModule {
 
     /// Turns the robot towards a target position. Returns true if still turning, false if finished.
     public boolean turnTowards(RobotPosition robotPosition, Position2D targetPos) {
-        Pose2D robotPose = robotPosition.getPose();
+        Position2D robotPos = robotPosition.getPosition();
 
-        double dx = targetPos.getX(DistanceUnit.INCH) - robotPose.getX(DistanceUnit.INCH);
-        double dy = targetPos.getY(DistanceUnit.INCH) - robotPose.getY(DistanceUnit.INCH);
-        Angle targetDirection = Angle.fromRadians(Math.atan2(dy, dx));
+        Distance dx = targetPos.getX().subtract(robotPos.getX());
+        Distance dy = targetPos.getY().subtract(robotPos.getY());
+        Angle targetDirection = Distance.atan2(dy, dx);
 
         return turnTowardsHeading(robotPosition, targetDirection);
     }
@@ -132,6 +140,32 @@ public class Movement implements RobotActuatorModule {
                         TURN_TOLERANCE.toRadians(), NOT_TURNING_THRESHOLD.toRadians());
         globalTelemetry.addData("Turn Speed", turnSpeed);
         globalTelemetry.addData("Error change", turnController.getErrorChange());
+        return !isFinished;
+    }
+
+    /// Translates the robot towards a target position. Returns true if still translating, false if
+    /// finished.
+    public boolean translateToPosition(RobotPosition robotPosition, Position2D targetPos) {
+        Position2D robotPos = robotPosition.getPosition();
+
+        DistanceUnit distanceUnit = DistanceUnit.INCH;
+
+        Distance dx = targetPos.getX().subtract(robotPos.getX());
+        Distance dy = targetPos.getY().subtract(robotPos.getY());
+        double distanceError = Distance.hypot(dx, dy).getValue(distanceUnit);
+
+        translationController.setError(distanceError);
+        double speed = translationController.get();
+        Vector2D velocity = new Vector2D(dx, dy).normalize().scale(speed);
+
+        translate(new Translation(velocity.getX(distanceUnit), velocity.getY(distanceUnit)));
+
+        boolean isFinished =
+                translationController.isStableAtTarget(
+                        TRANSLATION_TOLERANCE.getValue(distanceUnit),
+                        NOT_TRANSLATING_THRESHOLD.getValue(distanceUnit));
+        globalTelemetry.addData("Translation Speed", speed);
+        globalTelemetry.addData("Error change", translationController.getErrorChange());
         return !isFinished;
     }
 

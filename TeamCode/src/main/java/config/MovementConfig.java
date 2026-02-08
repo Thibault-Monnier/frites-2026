@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import logic.pidf.PIDFCoefficients;
 
 import math.Angle;
+import math.Distance;
 
 @Config
 public class MovementConfig {
@@ -21,4 +22,9 @@ public class MovementConfig {
             new PIDFCoefficients(1.5, 0.0, 0.1, 0.0);
     public static Angle TURN_TOLERANCE = Angle.fromDegrees(4.0);
     public static Angle NOT_TURNING_THRESHOLD = Angle.fromDegrees(0.5); // per frame
+
+    public static PIDFCoefficients TRANSLATION_PIDF_COEFFICIENTS =
+            new PIDFCoefficients(1.0, 0.0, 0.1, 0.0);
+    public static Distance TRANSLATION_TOLERANCE = Distance.fromCentimeters(2.0);
+    public static Distance NOT_TRANSLATING_THRESHOLD = Distance.fromCentimeters(0.3); // per frame
 }
