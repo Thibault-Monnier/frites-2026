@@ -42,23 +42,41 @@ public class Position2D {
     }
 
     /**
-     * Gets X in the desired distance unit
+     * Gets x in the desired distance unit
      *
      * @param unit the desired distance unit
-     * @return the X member converted to the desired distance unit
+     * @return the x member converted to the desired distance unit
      */
     public double getX(DistanceUnit unit) {
         return unit.fromUnit(this.unit, x);
     }
 
     /**
-     * Gets the Y in the desired distance unit
+     * Gets x as a Distance object in the unit of this Position2D
+     *
+     * @return the x member as a Distance object
+     */
+    public Distance getX() {
+        return new Distance(unit, x);
+    }
+
+    /**
+     * Gets y in the desired distance unit
      *
      * @param unit the desired distance unit
-     * @return the Y member converted to the desired distance unit
+     * @return y member converted to the desired distance unit
      */
     public double getY(DistanceUnit unit) {
         return unit.fromUnit(this.unit, y);
+    }
+
+    /**
+     * Gets y as a Distance object in the unit of this Position2D
+     *
+     * @return the y member as a Distance object
+     */
+    public Distance getY() {
+        return new Distance(unit, y);
     }
 
     /**

@@ -2,6 +2,7 @@ package math;
 
 import androidx.annotation.NonNull;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.Locale;
@@ -31,6 +32,11 @@ public class Distance {
         return new Distance(DistanceUnit.MM, millimeters);
     }
 
+    /** Creates a new Distance object from meters input */
+    public static Distance fromCentimeters(double centimeters) {
+        return new Distance(DistanceUnit.CM, centimeters);
+    }
+
     /**
      * Gets the distance value in the desired distance unit
      *
@@ -54,6 +60,36 @@ public class Distance {
     /** Creates a new Distance object from inches input */
     public static Distance fromInches(double inches) {
         return new Distance(DistanceUnit.INCH, inches);
+    }
+
+    /** Adds another Distance to this Distance and returns the result as a new Distance object. */
+    public Distance add(Distance other) {
+        double sumInMM = this.toMillimeters() + other.toMillimeters();
+        return Distance.fromMillimeters(sumInMM);
+    }
+
+    /**
+     * Subtracts another Distance from this Distance and returns the result as a new Distance
+     * object.
+     */
+    public Distance subtract(Distance other) {
+        double differenceInMM = this.toMillimeters() - other.toMillimeters();
+        return Distance.fromMillimeters(differenceInMM);
+    }
+
+    /** Calculates the hypotenuse of a right triangle given the two legs as Distance objects. */
+    public static Distance hypot(Distance a, Distance b) {
+        double hypotenuseInMM = Math.hypot(a.toMillimeters(), b.toMillimeters());
+        return Distance.fromMillimeters(hypotenuseInMM);
+    }
+
+    /**
+     * Calculates the angle of a right triangle given the opposite and adjacent legs as Distance
+     * objects.
+     */
+    public static Angle atan2(Distance y, Distance x) {
+        double angleInRadians = Math.atan2(y.toMillimeters(), x.toMillimeters());
+        return new Angle(AngleUnit.RADIANS, angleInRadians);
     }
 
     /**
