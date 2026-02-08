@@ -33,24 +33,15 @@ To compile, use Android Studio or run the following command (on Linux, you may h
 
 ## Coding guidelines
 
-### General
-
-- __Names should _always_ be descriptive and meaningful__: Don't use non-trivial abbreviations, and
-  don't use single letter names (except in `for` loops). Good naming is the base of good code.
-- __Keep it simple:__ If it looks complicated, then there’s probably a better and simpler way to do
-  it.
-- __Keep it readable:__ Avoid nesting things too much, using long lines (over 100 characters), and
-  space your code out.
-- __Avoid magic numbers:__ Use named constants instead.
-
 ### Formatting
 
-- __Classes and enums__ start with _uppercase_ and use _PascalCase_
-- __Objects, variables and functions__ start with _lowercase_ and use _camelCase_
+- __Classes and enums__ use _PascalCase_
+- __Objects, variables and functions__ use _camelCase_
 - __Constants and enum members__ use _CONSTANT_CASE_
 - Indent _4_ spaces
 - Brackets are on the same line as the clause
 - Split up long lines
+- **Use a formatter**
 
 ```java
 class Class { /*...*/
@@ -64,7 +55,6 @@ enum Enum {
 int exampleVariable;
 
 public void exampleFunction() { /*...*/ }
-
 ``` 
 
 ## License
