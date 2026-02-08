@@ -22,7 +22,6 @@ public class CannonCalibrationOpMode extends OpModeBase {
     @Override
     public void runOpMode() {
         initialize();
-        myInit();
 
         waitForStart();
 
@@ -44,7 +43,9 @@ public class CannonCalibrationOpMode extends OpModeBase {
         runStop();
     }
 
-    private void myInit() {
+    @Override
+    protected void initialize() {
+        super.initialize();
         cannonCalibrator =
                 new CannonCalibrator(
                         globalTelemetry,
