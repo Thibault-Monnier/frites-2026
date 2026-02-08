@@ -1,9 +1,5 @@
-package modules.actuator;
+package logic;
 
-import static config.MovementConfig.BACK_LEFT_COEFF;
-import static config.MovementConfig.BACK_RIGHT_COEFF;
-import static config.MovementConfig.FRONT_LEFT_COEFF;
-import static config.MovementConfig.FRONT_RIGHT_COEFF;
 import static config.MovementConfig.NOT_TURNING_THRESHOLD;
 import static config.MovementConfig.SLOW_SPEED_MULTIPLIER;
 import static config.MovementConfig.SPEED_MULTIPLIER;
@@ -14,45 +10,33 @@ import static config.MovementConfig.TURN_TOLERANCE;
 import androidx.annotation.Nullable;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.IMU;
 
-import logic.Team;
 import logic.pidf.PIDFController;
 import logic.position.RobotPosition;
 
 import math.Angle;
 import math.Pose2D;
 import math.Position2D;
+import modules.actuator.MecanumDrive;
+import modules.actuator.RobotActuatorModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 @Config
 public class Movement implements RobotActuatorModule {
     private final Telemetry globalTelemetry;
 
-    private final DcMotor frontLeftDrive;
-    private final DcMotor frontRightDrive;
-    private final DcMotor backLeftDrive;
-    private final DcMotor backRightDrive;
-
-    public double frontLeftPower = 0;
-    public double frontRightPower = 0;
-    public double backLeftPower = 0;
-    public double backRightPower = 0;
+    private final MecanumDrive mecanumDrive;
 
     private final PIDFController turnController;
 
     private final MovementMode movementMode;
-
     private boolean isSuperSlow = false;
 
     public Movement(
@@ -61,41 +45,29 @@ public class Movement implements RobotActuatorModule {
             DcMotor FR,
             DcMotor BL,
             DcMotor BR,
-            MovementMode movementMode,
-            IMU globalImu) {
+            MovementMode movementMode) {
         this.globalTelemetry = globalTelemetry;
-        this.frontLeftDrive = FL;
-        this.frontRightDrive = FR;
-        this.backLeftDrive = BL;
-        this.backRightDrive = BR;
 
-        frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        this.mecanumDrive = new MecanumDrive(globalTelemetry, FL, FR, BL, BR);
         this.turnController = new PIDFController(globalTelemetry, TURN_PIDF_COEFFICIENTS);
-
         this.movementMode = movementMode;
+    }
 
-        IMU.Parameters parameters =
-                new IMU.Parameters(
-                        new RevHubOrientationOnRobot(
-                                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
-                                RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
-        globalImu.initialize(parameters);
+    /// Toggles super slow mode
+    public void toggleSuperSlow() {
+        isSuperSlow = !isSuperSlow;
+    }
+
+    /// Applies the computed motor powers to the motors, then resets them.
+    public void apply() {
+        mecanumDrive.apply();
     }
 
     /// Rotates the robot using input from the *right* joystick of the gamepad.
     public void joystickRotate(Gamepad gamepad, boolean slow) {
         double turn = -gamepad.right_stick_x * speedMultiplier(slow);
 
-        turn = smooth(turn);
+        turn = MecanumDrive.smooth(turn);
         turn(turn);
     }
 
@@ -133,6 +105,7 @@ public class Movement implements RobotActuatorModule {
         }
     }
 
+    /// Turns the robot towards a target position. Returns true if still turning, false if finished.
     public boolean turnTowards(RobotPosition robotPosition, Position2D targetPos) {
         Pose2D robotPose = robotPosition.getPose();
 
@@ -143,6 +116,7 @@ public class Movement implements RobotActuatorModule {
         return turnTowardsHeading(robotPosition, targetDirection);
     }
 
+    /// Turns the robot towards a target heading. Returns true if still turning, false if finished.
     public boolean turnTowardsHeading(RobotPosition robotPosition, Angle targetHeading) {
         Pose2D robotPose = robotPosition.getPose();
 
@@ -163,10 +137,10 @@ public class Movement implements RobotActuatorModule {
     /// Computes translation speed forward and sideways. Returns the pair (forward, strafe).
     private Translation getTranslationVelocity(Gamepad gamepad, boolean slow) {
         double forward = gamepad.left_stick_y * speedMultiplier(slow);
-        forward = smooth(forward);
+        forward = MecanumDrive.smooth(forward);
 
         double strafe = gamepad.left_stick_x * speedMultiplier(slow);
-        strafe = smooth(strafe);
+        strafe = MecanumDrive.smooth(strafe);
 
         return new Translation(forward, strafe);
     }
@@ -177,19 +151,6 @@ public class Movement implements RobotActuatorModule {
             return SUPER_SLOW_SPEED_MULTIPLIER;
         }
         return slow ? SLOW_SPEED_MULTIPLIER : SPEED_MULTIPLIER;
-    }
-
-    private double smooth(double input) {
-        if (Math.abs(input) < 0.1) {
-            return 0;
-        } else if (Math.abs(input) >= 0.1 && Math.abs(input) < 0.7) {
-            return 0.83 * input + 0.02;
-        } else if (Math.abs(input) >= 0.7 && Math.abs(input) < 0.9) {
-            return 2 * input - 0.8;
-        } else if (Math.abs(input) >= 0.9) {
-            return Math.signum(input); // full speed
-        }
-        return 0;
     }
 
     private void translateFieldCentric(
@@ -219,68 +180,17 @@ public class Movement implements RobotActuatorModule {
     private void move(Translation translation, double turnSpeed) {
         double forward = translation.forward;
         double strafe = translation.strafe;
-
-        double denominator =
-                Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(turnSpeed), 1);
-
-        frontLeftPower += (forward - strafe + turnSpeed) / denominator;
-        frontRightPower += (forward + strafe - turnSpeed) / denominator;
-        backLeftPower += (forward + strafe + turnSpeed) / denominator;
-        backRightPower += (forward - strafe - turnSpeed) / denominator;
-
-        frontLeftPower *= FRONT_LEFT_COEFF;
-        frontRightPower *= FRONT_RIGHT_COEFF;
-        backLeftPower *= BACK_LEFT_COEFF;
-        backRightPower *= BACK_RIGHT_COEFF;
-    }
-
-    /// Toggles super slow mode
-    public void toggleSuperSlow() {
-        isSuperSlow = !isSuperSlow;
-    }
-
-    /// Applies the computed motor powers to the motors, then resets them.
-    public void apply() {
-        frontLeftDrive.setPower(Math.clamp(frontLeftPower, -1.0, 1.0));
-        frontRightDrive.setPower(Math.clamp(frontRightPower, -1.0, 1.0));
-        backLeftDrive.setPower(Math.clamp(backLeftPower, -1.0, 1.0));
-        backRightDrive.setPower(Math.clamp(backRightPower, -1.0, 1.0));
-
-        globalTelemetry.addLine("--- MOVEMENT ---");
-        globalTelemetry.addData("Mode", movementMode);
-        globalTelemetry.addData("Front Left", frontLeftDrive.getPower());
-        globalTelemetry.addData("Front Right", frontRightDrive.getPower());
-        globalTelemetry.addData("Back Left", backLeftDrive.getPower());
-        globalTelemetry.addData("Back Right", backRightDrive.getPower());
-
-        reset();
-    }
-
-    private void reset() {
-        frontLeftPower = 0;
-        frontRightPower = 0;
-        backLeftPower = 0;
-        backRightPower = 0;
+        mecanumDrive.move(forward, strafe, turnSpeed);
     }
 
     @Override
     public HashMap<String, Object> getCurrentState() {
-        return new HashMap<String, Object>() {
-            {
-                put("frontLeftPower", frontLeftPower);
-                put("frontRightPower", frontRightPower);
-                put("backLeftPower", backLeftPower);
-                put("backRightPower", backRightPower);
-            }
-        };
+        return mecanumDrive.getCurrentState();
     }
 
     @Override
     public void setState(HashMap<String, String> state) {
-        frontLeftPower = Double.parseDouble(Objects.requireNonNull(state.get("frontLeftPower")));
-        frontRightPower = Double.parseDouble(Objects.requireNonNull(state.get("frontRightPower")));
-        backLeftPower = Double.parseDouble(Objects.requireNonNull(state.get("backLeftPower")));
-        backRightPower = Double.parseDouble(Objects.requireNonNull(state.get("backRightPower")));
+        mecanumDrive.setState(state);
     }
 
     public enum MovementMode {

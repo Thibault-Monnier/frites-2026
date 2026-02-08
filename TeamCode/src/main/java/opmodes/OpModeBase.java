@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import config.HardwareConfig;
@@ -25,7 +24,7 @@ import modules.actuator.Cannon;
 import modules.actuator.CannonBuffer;
 import modules.actuator.CannonBuffersHandler;
 import modules.actuator.Intake;
-import modules.actuator.Movement;
+import logic.Movement;
 import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
 
@@ -103,14 +102,13 @@ public class OpModeBase extends LinearOpMode {
                 hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_RIGHT);
         DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConfig.INTAKE_MOTOR_ID);
 
-        IMU onBoardIMU = hardwareMap.get(IMU.class, HardwareConfig.IMU_ID);
         Movement.MovementMode movementMode =
                 calculatePose
                         ? Movement.MovementMode.FIELD_CENTRIC
                         : Movement.MovementMode.ROBOT_CENTRIC;
         move =
                 new Movement(
-                        globalTelemetry, moveFL, moveFR, moveBL, moveBR, movementMode, onBoardIMU);
+                        globalTelemetry, moveFL, moveFR, moveBL, moveBR, movementMode);
 
         driveActions = new DriveActions(robotPosition, team);
 
