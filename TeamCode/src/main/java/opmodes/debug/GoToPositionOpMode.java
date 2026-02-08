@@ -1,0 +1,90 @@
+package opmodes.debug;
+
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import logic.PlayingField;
+import logic.Team;
+
+import math.Distance;
+import math.Position2D;
+
+import modules.sensor.GamepadController;
+
+import opmodes.GroupConstants;
+import opmodes.OpModeBase;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.Random;
+
+@TeleOp(
+        name = GroupConstants.DEBUGGER_MODES_GROUP + ": Go To Position",
+        group = GroupConstants.DEBUGGER_MODES_GROUP)
+public class GoToPositionOpMode extends OpModeBase {
+    private static final Distance MIN_WALL_DISTANCE = new Distance(DistanceUnit.CM, 50);
+
+    private final Random random = new Random();
+
+    private Position2D targetPosition;
+
+    public GoToPositionOpMode() {
+        super(Team.BLUE, true, true);
+    }
+
+    @Override
+    public void runOpMode() {
+        initialize();
+
+        waitForStart();
+
+        runStart();
+
+        double prevTime = runtime.milliseconds();
+        while (opModeIsActive()) {
+            // Consistent step duration for better PIDs
+            double time = runtime.milliseconds();
+            globalTelemetry.addData("Delta time", time - prevTime);
+            while (time - prevTime < 35) {
+                time = runtime.milliseconds();
+            }
+            prevTime = time;
+
+            runStep();
+        }
+    }
+
+    private void runStep() {
+        update();
+
+        executeActions();
+
+        apply();
+        log();
+    }
+
+    private void executeActions() {
+        if (targetPosition == null || gamepad.isPressed(GamepadController.Button.A)) {
+            targetPosition = pickRandomTarget();
+        }
+
+        boolean isTranslating = move.translateToPosition(robotPosition, targetPosition);
+        globalTelemetry.addData("Translating", isTranslating);
+
+        Position2D currentPosition = robotPosition.getPosition();
+        globalTelemetry.addData("Target", targetPosition);
+        globalTelemetry.addData("Position", currentPosition);
+        globalTelemetry.addData("Team", team);
+        globalTelemetry.addData("Distance Error", Distance.hypot(targetPosition, currentPosition));
+    }
+
+    private Position2D pickRandomTarget() {
+        double rangeRadius = PlayingField.FIELD.halfWidth() - MIN_WALL_DISTANCE.toInches();
+        double x = randomInRange(-rangeRadius, rangeRadius);
+        double y = randomInRange(-rangeRadius, rangeRadius);
+        return new Position2D(Distance.fromInches(x), Distance.fromInches(y));
+    }
+
+    private double randomInRange(double min, double max) {
+        return min + random.nextDouble() * (max - min);
+    }
+}

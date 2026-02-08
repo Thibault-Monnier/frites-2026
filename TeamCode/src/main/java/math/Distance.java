@@ -83,6 +83,10 @@ public class Distance {
         return Distance.fromMillimeters(hypotenuseInMM);
     }
 
+    public static Distance hypot(Position2D a, Position2D b) {
+        return hypot(a.getX().subtract(b.getX()), a.getY().subtract(b.getY()));
+    }
+
     /**
      * Calculates the angle of a right triangle given the opposite and adjacent legs as Distance
      * objects.

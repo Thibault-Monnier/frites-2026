@@ -36,6 +36,17 @@ public class Position2D {
         this.y = pose.getY(unit);
     }
 
+    /**
+     * Creates a new Position2D object from two Distance objects by extracting their values and
+     * ensuring they are converted to the same unit.
+     *
+     * @param x the Distance object representing the x position
+     * @param y the Distance object representing the y position
+     */
+    public Position2D(Distance x, Distance y) {
+        this(DistanceUnit.MM, x.toMillimeters(), y.toMillimeters());
+    }
+
     /** Creates a new default Position2D object at (0, 0) */
     public Position2D() {
         this(DistanceUnit.MM, 0, 0);
