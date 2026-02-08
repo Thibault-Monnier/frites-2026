@@ -14,6 +14,7 @@ import config.HardwareConfig;
 
 import logic.ArtifactSequence;
 import logic.DriveActions;
+import logic.Movement;
 import logic.PlayingField;
 import logic.Team;
 import logic.position.RobotPosition;
@@ -24,7 +25,6 @@ import modules.actuator.Cannon;
 import modules.actuator.CannonBuffer;
 import modules.actuator.CannonBuffersHandler;
 import modules.actuator.Intake;
-import logic.Movement;
 import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
 

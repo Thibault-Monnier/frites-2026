@@ -19,19 +19,13 @@ public class PlayingField {
 
     private static final FieldElement BLUE_GOAL =
             new FieldElement(
-                    new Position2D(
-                            DistanceUnit.INCH,
-                            -FIELD.halfWidth(),
-                            -FIELD.halfDepth()),
+                    new Position2D(DistanceUnit.INCH, -FIELD.halfWidth(), -FIELD.halfDepth()),
                     FieldConfig.GOAL_WIDTH,
                     FieldConfig.GOAL_DEPTH,
                     FieldConfig.GOAL_HEIGHT);
     private static final FieldElement RED_GOAL =
             new FieldElement(
-                    new Position2D(
-                            DistanceUnit.INCH,
-                            -FIELD.halfWidth(),
-                            FIELD.halfDepth()),
+                    new Position2D(DistanceUnit.INCH, -FIELD.halfWidth(), FIELD.halfDepth()),
                     FieldConfig.GOAL_WIDTH,
                     FieldConfig.GOAL_DEPTH,
                     FieldConfig.GOAL_HEIGHT);
@@ -75,7 +69,8 @@ public class PlayingField {
         }
     }
 
-    /// Calculates the angle from the robot's current position to the targeting point of the specified goal.
+    /// Calculates the angle from the robot's current position to the targeting point of the
+    // specified goal.
     /// @param robotPos The current position of the robot.
     /// @param color The color of the goal to target.
     /// @return The angle to the targeting point of the specified goal.
@@ -87,7 +82,8 @@ public class PlayingField {
         return Angle.fromRadians(Math.atan2(dy, dx));
     }
 
-    /// Calculates the distance from the robot's current position to the targeting point of the specified
+    /// Calculates the distance from the robot's current position to the targeting point of the
+    // specified
     /// goal.
     /// @param robotPos The current position of the robot.
     /// @param color The color of the goal to target.

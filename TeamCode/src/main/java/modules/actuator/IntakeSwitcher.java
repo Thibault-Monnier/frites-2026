@@ -1,6 +1,5 @@
 package modules.actuator;
 
-import static com.sun.tools.javac.api.DiagnosticFormatter.PositionKind.OFFSET;
 import static config.IntakeConfig.SWITCHER_CENTER_POS;
 import static config.IntakeConfig.SWITCHER_OFFSET;
 
