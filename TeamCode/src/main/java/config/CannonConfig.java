@@ -1,10 +1,12 @@
 package config;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.bylazar.configurables.annotations.Configurable;
 
 import logic.pidf.PIDFCoefficients;
 
 @Config
+@Configurable
 public class CannonConfig {
     public static double MOVING_SPEED = 1.0;
 

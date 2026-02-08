@@ -1,6 +1,7 @@
 package config;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.bylazar.configurables.annotations.Configurable;
 
 import math.Pose2D;
 
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
+@Configurable
 public class FieldConfig {
     /* --- Dimensions --- */
     public static double FIELD_WIDTH = 144.0;

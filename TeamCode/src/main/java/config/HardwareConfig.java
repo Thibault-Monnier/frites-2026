@@ -1,12 +1,14 @@
 package config;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.bylazar.configurables.annotations.Configurable;
 
 import math.Distance;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
+@Configurable
 public class HardwareConfig {
     public static String FRONT_LEFT_MOTOR_ID = "front_left";
     public static String FRONT_RIGHT_MOTOR_ID = "front_right";

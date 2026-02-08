@@ -1,6 +1,7 @@
 package config;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.bylazar.configurables.annotations.Configurable;
 
 import logic.pidf.PIDFCoefficients;
 
@@ -8,6 +9,7 @@ import math.Angle;
 import math.Distance;
 
 @Config
+@Configurable
 public class MovementConfig {
     public static double FRONT_LEFT_COEFF = 1;
     public static double FRONT_RIGHT_COEFF = 1;
