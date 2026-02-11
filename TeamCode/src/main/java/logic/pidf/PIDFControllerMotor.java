@@ -26,13 +26,13 @@ public class PIDFControllerMotor extends PIDFController {
 
     /// Calculates the PID output for the saved error. The output is normalized to \[-1, 1\].
     public double get(double targetVelocity, boolean debugInfo) {
+        double error = motor.getVelocity() - targetVelocity;
+        setError(error);
+
         if (Math.abs(targetVelocity) < maxMotorVelocity / 100.0
                 && Math.abs(error) < maxMotorVelocity / 100.0) {
             return 0.0;
         }
-
-        double error = motor.getVelocity() - targetVelocity;
-        setError(error);
 
         if (debugInfo) {
             telemetry.addData("Target Velocity", targetVelocity);
