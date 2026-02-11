@@ -77,6 +77,6 @@ public class Angle {
     @NonNull
     public String toString() {
         return String.format(
-                Locale.ENGLISH, "(Angle) %.2f %s", getValue(AngleUnit.DEGREES), AngleUnit.DEGREES);
+                Locale.ENGLISH, "%.2f %s", getValue(AngleUnit.DEGREES), AngleUnit.DEGREES);
     }
 }

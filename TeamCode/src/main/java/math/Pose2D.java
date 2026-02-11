@@ -49,6 +49,15 @@ public class Pose2D {
     }
 
     /**
+     * This gets X as a Distance object
+     *
+     * @return the X member as a Distance object
+     */
+    public Distance getX() {
+        return new Distance(distanceUnit, x);
+    }
+
+    /**
      * This gets the Y in the desired distance unit
      *
      * @param unit the desired distance unit
@@ -56,6 +65,15 @@ public class Pose2D {
      */
     public double getY(DistanceUnit unit) {
         return unit.fromUnit(this.distanceUnit, y);
+    }
+
+    /**
+     * This gets Y as a Distance object
+     *
+     * @return the Y member as a Distance object
+     */
+    public Distance getY() {
+        return new Distance(distanceUnit, y);
     }
 
     /**
@@ -96,14 +114,7 @@ public class Pose2D {
     @NonNull
     public String toString() {
         return String.format(
-                Locale.ENGLISH,
-                "(Pose2D) x=%.3f %s, y=%.3f %s, heading=%.2f %s",
-                getX(DistanceUnit.METER),
-                DistanceUnit.METER,
-                getY(DistanceUnit.METER),
-                DistanceUnit.METER,
-                getHeading(AngleUnit.DEGREES),
-                AngleUnit.DEGREES);
+                Locale.ENGLISH, "(Pose2D) x=%s, y=%s, heading=%s", getX(), getY(), getHeading());
     }
 
     /**

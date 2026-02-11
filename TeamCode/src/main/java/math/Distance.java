@@ -105,9 +105,6 @@ public class Distance {
     @NonNull
     public String toString() {
         return String.format(
-                Locale.ENGLISH,
-                "(Distance) %.3f %s",
-                getValue(DistanceUnit.METER),
-                DistanceUnit.METER);
+                Locale.ENGLISH, "%.3f %s", getValue(DistanceUnit.METER), DistanceUnit.METER);
     }
 }

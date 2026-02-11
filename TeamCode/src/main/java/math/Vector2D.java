@@ -1,6 +1,10 @@
 package math;
 
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.Locale;
 
 /**
  * Vector2D represents a vector in 2D space. It has an x and y component, as well as a unit of
@@ -50,6 +54,15 @@ public class Vector2D {
     }
 
     /**
+     * This gets X as a Distance object
+     *
+     * @return the X member as a Distance object
+     */
+    public Distance getX() {
+        return new Distance(distanceUnit, x);
+    }
+
+    /**
      * This gets the Y in the desired distance unit
      *
      * @param unit the desired distance unit
@@ -57,6 +70,15 @@ public class Vector2D {
      */
     public double getY(DistanceUnit unit) {
         return unit.fromUnit(this.distanceUnit, y);
+    }
+
+    /**
+     * This gets Y as a Distance object
+     *
+     * @return the Y member as a Distance object
+     */
+    public Distance getY() {
+        return new Distance(distanceUnit, y);
     }
 
     /**
@@ -78,9 +100,24 @@ public class Vector2D {
     public Vector2D normalize() {
         double magnitude = getMagnitude(distanceUnit);
         if (magnitude == 0) {
-            return new Vector2D(distanceUnit, 0, 0);
+            return this;
         }
         return new Vector2D(distanceUnit, x / magnitude, y / magnitude);
+    }
+
+    /**
+     * This normalizes the vector by dividing both components by the maximum absolute value of the
+     * components, ensuring that the vector scales to fit within a unit square while maintaining its
+     * direction.
+     *
+     * @return a new Vector2D object that is the normalized version of this vector
+     */
+    public Vector2D normalizeMax() {
+        double max = Math.max(Math.abs(x), Math.abs(y));
+        if (max == 0) {
+            return this;
+        }
+        return new Vector2D(distanceUnit, x / max, y / max);
     }
 
     /**
@@ -91,5 +128,14 @@ public class Vector2D {
      */
     public Vector2D scale(double scalar) {
         return new Vector2D(distanceUnit, x * scalar, y * scalar);
+    }
+
+    /**
+     * This returns a string representation of the vector in human readable format for debugging
+     * purposes.
+     */
+    @NonNull
+    public String toString() {
+        return String.format(Locale.ENGLISH, "(Vector2D) x=%s, y=%s", getX(), getY());
     }
 }
