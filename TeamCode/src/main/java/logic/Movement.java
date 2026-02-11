@@ -29,7 +29,6 @@ import modules.actuator.MecanumDrive;
 import modules.actuator.RobotActuatorModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.HashMap;
@@ -70,6 +69,16 @@ public class Movement implements RobotActuatorModule {
     /// Applies the computed motor powers to the motors, then resets them.
     public void apply() {
         mecanumDrive.apply();
+    }
+
+    /// Reloads the translation controller coefficients from the config. Useful for tuning the PIDF
+    /// controller coefficients using FTC Dashboard.
+    public void reloadPIDFCoefficients() {
+        turnController.setCoefficients(TURN_PIDF_COEFFICIENTS);
+        translationController.setCoefficients(TRANSLATION_PIDF_COEFFICIENTS);
+        globalTelemetry.addData("Turn coefficients", turnController.getCoefficients());
+        globalTelemetry.addData(
+                "Translation coefficients", translationController.getCoefficients());
     }
 
     /// Rotates the robot using input from the *right* joystick of the gamepad.
@@ -148,23 +157,26 @@ public class Movement implements RobotActuatorModule {
     public boolean translateToPosition(RobotPosition robotPosition, Position2D targetPos) {
         Position2D robotPos = robotPosition.getPosition();
 
-        DistanceUnit distanceUnit = DistanceUnit.INCH;
+        DistanceUnit errorUnit = DistanceUnit.MM;
 
         Distance dx = targetPos.getX().subtract(robotPos.getX());
         Distance dy = targetPos.getY().subtract(robotPos.getY());
-        double distanceError = Distance.hypot(dx, dy).getValue(distanceUnit);
+        double distanceError = Distance.hypot(dx, dy).getValue(errorUnit);
 
         translationController.setError(distanceError);
         double speed = translationController.get();
-        Vector2D velocity = new Vector2D(dx, dy).normalize().scale(speed);
+        Vector2D velocity = new Vector2D(dx, dy).normalizeMax().scale(speed);
 
-        translate(new Translation(velocity.getX(distanceUnit), velocity.getY(distanceUnit)));
+        Angle robotAngle = robotPosition.getPose().getHeading();
+        Translation translation = new Translation(velocity.getRawX(), velocity.getRawY());
+        translateFieldCentric(robotAngle, translation);
 
         boolean isFinished =
                 translationController.isStableAtTarget(
-                        TRANSLATION_TOLERANCE.getValue(distanceUnit),
-                        NOT_TRANSLATING_THRESHOLD.getValue(distanceUnit));
-        globalTelemetry.addData("Translation Speed", speed);
+                        TRANSLATION_TOLERANCE.getValue(errorUnit),
+                        NOT_TRANSLATING_THRESHOLD.getValue(errorUnit));
+        globalTelemetry.addData("Translation speed", speed);
+        globalTelemetry.addData("Translation velocity", velocity.toString());
         globalTelemetry.addData("Error change", translationController.getErrorChange());
         return !isFinished;
     }
@@ -190,16 +202,23 @@ public class Movement implements RobotActuatorModule {
 
     private void translateFieldCentric(
             Translation translation, RobotPosition robotPosition, Team team) {
-        double robotAngle = robotPosition.getPose().getHeading(AngleUnit.RADIANS);
+        Angle robotAngle = robotPosition.getPose().getHeading();
 
-        if (team.isBlue()) robotAngle -= Math.PI / 2;
-        if (team.isRed()) robotAngle += Math.PI / 2;
+        Angle delta = Angle.fromDegrees(90);
+        if (team.isBlue()) robotAngle = robotAngle.subtract(delta);
+        if (team.isRed()) robotAngle = robotAngle.add(delta);
+
+        translateFieldCentric(robotAngle, translation);
+    }
+
+    private void translateFieldCentric(Angle robotAngle, Translation translation) {
+        double heading = robotAngle.toRadians();
 
         double forward = translation.forward;
         double strafe = translation.strafe;
 
-        translation.forward = -forward * Math.cos(robotAngle) - strafe * Math.sin(robotAngle);
-        translation.strafe = forward * Math.sin(robotAngle) - strafe * Math.cos(robotAngle);
+        translation.forward = -forward * Math.cos(heading) - strafe * Math.sin(heading);
+        translation.strafe = forward * Math.sin(heading) - strafe * Math.cos(heading);
 
         translate(translation);
     }

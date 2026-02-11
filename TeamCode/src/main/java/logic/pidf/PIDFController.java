@@ -18,9 +18,14 @@ public class PIDFController {
         this.coefficients = initialCoeffs;
     }
 
-    /// Sets the PID coefficients.
+    /// Sets the PIDF coefficients.
     public void setCoefficients(PIDFCoefficients coeffs) {
         this.coefficients = coeffs;
+    }
+
+    /// Returns the current PIDF coefficients.
+    public PIDFCoefficients getCoefficients() {
+        return coefficients;
     }
 
     /// Returns whether the controller is stable at the target, meaning it will probably stay within

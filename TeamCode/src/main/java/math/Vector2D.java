@@ -63,6 +63,16 @@ public class Vector2D {
     }
 
     /**
+     * This gets the raw X value without converting to the desired distance unit. This is useful for
+     * calculations that require the original values, such as normalization.
+     *
+     * @return the raw X value
+     */
+    public double getRawX() {
+        return x;
+    }
+
+    /**
      * This gets the Y in the desired distance unit
      *
      * @param unit the desired distance unit
@@ -79,6 +89,16 @@ public class Vector2D {
      */
     public Distance getY() {
         return new Distance(distanceUnit, y);
+    }
+
+    /**
+     * This gets the raw Y value without converting to the desired distance unit. This is useful for
+     * calculations that require the original values, such as normalization.
+     *
+     * @return the raw Y value
+     */
+    public double getRawY() {
+        return y;
     }
 
     /**

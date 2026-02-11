@@ -55,6 +55,7 @@ public class GoToPositionOpMode extends OpModeBase {
 
     private void runStep() {
         update();
+        move.reloadPIDFCoefficients();
 
         executeActions();
 
