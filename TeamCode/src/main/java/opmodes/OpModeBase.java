@@ -106,9 +106,7 @@ public class OpModeBase extends LinearOpMode {
                 calculatePose
                         ? Movement.MovementMode.FIELD_CENTRIC
                         : Movement.MovementMode.ROBOT_CENTRIC;
-        move =
-                new Movement(
-                        globalTelemetry, moveFL, moveFR, moveBL, moveBR, movementMode);
+        move = new Movement(globalTelemetry, moveFL, moveFR, moveBL, moveBR, movementMode);
 
         driveActions = new DriveActions(robotPosition, team);
 
@@ -135,8 +133,15 @@ public class OpModeBase extends LinearOpMode {
         }
 
         gamepad.update();
-        if (calculatePose) robotPosition.updatePose();
+
+        Distance targetDistance = new Distance(DistanceUnit.CM, 200); // Default distance
+        if (calculatePose) {
+            robotPosition.updatePose();
+            targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
+        }
+        cannon.update(targetDistance);
         System.out.println("Robot Pose: " + robotPosition.getPose().toString());
+        globalTelemetry.addData("Target Dist", targetDistance.toString());
 
         if (calculatePose) {
             if (artifactSequence == null)
@@ -145,12 +150,6 @@ public class OpModeBase extends LinearOpMode {
             if (artifactSequence != null)
                 globalTelemetry.addData("Pattern", artifactSequence.toString());
         }
-
-        Distance targetDistance = new Distance(DistanceUnit.CM, 200); // Default distance
-        if (calculatePose)
-            targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
-        globalTelemetry.addData("Target Dist", targetDistance.toString());
-        cannon.update(targetDistance);
     }
 
     protected void log() {
