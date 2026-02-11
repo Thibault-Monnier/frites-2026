@@ -79,12 +79,7 @@ public class ManualOpMode extends OpModeBase {
         double r = cannon.isReadyToShoot() ? 0.0 : 1.0;
         gamepad.gamepad.setLedColor(r, 1.0 - r, 0.0, Gamepad.LED_DURATION_CONTINUOUS);
 
-        if (gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
-            intake.on();
-            cannonBuffers.clear();
-        } else {
-            intake.off();
-        }
+        intake.set(gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT));
 
         // Make sure the cannon reached its target velocity
         if ((gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot())

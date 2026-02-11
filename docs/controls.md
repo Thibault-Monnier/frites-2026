@@ -12,8 +12,7 @@ simultaneously.
 ### Front Buttons
 
 - **Left Bumper** while pressing: Turns towards the goal, ignoring rotation input.
-- **Left Trigger** while pressing: Activates the intake mechanism + reverses cannon buffers to
-  prevent shooting by mistake.
+- **Left Trigger** while pressing: Activates the intake mechanism.
 - **Right Bumper** while pressing: Force shoots, whether or not the cannon is ready.
 - **Right Trigger** while pressing: Shoots normally. If the cannon isn't ready, vibrates the
   controller. The controller LED is green when ready to shoot, red otherwise.
