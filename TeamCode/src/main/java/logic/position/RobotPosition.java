@@ -28,8 +28,6 @@ public class RobotPosition {
     private final KalmanFilter kalmanFilter;
     private Pose2D pose;
 
-    private boolean usedPoseFromLimelight = false;
-
     public static RobotPosition getInstance(
             Telemetry globalTelemetry,
             HardwareMap hardwareMap,
@@ -73,59 +71,28 @@ public class RobotPosition {
      * up-to-date.
      */
     public void updatePose() {
-        Pose2D previousPose = pose;
-
         odometryHandler.update();
+        boolean limelightHasNew = limelightHandler.update();
 
-        if (limelightHandler.update()) {
-            pose = computePoseFromLimelight();
-            odometryHandler.setPose(pose);
-        } else pose = computePoseFromOdometry();
-
-        if (pose.hasNaN()) {
+        Pose2D odometryPose = odometryHandler.getPose();
+        if (odometryPose.hasNaN()) {
             globalTelemetry.addLine("Computed pose has NaN values, using previous pose");
-            pose = previousPose;
-            odometryHandler.setPose(pose);
+            odometryPose = pose;
         }
+        Pose2D odometryVelocity = odometryPose.subtract(pose);
+        pose = kalmanFilter.predict(odometryVelocity);
 
+        if (limelightHasNew) {
+            globalTelemetry.addLine("Using pose from Limelight with Kalman filter");
+            Pose2D limelightPose = limelightHandler.getLastKnownPose();
+            pose = kalmanFilter.update(limelightPose);
+        } else globalTelemetry.addLine("Using pose from Odometry");
+
+        odometryHandler.setPose(pose);
+
+        globalTelemetry.addData("Odometry velocity", odometryVelocity.toString());
         globalTelemetry.addData("Computed pose", pose.toString());
         renderFieldOverlayInDashboard();
-    }
-
-    /** Computes the robot pose using the Limelight and the Kalman filter. */
-    private Pose2D computePoseFromLimelight() {
-        globalTelemetry.addLine("Using pose from Limelight");
-
-        Pose2D cameraPose = limelightHandler.getLastKnownPose();
-
-        if (!usedPoseFromLimelight) {
-            usedPoseFromLimelight = true;
-            return cameraPose;
-        }
-
-        Pose2D odometryPose = odometryHandler.getPose();
-        Pose2D odometryVelocity = odometryPose.subtract(pose);
-
-        globalTelemetry.addData("Camera pose", cameraPose.toString());
-        globalTelemetry.addData("Odometry velocity", odometryVelocity.toString());
-        globalTelemetry.addData("Previous pose", pose.toString());
-
-        Pose2D result = kalmanFilter.unite(cameraPose, odometryVelocity);
-
-        globalTelemetry.addData("Kalman filter result", result.toString());
-
-        return result;
-    }
-
-    /** Computes the robot pose using only odometry. */
-    private Pose2D computePoseFromOdometry() {
-        globalTelemetry.addLine("Using pose from Odometry");
-
-        Pose2D odometryPose = odometryHandler.getPose();
-        Pose2D odometryVelocity = odometryPose.subtract(pose);
-        globalTelemetry.addData("Odometry velocity", odometryVelocity.toString());
-
-        return odometryHandler.getPose();
     }
 
     /// Gets the current robot pose as a Pose2D

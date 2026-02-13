@@ -21,25 +21,24 @@ public class KalmanFilter {
                         KalmanFilterConfig.MODEL_VARIANCE_ANGLE);
     }
 
-    public Pose2D unite(Pose2D newCameraPose, Pose2D odometryVelocity) {
+    public Pose2D predict(Pose2D odometryVelocity) {
+        pose = pose.add(odometryVelocity);
+        poseVariance =
+                new Pose2D(
+                        poseVariance.getX().add(KalmanFilterConfig.MODEL_VARIANCE_DIST),
+                        poseVariance.getY().add(KalmanFilterConfig.MODEL_VARIANCE_DIST),
+                        poseVariance.getHeading().add(KalmanFilterConfig.MODEL_VARIANCE_ANGLE));
+        return pose;
+    }
+
+    public Pose2D update(Pose2D newCameraPose) {
         Pair<Distance, Distance> updatedX =
-                updateDist(
-                        pose.getX(),
-                        poseVariance.getX(),
-                        newCameraPose.getX(),
-                        odometryVelocity.getX());
+                updateDist(pose.getX(), poseVariance.getX(), newCameraPose.getX());
         Pair<Distance, Distance> updatedY =
-                updateDist(
-                        pose.getY(),
-                        poseVariance.getY(),
-                        newCameraPose.getY(),
-                        odometryVelocity.getY());
+                updateDist(pose.getY(), poseVariance.getY(), newCameraPose.getY());
         Pair<Angle, Angle> updatedHeading =
                 updateAngle(
-                        pose.getHeading(),
-                        poseVariance.getHeading(),
-                        newCameraPose.getHeading(),
-                        odometryVelocity.getHeading());
+                        pose.getHeading(), poseVariance.getHeading(), newCameraPose.getHeading());
 
         pose = new Pose2D(updatedX.first, updatedY.first, updatedHeading.first);
         poseVariance = new Pose2D(updatedX.second, updatedY.second, updatedHeading.second);
@@ -48,35 +47,21 @@ public class KalmanFilter {
     }
 
     public Pair<Distance, Distance> updateDist(
-            Distance value,
-            Distance variance,
-            Distance newCameravalue,
-            Distance odometryVelocityValue) {
-        Distance predictedValue = value.add(odometryVelocityValue);
-        Distance predictedVariance = variance.add(KalmanFilterConfig.MODEL_VARIANCE_DIST);
+            Distance value, Distance variance, Distance newCameravalue) {
+        double gain = variance.ratio(variance.add(KalmanFilterConfig.CAMERA_VARIANCE_DIST));
 
-        double gain =
-                predictedVariance.ratio(
-                        predictedVariance.add(KalmanFilterConfig.CAMERA_VARIANCE_DIST));
+        Distance updatedValue = value.add(newCameravalue.subtract(value).multiply(gain));
+        Distance updatedVariance = variance.multiply(1 - gain);
 
-        Distance updatedValue =
-                predictedValue.add(newCameravalue.subtract(predictedValue).multiply(gain));
-        Distance updatedVariance = predictedVariance.multiply(1 - gain);
         return new Pair<>(updatedValue, updatedVariance);
     }
 
-    public Pair<Angle, Angle> updateAngle(
-            Angle value, Angle variance, Angle newCameraValue, Angle odometryVelocityValue) {
-        Angle predictedValue = value.add(odometryVelocityValue);
-        Angle predictedVariance = variance.add(KalmanFilterConfig.MODEL_VARIANCE_ANGLE);
+    public Pair<Angle, Angle> updateAngle(Angle value, Angle variance, Angle newCameraValue) {
+        double gain = variance.ratio(variance.add(KalmanFilterConfig.CAMERA_VARIANCE_ANGLE));
 
-        double gain =
-                predictedVariance.ratio(
-                        predictedVariance.add(KalmanFilterConfig.CAMERA_VARIANCE_ANGLE));
+        Angle updatedValue = value.add(newCameraValue.subtract(value).multiply(gain));
+        Angle updatedVariance = variance.multiply(1 - gain);
 
-        Angle updatedValue =
-                predictedValue.add(newCameraValue.subtract(predictedValue).multiply(gain));
-        Angle updatedVariance = predictedVariance.multiply(1 - gain);
         return new Pair<>(updatedValue, updatedVariance);
     }
 }
