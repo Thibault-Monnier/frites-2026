@@ -33,6 +33,22 @@ public class Pose2D {
         this.headingUnit = headingUnit;
     }
 
+    /**
+     * Creates a new Pose2D object from two Distance objects and an Angle object.
+     *
+     * @param x the x position as a Distance object
+     * @param y the y position as a Distance object
+     * @param heading the heading as an Angle object
+     */
+    public Pose2D(Distance x, Distance y, Angle heading) {
+        this(
+                DistanceUnit.MM,
+                x.getValue(DistanceUnit.MM),
+                y.getValue(DistanceUnit.MM),
+                AngleUnit.RADIANS,
+                heading.getValue(AngleUnit.RADIANS));
+    }
+
     /** Creates a new default Pose2D object at (0, 0) with 0 heading */
     public Pose2D() {
         this(DistanceUnit.MM, 0, 0, AngleUnit.RADIANS, 0);
@@ -103,6 +119,32 @@ public class Pose2D {
      */
     public boolean hasNaN() {
         return Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(heading);
+    }
+
+    /**
+     * This adds another Pose2D to this Pose2D and returns the result as a new Pose2D.
+     *
+     * @param other the other Pose2D to add
+     * @return a new Pose2D that is the sum of this Pose2D and the other Pose2D
+     */
+    public Pose2D add(Pose2D other) {
+        return new Pose2D(
+                getX().add(other.getX()),
+                getY().add(other.getY()),
+                getHeading().add(other.getHeading()));
+    }
+
+    /**
+     * This subtracts another Pose2D from this Pose2D and returns the result as a new Pose2D.
+     *
+     * @param other the other Pose2D to subtract
+     * @return a new Pose2D that is the difference of this Pose2D and the other Pose2D
+     */
+    public Pose2D subtract(Pose2D other) {
+        return new Pose2D(
+                getX().subtract(other.getX()),
+                getY().subtract(other.getY()),
+                getHeading().subtract(other.getHeading()));
     }
 
     /**

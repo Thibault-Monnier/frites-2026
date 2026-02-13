@@ -58,14 +58,25 @@ public class Angle {
 
     /** Adds another Angle to this Angle and returns the result as a new Angle object. */
     public Angle add(Angle other) {
-        double otherValueInThisUnit = other.getValue(this.unit);
-        return new Angle(this.unit, this.value + otherValueInThisUnit);
+        double sumInRadians = toRadians() + other.toRadians();
+        return Angle.fromRadians(sumInRadians);
     }
 
     /** Subtracts another Angle from this Angle and returns the result as a new Angle object. */
     public Angle subtract(Angle other) {
-        double otherValueInThisUnit = other.getValue(this.unit);
-        return new Angle(this.unit, this.value - otherValueInThisUnit);
+        double differenceInRadians = toRadians() - other.toRadians();
+        return Angle.fromRadians(differenceInRadians);
+    }
+
+    /** Multiplies this Angle by a scalar and returns the result as a new Angle object. */
+    public Angle multiply(double scalar) {
+        double productInRadians = toRadians() * scalar;
+        return Angle.fromRadians(productInRadians);
+    }
+
+    /** Divides this Angle by another Angle and returns the result as a unitless ratio. */
+    public double ratio(Angle other) {
+        return toRadians() / other.toRadians();
     }
 
     /**

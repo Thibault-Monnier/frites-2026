@@ -64,7 +64,7 @@ public class Distance {
 
     /** Adds another Distance to this Distance and returns the result as a new Distance object. */
     public Distance add(Distance other) {
-        double sumInMM = this.toMillimeters() + other.toMillimeters();
+        double sumInMM = toMillimeters() + other.toMillimeters();
         return Distance.fromMillimeters(sumInMM);
     }
 
@@ -73,8 +73,19 @@ public class Distance {
      * object.
      */
     public Distance subtract(Distance other) {
-        double differenceInMM = this.toMillimeters() - other.toMillimeters();
+        double differenceInMM = toMillimeters() - other.toMillimeters();
         return Distance.fromMillimeters(differenceInMM);
+    }
+
+    /** Multiplies this Distance by a scalar and returns the result as a new Distance object. */
+    public Distance multiply(double scalar) {
+        double productInMM = toMillimeters() * scalar;
+        return Distance.fromMillimeters(productInMM);
+    }
+
+    /** Divides this Distance by another Distance and returns the result as a unitless ratio. */
+    public double ratio(Distance other) {
+        return toMillimeters() / other.toMillimeters();
     }
 
     /** Calculates the hypotenuse of a right triangle given the two legs as Distance objects. */
