@@ -16,9 +16,9 @@ public class KalmanFilter {
         this.pose = initialPose;
         this.poseVariance =
                 new Pose2D(
-                        Distance.fromMillimeters(100),
-                        Distance.fromMillimeters(100),
-                        Angle.fromDegrees(30));
+                        KalmanFilterConfig.MODEL_VARIANCE_DIST,
+                        KalmanFilterConfig.MODEL_VARIANCE_DIST,
+                        KalmanFilterConfig.MODEL_VARIANCE_ANGLE);
     }
 
     public Pose2D unite(Pose2D newCameraPose, Pose2D odometryVelocity) {

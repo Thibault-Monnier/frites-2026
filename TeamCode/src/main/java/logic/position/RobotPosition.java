@@ -25,6 +25,7 @@ public class RobotPosition {
 
     private final Team color;
 
+    private final KalmanFilter kalmanFilter;
     private Pose2D pose;
 
     public static RobotPosition getInstance(
@@ -53,6 +54,8 @@ public class RobotPosition {
 
         limelightHandler.start();
 
+        this.kalmanFilter = new KalmanFilter(pose);
+
         this.globalTelemetry.addData("Initialized RobotPosition", pose.toString());
         this.globalTelemetry.update();
     }
@@ -68,17 +71,12 @@ public class RobotPosition {
      * up-to-date.
      */
     public void updatePose() {
+        Pose2D previousPose = pose;
+
         odometryHandler.update();
 
-        Pose2D previousPose = pose;
-        if (limelightHandler.update()) {
-            globalTelemetry.addLine("Using pose from Limelight");
-            pose = limelightHandler.getLastKnownPose();
-            odometryHandler.setPose(pose);
-        } else {
-            globalTelemetry.addLine("Using pose from Odometry");
-            pose = odometryHandler.getPose();
-        }
+        if (limelightHandler.update()) pose = computePoseFromLimelight();
+        else pose = computePoseFromOdometry();
 
         if (pose.hasNaN()) {
             globalTelemetry.addLine("Computed pose has NaN values, using previous pose");
@@ -88,6 +86,25 @@ public class RobotPosition {
 
         globalTelemetry.addData("Computed pose", pose.toString());
         renderFieldOverlayInDashboard();
+    }
+
+    /** Computes the robot pose using the Limelight and the Kalman filter. */
+    private Pose2D computePoseFromLimelight() {
+        globalTelemetry.addLine("Using pose from Limelight");
+
+        Pose2D cameraPose = limelightHandler.getLastKnownPose();
+
+        Pose2D odometryPose = odometryHandler.getPose();
+        Pose2D odometryVelocity = odometryPose.subtract(pose);
+
+        return kalmanFilter.unite(cameraPose, odometryVelocity);
+    }
+
+    /** Computes the robot pose using only odometry. */
+    private Pose2D computePoseFromOdometry() {
+        globalTelemetry.addLine("Using pose from Odometry");
+
+        return odometryHandler.getPose();
     }
 
     /// Gets the current robot pose as a Pose2D
