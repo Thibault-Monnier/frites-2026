@@ -19,6 +19,8 @@ public class Intake implements RobotActuatorModule {
     public Intake(Telemetry globalTelemetry, DcMotor motor) {
         this.globalTelemetry = globalTelemetry;
         this.motor = motor;
+
+        this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     @Override
