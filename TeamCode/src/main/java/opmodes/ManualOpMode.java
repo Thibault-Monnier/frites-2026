@@ -3,6 +3,8 @@ package opmodes;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import config.FieldConfig;
+
 import logic.PlayingField;
 import logic.Team;
 
@@ -55,6 +57,8 @@ public class ManualOpMode extends OpModeBase {
         log();
     }
 
+    boolean movingToShoot = false;
+
     private void executeActions() {
         if (calculatePose && gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) {
             // Lock towards the goal
@@ -71,6 +75,15 @@ public class ManualOpMode extends OpModeBase {
                     robotPosition,
                     team);
             move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
+        }
+
+        if (calculatePose && gamepad.isPressed(GamepadController.Button.DPAD_UP))
+            movingToShoot = true;
+        if (move.isMoving()) movingToShoot = false;
+
+        if (movingToShoot) {
+            move.translateToPosition(robotPosition, FieldConfig.SHOOT_POS_RED);
+            move.turnTowards(robotPosition, PlayingField.goalPos(team));
         }
 
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();

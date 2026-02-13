@@ -66,6 +66,11 @@ public class Movement implements RobotActuatorModule {
         isSuperSlow = !isSuperSlow;
     }
 
+    /// Returns whether the robot is currently moving
+    public boolean isMoving() {
+        return mecanumDrive.isMoving();
+    }
+
     /// Applies the computed motor powers to the motors, then resets them.
     public void apply() {
         mecanumDrive.apply();

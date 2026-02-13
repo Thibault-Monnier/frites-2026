@@ -88,6 +88,13 @@ public class MecanumDrive implements RobotActuatorModule {
         reset();
     }
 
+    public boolean isMoving() {
+        return Math.max(
+                        Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower)),
+                        Math.max(Math.abs(backLeftPower), Math.abs(backRightPower)))
+                > 0.05;
+    }
+
     private void reset() {
         frontLeftPower = 0;
         frontRightPower = 0;
