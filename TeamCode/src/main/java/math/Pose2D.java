@@ -135,6 +135,18 @@ public class Pose2D {
     }
 
     /**
+     * This adds x, y, and heading to this Pose2D and returns the result as a new Pose2D.
+     *
+     * @param x the x to add as a Distance object
+     * @param y the y to add as a Distance object
+     * @param heading the heading to add as an Angle object
+     * @return a new Pose2D that is the sum of this Pose2D and the given x, y, and heading
+     */
+    public Pose2D add(Distance x, Distance y, Angle heading) {
+        return add(new Pose2D(x, y, heading));
+    }
+
+    /**
      * This subtracts another Pose2D from this Pose2D and returns the result as a new Pose2D.
      *
      * @param other the other Pose2D to subtract

@@ -24,10 +24,10 @@ public class KalmanFilter {
     public Pose2D predict(Pose2D odometryVelocity) {
         pose = pose.add(odometryVelocity);
         poseVariance =
-                new Pose2D(
-                        poseVariance.getX().add(KalmanFilterConfig.MODEL_VARIANCE_DIST),
-                        poseVariance.getY().add(KalmanFilterConfig.MODEL_VARIANCE_DIST),
-                        poseVariance.getHeading().add(KalmanFilterConfig.MODEL_VARIANCE_ANGLE));
+                poseVariance.add(
+                        KalmanFilterConfig.MODEL_VARIANCE_DIST,
+                        KalmanFilterConfig.MODEL_VARIANCE_DIST,
+                        KalmanFilterConfig.MODEL_VARIANCE_ANGLE);
         return pose;
     }
 

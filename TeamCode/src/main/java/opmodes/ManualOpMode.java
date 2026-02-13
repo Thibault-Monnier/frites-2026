@@ -12,6 +12,8 @@ import modules.sensor.GamepadController;
 
 @Config
 public class ManualOpMode extends OpModeBase {
+    boolean movingToShoot = false;
+
     public ManualOpMode(Team team, boolean isAfterAuto, boolean calculatePose) {
         super(team, !isAfterAuto, calculatePose);
     }
@@ -56,8 +58,6 @@ public class ManualOpMode extends OpModeBase {
         apply();
         log();
     }
-
-    boolean movingToShoot = false;
 
     private void executeActions() {
         if (calculatePose && gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) {
