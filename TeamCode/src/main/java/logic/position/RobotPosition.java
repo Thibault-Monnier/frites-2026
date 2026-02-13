@@ -80,15 +80,15 @@ public class RobotPosition {
             odometryPose = pose;
         }
         Pose2D odometryVelocity = odometryPose.subtract(pose);
+
         pose = kalmanFilter.predict(odometryVelocity);
 
         if (limelightHasNew) {
             globalTelemetry.addLine("Using pose from Limelight with Kalman filter");
             Pose2D limelightPose = limelightHandler.getLastKnownPose();
             pose = kalmanFilter.update(limelightPose);
+            odometryHandler.setPose(pose);
         } else globalTelemetry.addLine("Using pose from Odometry");
-
-        odometryHandler.setPose(pose);
 
         globalTelemetry.addData("Odometry velocity", odometryVelocity.toString());
         globalTelemetry.addData("Computed pose", pose.toString());

@@ -9,7 +9,7 @@ import math.Distance;
 import math.Pose2D;
 
 public class KalmanFilter {
-    private Pose2D pose;
+    public Pose2D pose;
     private Pose2D poseVariance;
 
     public KalmanFilter(Pose2D initialPose) {
