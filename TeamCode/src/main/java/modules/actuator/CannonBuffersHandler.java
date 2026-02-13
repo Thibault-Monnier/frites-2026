@@ -62,16 +62,8 @@ public class CannonBuffersHandler implements RobotActuatorModule {
                 shootingStage = ShootingStage.SHOOTING;
             // fall through
             case SHOOTING:
-                if (shotsFired < SHOOT_BALLS_AMOUNT) {
-                    nextShoot();
-                    return false;
-                }
-
-                shootingStage = ShootingStage.FINISHED;
-            // fall through
-            case FINISHED:
-                off();
-                return true;
+                nextShoot();
+                return shotsFired >= SHOOT_BALLS_AMOUNT;
 
             default:
                 throw new IllegalStateException("Unexpected value: " + shootingStage);
@@ -99,9 +91,7 @@ public class CannonBuffersHandler implements RobotActuatorModule {
     }
 
     private void nextShoot() {
-        if (shotsFired == SHOOT_BALLS_AMOUNT - 1) {
-            both();
-        } else if (lastShotLeft) {
+        if (lastShotLeft) {
             rightOnly();
         } else {
             leftOnly();
@@ -149,7 +139,6 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
     enum ShootingStage {
         IDLE,
-        SHOOTING,
-        FINISHED
+        SHOOTING
     }
 }
