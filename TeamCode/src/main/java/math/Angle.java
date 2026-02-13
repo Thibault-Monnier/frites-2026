@@ -17,7 +17,7 @@ public class Angle {
      * @param value the angle value
      */
     public Angle(AngleUnit unit, double value) {
-        this.value = value;
+        this.value = unit.normalize(value);
         this.unit = unit;
     }
 

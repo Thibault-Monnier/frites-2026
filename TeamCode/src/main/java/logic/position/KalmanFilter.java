@@ -59,7 +59,8 @@ public class KalmanFilter {
                 predictedVariance.ratio(
                         predictedVariance.add(KalmanFilterConfig.CAMERA_VARIANCE_DIST));
 
-        Distance updatedValue = value.add(newCameravalue.subtract(predictedValue).multiply(gain));
+        Distance updatedValue =
+                predictedValue.add(newCameravalue.subtract(predictedValue).multiply(gain));
         Distance updatedVariance = predictedVariance.multiply(1 - gain);
         return new Pair<>(updatedValue, updatedVariance);
     }
@@ -73,7 +74,8 @@ public class KalmanFilter {
                 predictedVariance.ratio(
                         predictedVariance.add(KalmanFilterConfig.CAMERA_VARIANCE_ANGLE));
 
-        Angle updatedValue = value.add(newCameraValue.subtract(predictedValue).multiply(gain));
+        Angle updatedValue =
+                predictedValue.add(newCameraValue.subtract(predictedValue).multiply(gain));
         Angle updatedVariance = predictedVariance.multiply(1 - gain);
         return new Pair<>(updatedValue, updatedVariance);
     }

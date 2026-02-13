@@ -28,6 +28,8 @@ public class RobotPosition {
     private final KalmanFilter kalmanFilter;
     private Pose2D pose;
 
+    private boolean usedPoseFromLimelight = false;
+
     public static RobotPosition getInstance(
             Telemetry globalTelemetry,
             HardwareMap hardwareMap,
@@ -75,8 +77,10 @@ public class RobotPosition {
 
         odometryHandler.update();
 
-        if (limelightHandler.update()) pose = computePoseFromLimelight();
-        else pose = computePoseFromOdometry();
+        if (limelightHandler.update()) {
+            pose = computePoseFromLimelight();
+            odometryHandler.setPose(pose);
+        } else pose = computePoseFromOdometry();
 
         if (pose.hasNaN()) {
             globalTelemetry.addLine("Computed pose has NaN values, using previous pose");
@@ -94,15 +98,32 @@ public class RobotPosition {
 
         Pose2D cameraPose = limelightHandler.getLastKnownPose();
 
+        if (!usedPoseFromLimelight) {
+            usedPoseFromLimelight = true;
+            return cameraPose;
+        }
+
         Pose2D odometryPose = odometryHandler.getPose();
         Pose2D odometryVelocity = odometryPose.subtract(pose);
 
-        return kalmanFilter.unite(cameraPose, odometryVelocity);
+        globalTelemetry.addData("Camera pose", cameraPose.toString());
+        globalTelemetry.addData("Odometry velocity", odometryVelocity.toString());
+        globalTelemetry.addData("Previous pose", pose.toString());
+
+        Pose2D result = kalmanFilter.unite(cameraPose, odometryVelocity);
+
+        globalTelemetry.addData("Kalman filter result", result.toString());
+
+        return result;
     }
 
     /** Computes the robot pose using only odometry. */
     private Pose2D computePoseFromOdometry() {
         globalTelemetry.addLine("Using pose from Odometry");
+
+        Pose2D odometryPose = odometryHandler.getPose();
+        Pose2D odometryVelocity = odometryPose.subtract(pose);
+        globalTelemetry.addData("Odometry velocity", odometryVelocity.toString());
 
         return odometryHandler.getPose();
     }
