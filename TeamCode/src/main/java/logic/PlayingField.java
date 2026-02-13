@@ -15,7 +15,7 @@ public class PlayingField {
     }
 
     public static final FieldElement FIELD =
-            new FieldElement(new Position2D(), FieldConfig.FIELD_WIDTH, FieldConfig.FIELD_DEPTH, 0);
+            new FieldElement(new Position2D(), FieldConfig.FIELD_SIZE, FieldConfig.FIELD_SIZE, 0);
 
     private static final FieldElement BLUE_GOAL =
             new FieldElement(
@@ -104,9 +104,9 @@ public class PlayingField {
     public static boolean isInField(Position2D pos) {
         double x = pos.getX(DistanceUnit.INCH);
         double y = pos.getY(DistanceUnit.INCH);
-        return x >= -FieldConfig.FIELD_WIDTH / 2
-                && x <= FieldConfig.FIELD_WIDTH / 2
-                && y >= -FieldConfig.FIELD_DEPTH / 2
-                && y <= FieldConfig.FIELD_DEPTH / 2;
+        return x >= -FIELD.halfWidth()
+                && x <= FIELD.halfWidth()
+                && y >= -FIELD.halfWidth()
+                && y <= FIELD.halfWidth();
     }
 }

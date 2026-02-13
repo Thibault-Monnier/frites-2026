@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.bylazar.configurables.annotations.Configurable;
 
 import math.Pose2D;
+import math.Position2D;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -12,10 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Configurable
 public class FieldConfig {
     /* --- Dimensions --- */
-    public static double FIELD_WIDTH = 144.0;
-    public static double FIELD_DEPTH = 144.0;
-    public static double TILE_WIDTH = FIELD_WIDTH / 6.0;
-    public static double TILE_DEPTH = FIELD_DEPTH / 6.0;
+    public static double FIELD_SIZE = 144.0;
+    public static double TILE_SIZE = FIELD_SIZE / 6.0;
 
     public static double GOAL_HEIGHT = 54.0;
     public static double GOAL_WIDTH = 27.0;
@@ -28,35 +27,38 @@ public class FieldConfig {
             new Pose2D(DistanceUnit.METER, -1.215, 1.215, AngleUnit.DEGREES, 138.0);
 
     public static Pose2D AUTO_MODE_SHOOT_POS_BLUE =
-            new Pose2D(DistanceUnit.INCH, -TILE_WIDTH, -TILE_WIDTH, AngleUnit.DEGREES, -135);
+            new Pose2D(DistanceUnit.INCH, -TILE_SIZE, -TILE_SIZE, AngleUnit.DEGREES, -135);
     public static Pose2D AUTO_MODE_SHOOT_POS_RED =
-            new Pose2D(DistanceUnit.INCH, -TILE_WIDTH, TILE_WIDTH, AngleUnit.DEGREES, 135);
+            new Pose2D(DistanceUnit.INCH, -TILE_SIZE, TILE_SIZE, AngleUnit.DEGREES, 135);
 
     public static Pose2D AUTO_MODE_LEAVE_POS_BLUE =
-            new Pose2D(DistanceUnit.INCH, TILE_WIDTH, -TILE_WIDTH, AngleUnit.DEGREES, -90);
+            new Pose2D(DistanceUnit.INCH, TILE_SIZE, -TILE_SIZE, AngleUnit.DEGREES, -90);
     public static Pose2D AUTO_MODE_LEAVE_POS_RED =
-            new Pose2D(DistanceUnit.INCH, TILE_WIDTH, TILE_WIDTH, AngleUnit.DEGREES, 90);
+            new Pose2D(DistanceUnit.INCH, TILE_SIZE, TILE_SIZE, AngleUnit.DEGREES, 90);
+
+    public static Position2D SHOOT_POS_RED =
+            new Position2D(DistanceUnit.INCH, -TILE_SIZE, TILE_SIZE);
 
     // Front is the row closest to the audience, back is the row furthest from the audience, middle
     // is in between
     public static Pose2D BLUE_ARTIFACT_FRONT_ROW_ENTRY_POSE =
             new Pose2D(
                     DistanceUnit.INCH,
-                    TILE_WIDTH * 1.5 + TILE_WIDTH / 2.0,
+                    TILE_SIZE * 1.5 + TILE_SIZE / 2.0,
                     -32.0,
                     AngleUnit.DEGREES,
                     260);
     public static Pose2D BLUE_ARTIFACT_MIDDLE_ROW_ENTRY_POSE =
             new Pose2D(
                     DistanceUnit.INCH,
-                    TILE_WIDTH * 0.5 + TILE_WIDTH / 2.0,
+                    TILE_SIZE * 0.5 + TILE_SIZE / 2.0,
                     -54.0,
                     AngleUnit.DEGREES,
                     260);
     public static Pose2D BLUE_ARTIFACT_BACK_ROW_ENTRY_POSE =
             new Pose2D(
                     DistanceUnit.INCH,
-                    -TILE_WIDTH * 0.5 + TILE_WIDTH / 2.0,
+                    -TILE_SIZE * 0.5 + TILE_SIZE / 2.0,
                     -32.0,
                     AngleUnit.DEGREES,
                     260);
@@ -66,17 +68,17 @@ public class FieldConfig {
     public static Pose2D RED_ARTIFACT_FRONT_ROW_ENTRY_POSE =
             new Pose2D(
                     DistanceUnit.INCH,
-                    TILE_WIDTH * 1.5 + TILE_WIDTH / 2.0,
+                    TILE_SIZE * 1.5 + TILE_SIZE / 2.0,
                     54.0,
                     AngleUnit.DEGREES,
                     100);
     public static Pose2D RED_ARTIFACT_MIDDLE_ROW_ENTRY_POSE =
             new Pose2D(
-                    DistanceUnit.INCH, TILE_WIDTH * 0.5 + TILE_WIDTH, 32.0, AngleUnit.DEGREES, 100);
+                    DistanceUnit.INCH, TILE_SIZE * 0.5 + TILE_SIZE, 32.0, AngleUnit.DEGREES, 100);
     public static Pose2D RED_ARTIFACT_BACK_ROW_ENTRY_POSE =
             new Pose2D(
                     DistanceUnit.INCH,
-                    -TILE_WIDTH * 0.5 + TILE_WIDTH / 2.0,
+                    -TILE_SIZE * 0.5 + TILE_SIZE / 2.0,
                     32.0,
                     AngleUnit.DEGREES,
                     100);
