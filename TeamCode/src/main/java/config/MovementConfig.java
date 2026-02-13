@@ -26,7 +26,7 @@ public class MovementConfig {
     public static Angle NOT_TURNING_THRESHOLD = Angle.fromDegrees(0.5); // per frame
 
     public static PIDFCoefficients TRANSLATION_PIDF_COEFFICIENTS =
-            new PIDFCoefficients(0.01, 0.0, 0.002, 0.0);
+            new PIDFCoefficients(0.002, 0.0, 0.0003, 0.0);
     public static Distance TRANSLATION_TOLERANCE = Distance.fromCentimeters(2.0);
     public static Distance NOT_TRANSLATING_THRESHOLD = Distance.fromCentimeters(0.3); // per frame
 }
