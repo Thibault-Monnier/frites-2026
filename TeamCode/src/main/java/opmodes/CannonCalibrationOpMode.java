@@ -64,30 +64,30 @@ public class CannonCalibrationOpMode extends OpModeBase {
     }
 
     public void executeActions() {
-        if (gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) {
+        if (gamepadController.isPressing(GamepadController.Button.BUMPER_LEFT)) {
             // Lock towards the goal
             move.lockedJoystickMove(
                     gamepad1,
-                    gamepad.isPressing(GamepadController.Button.LEFT_STICK),
+                    gamepadController.isPressing(GamepadController.Button.LEFT_STICK),
                     PlayingField.goalPos(team));
         } else {
             move.joystickTranslate(
-                    gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK));
-            move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
+                    gamepad1, gamepadController.isPressing(GamepadController.Button.LEFT_STICK));
+            move.joystickRotate(gamepad1, gamepadController.isPressing(GamepadController.Button.RIGHT_STICK));
         }
 
-        if (gamepad.isPressed(GamepadController.Button.X)) cannonCalibrator.toggle();
-        if (gamepad.isPressed(GamepadController.Button.Y)) cannonCalibrator.speedup();
-        if (gamepad.isLongPressed(GamepadController.Button.Y)) cannonCalibrator.fastSpeedup();
-        if (gamepad.isPressed(GamepadController.Button.A)) cannonCalibrator.slowdown();
-        if (gamepad.isLongPressed(GamepadController.Button.A)) cannonCalibrator.fastSlowdown();
-        if (gamepad.isPressed(GamepadController.Button.B)) {
+        if (gamepadController.isPressed(GamepadController.Button.X)) cannonCalibrator.toggle();
+        if (gamepadController.isPressed(GamepadController.Button.Y)) cannonCalibrator.speedup();
+        if (gamepadController.isLongPressed(GamepadController.Button.Y)) cannonCalibrator.fastSpeedup();
+        if (gamepadController.isPressed(GamepadController.Button.A)) cannonCalibrator.slowdown();
+        if (gamepadController.isLongPressed(GamepadController.Button.A)) cannonCalibrator.fastSlowdown();
+        if (gamepadController.isPressed(GamepadController.Button.B)) {
             Distance targetDistance =
                     PlayingField.distanceToGoal(robotPosition.getPosition(), team);
             cannonCalibrator.saveCurrentCalibrationData(targetDistance);
         }
 
-        if (gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
+        if (gamepadController.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
             intake.on();
             cannonBuffers.clear();
         } else {

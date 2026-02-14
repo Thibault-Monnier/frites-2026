@@ -47,7 +47,7 @@ public class OpModeBase extends LinearOpMode {
 
     protected Movement move;
     protected DriveActions driveActions;
-    protected GamepadController gamepad;
+    protected GamepadController gamepadController;
 
     protected Cannon cannon;
     protected CannonBuffersHandler cannonBuffers;
@@ -82,7 +82,7 @@ public class OpModeBase extends LinearOpMode {
 
         batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
 
-        gamepad = new GamepadController(runtime, gamepad1);
+        gamepadController = new GamepadController(runtime, gamepad1);
 
         DcMotor moveFL = hardwareMap.get(DcMotor.class, HardwareConfig.FRONT_LEFT_MOTOR_ID);
         DcMotor moveFR = hardwareMap.get(DcMotor.class, HardwareConfig.FRONT_RIGHT_MOTOR_ID);
@@ -133,7 +133,7 @@ public class OpModeBase extends LinearOpMode {
             hub.clearBulkCache();
         }
 
-        gamepad.update();
+        gamepadController.update();
 
         robotPosition.updatePose();
 

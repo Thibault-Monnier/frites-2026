@@ -57,6 +57,14 @@ public class GamepadController {
         this.gamepad.rumble(i);
     }
 
+    public void ledRed(int durationMs) {
+        this.gamepad.setLedColor(255, 0, 0, durationMs);
+    }
+
+    public void ledGreen(int durationMs) {
+        this.gamepad.setLedColor(0, 255, 0, durationMs);
+    }
+
     public enum Button {
         A(gamepad -> gamepad.a),
         B(gamepad -> gamepad.b),

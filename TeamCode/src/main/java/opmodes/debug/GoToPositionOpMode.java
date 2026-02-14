@@ -64,7 +64,7 @@ public class GoToPositionOpMode extends OpModeBase {
     }
 
     private void executeActions() {
-        if (targetPosition == null || gamepad.isPressed(GamepadController.Button.A)) {
+        if (targetPosition == null || gamepadController.isPressed(GamepadController.Button.A)) {
             targetPosition = pickRandomTarget();
         }
 

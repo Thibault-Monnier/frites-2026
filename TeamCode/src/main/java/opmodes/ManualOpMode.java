@@ -52,50 +52,53 @@ public class ManualOpMode extends OpModeBase {
     }
 
     private void executeActions() {
-        if (gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) {
+        if (gamepadController.isPressing(GamepadController.Button.BUMPER_LEFT)) {
             // Lock towards the goal
             move.lockedJoystickMove(
-                    gamepad1,
-                    gamepad.isPressing(GamepadController.Button.LEFT_STICK),
+                    gamepadController.gamepad,
+                    gamepadController.isPressing(GamepadController.Button.LEFT_STICK),
                     PlayingField.goalPos(team));
         } else {
             move.joystickTranslate(
-                    gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK));
-            move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
+                    gamepadController.gamepad,
+                    gamepadController.isPressing(GamepadController.Button.LEFT_STICK));
+            move.joystickRotate(
+                    gamepadController.gamepad,
+                    gamepadController.isPressing(GamepadController.Button.RIGHT_STICK));
         }
 
-        if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) move.initMoveToShoot();
+        if (gamepadController.isPressed(GamepadController.Button.DPAD_UP)) move.initMoveToShoot();
         if (move.isMoving()) move.stopMacro();
 
         move.executeActiveMacro();
 
-        if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
+        if (gamepadController.isPressed(GamepadController.Button.X)) cannon.toggle();
 
-        // LED indication for cannon readiness
-        double r = cannon.isReadyToShoot() ? 0.0 : 1.0;
-        gamepad.gamepad.setLedColor(r, 1.0 - r, 0.0, Gamepad.LED_DURATION_CONTINUOUS);
+        if (cannon.isReadyToShoot()) gamepadController.ledGreen(Gamepad.LED_DURATION_CONTINUOUS);
+        else gamepadController.ledRed(Gamepad.LED_DURATION_CONTINUOUS);
 
-        intake.set(gamepad.isPressing(GamepadController.Button.TRIGGER_LEFT));
+        intake.set(gamepadController.isPressing(GamepadController.Button.TRIGGER_LEFT));
 
         // Make sure the cannon reached its target velocity
-        if ((gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT) && cannon.isReadyToShoot())
-                || gamepad.isPressing(GamepadController.Button.BUMPER_RIGHT)) {
+        if ((gamepadController.isPressing(GamepadController.Button.TRIGGER_RIGHT)
+                        && cannon.isReadyToShoot())
+                || gamepadController.isPressing(GamepadController.Button.BUMPER_RIGHT)) {
             cannonBuffers.shootContinue(true);
             intake.on();
         } else {
             cannonBuffers.shootDontContinue();
 
-            if (gamepad.isPressing(GamepadController.Button.TRIGGER_RIGHT))
-                gamepad.rumble(50); // Cannon isn't ready
+            if (gamepadController.isPressing(GamepadController.Button.TRIGGER_RIGHT))
+                gamepadController.rumble(50); // Cannon isn't ready
             else cannonBuffers.shootReset();
         }
 
-        if (gamepad.isPressing(GamepadController.Button.A)) {
+        if (gamepadController.isPressing(GamepadController.Button.A)) {
             intake.clear();
             cannonBuffers.clear();
         }
 
-        if (gamepad.isDoublePressed(GamepadController.Button.B)) move.toggleSuperSlow();
-        if (gamepad.isLongPressed(GamepadController.Button.B)) robotPosition.resetPose();
+        if (gamepadController.isDoublePressed(GamepadController.Button.B)) move.toggleSuperSlow();
+        if (gamepadController.isLongPressed(GamepadController.Button.B)) robotPosition.resetPose();
     }
 }
