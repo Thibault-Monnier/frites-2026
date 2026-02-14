@@ -3,8 +3,8 @@ package opmodes;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import logic.field.PlayingField;
 import logic.Team;
+import logic.field.PlayingField;
 
 import modules.sensor.GamepadController;
 
@@ -61,15 +61,10 @@ public class ManualOpMode extends OpModeBase {
             move.lockedJoystickMove(
                     gamepad1,
                     gamepad.isPressing(GamepadController.Button.LEFT_STICK),
-                    robotPosition,
-                    team,
                     PlayingField.goalPos(team));
         } else {
             move.joystickTranslate(
-                    gamepad1,
-                    gamepad.isPressing(GamepadController.Button.LEFT_STICK),
-                    robotPosition,
-                    team);
+                    gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK));
             move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
         }
 
@@ -77,7 +72,7 @@ public class ManualOpMode extends OpModeBase {
             move.initMoveToShoot();
         if (move.isMoving()) move.stopMacro();
 
-        move.executeActiveMacro(robotPosition, team);
+        move.executeActiveMacro();
 
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
 

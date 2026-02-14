@@ -12,11 +12,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import config.HardwareConfig;
 
-import logic.field.ArtifactSequence;
-import logic.action.DriveActions;
 import logic.Movement;
-import logic.field.PlayingField;
 import logic.Team;
+import logic.action.DriveActions;
+import logic.field.ArtifactSequence;
+import logic.field.PlayingField;
 import logic.position.RobotPosition;
 
 import math.Distance;
@@ -106,7 +106,7 @@ public class OpModeBase extends LinearOpMode {
                 calculatePose
                         ? Movement.MovementMode.FIELD_CENTRIC
                         : Movement.MovementMode.ROBOT_CENTRIC;
-        move = new Movement(globalTelemetry, moveFL, moveFR, moveBL, moveBR, movementMode);
+        move = new Movement(globalTelemetry, robotPosition, team, moveFL, moveFR, moveBL, moveBR, movementMode);
 
         driveActions = new DriveActions(robotPosition, team);
 

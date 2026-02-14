@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import config.HardwareConfig;
 
-import logic.field.PlayingField;
 import logic.Team;
+import logic.field.PlayingField;
 
 import math.Distance;
 
@@ -69,15 +69,10 @@ public class CannonCalibrationOpMode extends OpModeBase {
             move.lockedJoystickMove(
                     gamepad1,
                     gamepad.isPressing(GamepadController.Button.LEFT_STICK),
-                    robotPosition,
-                    team,
                     PlayingField.goalPos(team));
         } else {
             move.joystickTranslate(
-                    gamepad1,
-                    gamepad.isPressing(GamepadController.Button.LEFT_STICK),
-                    robotPosition,
-                    team);
+                    gamepad1, gamepad.isPressing(GamepadController.Button.LEFT_STICK));
             move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
         }
 

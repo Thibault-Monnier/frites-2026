@@ -2,8 +2,8 @@ package opmodes.debug;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import logic.field.PlayingField;
 import logic.Team;
+import logic.field.PlayingField;
 
 import math.Distance;
 import math.Position2D;
@@ -68,7 +68,7 @@ public class GoToPositionOpMode extends OpModeBase {
             targetPosition = pickRandomTarget();
         }
 
-        boolean isTranslating = move.translateToPosition(robotPosition, targetPosition);
+        boolean isTranslating = move.translateToPosition(targetPosition);
         globalTelemetry.addData("Translating", isTranslating);
 
         Position2D currentPosition = robotPosition.getPosition();

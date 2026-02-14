@@ -10,8 +10,6 @@ import static config.MovementConfig.TRANSLATION_TOLERANCE;
 import static config.MovementConfig.TURN_PIDF_COEFFICIENTS;
 import static config.MovementConfig.TURN_TOLERANCE;
 
-import androidx.annotation.Nullable;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -37,6 +35,9 @@ import java.util.HashMap;
 public class Movement implements RobotActuatorModule {
     private final Telemetry globalTelemetry;
 
+    private final RobotPosition robotPosition;
+    private final Team team;
+
     private final MecanumDrive mecanumDrive;
 
     private final PIDFController turnController;
@@ -49,12 +50,17 @@ public class Movement implements RobotActuatorModule {
 
     public Movement(
             Telemetry globalTelemetry,
+            RobotPosition robotPosition,
+            Team team,
             DcMotor FL,
             DcMotor FR,
             DcMotor BL,
             DcMotor BR,
             MovementMode movementMode) {
         this.globalTelemetry = globalTelemetry;
+
+        this.robotPosition = robotPosition;
+        this.team = team;
 
         this.mecanumDrive = new MecanumDrive(globalTelemetry, FL, FR, BL, BR);
         this.turnController = new PIDFController(globalTelemetry, TURN_PIDF_COEFFICIENTS);
@@ -96,12 +102,11 @@ public class Movement implements RobotActuatorModule {
 
     /// Executes the active macro, if any. Returns true if the macro has finished and false
     /// otherwise.
-    public boolean executeActiveMacro(RobotPosition robotPosition, Team team) {
+    public boolean executeActiveMacro() {
         switch (activeMacro) {
             case MOVE_TO_SHOOT:
-                boolean doneTranslating =
-                        translateToPosition(robotPosition, PlayingField.shootingPosition(team));
-                boolean doneTurning = turnTowards(robotPosition, PlayingField.goalPos(team));
+                boolean doneTranslating = translateToPosition(PlayingField.shootingPosition(team));
+                boolean doneTurning = turnTowards(PlayingField.goalPos(team));
 
                 boolean done = doneTurning && doneTranslating;
                 if (done) stopMacro();
@@ -129,48 +134,38 @@ public class Movement implements RobotActuatorModule {
     }
 
     /// Translates the robot using input from the *left* joystick of the gamepad.
-    public void joystickTranslate(
-            Gamepad gamepad, boolean slow, @Nullable RobotPosition robotPosition, Team team) {
+    public void joystickTranslate(Gamepad gamepad, boolean slow) {
         Translation velocity = getTranslationVelocity(gamepad, slow);
 
         if (movementMode == MovementMode.FIELD_CENTRIC) {
-            if (robotPosition == null) {
-                throw new IllegalArgumentException(
-                        "Robot position cannot be null in field-centric mode");
-            }
-            translateFieldCentric(velocity, robotPosition, team);
+            translateFieldCentric(velocity);
         } else {
             translate(velocity);
         }
     }
 
     /// Moves while turning towards a target position.
-    public void lockedJoystickMove(
-            Gamepad gamepad,
-            boolean slow,
-            RobotPosition robotPosition,
-            Team team,
-            Position2D targetPos) {
+    public void lockedJoystickMove(Gamepad gamepad, boolean slow, Position2D targetPos) {
         Translation velocity = getTranslationVelocity(gamepad, slow);
 
-        turnTowards(robotPosition, targetPos);
+        turnTowards(targetPos);
 
         if (movementMode == MovementMode.FIELD_CENTRIC) {
-            translateFieldCentric(velocity, robotPosition, team);
+            translateFieldCentric(velocity);
         } else {
             translate(velocity);
         }
     }
 
     /// Turns the robot towards a target position. Returns true if finished, false otherwise.
-    public boolean turnTowards(RobotPosition robotPosition, Position2D targetPos) {
+    public boolean turnTowards(Position2D targetPos) {
         Position2D robotPos = robotPosition.getPosition();
         Angle targetDirection = targetPos.subtract(robotPos).direction();
-        return turnTowardsHeading(robotPosition, targetDirection);
+        return turnTowardsHeading(targetDirection);
     }
 
     /// Turns the robot towards a target heading. Returns true finished, false otherwise.
-    public boolean turnTowardsHeading(RobotPosition robotPosition, Angle targetHeading) {
+    public boolean turnTowardsHeading(Angle targetHeading) {
         Pose2D robotPose = robotPosition.getPose();
 
         Angle angleError = targetHeading.subtract(robotPose.getHeading());
@@ -188,7 +183,7 @@ public class Movement implements RobotActuatorModule {
     }
 
     /// Translates the robot towards a target position. Returns true if finished, false otherwise.
-    public boolean translateToPosition(RobotPosition robotPosition, Position2D targetPos) {
+    public boolean translateToPosition(Position2D targetPos) {
         Position2D robotPos = robotPosition.getPosition();
         Position2D delta = targetPos.subtract(robotPos);
 
@@ -233,8 +228,7 @@ public class Movement implements RobotActuatorModule {
         return slow ? SLOW_SPEED_MULTIPLIER : SPEED_MULTIPLIER;
     }
 
-    private void translateFieldCentric(
-            Translation translation, RobotPosition robotPosition, Team team) {
+    private void translateFieldCentric(Translation translation) {
         Angle robotAngle = robotPosition.getPose().getHeading();
 
         Angle delta = Angle.fromDegrees(90);
