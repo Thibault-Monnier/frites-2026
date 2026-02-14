@@ -10,12 +10,8 @@ import modules.sensor.GamepadController;
 
 @Config
 public class ManualOpMode extends OpModeBase {
-    public ManualOpMode(Team team, boolean isAfterAuto, boolean calculatePose) {
-        super(team, !isAfterAuto, calculatePose);
-    }
-
     public ManualOpMode(Team team, boolean isAfterAuto) {
-        this(team, isAfterAuto, true);
+        super(team, !isAfterAuto);
     }
 
     @Override
@@ -56,7 +52,7 @@ public class ManualOpMode extends OpModeBase {
     }
 
     private void executeActions() {
-        if (calculatePose && gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) {
+        if (gamepad.isPressing(GamepadController.Button.BUMPER_LEFT)) {
             // Lock towards the goal
             move.lockedJoystickMove(
                     gamepad1,
@@ -68,8 +64,7 @@ public class ManualOpMode extends OpModeBase {
             move.joystickRotate(gamepad1, gamepad.isPressing(GamepadController.Button.RIGHT_STICK));
         }
 
-        if (calculatePose && gamepad.isPressed(GamepadController.Button.DPAD_UP))
-            move.initMoveToShoot();
+        if (gamepad.isPressed(GamepadController.Button.DPAD_UP)) move.initMoveToShoot();
         if (move.isMoving()) move.stopMacro();
 
         move.executeActiveMacro();
@@ -101,7 +96,6 @@ public class ManualOpMode extends OpModeBase {
         }
 
         if (gamepad.isDoublePressed(GamepadController.Button.B)) move.toggleSuperSlow();
-        if (gamepad.isLongPressed(GamepadController.Button.B) && calculatePose)
-            robotPosition.resetPose();
+        if (gamepad.isLongPressed(GamepadController.Button.B)) robotPosition.resetPose();
     }
 }

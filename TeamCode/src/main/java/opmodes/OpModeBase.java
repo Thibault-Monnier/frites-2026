@@ -29,7 +29,6 @@ import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.List;
 
@@ -40,7 +39,6 @@ public class OpModeBase extends LinearOpMode {
     protected List<LynxModule> hubs;
 
     protected final Team team;
-    protected final boolean calculatePose;
     protected final boolean shouldResetPose;
 
     protected RobotPosition robotPosition;
@@ -58,10 +56,9 @@ public class OpModeBase extends LinearOpMode {
 
     protected ArtifactSequence artifactSequence;
 
-    public OpModeBase(Team team, boolean shouldResetPose, boolean calculatePose) {
+    public OpModeBase(Team team, boolean shouldResetPose) {
         this.team = team;
         this.shouldResetPose = shouldResetPose;
-        this.calculatePose = calculatePose;
     }
 
     @Override
@@ -80,9 +77,8 @@ public class OpModeBase extends LinearOpMode {
         globalTelemetry =
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        if (calculatePose)
-            robotPosition =
-                    RobotPosition.getInstance(globalTelemetry, hardwareMap, team, shouldResetPose);
+        robotPosition =
+                RobotPosition.getInstance(globalTelemetry, hardwareMap, team, shouldResetPose);
 
         batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
 
@@ -102,11 +98,16 @@ public class OpModeBase extends LinearOpMode {
                 hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_RIGHT);
         DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConfig.INTAKE_MOTOR_ID);
 
-        Movement.MovementMode movementMode =
-                calculatePose
-                        ? Movement.MovementMode.FIELD_CENTRIC
-                        : Movement.MovementMode.ROBOT_CENTRIC;
-        move = new Movement(globalTelemetry, robotPosition, team, moveFL, moveFR, moveBL, moveBR, movementMode);
+        move =
+                new Movement(
+                        globalTelemetry,
+                        robotPosition,
+                        team,
+                        moveFL,
+                        moveFR,
+                        moveBL,
+                        moveBR,
+                        Movement.MovementMode.FIELD_CENTRIC);
 
         driveActions = new DriveActions(robotPosition, team);
 
@@ -134,22 +135,19 @@ public class OpModeBase extends LinearOpMode {
 
         gamepad.update();
 
-        Distance targetDistance = new Distance(DistanceUnit.CM, 200); // Default distance
-        if (calculatePose) {
-            robotPosition.updatePose();
-            targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
-        }
+        robotPosition.updatePose();
+
+        Distance targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
         cannon.update(targetDistance);
+
         System.out.println("Robot Pose: " + robotPosition.getPose().toString());
         globalTelemetry.addData("Target Dist", targetDistance.toString());
 
-        if (calculatePose) {
-            if (artifactSequence == null)
-                artifactSequence =
-                        ArtifactSequence.findCurrentSequence(robotPosition.getLimelightHandler());
-            if (artifactSequence != null)
-                globalTelemetry.addData("Pattern", artifactSequence.toString());
-        }
+        if (artifactSequence == null)
+            artifactSequence =
+                    ArtifactSequence.findCurrentSequence(robotPosition.getLimelightHandler());
+        if (artifactSequence != null)
+            globalTelemetry.addData("Pattern", artifactSequence.toString());
     }
 
     protected void log() {

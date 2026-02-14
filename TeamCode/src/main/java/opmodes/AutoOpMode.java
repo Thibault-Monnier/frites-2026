@@ -9,7 +9,7 @@ public class AutoOpMode extends OpModeBase {
     // private final Deque<Action> actionSequence = new ArrayDeque<>();
 
     public AutoOpMode(Team team) {
-        super(team, true, true);
+        super(team, true);
     }
 
     @Override

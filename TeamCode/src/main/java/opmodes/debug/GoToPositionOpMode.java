@@ -28,7 +28,7 @@ public class GoToPositionOpMode extends OpModeBase {
     private Position2D targetPosition;
 
     public GoToPositionOpMode() {
-        super(Team.BLUE, true, true);
+        super(Team.BLUE, true);
     }
 
     @Override

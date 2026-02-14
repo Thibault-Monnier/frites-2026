@@ -16,7 +16,7 @@ public class CannonCalibrationOpMode extends OpModeBase {
     private CannonCalibrator cannonCalibrator;
 
     public CannonCalibrationOpMode(Team team) {
-        super(team, true, true);
+        super(team, true);
     }
 
     @Override
