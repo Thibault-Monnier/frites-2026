@@ -44,6 +44,15 @@ public class Vector2D {
     }
 
     /**
+     * Creates a new Vector2D object from a Position2D object.
+     *
+     * @param position the Position2D object to create the Vector2D from
+     */
+    public Vector2D(Position2D position) {
+        this(position.getX(), position.getY());
+    }
+
+    /**
      * This gets X in the desired distance unit
      *
      * @param unit the desired distance unit

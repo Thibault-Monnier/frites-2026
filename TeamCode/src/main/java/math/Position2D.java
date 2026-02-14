@@ -53,6 +53,16 @@ public class Position2D {
     }
 
     /**
+     * Converts a Position object to a Position2D object by extracting its x and y values
+     *
+     * @param position the Position object to convert
+     * @return the resulting Position2D object
+     */
+    public static Position2D fromPosition(Position position) {
+        return new Position2D(position.unit, position.x, position.y);
+    }
+
+    /**
      * Gets x in the desired distance unit
      *
      * @param unit the desired distance unit
@@ -91,6 +101,65 @@ public class Position2D {
     }
 
     /**
+     * Adds another Position2D to this Position2D by adding their x and y values and returns a new
+     * Position2D with the resulting values.
+     *
+     * @param other the Position2D to add to this Position2D
+     * @return a new Position2D that is the result of adding the other Position2D to this one
+     */
+    public Position2D add(Position2D other) {
+        Distance newX = getX().add(other.getX());
+        Distance newY = getY().add(other.getY());
+        return new Position2D(newX, newY);
+    }
+
+    /**
+     * Subtracts another Position2D from this Position2D by subtracting their x and y values and
+     * returns a new Position2D with the resulting values.
+     *
+     * @param other the Position2D to subtract from this Position2D
+     * @return a new Position2D that is the result of subtracting the other Position2D from this one
+     */
+    public Position2D subtract(Position2D other) {
+        Distance newX = getX().subtract(other.getX());
+        Distance newY = getY().subtract(other.getY());
+        return new Position2D(newX, newY);
+    }
+
+    /**
+     * Converts this Position2D to an Angle object by calculating the angle from the origin (0, 0)
+     * to the point represented by this Position2D using the atan2 function.
+     *
+     * @return an Angle object representing the angle from the origin to this Position2D
+     */
+    public Angle direction() {
+        double rads = Math.atan2(getY().toMillimeters(), getX().toMillimeters());
+        return Angle.fromRadians(rads);
+    }
+
+    /**
+     * Calculates the distance from the origin (0, 0) to the point represented by this Position2D
+     * using the Pythagorean theorem. The result is always non-negative.
+     *
+     * @return a Distance object representing the distance from the origin to this Position2D
+     */
+    public Distance hypot() {
+        double dist = Math.hypot(getX().toMillimeters(), getY().toMillimeters());
+        return Distance.fromMillimeters(dist);
+    }
+
+    /**
+     * Calculates the distance from this Position2D to another Position2D by using the Pythagorean
+     * theorem. The result is always non-negative.
+     *
+     * @param other the Position2D to calculate the distance to
+     * @return a Distance object representing the distance from this Position2D to the other
+     */
+    public Distance distanceTo(Position2D other) {
+        return subtract(other).hypot();
+    }
+
+    /**
      * Returns a string representation of the object in a human readable format for debugging
      * purposes.
      *
@@ -105,15 +174,5 @@ public class Position2D {
                 DistanceUnit.METER,
                 getY(DistanceUnit.METER),
                 DistanceUnit.METER);
-    }
-
-    /**
-     * Converts a Position object to a Position2D object by extracting its x and y values
-     *
-     * @param position the Position object to convert
-     * @return the resulting Position2D object
-     */
-    public static Position2D fromPosition(Position position) {
-        return new Position2D(position.unit, position.x, position.y);
     }
 }

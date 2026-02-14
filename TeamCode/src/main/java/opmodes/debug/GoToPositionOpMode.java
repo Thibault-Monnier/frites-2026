@@ -75,14 +75,15 @@ public class GoToPositionOpMode extends OpModeBase {
         globalTelemetry.addData("Target", targetPosition);
         globalTelemetry.addData("Position", currentPosition);
         globalTelemetry.addData("Team", team);
-        globalTelemetry.addData("Distance Error", Distance.hypot(targetPosition, currentPosition));
+        globalTelemetry.addData("Distance Error", targetPosition.distanceTo(currentPosition));
     }
 
     private Position2D pickRandomTarget() {
-        double rangeRadius = PlayingField.FIELD.halfWidth() - MIN_WALL_DISTANCE.toInches();
+        double rangeRadius =
+                PlayingField.FIELD.halfWidth().subtract(MIN_WALL_DISTANCE).toMillimeters();
         double x = randomInRange(-rangeRadius, rangeRadius);
         double y = randomInRange(-rangeRadius, rangeRadius);
-        return new Position2D(Distance.fromInches(x), Distance.fromInches(y));
+        return new Position2D(Distance.fromMillimeters(x), Distance.fromMillimeters(y));
     }
 
     private double randomInRange(double min, double max) {

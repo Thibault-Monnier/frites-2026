@@ -20,7 +20,6 @@ import logic.pidf.PIDFController;
 import logic.position.RobotPosition;
 
 import math.Angle;
-import math.Distance;
 import math.Pose2D;
 import math.Position2D;
 import math.Vector2D;
@@ -131,11 +130,7 @@ public class Movement implements RobotActuatorModule {
     /// Turns the robot towards a target position. Returns true if still turning, false if finished.
     public boolean turnTowards(RobotPosition robotPosition, Position2D targetPos) {
         Position2D robotPos = robotPosition.getPosition();
-
-        Distance dx = targetPos.getX().subtract(robotPos.getX());
-        Distance dy = targetPos.getY().subtract(robotPos.getY());
-        Angle targetDirection = Distance.atan2(dy, dx);
-
+        Angle targetDirection = targetPos.subtract(robotPos).direction();
         return turnTowardsHeading(robotPosition, targetDirection);
     }
 
@@ -161,16 +156,15 @@ public class Movement implements RobotActuatorModule {
     /// finished.
     public boolean translateToPosition(RobotPosition robotPosition, Position2D targetPos) {
         Position2D robotPos = robotPosition.getPosition();
+        Position2D delta = targetPos.subtract(robotPos);
 
         DistanceUnit errorUnit = DistanceUnit.MM;
 
-        Distance dx = targetPos.getX().subtract(robotPos.getX());
-        Distance dy = targetPos.getY().subtract(robotPos.getY());
-        double distanceError = Distance.hypot(dx, dy).getValue(errorUnit);
-
+        double distanceError = delta.hypot().getValue(errorUnit);
         translationController.setError(distanceError);
         double speed = translationController.get();
-        Vector2D velocity = new Vector2D(dx, dy).normalizeMax().scale(speed);
+
+        Vector2D velocity = new Vector2D(delta).normalizeMax().scale(speed);
 
         Angle robotAngle = robotPosition.getPose().getHeading();
         Translation translation = new Translation(velocity.getRawX(), velocity.getRawY());

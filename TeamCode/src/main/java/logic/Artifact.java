@@ -2,35 +2,22 @@ package logic;
 
 import androidx.annotation.NonNull;
 
-import math.Position2D;
-
-public class Artifact extends FieldElement {
+public class Artifact {
     public Color color;
 
-    public Artifact(Position2D position, double width, double depth, double height) {
-        super(position, width, depth, height);
-    }
-
     public Artifact(Color color) {
-        super(null, 0, 0, 0);
-        this.color = color;
-    }
-
-    public void setColor(Color color) {
         this.color = color;
     }
 
     public enum Color {
         PURPLE {
             @NonNull
-            @Override
             public String toString() {
                 return "P";
             }
         },
         GREEN {
             @NonNull
-            @Override
             public String toString() {
                 return "G";
             }

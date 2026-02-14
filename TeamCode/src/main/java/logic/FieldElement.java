@@ -1,25 +1,26 @@
 package logic;
 
+import math.Distance;
 import math.Position2D;
 
 public class FieldElement {
     public final Position2D position;
-    public final double width;
-    public final double depth;
-    public final double height;
+    public final Distance width;
+    public final Distance depth;
+    public final Distance height;
 
-    public FieldElement(Position2D position, double width, double depth, double height) {
+    public FieldElement(Position2D position, Distance width, Distance depth, Distance height) {
         this.position = position;
         this.width = width;
         this.depth = depth;
         this.height = height;
     }
 
-    public double halfWidth() {
-        return width / 2;
+    public Distance halfWidth() {
+        return width.divide(2);
     }
 
-    public double halfDepth() {
-        return depth / 2;
+    public Distance halfDepth() {
+        return depth.divide(2);
     }
 }

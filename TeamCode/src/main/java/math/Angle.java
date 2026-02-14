@@ -56,6 +56,11 @@ public class Angle {
         return getValue(AngleUnit.RADIANS);
     }
 
+    /** Negates this Angle and returns the result as a new Angle object. */
+    public Angle negate() {
+        return fromRadians(-toRadians());
+    }
+
     /** Adds another Angle to this Angle and returns the result as a new Angle object. */
     public Angle add(Angle other) {
         double sumInRadians = toRadians() + other.toRadians();
