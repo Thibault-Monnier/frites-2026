@@ -2,7 +2,7 @@ package opmodes.debug;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import logic.PlayingField;
+import logic.field.PlayingField;
 import logic.Team;
 
 import math.Distance;

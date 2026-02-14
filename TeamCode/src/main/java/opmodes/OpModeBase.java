@@ -12,10 +12,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import config.HardwareConfig;
 
-import logic.ArtifactSequence;
-import logic.DriveActions;
+import logic.field.ArtifactSequence;
+import logic.action.DriveActions;
 import logic.Movement;
-import logic.PlayingField;
+import logic.field.PlayingField;
 import logic.Team;
 import logic.position.RobotPosition;
 

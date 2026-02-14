@@ -1,4 +1,4 @@
-package logic;
+package logic.field;
 
 import androidx.annotation.NonNull;
 

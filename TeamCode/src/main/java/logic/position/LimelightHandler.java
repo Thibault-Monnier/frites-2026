@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import config.HardwareConfig;
 
-import logic.PlayingField;
+import logic.field.PlayingField;
 
 import math.Pose2D;
 import math.Position2D;

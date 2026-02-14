@@ -3,7 +3,7 @@ package opmodes;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import logic.PlayingField;
+import logic.field.PlayingField;
 import logic.Team;
 
 import modules.sensor.GamepadController;

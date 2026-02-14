@@ -1,7 +1,8 @@
-package logic;
+package logic.field;
 
 import config.FieldConfig;
 
+import logic.Team;
 import math.Angle;
 import math.Distance;
 import math.Pose2D;

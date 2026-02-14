@@ -1,4 +1,4 @@
-package logic;
+package logic.field;
 
 import math.Distance;
 import math.Position2D;

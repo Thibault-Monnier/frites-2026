@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import logic.PlayingField;
+import logic.field.PlayingField;
 import logic.Team;
 
 import math.Pose2D;
