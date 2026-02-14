@@ -3,8 +3,6 @@ package opmodes;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import config.FieldConfig;
-
 import logic.PlayingField;
 import logic.Team;
 
@@ -12,8 +10,6 @@ import modules.sensor.GamepadController;
 
 @Config
 public class ManualOpMode extends OpModeBase {
-    boolean movingToShoot = false;
-
     public ManualOpMode(Team team, boolean isAfterAuto, boolean calculatePose) {
         super(team, !isAfterAuto, calculatePose);
     }
@@ -78,13 +74,10 @@ public class ManualOpMode extends OpModeBase {
         }
 
         if (calculatePose && gamepad.isPressed(GamepadController.Button.DPAD_UP))
-            movingToShoot = true;
-        if (move.isMoving()) movingToShoot = false;
+            move.initMoveToShoot();
+        if (move.isMoving()) move.stopMacro();
 
-        if (movingToShoot) {
-            move.translateToPosition(robotPosition, FieldConfig.SHOOT_POS_RED);
-            move.turnTowards(robotPosition, PlayingField.goalPos(team));
-        }
+        move.executeActiveMacro(robotPosition, team);
 
         if (gamepad.isPressed(GamepadController.Button.X)) cannon.toggle();
 

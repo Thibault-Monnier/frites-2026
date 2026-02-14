@@ -44,6 +44,8 @@ public class Movement implements RobotActuatorModule {
     private final MovementMode movementMode;
     private boolean isSuperSlow = false;
 
+    private Macro activeMacro = Macro.NONE;
+
     public Movement(
             Telemetry globalTelemetry,
             DcMotor FL,
@@ -83,6 +85,38 @@ public class Movement implements RobotActuatorModule {
         globalTelemetry.addData("Turn coefficients", turnController.getCoefficients());
         globalTelemetry.addData(
                 "Translation coefficients", translationController.getCoefficients());
+    }
+
+    /// Initializes a macro that moves the robot to the shooting position and rotates it to face the
+    /// goal.
+    public void initMoveToShoot() {
+        activeMacro = Macro.MOVE_TO_SHOOT;
+    }
+
+    /// Executes the active macro, if any. Returns true if the macro has finished and false
+    /// otherwise.
+    public boolean executeActiveMacro(RobotPosition robotPosition, Team team) {
+        switch (activeMacro) {
+            case MOVE_TO_SHOOT:
+                boolean doneTranslating =
+                        translateToPosition(robotPosition, PlayingField.shootingPosition(team));
+                boolean doneTurning = turnTowards(robotPosition, PlayingField.goalPos(team));
+
+                boolean done = doneTurning && doneTranslating;
+                if (done) stopMacro();
+                return done;
+
+            case NONE:
+                return true;
+
+            default:
+                throw new IllegalStateException("Unexpected macro: " + activeMacro);
+        }
+    }
+
+    /// Stops any active macro, returning control to the driver.
+    public void stopMacro() {
+        activeMacro = Macro.NONE;
     }
 
     /// Rotates the robot using input from the *right* joystick of the gamepad.
@@ -127,14 +161,14 @@ public class Movement implements RobotActuatorModule {
         }
     }
 
-    /// Turns the robot towards a target position. Returns true if still turning, false if finished.
+    /// Turns the robot towards a target position. Returns true if finished, false otherwise.
     public boolean turnTowards(RobotPosition robotPosition, Position2D targetPos) {
         Position2D robotPos = robotPosition.getPosition();
         Angle targetDirection = targetPos.subtract(robotPos).direction();
         return turnTowardsHeading(robotPosition, targetDirection);
     }
 
-    /// Turns the robot towards a target heading. Returns true if still turning, false if finished.
+    /// Turns the robot towards a target heading. Returns true finished, false otherwise.
     public boolean turnTowardsHeading(RobotPosition robotPosition, Angle targetHeading) {
         Pose2D robotPose = robotPosition.getPose();
 
@@ -149,11 +183,10 @@ public class Movement implements RobotActuatorModule {
                         TURN_TOLERANCE.toRadians(), NOT_TURNING_THRESHOLD.toRadians());
         globalTelemetry.addData("Turn Speed", turnSpeed);
         globalTelemetry.addData("Error change", turnController.getErrorChange());
-        return !isFinished;
+        return isFinished;
     }
 
-    /// Translates the robot towards a target position. Returns true if still translating, false if
-    /// finished.
+    /// Translates the robot towards a target position. Returns true if finished, false otherwise.
     public boolean translateToPosition(RobotPosition robotPosition, Position2D targetPos) {
         Position2D robotPos = robotPosition.getPosition();
         Position2D delta = targetPos.subtract(robotPos);
@@ -177,7 +210,7 @@ public class Movement implements RobotActuatorModule {
         globalTelemetry.addData("Translation speed", speed);
         globalTelemetry.addData("Translation velocity", velocity.toString());
         globalTelemetry.addData("Error change", translationController.getErrorChange());
-        return !isFinished;
+        return isFinished;
     }
 
     /// Computes translation speed forward and sideways. Returns the pair (forward, strafe).
@@ -249,6 +282,11 @@ public class Movement implements RobotActuatorModule {
     public enum MovementMode {
         ROBOT_CENTRIC,
         FIELD_CENTRIC
+    }
+
+    public enum Macro {
+        MOVE_TO_SHOOT,
+        NONE
     }
 
     private static class Translation {

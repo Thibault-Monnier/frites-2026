@@ -28,18 +28,27 @@ public class PlayingField {
                     FieldConfig.GOAL_DEPTH,
                     FieldConfig.GOAL_HEIGHT);
 
+    /// Switches the color of a Pose2D by negating the y-coordinate and heading, effectively
+    /// mirroring it across the x-axis.
     private static Pose2D switchColor(Pose2D pose) {
         return new Pose2D(pose.getX(), pose.getY().negate(), pose.getHeading().negate());
     }
 
+    /// Computes the pose of a point based on the team color. If the team is red, it
+    /// returns the original pose; if the team is blue, it returns the mirrored pose across the
+    /// x-axis.
     private static Pose2D switchColor(Pose2D redPose, Team color) {
         return color.isRed() ? redPose : switchColor(redPose);
     }
 
+    /// Switches the color of a Position2D by negating the y-coordinate, effectively mirroring it
+    /// across the x-axis.
     private static Position2D switchColor(Position2D pos) {
         return new Position2D(pos.getX(), pos.getY().negate());
     }
 
+    /// Computes the position of a point based on the team color. If the team is red, it returns the
+    /// original position; if the team is blue, it returns the mirrored position across the x-axis.
     private static Position2D switchColor(Position2D redPos, Team color) {
         return color.isRed() ? redPos : switchColor(redPos);
     }
@@ -53,7 +62,11 @@ public class PlayingField {
     }
 
     public static Pose2D autoModeLeavePose(Team color) {
-        return switchColor(FieldConfig.AUTO_MODE_LEAVE_POSE_RED, color);
+        return switchColor(FieldConfig.RED_AUTO_MODE_LEAVE_POSE, color);
+    }
+
+    public static Position2D shootingPosition(Team color) {
+        return switchColor(FieldConfig.RED_SHOOT_POS, color);
     }
 
     public static Pose2D artifactRowEntryPose(Team color, Artifact.Row row) {
