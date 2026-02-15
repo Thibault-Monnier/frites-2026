@@ -28,6 +28,22 @@ public class GamepadController {
         }
     }
 
+    /** Returns true if the button mapping is active based on its press type. */
+    public boolean isPressActive(ButtonMapping mapping) {
+        switch (mapping.pressType) {
+            case SINGLE_PRESS:
+                return isPressed(mapping.button);
+            case CONTINUOUS_PRESS:
+                return isPressing(mapping.button);
+            case LONG_PRESS:
+                return isLongPressed(mapping.button);
+            case DOUBLE_PRESS:
+                return isDoublePressed(mapping.button);
+            default:
+                return false;
+        }
+    }
+
     /** Returns true if the button is currently being pressed. */
     public boolean isPressing(Button button) {
         return button.down;
@@ -63,6 +79,20 @@ public class GamepadController {
 
     public void ledGreen(int durationMs) {
         this.gamepad.setLedColor(0, 255, 0, durationMs);
+    }
+
+    public enum PressType {
+        /// Returns true only on the first update after the button is pressed, then returns false
+        /// until the button is released and pressed again.
+        SINGLE_PRESS,
+        /// Returns true on every update as long as the button is being held down.
+        CONTINUOUS_PRESS,
+        /// Returns true on every update as long as the button has been held down for at least
+        /// LONG_PRESS_TIME
+        LONG_PRESS,
+        /// Returns true only on the first update after the button is pressed, if it has been
+        /// pressed twice within DOUBLE_PRESS_INTERVAL seconds.
+        DOUBLE_PRESS
     }
 
     public enum Button {
@@ -126,6 +156,16 @@ public class GamepadController {
                 previousTimePressed = lastTimePressed;
                 lastTimePressed = runtime.milliseconds();
             }
+        }
+    }
+
+    public static class ButtonMapping {
+        public final Button button;
+        public final PressType pressType;
+
+        public ButtonMapping(Button button, PressType pressType) {
+            this.button = button;
+            this.pressType = pressType;
         }
     }
 }

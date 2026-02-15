@@ -3,6 +3,8 @@ package opmodes;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import config.ManualOpModeMappings;
+
 import logic.Team;
 import logic.field.PlayingField;
 
@@ -56,49 +58,50 @@ public class ManualOpMode extends OpModeBase {
             // Lock towards the goal
             move.lockedJoystickMove(
                     gamepadController.gamepad,
-                    gamepadController.isPressing(GamepadController.Button.LEFT_STICK),
+                    isPressActive(ManualOpModeMappings.SLOW_MOVE),
                     PlayingField.goalPos(team));
         } else {
             move.joystickTranslate(
-                    gamepadController.gamepad,
-                    gamepadController.isPressing(GamepadController.Button.LEFT_STICK));
+                    gamepadController.gamepad, isPressActive(ManualOpModeMappings.SLOW_MOVE));
             move.joystickRotate(
-                    gamepadController.gamepad,
-                    gamepadController.isPressing(GamepadController.Button.RIGHT_STICK));
+                    gamepadController.gamepad, isPressActive(ManualOpModeMappings.SLOW_TURN));
         }
 
-        if (gamepadController.isPressed(GamepadController.Button.DPAD_UP)) move.initMoveToShoot();
+        if (isPressActive(ManualOpModeMappings.MOVE_TO_SHOOTING_SPOT)) move.initMoveToShoot();
         if (move.isMoving()) move.stopMacro();
 
         move.executeActiveMacro();
 
-        if (gamepadController.isPressed(GamepadController.Button.X)) cannon.toggle();
+        if (isPressActive(ManualOpModeMappings.CANNON_ON_OFF_TOGGLE)) cannon.toggle();
 
         if (cannon.isReadyToShoot()) gamepadController.ledGreen(Gamepad.LED_DURATION_CONTINUOUS);
         else gamepadController.ledRed(Gamepad.LED_DURATION_CONTINUOUS);
 
-        intake.set(gamepadController.isPressing(GamepadController.Button.TRIGGER_LEFT));
+        intake.set(isPressActive(ManualOpModeMappings.INTAKE_ON));
+        if (isPressActive(ManualOpModeMappings.INTAKE_AND_TRANSFER_REVERSE)) {
+            intake.clear();
+            cannonBuffers.clear();
+        }
 
         // Make sure the cannon reached its target velocity
-        if ((gamepadController.isPressing(GamepadController.Button.TRIGGER_RIGHT)
-                        && cannon.isReadyToShoot())
-                || gamepadController.isPressing(GamepadController.Button.BUMPER_RIGHT)) {
+        if ((isPressActive(ManualOpModeMappings.SHOOT) && cannon.isReadyToShoot())
+                || isPressActive(ManualOpModeMappings.FORCE_SHOOT)) {
             cannonBuffers.shootContinue(true);
             intake.on();
         } else {
             cannonBuffers.shootDontContinue();
 
-            if (gamepadController.isPressing(GamepadController.Button.TRIGGER_RIGHT))
+            if (isPressActive(ManualOpModeMappings.SHOOT))
                 gamepadController.rumble(50); // Cannon isn't ready
             else cannonBuffers.shootReset();
         }
 
-        if (gamepadController.isPressing(GamepadController.Button.A)) {
-            intake.clear();
-            cannonBuffers.clear();
-        }
+        if (isPressActive(ManualOpModeMappings.SUPER_SLOW_MODE_TOGGLE)) move.toggleSuperSlow();
+        if (isPressActive(ManualOpModeMappings.RESET_ROBOT_POSE)) robotPosition.resetPose();
+    }
 
-        if (gamepadController.isDoublePressed(GamepadController.Button.B)) move.toggleSuperSlow();
-        if (gamepadController.isLongPressed(GamepadController.Button.B)) robotPosition.resetPose();
+    /** Returns true if the button mapping is active based on its press type. */
+    private boolean isPressActive(GamepadController.ButtonMapping mapping) {
+        return gamepadController.isPressActive(mapping);
     }
 }
