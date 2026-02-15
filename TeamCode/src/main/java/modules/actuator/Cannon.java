@@ -90,6 +90,11 @@ public class Cannon implements RobotActuatorModule {
         isRunning = true;
     }
 
+    /// Turn cannon motor off.
+    public void off() {
+        isRunning = false;
+    }
+
     /// Update motor power using a value interpolated from target distance.
     public void update(Distance target2dDistance) {
         if (isRunning) {

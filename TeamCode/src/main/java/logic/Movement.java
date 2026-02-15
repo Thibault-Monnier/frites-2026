@@ -100,6 +100,12 @@ public class Movement implements RobotActuatorModule {
         activeMacro = Macro.MOVE_TO_SHOOT;
     }
 
+    /// Initializes a macro that moves the robot to the parking position and rotates it to the
+    /// correct heading for parking.
+    public void initMoveToPark() {
+        activeMacro = Macro.MOVE_TO_PARK;
+    }
+
     /// Executes the active macro, if any. Returns true if the macro has finished and false
     /// otherwise.
     public boolean executeActiveMacro() {

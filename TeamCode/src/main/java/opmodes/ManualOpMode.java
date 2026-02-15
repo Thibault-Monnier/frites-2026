@@ -68,6 +68,10 @@ public class ManualOpMode extends OpModeBase {
         }
 
         if (isPressActive(ManualOpModeMappings.MOVE_TO_SHOOTING_SPOT)) move.initMoveToShoot();
+        else if (isPressActive(ManualOpModeMappings.MOVE_TO_PARKING_SPOT)) {
+            move.initMoveToPark();
+            cannon.off();
+        }
         if (move.isMoving()) move.stopMacro();
 
         move.executeActiveMacro();
