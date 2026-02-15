@@ -81,7 +81,13 @@ public class ManualOpMode extends OpModeBase {
         if (cannon.isReadyToShoot()) gamepadController.ledGreen(Gamepad.LED_DURATION_CONTINUOUS);
         else gamepadController.ledRed(Gamepad.LED_DURATION_CONTINUOUS);
 
-        intake.set(isPressActive(ManualOpModeMappings.INTAKE_ON));
+        if (isPressActive(ManualOpModeMappings.INTAKE_ON)) {
+            intake.on();
+            cannonBuffers.clear();
+        } else {
+            intake.off();
+        }
+
         if (isPressActive(ManualOpModeMappings.INTAKE_AND_TRANSFER_REVERSE)) {
             intake.clear();
             cannonBuffers.clear();
