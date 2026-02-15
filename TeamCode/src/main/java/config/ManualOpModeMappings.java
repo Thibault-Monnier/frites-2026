@@ -34,6 +34,8 @@ public class ManualOpModeMappings {
     // Macros
     public static ButtonMapping MOVE_TO_SHOOTING_SPOT =
             new ButtonMapping(Button.DPAD_UP, PressType.SINGLE_PRESS);
+    public static ButtonMapping MOVE_TO_PARKING_SPOT =
+            new ButtonMapping(Button.DPAD_DOWN, PressType.SINGLE_PRESS);
 
     // Misc
     public static ButtonMapping SUPER_SLOW_MODE_TOGGLE =

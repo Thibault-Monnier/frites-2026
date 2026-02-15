@@ -93,6 +93,11 @@ public class Distance {
         return Distance.fromMillimeters(quotientInMM);
     }
 
+    /** Halves this Distance and returns the result as a new Distance object. */
+    public Distance halve() {
+        return divide(2);
+    }
+
     /** Divides this Distance by another Distance and returns the result as a unitless ratio. */
     public double ratio(Distance other) {
         return toMillimeters() / other.toMillimeters();

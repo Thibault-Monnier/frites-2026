@@ -105,19 +105,29 @@ public class Movement implements RobotActuatorModule {
     public boolean executeActiveMacro() {
         switch (activeMacro) {
             case MOVE_TO_SHOOT:
-                boolean doneTranslating = translateToPosition(PlayingField.shootingPosition(team));
-                boolean doneTurning = turnTowards(PlayingField.goalPos(team));
+                {
+                    boolean doneTranslating =
+                            translateToPosition(PlayingField.shootingPosition(team));
+                    boolean doneTurning = turnTowards(PlayingField.goalPos(team));
 
-                boolean done = doneTurning && doneTranslating;
-                if (done) stopMacro();
-                return done;
+                    boolean done = doneTurning && doneTranslating;
+                    if (done) stopMacro();
+                    return done;
+                }
+            case MOVE_TO_PARK:
+                {
+                    Pose2D parkingPose = PlayingField.parkingPose(team);
+                    boolean doneTranslating = translateToPosition(parkingPose.toPosition2D());
+                    boolean doneTurning = turnTowardsHeading(parkingPose.getHeading());
 
+                    boolean done = doneTurning && doneTranslating;
+                    if (done) stopMacro();
+                    return done;
+                }
             case NONE:
                 return true;
-
-            default:
-                throw new IllegalStateException("Unexpected macro: " + activeMacro);
         }
+        throw new AssertionError("Unhandled macro: " + activeMacro);
     }
 
     /// Stops any active macro, returning control to the driver.
@@ -281,6 +291,7 @@ public class Movement implements RobotActuatorModule {
 
     public enum Macro {
         MOVE_TO_SHOOT,
+        MOVE_TO_PARK,
         NONE
     }
 

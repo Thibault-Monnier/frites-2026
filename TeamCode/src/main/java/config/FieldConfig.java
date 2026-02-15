@@ -28,6 +28,11 @@ public class FieldConfig {
             new Pose2D(TILE_SIZE, TILE_SIZE, Angle.fromDegrees(90));
 
     public static Position2D RED_SHOOT_POS = new Position2D(TILE_SIZE.negate(), TILE_SIZE);
+    public static Pose2D RED_PARKING_POSE =
+            new Pose2D(
+                    TILE_SIZE.multiply(2).subtract(HardwareConfig.ROBOT_SIZE.halve()),
+                    TILE_SIZE.add(HardwareConfig.ROBOT_SIZE.halve()).negate(),
+                    Angle.fromDegrees(90));
 
     // Front is the row closest to the audience, back is the row furthest from the audience
     public static Pose2D RED_ARTIFACT_BACK_ROW_ENTRY_POSE =

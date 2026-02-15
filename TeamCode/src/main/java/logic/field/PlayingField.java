@@ -3,6 +3,7 @@ package logic.field;
 import config.FieldConfig;
 
 import logic.Team;
+
 import math.Angle;
 import math.Distance;
 import math.Pose2D;
@@ -68,6 +69,10 @@ public class PlayingField {
 
     public static Position2D shootingPosition(Team color) {
         return switchColor(FieldConfig.RED_SHOOT_POS, color);
+    }
+
+    public static Pose2D parkingPose(Team color) {
+        return switchColor(FieldConfig.RED_PARKING_POSE, color);
     }
 
     public static Pose2D artifactRowEntryPose(Team color, Artifact.Row row) {
