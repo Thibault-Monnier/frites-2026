@@ -100,6 +100,10 @@ public class Movement implements RobotActuatorModule {
         activeMacro = Macro.MOVE_TO_SHOOT;
     }
 
+    public void initMacro(Macro macro) {
+        activeMacro = macro;
+    }
+
     /// Initializes a macro that moves the robot to the parking position and rotates it to the
     /// correct heading for parking.
     public void initMoveToPark() {
@@ -110,30 +114,55 @@ public class Movement implements RobotActuatorModule {
     /// otherwise.
     public boolean executeActiveMacro() {
         switch (activeMacro) {
-            case MOVE_TO_SHOOT:
-                {
-                    boolean doneTranslating =
-                            translateToPosition(PlayingField.shootingPosition(team));
-                    boolean doneTurning = turnTowards(PlayingField.goalPos(team));
+            case MOVE_TO_SHOOT: {
+                boolean doneTranslating =
+                        translateToPosition(PlayingField.shootingPosition(team));
+                boolean doneTurning = turnTowards(PlayingField.goalPos(team));
 
-                    boolean done = doneTurning && doneTranslating;
-                    if (done) stopMacro();
-                    return done;
-                }
-            case MOVE_TO_PARK:
-                {
-                    Pose2D parkingPose = PlayingField.parkingPose(team);
-                    boolean doneTranslating = translateToPosition(parkingPose.toPosition2D());
-                    boolean doneTurning = turnTowardsHeading(parkingPose.getHeading());
+                boolean done = doneTurning && doneTranslating;
+                if (done) stopMacro();
+                return done;
+            }
+            case MOVE_TO_PARK: {
+                Pose2D parkingPose = PlayingField.parkingPose(team);
+                boolean doneTranslating = translateToPosition(parkingPose.toPosition2D());
+                boolean doneTurning = turnTowardsHeading(parkingPose.getHeading());
 
-                    boolean done = doneTurning && doneTranslating;
-                    if (done) stopMacro();
-                    return done;
-                }
+                boolean done = doneTurning && doneTranslating;
+                if (done) stopMacro();
+                isSuperSlow = true;
+                return done;
+            }
+            case MOVE_TO_FIRST_ARTIFACT_ROW:
+                return moveToRow(PlayingField.firstArtifactRowEntryPose(team));
+
+            case MOVE_TO_SECOND_ARTIFACT_ROW:
+                return moveToRow(PlayingField.secondArtifactRowEntryPose(team));
+
+            case MOVE_TO_THIRD_ARTIFACT_ROW:
+                return moveToRow(PlayingField.thirdArtifactRowEntryPose(team));
+
+            case COLLECT_FIRST_ARTIFACT_ROW:
+                return moveToRow(PlayingField.firstArtifactRowCollectPose(team));
+            case COLLECT_SECOND_ARTIFACT_ROW:
+                return moveToRow(PlayingField.secondArtifactRowCollectPose(team));
+            case COLLECT_THIRD_ARTIFACT_ROW:
+                return moveToRow(PlayingField.thirdArtifactRowCollectPose(team));
+
+
             case NONE:
                 return true;
         }
         throw new AssertionError("Unhandled macro: " + activeMacro);
+    }
+
+    private boolean moveToRow(Pose2D pose) {
+        boolean doneTranslating = translateToPosition(pose.toPosition2D());
+        boolean doneTurning = turnTowardsHeading(pose.getHeading());
+
+        boolean done = doneTurning && doneTranslating;
+        if (done) stopMacro();
+        return done;
     }
 
     /// Stops any active macro, returning control to the driver.
@@ -290,6 +319,11 @@ public class Movement implements RobotActuatorModule {
         mecanumDrive.setState(state);
     }
 
+    public void waitForMacro() {
+        while (executeActiveMacro()) {
+        }
+    }
+
     public enum MovementMode {
         ROBOT_CENTRIC,
         FIELD_CENTRIC
@@ -298,6 +332,12 @@ public class Movement implements RobotActuatorModule {
     public enum Macro {
         MOVE_TO_SHOOT,
         MOVE_TO_PARK,
+        MOVE_TO_FIRST_ARTIFACT_ROW,
+        MOVE_TO_SECOND_ARTIFACT_ROW,
+        MOVE_TO_THIRD_ARTIFACT_ROW,
+        COLLECT_FIRST_ARTIFACT_ROW,
+        COLLECT_SECOND_ARTIFACT_ROW,
+        COLLECT_THIRD_ARTIFACT_ROW,
         NONE
     }
 

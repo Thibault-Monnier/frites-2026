@@ -2,152 +2,202 @@ package opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.concurrent.TimeUnit;
+
+import logic.Movement;
 import logic.Team;
 
 public class AutoOpMode extends OpModeBase {
-    // private final Deque<Action> actionSequence = new ArrayDeque<>();
+
+    private double lastShootStartTime = 0;
+    private final ElapsedTime elapsedTime = new ElapsedTime();
 
     public AutoOpMode(Team team) {
         super(team, true);
     }
 
+    /*
+     * =========================
+     * AUTO STATES
+     * =========================
+     */
+    private enum AutoState {
+        MOVE_TO_SHOOT,
+        SHOOT,
+
+        MOVE_ROW_1,
+        COLLECT_ROW_1,
+
+        MOVE_ROW_2,
+        COLLECT_ROW_2,
+
+        MOVE_ROW_3,
+        COLLECT_ROW_3,
+
+        DONE
+    }
+
+    private AutoState state;
+
     @Override
     public void runOpMode() {
         initialize();
-        // initSequence();
-
         waitForStart();
 
+        cannon.off();
+
         runStart();
+        startAuto();
 
-        double prevTime = runtime.milliseconds();
-        while (opModeIsActive() /*&& !actionSequence.isEmpty()*/) {
-            // Consistent step duration for better PIDs
-            double time = runtime.milliseconds();
-            globalTelemetry.addData("Delta time", time - prevTime);
-            while (time - prevTime < 35) {
-                time = runtime.milliseconds();
-            }
-            prevTime = time;
-
-            runStep();
+        while (opModeIsActive()) {
+            runStep();        // keep robot updating
+            runAutoLogic();   // progress auto
         }
     }
 
-    /*private void initSequence() {
-        registerAction(powerOnCannon());
-        registerAction(intakeSwitcherRight());
-
-        shootSequence();
-
-        collectArtifactRowSequence(Artifact.Row.BACK);
-        shootSequence();
-
-        registerAction(driveActions.driveToArtifactRowEntryPose(Artifact.Row.MIDDLE));
-        registerAction(turnTowardsArtifactRow(Artifact.Row.MIDDLE));
-
-        // collectArtifactRowSequence(Artifact.Row.MIDDLE);
-        // shootSequence();
-
-        // registerAction(driveActions.driveToLeavePose());
-        // registerAction(turnTowardsLeavePose());
+    @Override
+    protected void runStart() {
+        super.runStart();
+        cannon.on();
     }
 
-    private void shootSequence() {
-        registerAction(driveActions.driveToGoalShootPosition());
-        registerAction(turnTowardsGoal());
-
-        registerAction(prepareToShoot());
-        registerAction(intakeOn());
-        registerAction(shoot());
-        registerAction(intakeOff());
+    private void startAuto() {
+        state = AutoState.MOVE_TO_SHOOT;
+        move.initMoveToShoot();
     }
 
-    private void collectArtifactRowSequence(Artifact.Row row) {
-        registerAction(driveActions.driveToArtifactRowEntryPose(row));
-        registerAction(turnTowardsArtifactRow(row));
+    /*
+     * =========================
+     * AUTO LOGIC
+     * =========================
+     */
+    private void runAutoLogic() {
 
-        registerAction(intakeOn());
-        registerAction(driveActions.collectArtifactsFromRow(row));
-        registerAction(intakeOff());
-        registerAction(driveActions.driveBackToArtifactRowEntryPose(row));
-    }
+        // always execute macro if one is active
+        boolean macroDone = move.executeActiveMacro();
 
-    private Action powerOnCannon() {
-        return new SimpleAction(() -> cannon.on());
-    }
+        globalTelemetry.addData("Is macro done?", macroDone);
 
-    private Action prepareToShoot() {
-        return new SimpleAction(() -> cannonBuffers.shootReset());
-    }
+        switch (state) {
 
-    private Action shoot() {
-        return telemetryPacket ->
-                !cannonBuffers.shootContinue(
-                        intakeSwitcher.getCurrentPosition() == IntakeSwitcher.Position.RIGHT);
-    }
+            /*
+             * MOVE TO SHOOT POSITION
+             */
+            case MOVE_TO_SHOOT:
+                cannonBuffers.shootDontContinue();
+                cannonBuffers.shootReset();
+                if (macroDone) {
+                    state = AutoState.SHOOT;
+                    lastShootStartTime = elapsedTime.time(TimeUnit.SECONDS);
+                }
+                break;
 
-    private Action turnTowardsGoal() {
-        return telemetryPacket -> move.turnTowards(robotPosition, PlayingField.goalPos(team));
-    }
+            /*
+             * SHOOT THREE
+             */
+            case SHOOT:
 
-    private Action turnTowardsArtifactRow(Artifact.Row row) {
-        return telemetryPacket ->
-                move.turnTowardsHeading(
-                        robotPosition, PlayingField.artifactRowEntryPose(team, row).getHeading());
-    }
+                if (!cannon.isReadyToShoot())
+                    break;
 
-    private Action turnTowardsLeavePose() {
-        return telemetryPacket ->
-                move.turnTowardsHeading(
-                        robotPosition, PlayingField.autoModeLeavePose(team).getHeading());
-    }
+                intake.on();
 
-    private Action intakeOn() {
-        return new SimpleAction(
-                () -> {
-                    intake.on();
-                    cannonBuffers.reverse();
-                });
-    }
-
-    private Action intakeOff() {
-        return new SimpleAction(
-                () -> {
+                if (cannonBuffers.shootContinue(true) && elapsedTime.time(TimeUnit.SECONDS) - lastShootStartTime >= 2) {
                     intake.off();
-                    cannonBuffers.off();
-                });
+
+                    if (stateAfterShoot == 1) {
+                        state = AutoState.MOVE_ROW_1;
+                        move.initMacro(Movement.Macro.MOVE_TO_FIRST_ARTIFACT_ROW);
+                    } else if (stateAfterShoot == 2) {
+                        state = AutoState.MOVE_ROW_2;
+                        move.initMacro(Movement.Macro.MOVE_TO_SECOND_ARTIFACT_ROW);
+                    } else if (stateAfterShoot == 3) {
+                        state = AutoState.MOVE_ROW_3;
+                        move.initMacro(Movement.Macro.MOVE_TO_THIRD_ARTIFACT_ROW);
+                    } else {
+                        state = AutoState.DONE;
+                    }
+
+                    stateAfterShoot++;
+                }
+                break;
+
+            /*
+             * ROW 1
+             */
+            case MOVE_ROW_1:
+                if (macroDone) {
+                    intake.on();
+                    move.initMacro(Movement.Macro.COLLECT_FIRST_ARTIFACT_ROW);
+                    state = AutoState.COLLECT_ROW_1;
+                }
+                break;
+
+            case COLLECT_ROW_1:
+                if (macroDone) {
+                    intake.off();
+                    move.initMoveToShoot();
+                    state = AutoState.MOVE_TO_SHOOT;
+                }
+                break;
+
+            /*
+             * ROW 2
+             */
+            case MOVE_ROW_2:
+                if (macroDone) {
+                    intake.on();
+                    move.initMacro(Movement.Macro.COLLECT_SECOND_ARTIFACT_ROW);
+                    state = AutoState.COLLECT_ROW_2;
+                }
+                break;
+
+            case COLLECT_ROW_2:
+                if (macroDone) {
+                    intake.off();
+                    move.initMoveToShoot();
+                    state = AutoState.MOVE_TO_SHOOT;
+                }
+                break;
+
+            /*
+             * ROW 3
+             */
+            case MOVE_ROW_3:
+                if (macroDone) {
+                    cannonBuffers.shootDontContinue();
+                    intake.on();
+                    move.initMacro(Movement.Macro.COLLECT_THIRD_ARTIFACT_ROW);
+                    state = AutoState.COLLECT_ROW_3;
+                }
+                break;
+
+            case COLLECT_ROW_3:
+                if (macroDone) {
+                    intake.off();
+                    state = AutoState.MOVE_TO_SHOOT;
+                }
+                break;
+
+            case DONE:
+                break;
+        }
     }
 
-    private Action intakeSwitcherRight() {
-        return new SimpleAction(() -> intakeSwitcher.right());
-    }
+    private int stateAfterShoot = 1;
 
-    private Action intakeSwitcherLeft() {
-        return new SimpleAction(() -> intakeSwitcher.left());
-    }
-
-    private Action intakeSwitcherCenter() {
-        return new SimpleAction(() -> intakeSwitcher.center());
-    }
-
-    private void registerAction(Action action) {
-        actionSequence.addLast(action);
-    }*/
-
+    /*
+     * =========================
+     * HIGH FREQUENCY LOOP
+     * =========================
+     */
     private void runStep() {
         update();
 
         TelemetryPacket packet = new TelemetryPacket();
-
-        /*Action currentAction = actionSequence.getFirst();
-
-        currentAction.preview(packet.fieldOverlay());
-
-        if (!currentAction.run(packet)) {
-            actionSequence.removeFirst();
-        }*/
+        packet.put("State", state);
 
         apply();
 

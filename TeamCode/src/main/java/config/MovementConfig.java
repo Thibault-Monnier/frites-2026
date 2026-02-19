@@ -22,11 +22,11 @@ public class MovementConfig {
 
     public static PIDFCoefficients TURN_PIDF_COEFFICIENTS =
             new PIDFCoefficients(1.5, 0.0, 0.1, 0.0);
-    public static Angle TURN_TOLERANCE = Angle.fromDegrees(4.0);
+    public static Angle TURN_TOLERANCE = Angle.fromDegrees(1.0);
     public static Angle NOT_TURNING_THRESHOLD = Angle.fromDegrees(0.5); // per frame
 
     public static PIDFCoefficients TRANSLATION_PIDF_COEFFICIENTS =
-            new PIDFCoefficients(0.002, 0.0, 0.0003, 0.0);
-    public static Distance TRANSLATION_TOLERANCE = Distance.fromCentimeters(2.0);
-    public static Distance NOT_TRANSLATING_THRESHOLD = Distance.fromCentimeters(0.3); // per frame
+            new PIDFCoefficients(0.0025, 0.0, 0.0003, 0.0);
+    public static Distance TRANSLATION_TOLERANCE = Distance.fromCentimeters(2.5);
+    public static Distance NOT_TRANSLATING_THRESHOLD = Distance.fromCentimeters(0.1); // per frame
 }

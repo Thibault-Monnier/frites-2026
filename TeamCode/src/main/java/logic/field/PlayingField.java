@@ -75,6 +75,32 @@ public class PlayingField {
         return switchColor(FieldConfig.RED_PARKING_POSE, color);
     }
 
+    public static Pose2D firstArtifactRowEntryPose(Team color) {
+        return switchColor(FieldConfig.RED_FIRST_ARTIFACT_ROW_ENTRY_POSE, color);
+    }
+
+    public static Pose2D firstArtifactRowCollectPose(Team color) {
+        return switchColor(FieldConfig.RED_FIRST_ARTIFACT_ROW_COLLECT_POSE, color);
+    }
+
+    public static Pose2D secondArtifactRowEntryPose(Team color) {
+        return switchColor(FieldConfig.RED_SECOND_ARTIFACT_ROW_ENTRY_POSE, color);
+    }
+
+    public static Pose2D secondArtifactRowCollectPose(Team color) {
+        return switchColor(FieldConfig.RED_SECOND_ARTIFACT_ROW_COLLECT_POSE, color);
+    }
+
+    public static Pose2D thirdArtifactRowEntryPose(Team color) {
+        return switchColor(FieldConfig.RED_THIRD_ARTIFACT_ROW_ENTRY_POSE, color);
+    }
+
+    public static Pose2D thirdArtifactRowCollectPose(Team color) {
+        return switchColor(FieldConfig.RED_THIRD_ARTIFACT_ROW_COLLECT_POSE, color);
+    }
+
+
+
     public static Pose2D artifactRowEntryPose(Team color, Artifact.Row row) {
         switch (row) {
             case FRONT:

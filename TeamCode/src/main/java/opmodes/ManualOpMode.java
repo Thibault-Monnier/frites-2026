@@ -54,7 +54,7 @@ public class ManualOpMode extends OpModeBase {
     }
 
     private void executeActions() {
-        if (gamepadController.isPressing(GamepadController.Button.BUMPER_LEFT)) {
+        if (isPressActive(ManualOpModeMappings.LOCK_TOWARDS_GOAL)) {
             // Lock towards the goal
             move.lockedJoystickMove(
                     gamepadController.gamepad,
