@@ -73,14 +73,17 @@ public class CannonCalibrationOpMode extends OpModeBase {
         } else {
             move.joystickTranslate(
                     gamepad1, gamepadController.isPressing(GamepadController.Button.LEFT_STICK));
-            move.joystickRotate(gamepad1, gamepadController.isPressing(GamepadController.Button.RIGHT_STICK));
+            move.joystickRotate(
+                    gamepad1, gamepadController.isPressing(GamepadController.Button.RIGHT_STICK));
         }
 
         if (gamepadController.isPressed(GamepadController.Button.X)) cannonCalibrator.toggle();
         if (gamepadController.isPressed(GamepadController.Button.Y)) cannonCalibrator.speedup();
-        if (gamepadController.isLongPressed(GamepadController.Button.Y)) cannonCalibrator.fastSpeedup();
+        if (gamepadController.isLongPressed(GamepadController.Button.Y))
+            cannonCalibrator.fastSpeedup();
         if (gamepadController.isPressed(GamepadController.Button.A)) cannonCalibrator.slowdown();
-        if (gamepadController.isLongPressed(GamepadController.Button.A)) cannonCalibrator.fastSlowdown();
+        if (gamepadController.isLongPressed(GamepadController.Button.A))
+            cannonCalibrator.fastSlowdown();
         if (gamepadController.isPressed(GamepadController.Button.B)) {
             Distance targetDistance =
                     PlayingField.distanceToGoal(robotPosition.getPosition(), team);

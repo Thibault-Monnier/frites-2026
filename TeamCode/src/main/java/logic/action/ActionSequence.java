@@ -1,6 +1,5 @@
 package logic.action;
 
-
 import java.util.ArrayList;
 
 /// An Action that runs a sequence of Actions in order. Each Action must complete before the next
@@ -14,9 +13,8 @@ public class ActionSequence implements Action {
     }
 
     /// Adds an Action to the end of the sequence.
-    public ActionSequence addAction(Action action) {
+    public void addAction(Action action) {
         actions.add(action);
-        return this;
     }
 
     @Override
