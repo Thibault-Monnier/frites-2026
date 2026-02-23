@@ -1,8 +1,9 @@
 package logic.action;
 
+import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
-/*
 public class SimpleAction implements Action {
     private final Runnable fn;
 
@@ -16,4 +17,3 @@ public class SimpleAction implements Action {
         return false; // Action is complete after one run
     }
 }
-*/
