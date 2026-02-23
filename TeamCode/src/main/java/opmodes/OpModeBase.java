@@ -109,7 +109,7 @@ public class OpModeBase extends LinearOpMode {
                         moveBR,
                         Movement.MovementMode.FIELD_CENTRIC);
 
-        driveActions = new DriveActions(robotPosition, team);
+        driveActions = new DriveActions(move, robotPosition, team);
 
         cannon = new Cannon(globalTelemetry, cannonLeft, cannonRight);
 
