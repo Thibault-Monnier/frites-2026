@@ -1,9 +1,11 @@
-package modules.actuator;
+package modules.actuator.cannonBuffer;
 
 import static config.CannonConfig.SHOOT_BALLS_AMOUNT;
 import static config.CannonConfig.SHOOT_DELAY;
 
 import math.TimeHelpers;
+
+import modules.actuator.RobotActuatorModule;
 
 import java.util.HashMap;
 

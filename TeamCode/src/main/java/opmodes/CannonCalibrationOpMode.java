@@ -9,7 +9,7 @@ import logic.field.PlayingField;
 
 import math.Distance;
 
-import modules.actuator.CannonCalibrator;
+import modules.actuator.cannon.CannonCalibrator;
 import modules.sensor.GamepadController;
 
 public class CannonCalibrationOpMode extends OpModeBase {

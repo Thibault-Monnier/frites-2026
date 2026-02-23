@@ -21,10 +21,10 @@ import logic.position.RobotPosition;
 
 import math.Distance;
 
-import modules.actuator.Cannon;
-import modules.actuator.CannonBuffer;
-import modules.actuator.CannonBuffersHandler;
-import modules.actuator.Intake;
+import modules.actuator.cannon.Cannon;
+import modules.actuator.cannonBuffer.CannonBuffer;
+import modules.actuator.cannonBuffer.CannonBuffersHandler;
+import modules.actuator.intake.Intake;
 import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
 

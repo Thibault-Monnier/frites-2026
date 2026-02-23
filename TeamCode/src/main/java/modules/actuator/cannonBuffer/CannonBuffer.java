@@ -1,9 +1,11 @@
-package modules.actuator;
+package modules.actuator.cannonBuffer;
 
 import static config.CannonConfig.MOVING_SPEED;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import modules.actuator.RobotActuatorModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 

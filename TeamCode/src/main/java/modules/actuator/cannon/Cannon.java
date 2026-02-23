@@ -1,4 +1,4 @@
-package modules.actuator;
+package modules.actuator.cannon;
 
 import static config.CannonConfig.CANNON_PID;
 import static config.CannonConfig.ERROR_MARGIN;
@@ -13,6 +13,8 @@ import config.HardwareConfig;
 import logic.pidf.PIDFControllerMotor;
 
 import math.Distance;
+
+import modules.actuator.RobotActuatorModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;

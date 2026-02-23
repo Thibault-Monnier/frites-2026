@@ -1,4 +1,4 @@
-package modules.actuator;
+package modules.actuator.drive;
 
 import static config.MovementConfig.BACK_LEFT_COEFF;
 import static config.MovementConfig.BACK_RIGHT_COEFF;
@@ -7,6 +7,8 @@ import static config.MovementConfig.FRONT_RIGHT_COEFF;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import modules.actuator.RobotActuatorModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 

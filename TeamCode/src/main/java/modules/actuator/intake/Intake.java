@@ -1,8 +1,10 @@
-package modules.actuator;
+package modules.actuator.intake;
 
 import static config.IntakeConfig.INTAKE_MOVING_SPEED;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import modules.actuator.RobotActuatorModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 

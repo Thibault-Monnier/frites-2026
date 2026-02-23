@@ -1,4 +1,4 @@
-package modules.actuator;
+package modules.actuator.cannon;
 
 import static config.CannonConfig.CALIBRATION_SPEED_CHANGE_OFFSET;
 

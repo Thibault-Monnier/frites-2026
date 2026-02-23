@@ -1,10 +1,12 @@
-package modules.actuator;
+package modules.actuator.intake;
 
 import static config.IntakeConfig.SWITCHER_CENTER_POS;
 import static config.IntakeConfig.SWITCHER_OFFSET;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import modules.actuator.RobotActuatorModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
