@@ -127,8 +127,4 @@ public class RobotPosition {
                 .strokeLine(robotXInches, robotYInches, endXInches, endYInches);
         dashboard.sendTelemetryPacket(packet);
     }
-
-    public enum StartPosition {
-        NORMAL,
-    }
 }
