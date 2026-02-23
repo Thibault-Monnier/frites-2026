@@ -1,7 +1,5 @@
 package opmodes;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import logic.Team;
 import logic.action.Action;
@@ -127,19 +125,11 @@ public class AutoOpMode extends OpModeBase {
     private void runStep() {
         update();
 
-        TelemetryPacket packet = new TelemetryPacket();
-
-        /*Action currentAction = actionSequence.getFirst();
-
-        currentAction.preview(packet.fieldOverlay());
-
-        if (!currentAction.run(packet)) {
-            actionSequence.removeFirst();
-        }*/
+        if (actionSequence.run()) {
+            globalTelemetry.addLine("AUTO MODE COMPLETE");
+        }
 
         apply();
-
-        FtcDashboard.getInstance().sendTelemetryPacket(packet);
         log();
     }
 }
