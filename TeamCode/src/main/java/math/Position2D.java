@@ -114,6 +114,16 @@ public class Position2D {
     }
 
     /**
+     * This adds a Vector2D to this Pose2D and returns the result as a new Pose2D.
+     *
+     * @param translation the Vector2D to add
+     * @return a new Pose2D that is the sum of this Pose2D and the given Vector2D
+     */
+    public Position2D add(Vector2D translation) {
+        return add(new Position2D(translation.getX(), translation.getY()));
+    }
+
+    /**
      * Subtracts another Position2D from this Position2D by subtracting their x and y values and
      * returns a new Position2D with the resulting values.
      *

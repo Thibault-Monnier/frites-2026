@@ -1,84 +1,68 @@
 package logic.action;
 
+import logic.Movement;
 import logic.Team;
+import logic.field.Artifact;
+import logic.field.PlayingField;
 import logic.position.RobotPosition;
 
 import math.Distance;
+import math.Pose2D;
+import math.Position2D;
+import math.Vector2D;
 
 public class DriveActions {
-    private final RobotPosition robotPosition;
+    private final Movement drive;
 
+    private final RobotPosition robotPosition;
     private final Team team;
 
     private static final Distance ARTIFACT_COLLECTION_DISTANCE = Distance.fromInches(13.5);
 
-    public DriveActions(RobotPosition robotPosition, Team team) {
+    public DriveActions(Movement drive, RobotPosition robotPosition, Team team) {
+        this.drive = drive;
         this.robotPosition = robotPosition;
         this.team = team;
     }
 
-    /*public DeferredAction driveToGoalShootPosition() {
-        return new DeferredAction(
-                () -> {
-                    Pose2D goalShootPosition = PlayingField.autoModeShootPose(team);
-                    return baseActionBuilder()
-                            .strafeTo(goalShootPosition.toPosition2D().toRoadrunnerVector())
-                            .build();
-                });
+    public Action driveToGoalShootPosition() {
+        return () -> {
+            Position2D goalShootPosition = PlayingField.shootingPosition(team);
+            return drive.translateToPosition(goalShootPosition);
+        };
     }
 
-    public DeferredAction driveToLeavePose() {
-        return new DeferredAction(
-                () -> {
-                    Pose2D leavePose = PlayingField.autoModeLeavePose(team);
-                    return baseActionBuilder()
-                            .strafeTo(leavePose.toPosition2D().toRoadrunnerVector())
-                            .build();
-                });
+    public Action driveToLeavePose() {
+        return () -> {
+            Pose2D leavePose = PlayingField.autoModeLeavePose(team);
+            return drive.translateToPosition(leavePose.toPosition2D());
+        };
     }
 
-    public DeferredAction driveToArtifactRowEntryPose(Artifact.Row row) {
-        return new DeferredAction(
-                () -> {
-                    Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
-                    return baseActionBuilder()
-                            .strafeTo(entryPose.toPosition2D().toRoadrunnerVector())
-                            .build();
-                });
+    public Action driveToArtifactRowEntryPose(Artifact.Row row) {
+        return () -> {
+            Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
+            return drive.translateToPosition(entryPose.toPosition2D());
+        };
     }
 
-    public DeferredAction collectArtifactsFromRow(Artifact.Row row) {
-        return new DeferredAction(
-                () -> {
-                    Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
+    public Action collectArtifactsFromRow(Artifact.Row row) {
+        return () -> {
+            Position2D entryPose = PlayingField.artifactRowEntryPose(team, row).toPosition2D();
 
-                    Vector2d forwardVector = moveForwardVector(ARTIFACT_COLLECTION_DISTANCE);
-                    Vector2d endPos =
-                            entryPose.toPosition2D().toRoadrunnerVector().plus(forwardVector);
+            Vector2D forwardVector =
+                    new Vector2D(
+                            ARTIFACT_COLLECTION_DISTANCE, robotPosition.getPose().getHeading());
+            Position2D endPos = entryPose.add(forwardVector);
 
-                    return baseActionBuilder().strafeTo(endPos).build();
-                });
+            return drive.translateToPosition(endPos);
+        };
     }
 
-    public DeferredAction driveBackToArtifactRowEntryPose(Artifact.Row row) {
-        return new DeferredAction(
-                () -> {
-                    Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
-                    return baseActionBuilder()
-                            .strafeTo(entryPose.toPosition2D().toRoadrunnerVector())
-                            .build();
-                });
+    public Action driveBackToArtifactRowEntryPose(Artifact.Row row) {
+        return () -> {
+            Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
+            return drive.translateToPosition(entryPose.toPosition2D());
+        };
     }
-
-    private Vector2d moveForwardVector(Distance distance) {
-        double heading = robotPosition.getPose().getHeading(AngleUnit.RADIANS);
-        return new Vector2d(
-                distance.toInches() * Math.cos(heading), distance.toInches() * Math.sin(heading));
-    }
-
-    private TrajectoryActionBuilder baseActionBuilder() {
-        System.out.println("Building action at pose: " + drive.localizer.getPose());
-        return drive.actionBuilder(drive.localizer.getPose().toRoadrunnerPose2d());
-    }
-    */
 }

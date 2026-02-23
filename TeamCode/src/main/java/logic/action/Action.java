@@ -1,8 +1,8 @@
 package logic.action;
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
+@FunctionalInterface
 public interface Action {
-    /** Runs the action. Returns true if the action is completed, false otherwise. */
-    boolean run(TelemetryPacket packet);
+    /** Runs the action. Returns true if the action is complete, false otherwise. */
+    boolean run();
 }

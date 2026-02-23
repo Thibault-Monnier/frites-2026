@@ -44,6 +44,18 @@ public class Vector2D {
     }
 
     /**
+     * Creates a new Vector2D object from a magnitude and direction.
+     *
+     * @param magnitude the magnitude of the vector as a Distance object
+     * @param direction the direction of the vector as an Angle object
+     */
+    public Vector2D(Distance magnitude, Angle direction) {
+        this(
+                magnitude.multiply(Math.cos(direction.toRadians())),
+                magnitude.multiply(Math.sin(direction.toRadians())));
+    }
+
+    /**
      * Creates a new Vector2D object from a Position2D object.
      *
      * @param position the Position2D object to create the Vector2D from

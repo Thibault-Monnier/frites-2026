@@ -4,19 +4,24 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import logic.Team;
+import logic.action.Action;
+import logic.action.ActionSequence;
+import logic.action.SimpleAction;
 import logic.field.Artifact;
+import logic.field.PlayingField;
 
 public class AutoOpMode extends OpModeBase {
-    // private final Deque<Action> actionSequence = new ArrayDeque<>();
+    private final ActionSequence actionSequence;
 
     public AutoOpMode(Team team) {
         super(team, true);
+        actionSequence = new ActionSequence();
     }
 
     @Override
     public void runOpMode() {
         initialize();
-        //initSequence();
+        initSequence();
 
         waitForStart();
 
@@ -35,10 +40,9 @@ public class AutoOpMode extends OpModeBase {
             runStep();
         }
     }
-/*
+
     private void initSequence() {
         registerAction(powerOnCannon());
-        registerAction(intakeSwitcherRight());
 
         shootSequence();
 
@@ -48,12 +52,11 @@ public class AutoOpMode extends OpModeBase {
         registerAction(driveActions.driveToArtifactRowEntryPose(Artifact.Row.MIDDLE));
         registerAction(turnTowardsArtifactRow(Artifact.Row.MIDDLE));
 
-        // collectArtifactRowSequence(Artifact.Row.MIDDLE);
-        // shootSequence();
+        collectArtifactRowSequence(Artifact.Row.MIDDLE);
+        shootSequence();
 
-        // registerAction(driveActions.driveToLeavePose());
-        // registerAction(turnTowardsLeavePose());
-
+        registerAction(driveActions.driveToLeavePose());
+        registerAction(turnTowardsLeavePose());
     }
 
     private void shootSequence() {
@@ -85,25 +88,20 @@ public class AutoOpMode extends OpModeBase {
     }
 
     private Action shoot() {
-        return telemetryPacket ->
-                !cannonBuffers.shootContinue(
-                        intakeSwitcher.getCurrentPosition() == IntakeSwitcher.Position.RIGHT);
+        return () -> cannonBuffers.shootContinue(true);
     }
 
     private Action turnTowardsGoal() {
-        return telemetryPacket -> move.turnTowards(robotPosition, PlayingField.goalPos(team));
+        return () -> move.turnTowards(PlayingField.goalPos(team));
     }
 
     private Action turnTowardsArtifactRow(Artifact.Row row) {
-        return telemetryPacket ->
-                move.turnTowardsHeading(
-                        robotPosition, PlayingField.artifactRowEntryPose(team, row).getHeading());
+        return () ->
+                move.turnTowardsHeading(PlayingField.artifactRowEntryPose(team, row).getHeading());
     }
 
     private Action turnTowardsLeavePose() {
-        return telemetryPacket ->
-                move.turnTowardsHeading(
-                        robotPosition, PlayingField.autoModeLeavePose(team).getHeading());
+        return () -> move.turnTowardsHeading(PlayingField.autoModeLeavePose(team).getHeading());
     }
 
     private Action intakeOn() {
@@ -122,21 +120,9 @@ public class AutoOpMode extends OpModeBase {
                 });
     }
 
-    private Action intakeSwitcherRight() {
-        return new SimpleAction(() -> intakeSwitcher.right());
-    }
-
-    private Action intakeSwitcherLeft() {
-        return new SimpleAction(() -> intakeSwitcher.left());
-    }
-
-    private Action intakeSwitcherCenter() {
-        return new SimpleAction(() -> intakeSwitcher.center());
-    }
-
     private void registerAction(Action action) {
-        actionSequence.addLast(action);
-    }*/
+        actionSequence.addAction(action);
+    }
 
     private void runStep() {
         update();
