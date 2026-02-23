@@ -13,7 +13,6 @@ public class CannonBuffer implements RobotActuatorModule {
     private final Telemetry globalTelemetry;
     private final CRServo servo;
     private boolean isRunning = false;
-    private boolean isClearing = false;
     private boolean isReversing = false;
 
     public CannonBuffer(
@@ -31,16 +30,8 @@ public class CannonBuffer implements RobotActuatorModule {
             servoTargetPower = -MOVING_SPEED;
         } else if (isRunning) {
             servoTargetPower = MOVING_SPEED;
-        } else if (isClearing) {
-            servoTargetPower = -MOVING_SPEED;
-            isClearing = false;
         }
         servo.setPower(servoTargetPower);
-    }
-
-    /// Turn buffer servo on.
-    public void on() {
-        isRunning = true;
     }
 
     /// Turn buffer servo off.
@@ -49,12 +40,13 @@ public class CannonBuffer implements RobotActuatorModule {
         isReversing = false;
     }
 
-    /// Clears the buffer by running it in reverse for one cycle.
-    public void clear() {
+    /// Turn buffer servo on.
+    public void on() {
         off();
-        isClearing = true;
+        isRunning = true;
     }
 
+    /// Clears the buffer by running it in reverse.
     public void reverse() {
         off();
         isReversing = true;
@@ -65,7 +57,6 @@ public class CannonBuffer implements RobotActuatorModule {
         HashMap<String, Object> state = new HashMap<>();
         state.put("isRunning", isRunning);
         state.put("isReversing", isReversing);
-        state.put("isClearing", isClearing);
         return state;
     }
 

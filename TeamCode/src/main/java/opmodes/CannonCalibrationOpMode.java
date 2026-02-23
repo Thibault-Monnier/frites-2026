@@ -89,7 +89,7 @@ public class CannonCalibrationOpMode extends OpModeBase {
 
         if (gamepadController.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
             intake.on();
-            cannonBuffers.clear();
+            cannonBuffers.reverse();
         } else {
             intake.off();
         }

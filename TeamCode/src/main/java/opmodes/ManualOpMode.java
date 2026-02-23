@@ -83,14 +83,14 @@ public class ManualOpMode extends OpModeBase {
 
         if (isPressActive(ManualOpModeMappings.INTAKE_ON)) {
             intake.on();
-            cannonBuffers.clear();
+            cannonBuffers.reverse();
         } else {
             intake.off();
         }
 
         if (isPressActive(ManualOpModeMappings.INTAKE_AND_TRANSFER_REVERSE)) {
-            intake.clear();
-            cannonBuffers.clear();
+            intake.reverse();
+            cannonBuffers.reverse();
         }
 
         // Make sure the cannon reached its target velocity

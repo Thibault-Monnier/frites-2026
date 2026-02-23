@@ -34,12 +34,7 @@ public class CannonBuffersHandler implements RobotActuatorModule {
         rightBuffer.off();
     }
 
-    /// Clears both buffers.
-    public void clear() {
-        leftBuffer.clear();
-        rightBuffer.clear();
-    }
-
+    /// Reverses both buffers.
     public void reverse() {
         leftBuffer.reverse();
         rightBuffer.reverse();

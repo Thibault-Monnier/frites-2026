@@ -1,6 +1,5 @@
 package opmodes;
 
-
 import logic.Team;
 import logic.action.Action;
 import logic.action.ActionSequence;
@@ -19,10 +18,8 @@ public class AutoOpMode extends OpModeBase {
     @Override
     public void runOpMode() {
         initialize();
-        initSequence();
 
         waitForStart();
-
         runStart();
 
         double prevTime = runtime.milliseconds();
@@ -37,6 +34,11 @@ public class AutoOpMode extends OpModeBase {
 
             runStep();
         }
+    }
+
+    protected void initialize() {
+        super.initialize();
+        initSequence();
     }
 
     private void initSequence() {
