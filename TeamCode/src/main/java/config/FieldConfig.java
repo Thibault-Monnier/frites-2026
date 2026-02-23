@@ -34,21 +34,6 @@ public class FieldConfig {
                     TILE_SIZE.add(HardwareConfig.ROBOT_SIZE.halve()).negate(),
                     Angle.fromDegrees(90));
 
-    public static Pose2D RED_FIRST_ARTIFACT_ROW_ENTRY_POSE =
-            new Pose2D(TILE_SIZE.multiply(-0.5), TILE_SIZE.multiply(1.5), Angle.fromDegrees(90));
-    public static final Pose2D RED_FIRST_ARTIFACT_ROW_COLLECT_POSE =
-            new Pose2D(TILE_SIZE.multiply(-0.5), TILE_SIZE.multiply(2.5), Angle.fromDegrees(90));
-
-    public static Pose2D RED_SECOND_ARTIFACT_ROW_ENTRY_POSE =
-            new Pose2D(TILE_SIZE.multiply(0.5), TILE_SIZE.multiply(1.5), Angle.fromDegrees(90));
-    public static final Pose2D RED_SECOND_ARTIFACT_ROW_COLLECT_POSE =
-            new Pose2D(TILE_SIZE.multiply(0.5), TILE_SIZE.multiply(2.9), Angle.fromDegrees(90));
-
-    public static Pose2D RED_THIRD_ARTIFACT_ROW_ENTRY_POSE =
-            new Pose2D(TILE_SIZE.multiply(1.5), TILE_SIZE.multiply(1.5), Angle.fromDegrees(90));
-    public static final Pose2D RED_THIRD_ARTIFACT_ROW_COLLECT_POSE =
-            new Pose2D(TILE_SIZE.multiply(1.5), TILE_SIZE.multiply(2.9), Angle.fromDegrees(90));
-
     // Front is the row closest to the audience, back is the row furthest from the audience
     public static Pose2D RED_ARTIFACT_BACK_ROW_ENTRY_POSE =
             new Pose2D(TILE_SIZE.multiply(-0.5), TILE_SIZE, Angle.fromDegrees(90));

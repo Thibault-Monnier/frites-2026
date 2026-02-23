@@ -1,7 +1,6 @@
 package modules.actuator;
 
 import static config.IntakeConfig.INTAKE_MOVING_SPEED;
-import static config.IntakeConfig.INTAKE_STOPPED_SPEED;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -62,7 +61,7 @@ public class Intake implements RobotActuatorModule {
             motorTargetPower = -INTAKE_MOVING_SPEED;
             isClearing = false;
         } else {
-            motorTargetPower = INTAKE_STOPPED_SPEED;
+            motorTargetPower = 0;
         }
         globalTelemetry.addData("Intake Motor Power", motorTargetPower);
     }
