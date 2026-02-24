@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import logic.Team;
 import logic.field.PlayingField;
 
+import math.Angle;
 import math.Pose2D;
 import math.Position2D;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class RobotPosition {
@@ -112,14 +112,14 @@ public class RobotPosition {
     private void renderFieldOverlayInDashboard() {
         TelemetryPacket packet = new TelemetryPacket();
 
-        double heading = pose.getHeading(AngleUnit.RADIANS);
+        Angle heading = pose.getHeading();
 
         double robotXInches = pose.getX(DistanceUnit.INCH);
         double robotYInches = pose.getY(DistanceUnit.INCH);
 
         double lineLength = 8;
-        double endXInches = robotXInches + lineLength * Math.cos(heading);
-        double endYInches = robotYInches + lineLength * Math.sin(heading);
+        double endXInches = robotXInches + lineLength * heading.cos();
+        double endYInches = robotYInches + lineLength * heading.sin();
 
         packet.fieldOverlay().setStroke("red").strokeCircle(robotXInches, robotYInches, 4);
         packet.fieldOverlay()

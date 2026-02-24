@@ -84,6 +84,21 @@ public class Angle {
         return toRadians() / other.toRadians();
     }
 
+    /** Returns the sine of this Angle. */
+    public double sin() {
+        return Math.sin(toRadians());
+    }
+
+    /** Returns the cosine of this Angle. */
+    public double cos() {
+        return Math.cos(toRadians());
+    }
+
+    /** Returns the tangent of this Angle. */
+    public double tan() {
+        return Math.tan(toRadians());
+    }
+
     /**
      * Returns a string representation of the object in a human readable format for debugging
      * purposes.

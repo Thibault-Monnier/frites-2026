@@ -50,9 +50,7 @@ public class Vector2D {
      * @param direction the direction of the vector as an Angle object
      */
     public Vector2D(Distance magnitude, Angle direction) {
-        this(
-                magnitude.multiply(Math.cos(direction.toRadians())),
-                magnitude.multiply(Math.sin(direction.toRadians())));
+        this(magnitude.multiply(direction.cos()), magnitude.multiply(direction.sin()));
     }
 
     /**

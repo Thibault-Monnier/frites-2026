@@ -256,14 +256,12 @@ public class Movement implements RobotActuatorModule {
         translateFieldCentric(robotAngle, translation);
     }
 
-    private void translateFieldCentric(Angle robotAngle, Translation translation) {
-        double heading = robotAngle.toRadians();
-
+    private void translateFieldCentric(Angle heading, Translation translation) {
         double forward = translation.forward;
         double strafe = translation.strafe;
 
-        translation.forward = -forward * Math.cos(heading) - strafe * Math.sin(heading);
-        translation.strafe = forward * Math.sin(heading) - strafe * Math.cos(heading);
+        translation.forward = -forward * heading.cos() - strafe * heading.sin();
+        translation.strafe = forward * heading.sin() - strafe * heading.cos();
 
         translate(translation);
     }

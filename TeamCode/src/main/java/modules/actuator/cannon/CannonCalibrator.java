@@ -23,11 +23,6 @@ public class CannonCalibrator extends Cannon {
         throw new UnsupportedOperationException("Do not call update() on CannonCalibrator");
     }
 
-    @Override
-    protected double computeVelocity(Distance target2dDistance) {
-        return motorTargetVelocity;
-    }
-
     public void speedup() {
         motorTargetVelocity += CALIBRATION_SPEED_CHANGE_OFFSET;
     }
