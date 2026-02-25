@@ -5,12 +5,21 @@ import com.bylazar.configurables.annotations.Configurable;
 
 import logic.pidf.PIDFCoefficients;
 
+import math.Angle;
+import math.Distance;
+import math.Vector2D;
+
 @Config
 @Configurable
 public class CannonConfig {
     public static double MOVING_SPEED = 1.0;
 
     public static PIDFCoefficients CANNON_PID = new PIDFCoefficients(0.02, 0.0, 0.0, -0.5);
+
+    public static Angle CANNON_ANGLE = Angle.fromDegrees(50.0);
+    public static Distance CANNON_TOP_HEIGHT = Distance.fromCentimeters(41.5);
+    public static Vector2D CANNON_RELATIVE_POSITION =
+            new Vector2D(Distance.fromCentimeters(-10.0), Distance.fromCentimeters(0.0));
 
     public static double SHOOT_DELAY = 0.375;
     public static int SHOOT_BALLS_AMOUNT = 3;

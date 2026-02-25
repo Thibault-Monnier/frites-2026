@@ -53,13 +53,9 @@ public class Vector2D {
         this(magnitude.multiply(direction.cos()), magnitude.multiply(direction.sin()));
     }
 
-    /**
-     * Creates a new Vector2D object from a Position2D object.
-     *
-     * @param position the Position2D object to create the Vector2D from
-     */
-    public Vector2D(Position2D position) {
-        this(position.getX(), position.getY());
+    /** Creates a new Vector2D object from a Position2D by extracting its x and y values. */
+    public Position2D toPosition2D() {
+        return new Position2D(getX(), getY());
     }
 
     /**
@@ -120,14 +116,21 @@ public class Vector2D {
         return y;
     }
 
+    /** Calculates the magnitude of the vector as a Distance object. */
+    public Distance magnitude() {
+        return new Distance(distanceUnit, Math.hypot(x, y));
+    }
+
     /**
-     * This gets the magnitude of the vector in the desired distance unit
+     * This gets the direction (argument) of the vector as an Angle object, calculated using the
+     * atan2 function to determine the angle from the positive x-axis to the point represented by
+     * the vector.
      *
-     * @param unit the desired distance unit
-     * @return the magnitude of the vector converted to the desired distance unit
+     * @return an Angle object representing the direction of the vector
      */
-    public double getMagnitude(DistanceUnit unit) {
-        return Math.sqrt(Math.pow(getX(unit), 2) + Math.pow(getY(unit), 2));
+    public Angle direction() {
+        double rads = Math.atan2(getY(distanceUnit), getX(distanceUnit));
+        return Angle.fromRadians(rads);
     }
 
     /**
@@ -137,11 +140,11 @@ public class Vector2D {
      * @return a new Vector2D object that is the normalized version of this vector
      */
     public Vector2D normalize() {
-        double magnitude = getMagnitude(distanceUnit);
-        if (magnitude == 0) {
+        Distance mag = magnitude();
+        if (mag.isZero()) {
             return this;
         }
-        return new Vector2D(distanceUnit, x / magnitude, y / magnitude);
+        return new Vector2D(getX().divide(mag), getY().divide(mag));
     }
 
     /**
@@ -167,6 +170,20 @@ public class Vector2D {
      */
     public Vector2D scale(double scalar) {
         return new Vector2D(distanceUnit, x * scalar, y * scalar);
+    }
+
+    /**
+     * This rotates the vector by a given angle, using the standard 2D rotation formula.
+     *
+     * @param angle the angle to rotate the vector by
+     * @return a new Vector2D object that is the rotated version of this vector
+     */
+    public Vector2D rotate(Angle angle) {
+        double cos = angle.cos();
+        double sin = angle.sin();
+        double newX = x * cos - y * sin;
+        double newY = x * sin + y * cos;
+        return new Vector2D(distanceUnit, newX, newY);
     }
 
     /**

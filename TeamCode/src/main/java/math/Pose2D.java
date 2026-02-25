@@ -160,6 +160,17 @@ public class Pose2D {
     }
 
     /**
+     * Converts a local displacement into world coordinates and adds it to this pose's position.
+     *
+     * @param other the Vector2D displacement relative to this pose
+     * @return the resulting absolute Position2D
+     */
+    public Position2D addRelative(Vector2D other) {
+        Vector2D rotatedOther = other.rotate(getHeading());
+        return this.toPosition2D().add(rotatedOther);
+    }
+
+    /**
      * This returns a string representation of the object in a human readable format for debugging
      * purposes.
      *

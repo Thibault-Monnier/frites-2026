@@ -10,6 +10,7 @@ import logic.field.PlayingField;
 import math.Angle;
 import math.Pose2D;
 import math.Position2D;
+import math.Vector2D;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -27,6 +28,7 @@ public class RobotPosition {
 
     private final KalmanFilter kalmanFilter;
     private Pose2D pose;
+    private Pose2D previousPose;
 
     public static RobotPosition getInstance(
             Telemetry globalTelemetry,
@@ -63,6 +65,7 @@ public class RobotPosition {
     /** Resets the robot pose to the starting position. */
     public void resetPose() {
         pose = PlayingField.startPose(color);
+        previousPose = pose;
         odometryHandler.setPose(pose);
     }
 
@@ -71,13 +74,15 @@ public class RobotPosition {
      * up-to-date.
      */
     public void updatePose() {
+        previousPose = pose;
+
         odometryHandler.update();
         boolean limelightHasNew = limelightHandler.update();
 
         Pose2D odometryPose = odometryHandler.getPose();
         if (odometryPose.hasNaN()) {
             globalTelemetry.addLine("Computed pose has NaN values, using previous pose");
-            odometryPose = pose;
+            odometryPose = previousPose;
         }
         Pose2D odometryVelocity = odometryPose.subtract(pose);
 
@@ -103,6 +108,11 @@ public class RobotPosition {
     /// Gets the current robot position as a Position2D
     public Position2D getPosition() {
         return new Position2D(pose);
+    }
+
+    /// Gets the current robot velocity as a Vector2D (x and y components, no heading)
+    public Vector2D getVelocity() {
+        return pose.subtract(previousPose).toPosition2D().toVector2D();
     }
 
     public LimelightHandler getLimelightHandler() {

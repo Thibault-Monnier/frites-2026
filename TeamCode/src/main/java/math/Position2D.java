@@ -63,6 +63,15 @@ public class Position2D {
     }
 
     /**
+     * Converts this Position2D to a Vector2D by using its x and y values as the vector components.
+     *
+     * @return a new Vector2D object with the same x and y values as this Position2D
+     */
+    public Vector2D toVector2D() {
+        return new Vector2D(getX(), getY());
+    }
+
+    /**
      * Gets x in the desired distance unit
      *
      * @param unit the desired distance unit
@@ -167,6 +176,16 @@ public class Position2D {
      */
     public Distance distanceTo(Position2D other) {
         return subtract(other).hypot();
+    }
+
+    /**
+     * Calculates the angle from this Position2D to another Position2D.
+     *
+     * @param other the Position2D to calculate the angle to
+     * @return an Angle object representing the angle from this Position2D to the other
+     */
+    public Angle angleTo(Position2D other) {
+        return other.subtract(this).direction();
     }
 
     /**

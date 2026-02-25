@@ -211,7 +211,7 @@ public class Movement implements RobotActuatorModule {
         translationController.setError(distanceError);
         double speed = translationController.get();
 
-        Vector2D velocity = new Vector2D(delta).normalizeMax().scale(speed);
+        Vector2D velocity = delta.toVector2D().normalizeMax().scale(speed);
 
         Angle robotAngle = robotPosition.getPose().getHeading();
         Translation translation = new Translation(velocity.getRawX(), velocity.getRawY());

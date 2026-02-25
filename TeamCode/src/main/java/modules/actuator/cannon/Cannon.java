@@ -98,9 +98,9 @@ public class Cannon implements RobotActuatorModule {
     }
 
     /// Update motor power using a value interpolated from target distance.
-    public void update(Distance target2dDistance) {
+    public void update(Distance horizontalShootingDistance) {
         if (isRunning) {
-            motorTargetVelocity = computeVelocity(target2dDistance);
+            motorTargetVelocity = computeVelocity(horizontalShootingDistance);
         } else {
             motorTargetVelocity = 0.0;
         }
@@ -124,8 +124,8 @@ public class Cannon implements RobotActuatorModule {
                 && getAverageVelocity() >= 100; // Not stopped
     }
 
-    protected double computeVelocity(Distance target2dDistance) {
-        double d = target2dDistance.getValue(DistanceUnit.CM);
+    protected double computeVelocity(Distance horizontalShootingDistance) {
+        double d = horizontalShootingDistance.getValue(DistanceUnit.CM);
         return d * d * d / 190000.0 - d * d / 1520.0 + d * 0.1517789 + 1143.648337;
     }
 

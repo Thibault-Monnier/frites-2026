@@ -27,9 +27,20 @@ to [Coordinate systems](#coordinate-systems) for details on each coordinate syst
 
 ### Standard coordinate system
 
+#### Absolute
+
 - Origin: Center of the field
 - X axis: Positive X points toward the audience side
 - Y axis: Positive Y points toward the blue alliance side
+- Zero rotation: Direction of the +X axis
+- Rotation direction: Positive rotation is counter-clockwise
+- Units: Any units, used through auto-converting classes (e.g. `Pose2D`, `Distance`, etc.)
+
+#### Relative
+
+- Origin: Center of the robot
+- X axis: Positive X points toward the front of the robot
+- Y axis: Positive Y points toward the left side of the robot
 - Zero rotation: Direction of the +X axis
 - Rotation direction: Positive rotation is counter-clockwise
 - Units: Any units, used through auto-converting classes (e.g. `Pose2D`, `Distance`, etc.)

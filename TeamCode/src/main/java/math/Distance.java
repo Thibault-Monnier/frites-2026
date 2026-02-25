@@ -36,6 +36,16 @@ public class Distance {
         return new Distance(DistanceUnit.CM, centimeters);
     }
 
+    /** Creates a new Distance object from meters input */
+    public static Distance fromMeters(double meters) {
+        return new Distance(DistanceUnit.METER, meters);
+    }
+
+    /** Creates a new Distance object from inches input */
+    public static Distance fromInches(double inches) {
+        return new Distance(DistanceUnit.INCH, inches);
+    }
+
     /**
      * Gets the distance value in the desired distance unit
      *
@@ -56,9 +66,14 @@ public class Distance {
         return getValue(DistanceUnit.INCH);
     }
 
-    /** Creates a new Distance object from inches input */
-    public static Distance fromInches(double inches) {
-        return new Distance(DistanceUnit.INCH, inches);
+    /** Gets the distance value converted to meters */
+    public double toMeters() {
+        return getValue(DistanceUnit.METER);
+    }
+
+    /** Check if this Distance is zero. */
+    public boolean isZero() {
+        return value == 0;
     }
 
     /** Negates this Distance and returns the result as a new Distance object. */
@@ -91,6 +106,14 @@ public class Distance {
     public Distance divide(double scalar) {
         double quotientInMM = toMillimeters() / scalar;
         return Distance.fromMillimeters(quotientInMM);
+    }
+
+    /**
+     * Divides this Distance by another Distance and returns the result as a new Distance object.
+     */
+    public Distance divide(Distance other) {
+        double quotient = toMillimeters() / other.toMillimeters();
+        return Distance.fromMillimeters(quotient);
     }
 
     /** Halves this Distance and returns the result as a new Distance object. */
