@@ -10,21 +10,17 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import config.CannonConfig;
-import config.FieldConfig;
 import config.HardwareConfig;
 
 import logic.Movement;
+import logic.ShotHandler;
 import logic.Team;
 import logic.action.DriveActions;
 import logic.field.ArtifactSequence;
 import logic.field.PlayingField;
 import logic.position.RobotPosition;
 
-import math.Angle;
 import math.Distance;
-import math.Position2D;
-import math.Vector2D;
 
 import modules.actuator.cannon.Cannon;
 import modules.actuator.cannonBuffer.CannonBuffer;
@@ -34,8 +30,6 @@ import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.List;
 
@@ -49,6 +43,7 @@ public class OpModeBase extends LinearOpMode {
     protected final boolean shouldResetPose;
 
     protected RobotPosition robotPosition;
+    protected ShotHandler shotHandler;
 
     protected BatteryMonitor batteryMonitor;
 
@@ -86,6 +81,7 @@ public class OpModeBase extends LinearOpMode {
 
         robotPosition =
                 RobotPosition.getInstance(globalTelemetry, hardwareMap, team, shouldResetPose);
+        shotHandler = new ShotHandler(robotPosition, team);
 
         batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
 
@@ -143,6 +139,7 @@ public class OpModeBase extends LinearOpMode {
         gamepadController.update();
 
         robotPosition.updatePose();
+        shotHandler.update();
 
         Distance targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
         cannon.update(targetDistance);
@@ -180,47 +177,5 @@ public class OpModeBase extends LinearOpMode {
 
         cannon.apply();
         cannonBuffers.apply();
-    }
-
-    private Vector2D shootVector() {
-        final double g = 9.81; // gravitational acceleration in m/s^2
-
-        Vector2D robotVelocity = robotPosition.getVelocity();
-        Angle velocityAngle = robotVelocity.direction();
-        Angle correctionAngle = velocityAngle.negate();
-        robotVelocity = robotVelocity.rotate(correctionAngle);
-
-        Angle theta = CannonConfig.CANNON_ANGLE;
-        Distance cannonTopHeight = CannonConfig.CANNON_TOP_HEIGHT;
-        Distance goalHeight = FieldConfig.GOAL_HEIGHT;
-        Position2D cannonPos =
-                robotPosition
-                        .getPose()
-                        .addRelative(CannonConfig.CANNON_RELATIVE_POSITION)
-                        .toVector2D()
-                        .rotate(correctionAngle)
-                        .toPosition2D();
-        Position2D goalPos =
-                PlayingField.goalPos(team).toVector2D().rotate(correctionAngle).toPosition2D();
-
-        Angle phi = cannonPos.angleTo(goalPos);
-        Vector2D dHorizontal = cannonPos.subtract(goalPos).toVector2D();
-        double dx = dHorizontal.magnitude().toMeters();
-        double dy = goalHeight.subtract(cannonTopHeight).toMeters();
-
-        double ballSpeed = dx * Math.sqrt(g / (2 * (dx * theta.tan() - dy)));
-        double robotSpeed = robotVelocity.magnitude().toMeters();
-
-        double shootSpeed =
-                Math.sqrt(
-                        ballSpeed * ballSpeed
-                                - 2 * robotSpeed * ballSpeed * phi.cos()
-                                + robotSpeed * robotSpeed);
-        double shootAngle = Math.atan2(ballSpeed * phi.sin(), ballSpeed * phi.cos() - robotSpeed);
-
-        Distance norm = new Distance(DistanceUnit.METER, shootSpeed);
-        Angle argument = new Angle(AngleUnit.RADIANS, shootAngle).subtract(correctionAngle);
-
-        return new Vector2D(norm, argument);
     }
 }

@@ -173,17 +173,13 @@ public class Vector2D {
     }
 
     /**
-     * This rotates the vector by a given angle, using the standard 2D rotation formula.
+     * This rotates the vector by a given angle.
      *
      * @param angle the angle to rotate the vector by
      * @return a new Vector2D object that is the rotated version of this vector
      */
     public Vector2D rotate(Angle angle) {
-        double cos = angle.cos();
-        double sin = angle.sin();
-        double newX = x * cos - y * sin;
-        double newY = x * sin + y * cos;
-        return new Vector2D(distanceUnit, newX, newY);
+        return new Vector2D(magnitude(), direction().add(angle));
     }
 
     /**

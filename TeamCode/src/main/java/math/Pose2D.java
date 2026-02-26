@@ -167,7 +167,7 @@ public class Pose2D {
      */
     public Position2D addRelative(Vector2D other) {
         Vector2D rotatedOther = other.rotate(getHeading());
-        return this.toPosition2D().add(rotatedOther);
+        return toPosition2D().add(rotatedOther);
     }
 
     /**
