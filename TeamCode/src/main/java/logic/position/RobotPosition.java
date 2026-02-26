@@ -10,6 +10,7 @@ import logic.field.PlayingField;
 import math.Angle;
 import math.Pose2D;
 import math.Position2D;
+import math.TimeHelpers;
 import math.Vector2D;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -27,8 +28,11 @@ public class RobotPosition {
     private final Team color;
 
     private final KalmanFilter kalmanFilter;
+
     private Pose2D pose;
     private Pose2D previousPose;
+    private double poseTimeSec;
+    private double previousPoseTimeSec;
 
     public static RobotPosition getInstance(
             Telemetry globalTelemetry,
@@ -75,6 +79,7 @@ public class RobotPosition {
      */
     public void updatePose() {
         previousPose = pose;
+        previousPoseTimeSec = poseTimeSec;
 
         odometryHandler.update();
         boolean limelightHasNew = limelightHandler.update();
@@ -87,6 +92,7 @@ public class RobotPosition {
         Pose2D odometryVelocity = odometryPose.subtract(pose);
 
         pose = kalmanFilter.predict(odometryVelocity);
+        poseTimeSec = TimeHelpers.getRuntime();
 
         if (limelightHasNew) {
             globalTelemetry.addLine("Using pose from Limelight with Kalman filter");
@@ -110,9 +116,11 @@ public class RobotPosition {
         return new Position2D(pose);
     }
 
-    /// Gets the current robot velocity as a Vector2D (x and y components, no heading)
+    /// Gets the current robot velocity as a Vector2D, in distance / second
     public Vector2D getVelocity() {
-        return pose.subtract(previousPose).toPosition2D().toVector2D();
+        Vector2D displacement = pose.subtract(previousPose).toPosition2D().toVector2D();
+        double time = poseTimeSec - previousPoseTimeSec;
+        return displacement.scale(1 / time);
     }
 
     public LimelightHandler getLimelightHandler() {
