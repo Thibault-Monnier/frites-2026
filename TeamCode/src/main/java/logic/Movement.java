@@ -165,14 +165,13 @@ public class Movement implements RobotActuatorModule {
     /// Moves while turning towards a target position.
     public void lockedJoystickMove(Gamepad gamepad, boolean slow, Position2D targetPos) {
         Translation velocity = getTranslationVelocity(gamepad, slow);
-
-        turnTowards(targetPos);
-
         if (movementMode == MovementMode.FIELD_CENTRIC) {
             translateFieldCentric(velocity);
         } else {
             translate(velocity);
         }
+
+        turnTowards(targetPos);
     }
 
     /// Turns the robot towards a target position. Returns true if finished, false otherwise.

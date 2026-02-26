@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import config.ManualOpModeMappings;
 
 import logic.Team;
-import logic.field.PlayingField;
 
 import modules.sensor.GamepadController;
 
@@ -54,18 +53,13 @@ public class ManualOpMode extends OpModeBase {
     }
 
     private void executeActions() {
-        if (isPressActive(ManualOpModeMappings.LOCK_TOWARDS_GOAL)) {
-            // Lock towards the goal
-            move.lockedJoystickMove(
-                    gamepadController.gamepad,
-                    isPressActive(ManualOpModeMappings.SLOW_MOVE),
-                    PlayingField.goalPos(team));
-        } else {
-            move.joystickTranslate(
-                    gamepadController.gamepad, isPressActive(ManualOpModeMappings.SLOW_MOVE));
+        move.joystickTranslate(
+                gamepadController.gamepad, isPressActive(ManualOpModeMappings.SLOW_MOVE));
+        if (isPressActive(ManualOpModeMappings.LOCK_TOWARDS_SHOOT))
+            move.turnTowardsHeading(shotHandler.getShotAngle());
+        else
             move.joystickRotate(
                     gamepadController.gamepad, isPressActive(ManualOpModeMappings.SLOW_TURN));
-        }
 
         if (isPressActive(ManualOpModeMappings.MOVE_TO_SHOOTING_SPOT)) move.initMoveToShoot();
         else if (isPressActive(ManualOpModeMappings.MOVE_TO_PARKING_SPOT)) {

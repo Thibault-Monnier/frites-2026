@@ -17,10 +17,7 @@ import logic.ShotHandler;
 import logic.Team;
 import logic.action.DriveActions;
 import logic.field.ArtifactSequence;
-import logic.field.PlayingField;
 import logic.position.RobotPosition;
-
-import math.Distance;
 
 import modules.actuator.cannon.Cannon;
 import modules.actuator.cannonBuffer.CannonBuffer;
@@ -141,11 +138,12 @@ public class OpModeBase extends LinearOpMode {
         robotPosition.updatePose();
         shotHandler.update();
 
-        Distance targetDistance = PlayingField.distanceToGoal(robotPosition.getPosition(), team);
-        cannon.update(targetDistance);
+        cannon.update(shotHandler.getShotMagnitude());
 
         System.out.println("Robot Pose: " + robotPosition.getPose().toString());
-        globalTelemetry.addData("Target Dist", targetDistance.toString());
+        globalTelemetry.addData(
+                "Shooting target distance", shotHandler.getShotMagnitude().toString());
+        globalTelemetry.addData("Shooting target angle", shotHandler.getShotAngle().toString());
 
         if (artifactSequence == null)
             artifactSequence =

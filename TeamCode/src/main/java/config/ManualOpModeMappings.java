@@ -14,7 +14,7 @@ public class ManualOpModeMappings {
             new ButtonMapping(Button.LEFT_STICK, PressType.CONTINUOUS_PRESS);
     public static ButtonMapping SLOW_TURN =
             new ButtonMapping(Button.RIGHT_STICK, PressType.CONTINUOUS_PRESS);
-    public static ButtonMapping LOCK_TOWARDS_GOAL =
+    public static ButtonMapping LOCK_TOWARDS_SHOOT =
             new ButtonMapping(Button.BUMPER_LEFT, PressType.CONTINUOUS_PRESS);
 
     // Intake and transfer
