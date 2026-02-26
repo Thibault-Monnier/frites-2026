@@ -53,6 +53,9 @@ public class ManualOpMode extends OpModeBase {
     }
 
     private void executeActions() {
+        if (isPressActive(ManualOpModeMappings.MOVING_SHOT_TOGGLE))
+            shotHandler.toggleUsingMovingShot();
+
         move.joystickTranslate(
                 gamepadController.gamepad, isPressActive(ManualOpModeMappings.SLOW_MOVE));
         if (isPressActive(ManualOpModeMappings.LOCK_TOWARDS_SHOOT))

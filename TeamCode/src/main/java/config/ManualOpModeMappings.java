@@ -42,4 +42,6 @@ public class ManualOpModeMappings {
             new ButtonMapping(Button.B, PressType.SINGLE_PRESS);
     public static ButtonMapping RESET_ROBOT_POSE =
             new ButtonMapping(Button.DPAD_UP, PressType.LONG_PRESS);
+    public static ButtonMapping MOVING_SHOT_TOGGLE =
+            new ButtonMapping(Button.DPAD_RIGHT, PressType.SINGLE_PRESS);
 }
