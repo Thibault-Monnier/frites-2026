@@ -94,16 +94,9 @@ public class Movement implements RobotActuatorModule {
                 "Translation coefficients", translationController.getCoefficients());
     }
 
-    /// Initializes a macro that moves the robot to the shooting position and rotates it to face the
-    /// goal.
-    public void initMoveToShoot() {
-        activeMacro = Macro.MOVE_TO_SHOOT;
-    }
-
-    /// Initializes a macro that moves the robot to the parking position and rotates it to the
-    /// correct heading for parking.
-    public void initMoveToPark() {
-        activeMacro = Macro.MOVE_TO_PARK;
+    /// Sets the provided macro as the active macro.
+    public void initMacro(Macro macro) {
+        activeMacro = macro;
     }
 
     /// Executes the active macro, if any. Returns true if the macro has finished and false
@@ -121,14 +114,20 @@ public class Movement implements RobotActuatorModule {
                     return done;
                 }
             case MOVE_TO_PARK:
+            case MOVE_TO_RAMP:
                 {
-                    Pose2D parkingPose = PlayingField.parkingPose(team);
-                    boolean doneTranslating = translateToPosition(parkingPose.toPosition2D());
-                    boolean doneTurning = turnTowardsHeading(parkingPose.getHeading());
+                    boolean isMoveToPark = activeMacro == Macro.MOVE_TO_PARK;
+                    Pose2D pose =
+                            isMoveToPark
+                                    ? PlayingField.parkingPose(team)
+                                    : PlayingField.rampPose(team);
+                    boolean doneTranslating = translateToPosition(pose.toPosition2D());
+                    boolean doneTurning = turnTowardsHeading(pose.getHeading());
 
                     boolean done = doneTurning && doneTranslating;
                     if (done) stopMacro();
-                    isSuperSlow = true;
+
+                    if (isMoveToPark) isSuperSlow = true;
                     return done;
                 }
             case NONE:
@@ -298,6 +297,7 @@ public class Movement implements RobotActuatorModule {
     public enum Macro {
         MOVE_TO_SHOOT,
         MOVE_TO_PARK,
+        MOVE_TO_RAMP,
         NONE
     }
 

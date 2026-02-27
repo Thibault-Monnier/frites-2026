@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import config.ManualOpModeMappings;
 
+import logic.Movement.Macro;
 import logic.Team;
 
 import modules.sensor.GamepadController;
@@ -64,9 +65,12 @@ public class ManualOpMode extends OpModeBase {
             move.joystickRotate(
                     gamepadController.gamepad, isPressActive(ManualOpModeMappings.SLOW_TURN));
 
-        if (isPressActive(ManualOpModeMappings.MOVE_TO_SHOOTING_SPOT)) move.initMoveToShoot();
+        if (isPressActive(ManualOpModeMappings.MOVE_TO_SHOOTING_SPOT))
+            move.initMacro(Macro.MOVE_TO_SHOOT);
+        else if (isPressActive(ManualOpModeMappings.MOVE_TO_RAMP_SPOT))
+            move.initMacro(Macro.MOVE_TO_RAMP);
         else if (isPressActive(ManualOpModeMappings.MOVE_TO_PARKING_SPOT)) {
-            move.initMoveToPark();
+            move.initMacro(Macro.MOVE_TO_PARK);
             cannon.off();
         }
         if (move.isMoving()) move.stopMacro();
