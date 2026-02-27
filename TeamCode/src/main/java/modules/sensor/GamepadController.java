@@ -33,6 +33,8 @@ public class GamepadController {
         switch (mapping.pressType) {
             case SINGLE_PRESS:
                 return isPressed(mapping.button);
+            case RELEASE:
+                return isReleased(mapping.button);
             case CONTINUOUS_PRESS:
                 return isPressing(mapping.button);
             case LONG_PRESS:
@@ -52,6 +54,11 @@ public class GamepadController {
     /** Returns true if the button was pressed since last update. Returns true only once. */
     public boolean isPressed(Button button) {
         return button.pressed;
+    }
+
+    /** Returns true if the button was released since last update. Returns true only once. */
+    public boolean isReleased(Button button) {
+        return button.released;
     }
 
     /** Returns true if the button has been held down for LONG_PRESS_TIME seconds. */
@@ -82,9 +89,10 @@ public class GamepadController {
     }
 
     public enum PressType {
-        /// Returns true only on the first update after the button is pressed, then returns false
-        /// until the button is released and pressed again.
+        /// Returns true only on the first update after the button is pressed.
         SINGLE_PRESS,
+        /// Returns true only on the first update after the button is released.
+        RELEASE,
         /// Returns true on every update as long as the button is being held down.
         CONTINUOUS_PRESS,
         /// Returns true on every update as long as the button has been held down for at least
@@ -92,7 +100,7 @@ public class GamepadController {
         LONG_PRESS,
         /// Returns true only on the first update after the button is pressed, if it has been
         /// pressed twice within DOUBLE_PRESS_INTERVAL seconds.
-        DOUBLE_PRESS
+        DOUBLE_PRESS,
     }
 
     public enum Button {
@@ -117,6 +125,7 @@ public class GamepadController {
         private final java.util.function.Function<Gamepad, Boolean> accessor;
 
         private boolean pressed = false;
+        private boolean released = false;
 
         private boolean down = false;
 
@@ -134,27 +143,30 @@ public class GamepadController {
 
         /** Update internal state for this button */
         public void update(Gamepad gamepad, ElapsedTime runtime) {
+            pressed = false;
+            released = false;
+
+            if (runtime.milliseconds() - debounceStartTime < DEBOUNCE_TIME) {
+                // Debouncing, ignore this press
+                return;
+            }
+
             boolean lastDown = down;
             down = get(gamepad);
 
             if (lastDown && !down) {
                 // Just released now
+                released = true;
                 debounceStartTime = runtime.milliseconds();
             }
 
-            pressed = false;
-
             if (down && !lastDown) {
-                if (runtime.milliseconds() - debounceStartTime < DEBOUNCE_TIME) {
-                    // Debouncing, ignore this press
-                    return;
-                }
-
                 // Just pressed now
                 pressed = true;
 
                 previousTimePressed = lastTimePressed;
                 lastTimePressed = runtime.milliseconds();
+                debounceStartTime = lastTimePressed;
             }
         }
     }
