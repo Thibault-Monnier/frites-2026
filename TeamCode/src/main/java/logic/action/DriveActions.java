@@ -52,7 +52,7 @@ public class DriveActions {
 
             Vector2D forwardVector =
                     new Vector2D(
-                            ARTIFACT_COLLECTION_DISTANCE, robotPosition.getPose().getHeading());
+                            ARTIFACT_COLLECTION_DISTANCE, robotPosition.getHeading());
             Position2D endPos = entryPose.add(forwardVector);
 
             return drive.translateToPosition(endPos);

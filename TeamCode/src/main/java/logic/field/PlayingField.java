@@ -76,7 +76,7 @@ public class PlayingField {
     }
 
     public static Pose2D rampPose(Team color) {
-        return switchColor(FieldConfig.RED_RAMP_POSE, color);
+        return switchColor(FieldConfig.RED_RAMP_APPROACH_POSE, color);
     }
 
     public static Pose2D artifactRowEntryPose(Team color, Artifact.Row row) {
@@ -119,5 +119,26 @@ public class PlayingField {
         double y = pos.getY(DistanceUnit.MM);
         double halfWidth = FIELD.halfWidth().toMillimeters();
         return x >= -halfWidth && x <= halfWidth && y >= -halfWidth && y <= halfWidth;
+    }
+
+    /// Checks whether the robot is about to intake from the ramp. Used for automations.
+    public static boolean isNextToRamp(Pose2D pose, Team team) {
+        pose = switchColor(pose, team);
+        Position2D robotPos = pose.toPosition2D();
+        Distance robotX = robotPos.getX();
+        Distance robotY = robotPos.getY();
+        Angle robotHeading = pose.getHeading();
+
+        Position2D rampPos = FieldConfig.RED_REAL_RAMP_POSE;
+        Distance rampX = rampPos.getX();
+        Distance rampY = rampPos.getY();
+
+        return robotX.geq(rampX.subtract(FieldConfig.TILE_SIZE.multiply(0.25)))
+                && robotX.leq(rampX.add(FieldConfig.TILE_SIZE.multiply(1.25)))
+                && robotY.geq(rampY.subtract(FieldConfig.TILE_SIZE.multiply(1.25)))
+                && robotHeading
+                        .subtract(robotPos.angleTo(rampPos))
+                        .abs()
+                        .leq(Angle.fromDegrees(45));
     }
 }

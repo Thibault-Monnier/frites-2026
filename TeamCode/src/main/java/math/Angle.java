@@ -99,6 +99,16 @@ public class Angle {
         return Math.tan(toRadians());
     }
 
+    /** Returns the absolute value of this Angle. */
+    public Angle abs() {
+        return fromRadians(Math.abs(toRadians()));
+    }
+
+    /** Returns whether this Angle is less than or equal to another Angle */
+    public boolean leq(Angle other) {
+        return toRadians() <= other.toRadians();
+    }
+
     /**
      * Returns a string representation of the object in a human readable format for debugging
      * purposes.

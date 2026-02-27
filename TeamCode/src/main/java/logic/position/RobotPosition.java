@@ -113,7 +113,12 @@ public class RobotPosition {
 
     /// Gets the current robot position as a Position2D
     public Position2D getPosition() {
-        return new Position2D(pose);
+        return pose.toPosition2D();
+    }
+
+    /// Gets the current robot heading as an Angle
+    public Angle getHeading() {
+        return pose.getHeading();
     }
 
     /// Gets the current robot velocity as a Vector2D, in distance / second

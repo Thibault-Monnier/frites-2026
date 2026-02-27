@@ -219,7 +219,7 @@ public class Movement implements RobotActuatorModule {
 
         Vector2D velocity = delta.toVector2D().normalizeMax().scale(speed);
 
-        Angle robotAngle = robotPosition.getPose().getHeading();
+        Angle robotAngle = robotPosition.getHeading();
         Translation translation = new Translation(velocity.getRawX(), velocity.getRawY());
         translateFieldCentric(robotAngle, translation);
 
@@ -254,7 +254,7 @@ public class Movement implements RobotActuatorModule {
     }
 
     private void translateFieldCentric(Translation translation) {
-        Angle robotAngle = robotPosition.getPose().getHeading();
+        Angle robotAngle = robotPosition.getHeading();
 
         Angle delta = Angle.fromDegrees(90);
         if (team.isBlue()) robotAngle = robotAngle.subtract(delta);

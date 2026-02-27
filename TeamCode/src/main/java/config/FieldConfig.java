@@ -22,6 +22,9 @@ public class FieldConfig {
     public static Distance GOAL_WIDTH = Distance.fromInches(27);
     public static Distance GOAL_DEPTH = Distance.fromInches(27);
 
+    public static Position2D RED_REAL_RAMP_POSE =
+            new Position2D(new Distance(), TILE_SIZE.multiply(3));
+
     public static Pose2D RED_START_POSE =
             new Pose2D(DistanceUnit.METER, -1.250, 1.370, AngleUnit.DEGREES, 138.0);
     public static Pose2D RED_AUTO_MODE_LEAVE_POSE =
@@ -34,7 +37,7 @@ public class FieldConfig {
                     TILE_SIZE.negate().subtract(HardwareConfig.ROBOT_SIZE.halve()),
                     Angle.fromDegrees(90));
 
-    public static Pose2D RED_RAMP_POSE =
+    public static Pose2D RED_RAMP_APPROACH_POSE =
             new Pose2D(TILE_SIZE.multiply(0.55), TILE_SIZE.multiply(2.4), Angle.fromDegrees(110));
 
     // Front is the row closest to the audience, back is the row furthest from the audience

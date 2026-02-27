@@ -126,6 +126,16 @@ public class Distance {
         return toMillimeters() / other.toMillimeters();
     }
 
+    /** Whether this Distance is greater or equal to another Distance. */
+    public boolean geq(Distance other) {
+        return toMillimeters() >= other.toMillimeters();
+    }
+
+    /** Whether this Distance is less than or equal to another Distance. */
+    public boolean leq(Distance other) {
+        return toMillimeters() <= other.toMillimeters();
+    }
+
     /**
      * Returns a string representation of the object in a human readable format for debugging
      * purposes.
