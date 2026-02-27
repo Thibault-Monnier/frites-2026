@@ -38,6 +38,8 @@ public class Movement implements RobotActuatorModule {
     private final RobotPosition robotPosition;
     private final Team team;
 
+    private final ShotHandler shotHandler;
+
     private final MecanumDrive mecanumDrive;
 
     private final PIDFController turnController;
@@ -51,6 +53,7 @@ public class Movement implements RobotActuatorModule {
     public Movement(
             Telemetry globalTelemetry,
             RobotPosition robotPosition,
+            ShotHandler shotHandler,
             Team team,
             DcMotor FL,
             DcMotor FR,
@@ -61,6 +64,8 @@ public class Movement implements RobotActuatorModule {
 
         this.robotPosition = robotPosition;
         this.team = team;
+
+        this.shotHandler = shotHandler;
 
         this.mecanumDrive = new MecanumDrive(globalTelemetry, FL, FR, BL, BR);
         this.turnController = new PIDFController(globalTelemetry, TURN_PIDF_COEFFICIENTS);
@@ -102,39 +107,42 @@ public class Movement implements RobotActuatorModule {
     /// Executes the active macro, if any. Returns true if the macro has finished and false
     /// otherwise.
     public boolean executeActiveMacro() {
+        if (activeMacro == Macro.NONE) return true;
+
+        Position2D targetPos;
+        Angle targetHeading;
+
         switch (activeMacro) {
             case MOVE_TO_SHOOT:
                 {
-                    boolean doneTranslating =
-                            translateToPosition(PlayingField.shootingPosition(team));
-                    boolean doneTurning = turnTowards(PlayingField.goalPos(team));
-
-                    boolean done = doneTurning && doneTranslating;
-                    if (done) stopMacro();
-                    return done;
+                    targetPos = PlayingField.shootingPosition(team);
+                    targetHeading = shotHandler.getShotAngle();
                 }
+                break;
             case MOVE_TO_PARK:
+                {
+                    Pose2D targetPose = PlayingField.parkingPose(team);
+                    targetPos = targetPose.toPosition2D();
+                    targetHeading = targetPose.getHeading();
+                }
+                isSuperSlow = true;
+                break;
             case MOVE_TO_RAMP:
                 {
-                    boolean isMoveToPark = activeMacro == Macro.MOVE_TO_PARK;
-                    Pose2D pose =
-                            isMoveToPark
-                                    ? PlayingField.parkingPose(team)
-                                    : PlayingField.rampPose(team);
-                    boolean doneTranslating = translateToPosition(pose.toPosition2D());
-                    boolean doneTurning = turnTowardsHeading(pose.getHeading());
-
-                    boolean done = doneTurning && doneTranslating;
-                    if (done) stopMacro();
-
-                    if (isMoveToPark) isSuperSlow = true;
-                    return done;
+                    Pose2D targetPose = PlayingField.rampPose(team);
+                    targetPos = targetPose.toPosition2D();
+                    targetHeading = targetPose.getHeading();
                 }
-            case NONE:
-                return true;
+                break;
+            default:
+                throw new UnsupportedOperationException("Unhandled macro: " + activeMacro);
         }
 
-        throw new AssertionError("Unhandled macro: " + activeMacro);
+        boolean done = translateToPosition(targetPos);
+        done &= turnTowardsHeading(targetHeading);
+
+        if (done) stopMacro();
+        return done;
     }
 
     /// Stops any active macro, returning control to the driver.

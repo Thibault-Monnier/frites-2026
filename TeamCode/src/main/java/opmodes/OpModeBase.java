@@ -102,6 +102,7 @@ public class OpModeBase extends LinearOpMode {
                 new Movement(
                         globalTelemetry,
                         robotPosition,
+                        shotHandler,
                         team,
                         moveFL,
                         moveFR,
