@@ -35,11 +35,11 @@ public class ManualOpModeMappings {
     public static ButtonMapping MOVE_TO_SHOOTING_SPOT =
             new ButtonMapping(Button.Y, PressType.SINGLE_PRESS);
     public static ButtonMapping MOVE_TO_PARKING_SPOT =
-            new ButtonMapping(Button.A, PressType.SINGLE_PRESS);
+            new ButtonMapping(Button.B, PressType.SINGLE_PRESS);
 
     // Misc
     public static ButtonMapping SUPER_SLOW_MODE_TOGGLE =
-            new ButtonMapping(Button.B, PressType.SINGLE_PRESS);
+            new ButtonMapping(Button.B, PressType.DOUBLE_PRESS);
     public static ButtonMapping RESET_ROBOT_POSE =
             new ButtonMapping(Button.DPAD_UP, PressType.LONG_PRESS);
     public static ButtonMapping MOVING_SHOT_TOGGLE =
