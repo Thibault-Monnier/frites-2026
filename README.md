@@ -2,12 +2,7 @@
 
 ## Welcome !
 
-This is the code for the FTC team Frites during the 2025-26 Decode season.
-
-# Robot manual
-
-Detailed instructions, schematics, and everything you need to know about the robot are available
-at [docs/manual.pdf](docs/manual/manual.pdf).
+This is the codebase for the FTC team FRITES (20991 from France) during the 2025-26 Decode season.
 
 ## Setting up & Compiling
 
@@ -30,6 +25,12 @@ To compile, use Android Studio or run the following command (on Linux, you may h
 ```bash
 ./gradlew build
 ```
+
+## Robot manual
+
+Detailed instructions, schematics, and everything you need to know about the robot are available
+at [docs/manual.pdf](docs/manual/manual.pdf). Please note that the information provided there is
+exclusively in French and might be outdated.
 
 ## Coding guidelines
 
