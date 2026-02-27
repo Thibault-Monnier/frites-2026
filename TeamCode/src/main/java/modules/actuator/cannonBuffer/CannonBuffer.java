@@ -28,10 +28,11 @@ public class CannonBuffer implements RobotActuatorModule {
     @Override
     public void apply() {
         double servoTargetPower = 0;
-        if (isReversing) {
-            servoTargetPower = -MOVING_SPEED;
-        } else if (isRunning) {
+        if (isRunning) {
             servoTargetPower = MOVING_SPEED;
+        } else if (isReversing) {
+            servoTargetPower = -MOVING_SPEED;
+            isReversing = false;
         }
         servo.setPower(servoTargetPower);
     }
@@ -48,7 +49,7 @@ public class CannonBuffer implements RobotActuatorModule {
         isRunning = true;
     }
 
-    /// Clears the buffer by running it in reverse.
+    /// Clears the buffer by running it in reverse for one cycles.
     public void reverse() {
         off();
         isReversing = true;

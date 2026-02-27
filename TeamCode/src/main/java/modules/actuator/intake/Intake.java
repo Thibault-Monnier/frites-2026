@@ -28,6 +28,7 @@ public class Intake implements RobotActuatorModule {
             motorTargetPower = INTAKE_MOVING_SPEED;
         } else if (isReversing) {
             motorTargetPower = -INTAKE_MOVING_SPEED;
+            isReversing = false;
         }
 
         globalTelemetry.addData("Intake Motor Power", motorTargetPower);
@@ -46,7 +47,7 @@ public class Intake implements RobotActuatorModule {
         isRunning = true;
     }
 
-    /// Clear the intake by running it in reverse for one cycle.
+    /// Clears the intake by running it in reverse for one cycle.
     public void reverse() {
         off();
         isReversing = true;
