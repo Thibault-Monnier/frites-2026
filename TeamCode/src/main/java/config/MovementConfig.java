@@ -27,6 +27,6 @@ public class MovementConfig {
 
     public static PIDFCoefficients TRANSLATION_PIDF_COEFFICIENTS =
             new PIDFCoefficients(0.0025, 0.0, 0.0003, 0.0);
-    public static Distance TRANSLATION_TOLERANCE = Distance.fromCentimeters(2.5);
+    public static Distance TRANSLATION_TOLERANCE = Distance.fromCentimeters(5);
     public static Distance NOT_TRANSLATING_THRESHOLD = Distance.fromCentimeters(0.1); // per frame
 }

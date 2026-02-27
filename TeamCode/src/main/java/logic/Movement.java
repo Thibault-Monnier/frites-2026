@@ -223,6 +223,7 @@ public class Movement implements RobotActuatorModule {
         globalTelemetry.addData("Translation speed", speed);
         globalTelemetry.addData("Translation velocity", velocity.toString());
         globalTelemetry.addData("Error change", translationController.getErrorChange());
+        globalTelemetry.addData("Error", distanceError);
         return isFinished;
     }
 
