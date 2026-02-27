@@ -99,7 +99,7 @@ public class ShotHandler {
 
     private Vector2D computeStationaryShotVector() {
         globalTelemetry.addLine("Using stationary shot calculation");
-        return cannonPos().subtract(goalPos()).toVector2D();
+        return goalPos().subtract(cannonPos()).toVector2D();
     }
 
     private Position2D cannonPos() {
