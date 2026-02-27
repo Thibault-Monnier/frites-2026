@@ -89,9 +89,10 @@ public class ShotHandler {
                         ballSpeed * ballSpeed
                                 - 2 * robotSpeed * ballSpeed * phi.cos()
                                 + robotSpeed * robotSpeed);
+        double shootDistance = shootSpeed * dx / ballSpeed;
         double shootAngle = Math.atan2(ballSpeed * phi.sin(), ballSpeed * phi.cos() - robotSpeed);
 
-        Distance norm = new Distance(DistanceUnit.METER, shootSpeed);
+        Distance norm = new Distance(DistanceUnit.METER, shootDistance);
         Angle argument = new Angle(AngleUnit.RADIANS, shootAngle);
 
         return new Vector2D(norm, argument).rotate(velocityAngle);
