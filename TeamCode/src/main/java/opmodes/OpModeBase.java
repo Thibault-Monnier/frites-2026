@@ -78,7 +78,7 @@ public class OpModeBase extends LinearOpMode {
 
         robotPosition =
                 RobotPosition.getInstance(globalTelemetry, hardwareMap, team, shouldResetPose);
-        shotHandler = new ShotHandler(robotPosition, team);
+        shotHandler = new ShotHandler(robotPosition, team, globalTelemetry);
 
         batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
 

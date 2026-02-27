@@ -11,6 +11,7 @@ import math.Distance;
 import math.Position2D;
 import math.Vector2D;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -18,19 +19,24 @@ public class ShotHandler {
     private final RobotPosition robotPosition;
     private final Team team;
 
+    private final Telemetry globalTelemetry;
+
     private Vector2D computedShotVector;
 
     boolean usingMovingShot = false;
 
-    public ShotHandler(RobotPosition robotPosition, Team team) {
+    public ShotHandler(RobotPosition robotPosition, Team team, Telemetry globalTelemetry) {
         this.robotPosition = robotPosition;
         this.team = team;
+        this.globalTelemetry = globalTelemetry;
     }
 
     /** Updates the shot vector based on the robot's current velocity and pose. */
     public void update() {
         if (usingMovingShot) computedShotVector = computeMovingShotVector();
         else computedShotVector = computeStationaryShotVector();
+
+        globalTelemetry.addData("Computed shot vector", computedShotVector.toString());
     }
 
     /** Gets the computed shot vector. Should be called after update(). */
@@ -54,6 +60,8 @@ public class ShotHandler {
     }
 
     private Vector2D computeMovingShotVector() {
+        globalTelemetry.addLine("Using moving shot calculation");
+
         final double g = 9.81; // gravitational acceleration in m/s^2
 
         // FIXME: this is not exact as we should be using the cannon's velocity instead
@@ -90,6 +98,7 @@ public class ShotHandler {
     }
 
     private Vector2D computeStationaryShotVector() {
+        globalTelemetry.addLine("Using stationary shot calculation");
         return cannonPos().subtract(goalPos()).toVector2D();
     }
 
