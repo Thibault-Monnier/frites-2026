@@ -22,9 +22,6 @@ public class FieldConfig {
     public static Distance GOAL_WIDTH = Distance.fromInches(27);
     public static Distance GOAL_DEPTH = Distance.fromInches(27);
 
-    public static Position2D RED_REAL_RAMP_POSE =
-            new Position2D(new Distance(), TILE_SIZE.multiply(3));
-
     public static Pose2D RED_START_POSE =
             new Pose2D(DistanceUnit.METER, -1.250, 1.370, AngleUnit.DEGREES, 138.0);
     public static Pose2D RED_AUTO_MODE_LEAVE_POSE =
