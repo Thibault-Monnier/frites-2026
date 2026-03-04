@@ -116,6 +116,8 @@ public class ManualOpMode extends OpModeBase {
 
     /** Returns true if the button mapping is active based on its press type. */
     private boolean isPressActive(GamepadController.ButtonMapping mapping) {
+        globalTelemetry.addData(
+                "Is " + mapping.toString() + " active", gamepadController.isPressActive(mapping));
         return gamepadController.isPressActive(mapping);
     }
 }
