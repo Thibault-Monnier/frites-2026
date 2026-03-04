@@ -7,7 +7,6 @@ import config.ManualOpModeMappings;
 
 import logic.Movement.Macro;
 import logic.Team;
-import logic.field.PlayingField;
 
 import modules.sensor.GamepadController;
 
@@ -84,8 +83,7 @@ public class ManualOpMode extends OpModeBase {
         if (cannon.isReadyToShoot()) gamepadController.ledGreen(Gamepad.LED_DURATION_CONTINUOUS);
         else gamepadController.ledRed(Gamepad.LED_DURATION_CONTINUOUS);
 
-        if (isPressActive(ManualOpModeMappings.INTAKE_ON)
-                || PlayingField.isNextToRamp(robotPosition.getPose(), team)) {
+        if (isPressActive(ManualOpModeMappings.INTAKE_ON)) {
             intake.on();
             cannonBuffers.reverse();
         } else {
