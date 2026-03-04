@@ -16,6 +16,8 @@ public class ManualOpModeMappings {
             new ButtonMapping(Button.RIGHT_STICK, PressType.CONTINUOUS_PRESS);
     public static ButtonMapping LOCK_TOWARDS_SHOOT =
             new ButtonMapping(Button.BUMPER_LEFT, PressType.CONTINUOUS_PRESS);
+    public static ButtonMapping DRIVE_MODE_TOGGLE =
+            new ButtonMapping(Button.LEFT_STICK, PressType.DOUBLE_PRESS);
 
     // Intake and transfer
     public static ButtonMapping INTAKE_ON =

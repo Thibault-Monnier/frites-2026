@@ -45,7 +45,7 @@ public class Movement implements RobotActuatorModule {
     private final PIDFController turnController;
     private final PIDFController translationController;
 
-    private final MovementMode movementMode;
+    private MovementMode movementMode;
     private boolean isSuperSlow = false;
 
     private Macro activeMacro = Macro.NONE;
@@ -74,12 +74,22 @@ public class Movement implements RobotActuatorModule {
         this.movementMode = movementMode;
     }
 
-    /// Toggles super slow mode
+    /// Toggles the movement mode between field centric and robot centric.
+    public void toggleMovementMode() {
+        if (movementMode == MovementMode.FIELD_CENTRIC) movementMode = MovementMode.ROBOT_CENTRIC;
+        else if (movementMode == MovementMode.ROBOT_CENTRIC)
+            movementMode = MovementMode.FIELD_CENTRIC;
+        else {
+            throw new RuntimeException("Unimplemented state in toggleMovementMode");
+        }
+    }
+
+    /// Toggles super slow mode.
     public void toggleSuperSlow() {
         isSuperSlow = !isSuperSlow;
     }
 
-    /// Returns whether the robot is currently moving
+    /// Returns whether the robot is currently moving.
     public boolean isMoving() {
         return mecanumDrive.isMoving();
     }
