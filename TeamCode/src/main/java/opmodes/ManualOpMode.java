@@ -83,17 +83,7 @@ public class ManualOpMode extends OpModeBase {
         if (cannon.isReadyToShoot()) gamepadController.ledGreen(Gamepad.LED_DURATION_CONTINUOUS);
         else gamepadController.ledRed(Gamepad.LED_DURATION_CONTINUOUS);
 
-        if (isPressActive(ManualOpModeMappings.INTAKE_ON)) {
-            intake.on();
-            cannonBuffers.reverse();
-        } else {
-            intake.off();
-        }
-
-        if (isPressActive(ManualOpModeMappings.INTAKE_AND_TRANSFER_REVERSE)) {
-            intake.reverse();
-            cannonBuffers.reverse();
-        }
+        intake.off();
 
         // Make sure the cannon reached its target velocity
         if ((isPressActive(ManualOpModeMappings.SHOOT) && cannon.isReadyToShoot())
@@ -108,14 +98,22 @@ public class ManualOpMode extends OpModeBase {
             else cannonBuffers.shootReset();
         }
 
+        if (isPressActive(ManualOpModeMappings.INTAKE_ON)) {
+            intake.on();
+            cannonBuffers.reverse();
+        }
+
+        if (isPressActive(ManualOpModeMappings.INTAKE_AND_TRANSFER_REVERSE)) {
+            intake.reverse();
+            cannonBuffers.reverse();
+        }
+
         if (isPressActive(ManualOpModeMappings.SUPER_SLOW_MODE_TOGGLE)) move.toggleSuperSlow();
         if (isPressActive(ManualOpModeMappings.RESET_ROBOT_POSE)) robotPosition.resetPose();
     }
 
     /** Returns true if the button mapping is active based on its press type. */
     private boolean isPressActive(GamepadController.ButtonMapping mapping) {
-        globalTelemetry.addData(
-                "Is " + mapping.toString() + " active", gamepadController.isPressActive(mapping));
         return gamepadController.isPressActive(mapping);
     }
 }
