@@ -37,7 +37,7 @@ public class ManualOpModeMappings {
     public static ButtonMapping MOVE_TO_SHOOTING_SPOT =
             new ButtonMapping(Button.Y, PressType.SINGLE_PRESS);
     public static ButtonMapping MOVE_TO_PARKING_SPOT =
-            new ButtonMapping(Button.B, PressType.SINGLE_PRESS);
+            new ButtonMapping(Button.B, PressType.DOUBLE_PRESS);
     public static ButtonMapping MOVE_TO_RAMP_SPOT =
             new ButtonMapping(Button.X, PressType.SINGLE_PRESS);
 
