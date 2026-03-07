@@ -252,6 +252,8 @@ public class AutoOpMode extends OpModeBase {
             Pose middleRowEndPose = mirror(new Pose(139, 57, Math.toRadians(0)), isBlue);
             Pose frontRowEndPose = mirror(new Pose(139, 36, Math.toRadians(0)), isBlue);
 
+            Pose middleRowBackOutPose = mirror(new Pose(100, 57, Math.toRadians(0)), isBlue);
+
             MoveToShoot1 =
                     follower.pathBuilder()
                             .addPath(new BezierLine(startPose, shootingPose))
@@ -281,18 +283,15 @@ public class AutoOpMode extends OpModeBase {
             CollectMiddleRow =
                     follower.pathBuilder()
                             .addPath(new BezierLine(middleRowStartPose, middleRowEndPose))
-                            .addPath(
-                                    new BezierLine(
-                                            middleRowEndPose, mirror(new Pose(100, 57), isBlue)))
+                            .addPath(new BezierLine(middleRowEndPose, middleRowBackOutPose))
                             .setConstantHeadingInterpolation(middleRowEndPose.getHeading())
                             .build();
 
-            Pose idkWhatPose = mirror(new Pose(139, 60, Math.toRadians(0)), isBlue);
             MoveToShoot3 =
                     follower.pathBuilder()
-                            .addPath(new BezierLine(idkWhatPose, shootingPose))
+                            .addPath(new BezierLine(middleRowBackOutPose, shootingPose))
                             .setLinearHeadingInterpolation(
-                                    idkWhatPose.getHeading(), shootingPose.getHeading())
+                                    middleRowBackOutPose.getHeading(), shootingPose.getHeading())
                             .build();
 
             AlignFrontRow =
@@ -317,7 +316,8 @@ public class AutoOpMode extends OpModeBase {
             Leave =
                     follower.pathBuilder()
                             .addPath(new BezierLine(shootingPose, leavePose))
-                            .setLinearHeadingInterpolation(shootingPose.getHeading(), leavePose.getHeading())
+                            .setLinearHeadingInterpolation(
+                                    shootingPose.getHeading(), leavePose.getHeading())
                             .build();
         }
     }
