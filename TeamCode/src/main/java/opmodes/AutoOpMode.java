@@ -3,124 +3,120 @@ package opmodes;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.ftc.FTCCoordinates;
 import com.pedropathing.geometry.BezierLine;
-import com.pedropathing.geometry.PedroCoordinates;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import logic.Team;
-import logic.position.LimelightHandler;
-
-import math.Pose2D;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import pedropathing.Constants;
 
 public class AutoOpMode extends OpModeBase {
 
     private TelemetryManager panelsTelemetry;
-    private LimelightHandler limelightHandler;
     private Follower follower;
     private Paths paths;
-
-    private ElapsedTime stateTimer;
 
     private boolean pathActive = false;
     private int nbShots = 0;
 
     enum AutoState {
-        MOVE_TO_SHOOT_1,
         SHOOT,
-        COLLECT_TOP,
+        MOVE_TO_SHOOT_1,
         MOVE_TO_SHOOT_2,
-        ALIGN_MIDDLE,
-        COLLECT_MIDDLE,
         MOVE_TO_SHOOT_3,
-        ALIGN_BOTTOM,
-        COLLECT_BOTTOM,
         MOVE_TO_SHOOT_4,
-        PARK,
+        COLLECT_BACK,
+        COLLECT_MIDDLE,
+        COLLECT_FRONT,
+        ALIGN_MIDDLE,
+        ALIGN_FRONT,
+        LEAVE,
         DONE
     }
 
     private AutoState state = AutoState.MOVE_TO_SHOOT_1;
 
-    @Override
-    protected void runStart() {
-        // Do nothing.
-    }
-
-    public AutoOpMode(Team team, boolean shouldResetPose) {
-        super(team, shouldResetPose);
+    public AutoOpMode(Team team) {
+        super(team, true);
     }
 
     @Override
     public void runOpMode() {
-        stateTimer = new ElapsedTime();
         initialize();
 
-        limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
+        waitForStart();
+
+        runStart();
+
+        double prevTime = runtime.milliseconds();
+        while (opModeIsActive()) {
+            // Consistent step duration for better PIDs
+            double time = runtime.milliseconds();
+            globalTelemetry.addData("Delta time", time - prevTime);
+            while (time - prevTime < 35) {
+                time = runtime.milliseconds();
+            }
+            prevTime = time;
+
+            runStep();
+        }
+    }
+
+    @Override
+    protected void initialize() {
+        super.initialize();
+
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(120, 120, Math.toRadians(45)));
 
-        paths = new Paths(follower, team == Team.BLUE);
+        paths = new Paths(follower, team.isBlue());
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
-
-        hubs = hardwareMap.getAll(LynxModule.class);
-        for (LynxModule hub : hubs) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        }
-
-        waitForStart();
-        runStart();
-
-        cannon.motorTargetVelocity = 1200;
-        cannon.on();
-
-        while (opModeIsActive()) {
-            for (LynxModule hub : hubs) {
-                hub.clearBulkCache();
-            }
-
-            // Don't call move.apply() — PedroPathing controls the drive motors in Auto.
-            intake.apply();
-            cannon.apply();
-            cannonBuffers.apply();
-
-            follower.update();
-            limelightHandler.update();
-//            follower.setPose(getRobotPoseFromCamera());
-
-            updateStateMachine();
-
-            panelsTelemetry.debug("State", state);
-            panelsTelemetry.debug("X", follower.getPose().getX());
-            panelsTelemetry.debug("Y", follower.getPose().getY());
-            panelsTelemetry.debug("Heading", follower.getPose().getHeading());
-            panelsTelemetry.debug("Heading", cannon.motorTargetVelocity);
-            panelsTelemetry.update(telemetry);
-        }
     }
 
-    /*------------------------------------------------*/
-    /*                STATE MACHINE                   */
-    /*------------------------------------------------*/
+    @Override
+    protected void runStart() {
+        super.runStart();
 
-    private void updateStateMachine() {
+        cannon.setTargetVelocity(1200);
+        cannon.on();
+    }
 
+    private void runStep() {
+        update();
+
+        execute();
+
+        apply(false); // Pedro Pathing controls drive motors
+        log();
+    }
+
+    @Override
+    protected void update() {
+        super.update();
+
+        follower.update();
+        follower.setPose(robotPosition.getPose().toPedropathingPose());
+    }
+
+    @Override
+    protected void log() {
+        super.log();
+
+        panelsTelemetry.debug("State", state);
+        panelsTelemetry.debug("X", follower.getPose().getX());
+        panelsTelemetry.debug("Y", follower.getPose().getY());
+        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
+        panelsTelemetry.update(telemetry);
+    }
+
+    private void execute() {
         switch (state) {
-
             case MOVE_TO_SHOOT_1:
-//                intake.on();
                 cannonBuffers.off();
                 runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
                 break;
@@ -143,10 +139,10 @@ public class AutoOpMode extends OpModeBase {
                 runPath(paths.MoveToShoot4, AutoState.SHOOT, false);
                 break;
 
-            case COLLECT_TOP:
+            case COLLECT_BACK:
                 intake.on();
                 cannonBuffers.reverse();
-                runPath(paths.CollectTopRow, AutoState.MOVE_TO_SHOOT_2, true);
+                runPath(paths.CollectBackRow, AutoState.MOVE_TO_SHOOT_2, true);
                 break;
 
             case ALIGN_MIDDLE:
@@ -160,23 +156,23 @@ public class AutoOpMode extends OpModeBase {
                 runPath(paths.CollectMiddleRow, AutoState.MOVE_TO_SHOOT_3, true);
                 break;
 
-            case ALIGN_BOTTOM:
+            case ALIGN_FRONT:
                 intake.on();
-                runPath(paths.AlignBottomRow, AutoState.COLLECT_BOTTOM, false);
+                runPath(paths.AlignFrontRow, AutoState.COLLECT_FRONT, false);
                 break;
 
-            case COLLECT_BOTTOM:
+            case COLLECT_FRONT:
                 intake.on();
                 cannonBuffers.reverse();
-                runPath(paths.CollectBottomRow, AutoState.MOVE_TO_SHOOT_4, true);
+                runPath(paths.CollectFrontRow, AutoState.MOVE_TO_SHOOT_4, true);
                 break;
 
             case SHOOT:
                 runShootCycle();
                 break;
 
-            case PARK:
-                runPath(paths.Park, AutoState.DONE, false);
+            case LEAVE:
+                runPath(paths.Leave, AutoState.DONE, false);
                 break;
 
             case DONE:
@@ -186,12 +182,7 @@ public class AutoOpMode extends OpModeBase {
         }
     }
 
-    /*------------------------------------------------*/
-    /*                PATH EXECUTION                  */
-    /*------------------------------------------------*/
-
     private void runPath(PathChain path, AutoState nextState, boolean slow) {
-
         if (!pathActive) {
             intake.off();
             follower.followPath(path, slow ? 0.6 : 1, true);
@@ -201,62 +192,25 @@ public class AutoOpMode extends OpModeBase {
         if (!follower.isBusy()) {
             pathActive = false;
             state = nextState;
-            stateTimer.reset();   // timer starts AFTER motion completes
         }
     }
 
-    /*------------------------------------------------*/
-    /*                SHOOTING LOGIC                  */
-    /*------------------------------------------------*/
-
     private void runShootCycle() {
-
         if (follower.isBusy()) return;
 
         intake.on();
 
-        double t = stateTimer.seconds();
+        boolean done = cannonBuffers.shootContinue(true);
 
-        if (t < 0.5) {
-            cannonBuffers.leftBuffer.on();
-        } else if (t < 1.0) {
-            cannonBuffers.leftBuffer.off();
-            cannonBuffers.rightBuffer.on();
-        } else if (t < 1.5) {
-            cannonBuffers.rightBuffer.on();
-            cannonBuffers.leftBuffer.on();
-        } else if (t < 2.0) {
-            cannonBuffers.leftBuffer.off();
-            cannonBuffers.rightBuffer.off();
-        } else {
-            cannonBuffers.off();
+        if (done) {
+            cannonBuffers.shootReset();
             nbShots++;
 
-            if (nbShots == 1) state = AutoState.COLLECT_TOP;
+            if (nbShots == 1) state = AutoState.COLLECT_BACK;
             else if (nbShots == 2) state = AutoState.ALIGN_MIDDLE;
-            else if (nbShots == 3) state = AutoState.ALIGN_BOTTOM;
-            else state = AutoState.PARK;
-
-            stateTimer.reset();
+            else if (nbShots == 3) state = AutoState.ALIGN_FRONT;
+            else state = AutoState.LEAVE;
         }
-    }
-
-    /*------------------------------------------------*/
-    /*                VISION POSE                     */
-    /*------------------------------------------------*/
-
-    private Pose getRobotPoseFromCamera() {
-        Pose2D lastPose = limelightHandler.getLastKnownPose();
-        if (lastPose == null) {
-            return follower.getPose();
-        }
-
-        return new Pose(
-                lastPose.getX(DistanceUnit.INCH),
-                lastPose.getY(DistanceUnit.INCH),
-                lastPose.getHeading(AngleUnit.RADIANS),
-                FTCCoordinates.INSTANCE
-        ).getAsCoordinateSystem(PedroCoordinates.INSTANCE);
     }
 
     /*------------------------------------------------*/
@@ -264,108 +218,107 @@ public class AutoOpMode extends OpModeBase {
     /*------------------------------------------------*/
 
     public static class Paths {
+        public PathChain MoveToShoot1,
+                CollectBackRow,
+                MoveToShoot2,
+                AlignMiddleRow,
+                CollectMiddleRow,
+                MoveToShoot3,
+                AlignFrontRow,
+                CollectFrontRow,
+                MoveToShoot4,
+                Leave;
 
-        public PathChain MoveToShoot1, CollectTopRow, MoveToShoot2,
-                AlignMiddleRow, CollectMiddleRow, MoveToShoot3,
-                AlignBottomRow, CollectBottomRow, MoveToShoot4, Park;
+        private Pose mirror(Pose pose, boolean shouldMirror) {
+            double x = pose.getX();
+            double y = pose.getY();
+            double heading = pose.getHeading();
 
-        private double mirrorX(double x, boolean blue) {
-            return blue ? 144 - x : x;
+            double newX = shouldMirror ? 144 - x : x;
+            double newHeading = shouldMirror ? Math.PI - heading : heading;
+
+            return new Pose(newX, y, newHeading);
         }
 
-        private double mirrorHeading(double headingRad, boolean blue) {
-            if (!blue) return headingRad;
-            return Math.PI - headingRad;
-        }
+        public Paths(Follower follower, boolean isBlue) {
+            Pose startPose = mirror(new Pose(120, 120, Math.toRadians(45)), isBlue);
+            Pose shootingPose = mirror(new Pose(84, 84, Math.toRadians(45)), isBlue);
+            Pose leavePose = mirror(new Pose(96, 70, Math.toRadians(0)), isBlue);
 
-        public Paths(Follower follower, boolean blue) {
+            Pose middleRowStartPose = mirror(new Pose(84, 57, Math.toRadians(0)), isBlue);
+            Pose frontRowStartPose = mirror(new Pose(84, 36, Math.toRadians(0)), isBlue);
 
-            MoveToShoot1 = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(120, blue), 120),
-                            new Pose(mirrorX(84, blue), 84)))
-                    .setLinearHeadingInterpolation(
-                            mirrorHeading(Math.toRadians(45), blue),
-                            mirrorHeading(Math.toRadians(45), blue))
-                    .build();
+            Pose backRowEndPose = mirror(new Pose(135, 84, Math.toRadians(0)), isBlue);
+            Pose middleRowEndPose = mirror(new Pose(139, 57, Math.toRadians(0)), isBlue);
+            Pose frontRowEndPose = mirror(new Pose(139, 36, Math.toRadians(0)), isBlue);
 
-            CollectTopRow = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(84, blue), 84),
-                            new Pose(mirrorX(135, blue), 84)))
-                    .setConstantHeadingInterpolation(0)
-                    .build();
+            MoveToShoot1 =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(startPose, shootingPose))
+                            .setLinearHeadingInterpolation(
+                                    startPose.getHeading(), shootingPose.getHeading())
+                            .build();
 
-            MoveToShoot2 = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(135, blue), 84),
-                            new Pose(mirrorX(84, blue), 84)))
-                    .setLinearHeadingInterpolation(
-                            mirrorHeading(Math.toRadians(0), blue),
-                            mirrorHeading(Math.toRadians(45), blue))
-                    .build();
+            CollectBackRow =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(shootingPose, backRowEndPose))
+                            .setConstantHeadingInterpolation(backRowEndPose.getHeading())
+                            .build();
 
-            AlignMiddleRow = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(84, blue), 84),
-                            new Pose(mirrorX(84, blue), 57)))
-                    .setLinearHeadingInterpolation(
-                            mirrorHeading(Math.toRadians(45), blue),
-                            mirrorHeading(Math.toRadians(0), blue))
-                    .build();
-            CollectMiddleRow = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(84, blue), 57),
-                            new Pose(mirrorX(139, blue), 57)))
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(139, blue), 57),
-                            new Pose(mirrorX(100, blue), 57)
-                    ))
-                    .setConstantHeadingInterpolation(0)
-                    .build();
+            MoveToShoot2 =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(backRowEndPose, shootingPose))
+                            .setLinearHeadingInterpolation(
+                                    backRowEndPose.getHeading(), shootingPose.getHeading())
+                            .build();
 
-            MoveToShoot3 = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(139, blue), 60),
-                            new Pose(mirrorX(84, blue), 84)))
-                    .setLinearHeadingInterpolation(
-                            mirrorHeading(Math.toRadians(0), blue),
-                            mirrorHeading(Math.toRadians(45), blue))
-                    .build();
+            AlignMiddleRow =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(shootingPose, middleRowStartPose))
+                            .setLinearHeadingInterpolation(
+                                    shootingPose.getHeading(), middleRowStartPose.getHeading())
+                            .build();
+            CollectMiddleRow =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(middleRowStartPose, middleRowEndPose))
+                            .addPath(
+                                    new BezierLine(
+                                            middleRowEndPose, mirror(new Pose(100, 57), isBlue)))
+                            .setConstantHeadingInterpolation(middleRowEndPose.getHeading())
+                            .build();
 
-            AlignBottomRow = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(84, blue), 84),
-                            new Pose(mirrorX(84, blue), 36)))
-                    .setLinearHeadingInterpolation(
-                            mirrorHeading(Math.toRadians(45), blue),
-                            mirrorHeading(Math.toRadians(0), blue))
-                    .build();
+            Pose idkWhatPose = mirror(new Pose(139, 60, Math.toRadians(0)), isBlue);
+            MoveToShoot3 =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(idkWhatPose, shootingPose))
+                            .setLinearHeadingInterpolation(
+                                    idkWhatPose.getHeading(), shootingPose.getHeading())
+                            .build();
 
-            CollectBottomRow = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(84, blue), 36),
-                            new Pose(mirrorX(139, blue), 36)))
-                    .setConstantHeadingInterpolation(0)
-                    .build();
+            AlignFrontRow =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(shootingPose, frontRowStartPose))
+                            .setLinearHeadingInterpolation(
+                                    shootingPose.getHeading(), frontRowStartPose.getHeading())
+                            .build();
+            CollectFrontRow =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(frontRowStartPose, frontRowEndPose))
+                            .setConstantHeadingInterpolation(frontRowEndPose.getHeading())
+                            .build();
 
-            MoveToShoot4 = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(139, blue), 36),
-                            new Pose(mirrorX(84, blue), 84)))
-                    .setLinearHeadingInterpolation(
-                            mirrorHeading(Math.toRadians(0), blue),
-                            mirrorHeading(Math.toRadians(45), blue))
-                    .build();
+            MoveToShoot4 =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(frontRowEndPose, shootingPose))
+                            .setLinearHeadingInterpolation(
+                                    frontRowEndPose.getHeading(), shootingPose.getHeading())
+                            .build();
 
-            Park = follower.pathBuilder()
-                    .addPath(new BezierLine(
-                            new Pose(mirrorX(84, blue), 84),
-                            new Pose(mirrorX(96, blue), 70)))
-                    .setLinearHeadingInterpolation(
-                            mirrorHeading(Math.toRadians(45), blue),
-                            mirrorHeading(Math.toRadians(0), blue))
-                    .build();
+            Leave =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(shootingPose, leavePose))
+                            .setLinearHeadingInterpolation(shootingPose.getHeading(), leavePose.getHeading())
+                            .build();
         }
     }
 }

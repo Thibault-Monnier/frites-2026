@@ -169,12 +169,16 @@ public class OpModeBase extends LinearOpMode {
         System.out.println("-----------------------------------");
     }
 
-    protected void apply() {
+    protected void apply(boolean updateMove) {
         move.apply();
 
         intake.apply();
 
         cannon.apply();
         cannonBuffers.apply();
+    }
+
+    protected void apply() {
+        apply(true);
     }
 }

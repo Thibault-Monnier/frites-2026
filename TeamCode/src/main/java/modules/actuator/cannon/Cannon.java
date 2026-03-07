@@ -97,12 +97,16 @@ public class Cannon implements RobotActuatorModule {
         isRunning = false;
     }
 
+    public void setTargetVelocity(double value) {
+        motorTargetVelocity = value;
+    }
+
     /// Update motor power using a value interpolated from target distance.
     public void update(Distance horizontalShootingDistance) {
         if (isRunning) {
-            motorTargetVelocity = computeVelocity(horizontalShootingDistance);
+            setTargetVelocity(computeVelocity(horizontalShootingDistance));
         } else {
-            motorTargetVelocity = 0.0;
+            setTargetVelocity(0);
         }
     }
 

@@ -2,6 +2,10 @@ package math;
 
 import androidx.annotation.NonNull;
 
+import com.pedropathing.ftc.FTCCoordinates;
+import com.pedropathing.geometry.PedroCoordinates;
+import com.pedropathing.geometry.Pose;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -194,6 +198,21 @@ public class Pose2D {
                 getY(DistanceUnit.MM),
                 AngleUnit.RADIANS,
                 getHeading(AngleUnit.RADIANS));
+    }
+
+    /**
+     * Converts this Pose2D to a PedroCoordinates Pose, changing the coordinate system accordingly.
+     *
+     * @return a new PedroCoordinates Pose representing the same location as this Pose2D
+     */
+    public Pose toPedropathingPose() {
+        Pose pose =
+                new Pose(
+                        getX(DistanceUnit.INCH),
+                        getY(DistanceUnit.INCH),
+                        getHeading(AngleUnit.RADIANS),
+                        FTCCoordinates.INSTANCE);
+        return pose.getAsCoordinateSystem(PedroCoordinates.INSTANCE);
     }
 
     /**
