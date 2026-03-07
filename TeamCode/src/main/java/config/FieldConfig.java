@@ -35,7 +35,7 @@ public class FieldConfig {
                     Angle.fromDegrees(90));
 
     public static Pose2D RED_RAMP_APPROACH_POSE =
-            new Pose2D(TILE_SIZE.multiply(0.45), TILE_SIZE.multiply(2.55), Angle.fromDegrees(125));
+            new Pose2D(TILE_SIZE.multiply(0.35), TILE_SIZE.multiply(2.6), Angle.fromDegrees(125));
 
     // Front is the row closest to the audience, back is the row furthest from the audience
     public static Pose2D RED_ARTIFACT_BACK_ROW_ENTRY_POSE =
