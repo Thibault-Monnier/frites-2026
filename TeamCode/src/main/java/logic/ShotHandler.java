@@ -23,7 +23,7 @@ public class ShotHandler {
 
     private Vector2D computedShotVector;
 
-    boolean usingMovingShot = false;
+    boolean usingMovingShot = true;
 
     public ShotHandler(RobotPosition robotPosition, Team team, Telemetry globalTelemetry) {
         this.robotPosition = robotPosition;
