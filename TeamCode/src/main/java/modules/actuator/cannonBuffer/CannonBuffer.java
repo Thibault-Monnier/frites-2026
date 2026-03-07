@@ -1,6 +1,7 @@
 package modules.actuator.cannonBuffer;
 
 import static config.CannonConfig.MOVING_SPEED;
+import static config.CannonConfig.REVERSE_SPEED;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -31,7 +32,7 @@ public class CannonBuffer implements RobotActuatorModule {
         if (isRunning) {
             servoTargetPower = MOVING_SPEED;
         } else if (isReversing) {
-            servoTargetPower = -MOVING_SPEED;
+            servoTargetPower = REVERSE_SPEED;
             isReversing = false;
         }
         servo.setPower(servoTargetPower);

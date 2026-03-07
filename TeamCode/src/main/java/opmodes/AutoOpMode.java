@@ -5,7 +5,6 @@ import logic.action.Action;
 import logic.action.ActionSequence;
 import logic.action.SimpleAction;
 import logic.field.Artifact;
-import logic.field.PlayingField;
 
 public class AutoOpMode extends OpModeBase {
     private final ActionSequence actionSequence;
@@ -49,19 +48,14 @@ public class AutoOpMode extends OpModeBase {
         collectArtifactRowSequence(Artifact.Row.BACK);
         shootSequence();
 
-        registerAction(driveActions.driveToArtifactRowEntryPose(Artifact.Row.MIDDLE));
-        registerAction(turnTowardsArtifactRow(Artifact.Row.MIDDLE));
-
         collectArtifactRowSequence(Artifact.Row.MIDDLE);
         shootSequence();
 
         registerAction(driveActions.driveToLeavePose());
-        registerAction(turnTowardsLeavePose());
     }
 
     private void shootSequence() {
         registerAction(driveActions.driveToGoalShootPosition());
-        registerAction(turnTowardsGoal());
 
         registerAction(prepareToShoot());
         registerAction(intakeOn());
@@ -71,7 +65,6 @@ public class AutoOpMode extends OpModeBase {
 
     private void collectArtifactRowSequence(Artifact.Row row) {
         registerAction(driveActions.driveToArtifactRowEntryPose(row));
-        registerAction(turnTowardsArtifactRow(row));
 
         registerAction(intakeOn());
         registerAction(driveActions.collectArtifactsFromRow(row));
@@ -89,19 +82,6 @@ public class AutoOpMode extends OpModeBase {
 
     private Action shoot() {
         return () -> cannonBuffers.shootContinue(true);
-    }
-
-    private Action turnTowardsGoal() {
-        return () -> move.turnTowards(PlayingField.goalPos(team));
-    }
-
-    private Action turnTowardsArtifactRow(Artifact.Row row) {
-        return () ->
-                move.turnTowardsHeading(PlayingField.artifactRowEntryPose(team, row).getHeading());
-    }
-
-    private Action turnTowardsLeavePose() {
-        return () -> move.turnTowardsHeading(PlayingField.autoModeLeavePose(team).getHeading());
     }
 
     private Action intakeOn() {

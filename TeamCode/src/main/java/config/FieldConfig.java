@@ -44,4 +44,6 @@ public class FieldConfig {
             new Pose2D(TILE_SIZE.multiply(0.5), TILE_SIZE, Angle.fromDegrees(90));
     public static Pose2D RED_ARTIFACT_FRONT_ROW_ENTRY_POSE =
             new Pose2D(TILE_SIZE.multiply(1.5), TILE_SIZE, Angle.fromDegrees(90));
+
+    public static final Distance ARTIFACT_COLLECTION_DISTANCE = Distance.fromCentimeters(90);
 }
