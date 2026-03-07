@@ -170,7 +170,7 @@ public class OpModeBase extends LinearOpMode {
     }
 
     protected void apply(boolean updateMove) {
-        move.apply();
+        if (updateMove) move.apply();
 
         intake.apply();
 
