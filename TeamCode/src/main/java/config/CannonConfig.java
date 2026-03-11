@@ -17,10 +17,10 @@ public class CannonConfig {
 
     public static PIDFCoefficients CANNON_PID = new PIDFCoefficients(0.02, 0.0, 0.0, -0.5);
 
-    public static Angle CANNON_ANGLE = Angle.fromDegrees(50.0);
-    public static Distance CANNON_TOP_HEIGHT = Distance.fromCentimeters(41.5);
+    public static Angle CANNON_ANGLE = Angle.fromDegrees(61.0);
+    public static Distance CANNON_TOP_HEIGHT = Distance.fromCentimeters(40.8);
     public static Vector2D CANNON_RELATIVE_POSITION =
-            new Vector2D(Distance.fromCentimeters(-12.5), Distance.fromCentimeters(0.0));
+            new Vector2D(Distance.fromCentimeters(-15.0), Distance.fromCentimeters(0.0));
 
     public static double SHOOT_DELAY = 0.375;
     public static int SHOOT_BALLS_AMOUNT = 4;
