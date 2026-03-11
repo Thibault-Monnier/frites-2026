@@ -61,6 +61,8 @@ public class AutoOpMode extends OpModeBase {
 
             runStep();
         }
+
+        runStop();
     }
 
     @Override

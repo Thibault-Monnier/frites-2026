@@ -36,6 +36,8 @@ public class ManualOpMode extends OpModeBase {
 
             runStep();
         }
+
+        runStop();
     }
 
     @Override

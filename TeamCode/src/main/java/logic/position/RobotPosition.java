@@ -66,6 +66,14 @@ public class RobotPosition {
         this.globalTelemetry.update();
     }
 
+    public void start() {
+        limelightHandler.start();
+    }
+
+    public void stop() {
+        limelightHandler.stop();
+    }
+
     /** Resets the robot pose to the starting position. */
     public void resetPose() {
         pose = PlayingField.startPose(color);

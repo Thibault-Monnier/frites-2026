@@ -127,6 +127,11 @@ public class OpModeBase extends LinearOpMode {
 
     protected void runStart() {
         runtime.reset();
+        robotPosition.start();
+    }
+
+    protected void runStop() {
+        robotPosition.stop();
     }
 
     protected void update() {
