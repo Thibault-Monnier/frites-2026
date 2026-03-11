@@ -129,8 +129,12 @@ public class Cannon implements RobotActuatorModule {
     }
 
     protected double computeVelocity(Distance horizontalShootingDistance) {
-        double d = horizontalShootingDistance.getValue(DistanceUnit.CM);
-        return d * d / 305.25 + d / 3.64478 + 976.65848;
+        double d = horizontalShootingDistance.getValue(DistanceUnit.METER);
+        return 88.58378 * d * d * d * d
+                - 1010.68521 * d * d * d
+                + 4179.49306 * d * d
+                - 7247.60521 * d
+                + 5714.54088;
     }
 
     @Override
