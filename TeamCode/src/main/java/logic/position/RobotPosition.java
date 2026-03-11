@@ -128,6 +128,17 @@ public class RobotPosition {
         return displacement.scale(1 / time);
     }
 
+    /// Gets the current velocity of a point relative to the robot as a Vector2D, in distance /
+    /// second
+    public Vector2D getPointVelocity(Vector2D relativePosition) {
+        Position2D previousPointPos = previousPose.addRelative(relativePosition);
+        Position2D currentPointPos = pose.addRelative(relativePosition);
+
+        Vector2D displacement = currentPointPos.subtract(previousPointPos).toVector2D();
+        double time = poseTimeSec - previousPoseTimeSec;
+        return displacement.scale(1 / time);
+    }
+
     public LimelightHandler getLimelightHandler() {
         return limelightHandler;
     }

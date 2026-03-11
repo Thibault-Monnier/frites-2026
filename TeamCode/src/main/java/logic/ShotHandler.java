@@ -64,11 +64,11 @@ public class ShotHandler {
 
         final double g = 9.81; // gravitational acceleration in m/s^2
 
-        // FIXME: this is not exact as we should be using the cannon's velocity instead
-        Vector2D robotVelocity = robotPosition.getVelocity();
-        Angle velocityAngle = robotVelocity.direction();
+        Vector2D cannonVelocity =
+                robotPosition.getPointVelocity(CannonConfig.CANNON_RELATIVE_POSITION);
+        Angle velocityAngle = cannonVelocity.direction();
         Angle correctionAngle = velocityAngle.negate();
-        robotVelocity = robotVelocity.rotate(correctionAngle);
+        cannonVelocity = cannonVelocity.rotate(correctionAngle);
 
         Angle theta = CannonConfig.CANNON_ANGLE;
         Distance cannonTopHeight = CannonConfig.CANNON_TOP_HEIGHT;
@@ -82,7 +82,7 @@ public class ShotHandler {
         double dy = goalHeight.subtract(cannonTopHeight).toMeters();
 
         double ballSpeed = dx * Math.sqrt(g / (2 * (dx * theta.tan() - dy)));
-        double robotSpeed = robotVelocity.magnitude().toMeters();
+        double robotSpeed = cannonVelocity.magnitude().toMeters();
 
         double shootSpeed =
                 Math.sqrt(
