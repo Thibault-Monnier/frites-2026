@@ -19,9 +19,7 @@ public class CannonCalibrator extends Cannon {
     }
 
     @Override
-    public void update(Distance horizontalShootingDistance) {
-        throw new UnsupportedOperationException("Do not call update() on CannonCalibrator");
-    }
+    public void update(Distance horizontalShootingDistance) {}
 
     public void speedup() {
         motorTargetVelocity += CALIBRATION_SPEED_CHANGE_OFFSET;

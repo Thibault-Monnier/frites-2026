@@ -3,6 +3,7 @@ package opmodes;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import config.HardwareConfig;
+import config.ManualOpModeMappings;
 
 import logic.Team;
 import logic.field.PlayingField;
@@ -13,8 +14,6 @@ import modules.actuator.cannon.CannonCalibrator;
 import modules.sensor.GamepadController;
 
 public class CannonCalibrationOpMode extends OpModeBase {
-    private CannonCalibrator cannonCalibrator;
-
     public CannonCalibrationOpMode(Team team) {
         super(team, true);
     }
@@ -46,7 +45,7 @@ public class CannonCalibrationOpMode extends OpModeBase {
     @Override
     protected void initialize() {
         super.initialize();
-        cannonCalibrator =
+        cannon =
                 new CannonCalibrator(
                         globalTelemetry,
                         hardwareMap.get(DcMotorEx.class, HardwareConfig.CANNON_MOTOR_LEFT_ID),
@@ -60,7 +59,7 @@ public class CannonCalibrationOpMode extends OpModeBase {
 
         apply();
         log();
-        cannonCalibrator.printCalibrationData();
+        cannon().printCalibrationData();
     }
 
     public void executeActions() {
@@ -77,17 +76,27 @@ public class CannonCalibrationOpMode extends OpModeBase {
                     gamepad1, gamepadController.isPressing(GamepadController.Button.RIGHT_STICK));
         }
 
-        if (gamepadController.isPressed(GamepadController.Button.X)) cannonCalibrator.toggle();
-        if (gamepadController.isPressed(GamepadController.Button.Y)) cannonCalibrator.speedup();
-        if (gamepadController.isLongPressed(GamepadController.Button.Y))
-            cannonCalibrator.fastSpeedup();
-        if (gamepadController.isPressed(GamepadController.Button.A)) cannonCalibrator.slowdown();
-        if (gamepadController.isLongPressed(GamepadController.Button.A))
-            cannonCalibrator.fastSlowdown();
+        if ((isPressActive(ManualOpModeMappings.SHOOT) && cannon.isReadyToShoot())
+                || isPressActive(ManualOpModeMappings.FORCE_SHOOT)) {
+            cannonBuffers.shootContinue(true);
+            intake.on();
+        } else {
+            cannonBuffers.shootDontContinue();
+
+            if (isPressActive(ManualOpModeMappings.SHOOT))
+                gamepadController.rumble(50); // Cannon isn't ready
+            else cannonBuffers.shootReset();
+        }
+
+        if (gamepadController.isPressed(GamepadController.Button.X)) cannon.toggle();
+        if (gamepadController.isPressed(GamepadController.Button.Y)) cannon().speedup();
+        if (gamepadController.isLongPressed(GamepadController.Button.Y)) cannon().fastSpeedup();
+        if (gamepadController.isPressed(GamepadController.Button.A)) cannon().slowdown();
+        if (gamepadController.isLongPressed(GamepadController.Button.A)) cannon().fastSlowdown();
         if (gamepadController.isPressed(GamepadController.Button.B)) {
             Distance targetDistance =
                     PlayingField.distanceToGoal(robotPosition.getPosition(), team);
-            cannonCalibrator.saveCurrentCalibrationData(targetDistance);
+            cannon().saveCurrentCalibrationData(targetDistance);
         }
 
         if (gamepadController.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
@@ -98,8 +107,18 @@ public class CannonCalibrationOpMode extends OpModeBase {
         }
     }
 
+    private CannonCalibrator cannon() {
+        return (CannonCalibrator) cannon;
+    }
+
+    private boolean isPressActive(GamepadController.ButtonMapping mapping) {
+        return gamepadController.isPressActive(mapping);
+    }
+
+    @Override
     public void runStop() {
-        cannonCalibrator.printCalibrationData();
+        super.runStop();
+        cannon().printCalibrationData();
         globalTelemetry.update();
     }
 }
