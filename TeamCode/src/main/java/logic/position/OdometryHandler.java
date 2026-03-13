@@ -1,7 +1,11 @@
 package logic.position;
 
+import static config.OdometryConfig.ENCODER_X_DIRECTION;
 import static config.OdometryConfig.ENCODER_X_Y_OFFSET;
+import static config.OdometryConfig.ENCODER_Y_DIRECTION;
 import static config.OdometryConfig.ENCODER_Y_X_OFFSET;
+import static config.OdometryConfig.vx;
+import static config.OdometryConfig.vy;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -24,9 +28,7 @@ public final class OdometryHandler {
         driver = hardwareMap.get(GoBildaPinpointDriver.class, HardwareConfig.ODOMETRY_POD_ID);
 
         driver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        driver.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.REVERSED,
-                GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        driver.setEncoderDirections(ENCODER_X_DIRECTION, ENCODER_Y_DIRECTION);
 
         driver.setOffsets(ENCODER_X_Y_OFFSET.toMillimeters(), ENCODER_Y_X_OFFSET.toMillimeters());
 
