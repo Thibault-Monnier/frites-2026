@@ -54,8 +54,7 @@ public class Constants {
                     .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
                     .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
-    public static Follower createFollower(
-            HardwareMap hardwareMap) {
+    public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
                 .pathConstraints(pathConstraints)
                 .mecanumDrivetrain(driveConstants)

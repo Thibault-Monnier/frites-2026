@@ -71,6 +71,11 @@ public class Position2D {
         return new Vector2D(getX(), getY());
     }
 
+    /** Converts this Position2D to a Pose2D with the same x and y values, and a heading of 0. */
+    public Pose2D toPose2D() {
+        return new Pose2D(getX(), getY(), new Angle());
+    }
+
     /**
      * Gets x in the desired distance unit
      *

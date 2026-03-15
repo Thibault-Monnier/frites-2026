@@ -10,6 +10,8 @@ import com.pedropathing.paths.PathChain;
 import logic.Team;
 import logic.field.PlayingField;
 
+import math.Distance;
+
 import pedropathing.Constants;
 
 public class AutoOpMode extends OpModeBase {
@@ -101,7 +103,12 @@ public class AutoOpMode extends OpModeBase {
     @Override
     protected void update() {
         follower.update();
-        super.update(false);
+
+        Pose robotPose = follower.getPose();
+        Pose goalPos = PlayingField.goalPos(team).toPose2D().toPedropathingPose();
+        double dist = robotPose.distanceFrom(goalPos);
+
+        super.update(false, Distance.fromInches(dist));
     }
 
     @Override
