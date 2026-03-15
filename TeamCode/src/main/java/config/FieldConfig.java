@@ -23,7 +23,8 @@ public class FieldConfig {
     public static Distance GOAL_DEPTH = Distance.fromInches(27);
 
     public static Pose2D RED_START_POSE =
-            new Pose2D(DistanceUnit.METER, -1.250, 1.370, AngleUnit.DEGREES, 138.0);
+            new Pose2D(DistanceUnit.METER, -1.363, 1.337, AngleUnit.DEGREES, 127.0);
+
     public static Pose2D RED_AUTO_MODE_LEAVE_POSE =
             new Pose2D(TILE_SIZE, TILE_SIZE, Angle.fromDegrees(90));
 
