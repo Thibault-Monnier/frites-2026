@@ -1,9 +1,8 @@
 package opmodes;
 
-import androidx.annotation.Nullable;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -21,8 +20,6 @@ import logic.action.DriveActions;
 import logic.field.ArtifactSequence;
 import logic.position.RobotPosition;
 
-import math.Distance;
-
 import modules.actuator.cannon.Cannon;
 import modules.actuator.cannonBuffer.CannonBuffer;
 import modules.actuator.cannonBuffer.CannonBuffersHandler;
@@ -31,6 +28,8 @@ import modules.sensor.BatteryMonitor;
 import modules.sensor.GamepadController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import pedropathing.Constants;
 
 import java.util.List;
 
@@ -44,6 +43,7 @@ public class OpModeBase extends LinearOpMode {
     protected final boolean shouldResetPose;
 
     protected RobotPosition robotPosition;
+    protected Follower follower;
     protected ShotHandler shotHandler;
 
     protected BatteryMonitor batteryMonitor;
@@ -82,7 +82,8 @@ public class OpModeBase extends LinearOpMode {
 
         robotPosition =
                 RobotPosition.getInstance(globalTelemetry, hardwareMap, team, shouldResetPose);
-        shotHandler = new ShotHandler(robotPosition, team, globalTelemetry);
+        follower = Constants.createFollower(hardwareMap, team);
+        shotHandler = new ShotHandler(robotPosition, follower, team, globalTelemetry);
 
         batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
 
@@ -129,6 +130,14 @@ public class OpModeBase extends LinearOpMode {
         this.intake = new Intake(globalTelemetry, intake);
     }
 
+    protected void useFollower() {
+        shotHandler.useFollowerPose();
+    }
+
+    protected void useRobotPosition() {
+        shotHandler.useRobotPositionPose();
+    }
+
     protected void runStart() {
         runtime.reset();
         robotPosition.start();
@@ -138,38 +147,28 @@ public class OpModeBase extends LinearOpMode {
         robotPosition.stop();
     }
 
-    protected void update(boolean useRobotPosition, @Nullable Distance overrideCannonDist) {
+    protected void update() {
         for (LynxModule hub : hubs) {
             hub.clearBulkCache();
         }
 
         gamepadController.update();
 
-        if (useRobotPosition) {
-            robotPosition.updatePose();
-            shotHandler.update();
+        robotPosition.updatePose();
+        shotHandler.update();
 
-            cannon.update(shotHandler.getShotMagnitude());
-        }
-
-        if (overrideCannonDist != null) {
-            cannon.update(overrideCannonDist);
-        }
+        cannon.update(shotHandler.getShotMagnitude());
 
         System.out.println("Robot Pose: " + robotPosition.getPose().toString());
-//        globalTelemetry.addData(
-//                "Shooting target distance", shotHandler.getShotMagnitude().toString());
-//        globalTelemetry.addData("Shooting target angle", shotHandler.getShotAngle().toString());
+        globalTelemetry.addData(
+                "Shooting target distance", shotHandler.getShotMagnitude().toString());
+        globalTelemetry.addData("Shooting target angle", shotHandler.getShotAngle().toString());
 
         if (artifactSequence == null)
             artifactSequence =
                     ArtifactSequence.findCurrentSequence(robotPosition.getLimelightHandler());
         if (artifactSequence != null)
             globalTelemetry.addData("Pattern", artifactSequence.toString());
-    }
-
-    protected void update() {
-        update(true, null);
     }
 
     protected void log() {

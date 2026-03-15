@@ -239,4 +239,15 @@ public class Pose2D {
                 AngleUnit.RADIANS,
                 navPose.getHeading(AngleUnit.RADIANS));
     }
+
+    /** Converts a PedroCoordinates Pose to a Pose2D, changing the coordinate system accordingly. */
+    public static Pose2D fromPedropathingPose(Pose pose) {
+        Pose ftcPose = pose.getAsCoordinateSystem(FTCCoordinates.INSTANCE);
+        return new Pose2D(
+                DistanceUnit.INCH,
+                ftcPose.getX(),
+                ftcPose.getY(),
+                AngleUnit.RADIANS,
+                ftcPose.getHeading());
+    }
 }

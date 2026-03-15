@@ -1,5 +1,7 @@
 package logic;
 
+import com.pedropathing.follower.Follower;
+
 import config.CannonConfig;
 import config.FieldConfig;
 
@@ -8,6 +10,7 @@ import logic.position.RobotPosition;
 
 import math.Angle;
 import math.Distance;
+import math.Pose2D;
 import math.Position2D;
 import math.Vector2D;
 
@@ -17,6 +20,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class ShotHandler {
     private final RobotPosition robotPosition;
+    private final Follower follower;
+
+    private boolean useFollowerInsteadOfRobotPosition;
+
     private final Team team;
 
     private final Telemetry globalTelemetry;
@@ -25,8 +32,10 @@ public class ShotHandler {
 
     boolean usingMovingShot = true;
 
-    public ShotHandler(RobotPosition robotPosition, Team team, Telemetry globalTelemetry) {
+    public ShotHandler(
+            RobotPosition robotPosition, Follower follower, Team team, Telemetry globalTelemetry) {
         this.robotPosition = robotPosition;
+        this.follower = follower;
         this.team = team;
         this.globalTelemetry = globalTelemetry;
     }
@@ -59,13 +68,22 @@ public class ShotHandler {
         usingMovingShot = !usingMovingShot;
     }
 
+    /** Use pose calculations from pedropathing follower */
+    public void useFollowerPose() {
+        useFollowerInsteadOfRobotPosition = true;
+    }
+
+    /** Use pose calculations from custom RobotPosition */
+    public void useRobotPositionPose() {
+        useFollowerInsteadOfRobotPosition = false;
+    }
+
     private Vector2D computeMovingShotVector() {
         globalTelemetry.addLine("Using moving shot calculation");
 
         final double g = 9.81; // gravitational acceleration in m/s^2
 
-        Vector2D cannonVelocity =
-                robotPosition.getPointVelocity(CannonConfig.CANNON_RELATIVE_POSITION);
+        Vector2D cannonVelocity = cannonVelocity();
         Angle velocityAngle = cannonVelocity.direction();
         Angle correctionAngle = velocityAngle.negate();
         cannonVelocity = cannonVelocity.rotate(correctionAngle);
@@ -104,7 +122,19 @@ public class ShotHandler {
     }
 
     private Position2D cannonPos() {
-        return robotPosition.getPose().addRelative(CannonConfig.CANNON_RELATIVE_POSITION);
+        Pose2D robotPose =
+                useFollowerInsteadOfRobotPosition
+                        ? Pose2D.fromPedropathingPose(follower.getPose())
+                        : robotPosition.getPose();
+        return robotPose.addRelative(CannonConfig.CANNON_RELATIVE_POSITION);
+    }
+
+    private Vector2D cannonVelocity() {
+        // It's less precise when we use follower because we calculate robot velocity instead of
+        // cannon velocity, but we don't really have a choice.
+        if (useFollowerInsteadOfRobotPosition)
+            return Pose2D.fromPedropathingPose(follower.getPose()).toPosition2D().toVector2D();
+        else return robotPosition.getPointVelocity(CannonConfig.CANNON_RELATIVE_POSITION);
     }
 
     private Position2D goalPos() {

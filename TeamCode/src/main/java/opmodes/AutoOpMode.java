@@ -3,24 +3,15 @@ package opmodes;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.Path;
-import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 
 import logic.Team;
-import logic.field.PlayingField;
-
-import math.Distance;
-
-import pedropathing.Constants;
 
 public class AutoOpMode extends OpModeBase {
 
     private TelemetryManager panelsTelemetry;
-    private Follower follower;
     private Paths paths;
 
     private boolean pathActive = false;
@@ -77,11 +68,9 @@ public class AutoOpMode extends OpModeBase {
     @Override
     protected void initialize() {
         super.initialize();
+        useFollower();
 
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
-        follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(PlayingField.startPose(team).toPedropathingPose());
 
         paths = new Paths(follower, team.isBlue());
 
@@ -92,8 +81,6 @@ public class AutoOpMode extends OpModeBase {
     @Override
     protected void runStart() {
         super.runStart();
-
-        cannon.setTargetVelocity(1200);
         cannon.on();
     }
 
@@ -108,15 +95,8 @@ public class AutoOpMode extends OpModeBase {
 
     @Override
     protected void update() {
-//        robotPosition.updatePose();
-//        follower.setPose(robotPosition.getPose().toPedropathingPose());
         follower.update();
-
-        Pose robotPose = follower.getPose();
-        Pose goalPos = PlayingField.goalPos(team).toPose2D().toPedropathingPose();
-        double dist = robotPose.distanceFrom(goalPos);
-
-        super.update(false, Distance.fromInches(dist));
+        super.update();
     }
 
     @Override

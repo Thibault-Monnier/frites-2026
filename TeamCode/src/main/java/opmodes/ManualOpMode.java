@@ -41,6 +41,12 @@ public class ManualOpMode extends OpModeBase {
     }
 
     @Override
+    protected void initialize() {
+        super.initialize();
+        useRobotPosition();
+    }
+
+    @Override
     protected void runStart() {
         super.runStart();
         cannon.on();

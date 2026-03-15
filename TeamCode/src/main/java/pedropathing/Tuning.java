@@ -24,6 +24,8 @@ import com.pedropathing.util.*;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import logic.Team;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,10 +92,10 @@ public class Tuning extends SelectableOpMode {
     @Override
     public void onSelect() {
         if (follower == null) {
-            follower = Constants.createFollower(hardwareMap);
+            follower = Constants.createFollower(hardwareMap, Team.RED);
             PanelsConfigurables.INSTANCE.refreshClass(this);
         } else {
-            follower = Constants.createFollower(hardwareMap);
+            follower = Constants.createFollower(hardwareMap, Team.RED);
         }
 
         follower.setStartingPose(new Pose());
