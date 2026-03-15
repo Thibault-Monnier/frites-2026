@@ -245,8 +245,8 @@ public class Pose2D {
         Pose ftcPose = pose.getAsCoordinateSystem(FTCCoordinates.INSTANCE);
         return new Pose2D(
                 DistanceUnit.INCH,
-                ftcPose.getX(),
-                ftcPose.getY(),
+                -ftcPose.getX(),
+                -ftcPose.getY(),
                 AngleUnit.RADIANS,
                 ftcPose.getHeading());
     }
