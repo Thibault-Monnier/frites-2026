@@ -44,6 +44,7 @@ public class OpModeBase extends LinearOpMode {
 
     protected RobotPosition robotPosition;
     protected Follower follower;
+    private boolean useFollower = false;
     protected ShotHandler shotHandler;
 
     protected BatteryMonitor batteryMonitor;
@@ -131,10 +132,12 @@ public class OpModeBase extends LinearOpMode {
     }
 
     protected void useFollower() {
+        useFollower = true;
         shotHandler.useFollowerPose();
     }
 
     protected void useRobotPosition() {
+        useFollower = false;
         shotHandler.useRobotPositionPose();
     }
 
@@ -154,7 +157,9 @@ public class OpModeBase extends LinearOpMode {
 
         gamepadController.update();
 
-        robotPosition.updatePose();
+        if (useFollower) follower.update();
+        else robotPosition.updatePose();
+
         shotHandler.update();
 
         cannon.update(shotHandler.getShotMagnitude());

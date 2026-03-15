@@ -95,7 +95,6 @@ public class AutoOpMode extends OpModeBase {
 
     @Override
     protected void update() {
-        follower.update();
         super.update();
     }
 
@@ -135,59 +134,51 @@ public class AutoOpMode extends OpModeBase {
              */
 
             case MOVE_TO_SHOOT_1:
-                cannonBuffers.off();
                 runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
                 break;
 
             case MOVE_TO_SHOOT_2:
-                intake.on();
-                cannonBuffers.off();
+                intake();
                 runPath(paths.MoveToShoot2, AutoState.SHOOT, false);
                 break;
 
             case MOVE_TO_SHOOT_3:
-                intake.on();
-                cannonBuffers.off();
+                intake();
                 runPath(paths.MoveToShoot3, AutoState.SHOOT, false);
                 break;
 
             case MOVE_TO_SHOOT_4:
-                intake.on();
-                cannonBuffers.off();
+                intake();
                 runPath(paths.MoveToShoot4, AutoState.SHOOT, false);
                 break;
 
             case COLLECT_BACK:
-                intake.on();
-                cannonBuffers.reverse();
+                intake();
                 runPath(paths.CollectBackRow, AutoState.MOVE_TO_SHOOT_2, true);
                 break;
 
             case ALIGN_MIDDLE:
-                intake.on();
+                intake();
                 runPath(paths.AlignMiddleRow, AutoState.COLLECT_MIDDLE, false);
                 break;
 
             case COLLECT_MIDDLE:
-                intake.on();
-                cannonBuffers.reverse();
+                intake();
                 runPath(paths.CollectMiddleRow, AutoState.MOVE_TO_SHOOT_3, true);
                 break;
 
             case ALIGN_FRONT:
-                intake.on();
+                intake();
                 runPath(paths.AlignFrontRow, AutoState.COLLECT_FRONT, false);
                 break;
 
             case COLLECT_FRONT:
-                intake.on();
-                cannonBuffers.reverse();
+                intake();
                 runPath(paths.CollectFrontRow, AutoState.MOVE_TO_SHOOT_4, true);
                 break;
 
             case COLLECTING_FROM_RAMP:
-                intake.on();
-                cannonBuffers.reverse();
+                intake();
                 if (runtime.milliseconds() - collectStartTime > 2500) {
                     state = AutoState.MOVE_TO_SHOOT_3;
                 }
@@ -198,14 +189,12 @@ public class AutoOpMode extends OpModeBase {
                 break;
 
             case MOVE_TO_COLLECT_RAMP:
-                intake.on();
-                cannonBuffers.reverse();
+                intake();
                 runPath(paths.MoveToCollectRamp, AutoState.FINISH_MOVE_FROM_COLLECTING_RAMP, false);
                 break;
 
             case FINISH_MOVE_FROM_COLLECTING_RAMP:
-                intake.on();
-                cannonBuffers.reverse();
+                intake();
                 runPath(paths.FinishMoveToCollectRamp, AutoState.COLLECTING_FROM_RAMP, true);
                 break;
 
@@ -247,14 +236,16 @@ public class AutoOpMode extends OpModeBase {
             cannonBuffers.shootReset();
             nbShots++;
 
-//            if (nbShots == 1) state = AutoState.COLLECT_BACK;
             if (nbShots == 1) state = AutoState.MOVE_TO_COLLECT_RAMP;
-//            else if (nbShots == 2) state = AutoState.ALIGN_MIDDLE;
             else if (nbShots == 2) state = AutoState.MOVE_TO_COLLECT_RAMP;
-//            else if (nbShots == 3) state = AutoState.ALIGN_FRONT;
             else if (nbShots == 3) state = AutoState.COLLECT_BACK;
             else state = AutoState.LEAVE;
         }
+    }
+
+    private void intake() {
+        cannonBuffers.reverse();
+        intake.on();
     }
 
     public static class Paths {

@@ -50,7 +50,7 @@ public class CannonBuffer implements RobotActuatorModule {
         isRunning = true;
     }
 
-    /// Clears the buffer by running it in reverse for one cycles.
+    /// Clears the buffer by running it in reverse for one cycle.
     public void reverse() {
         off();
         isReversing = true;
