@@ -3,11 +3,19 @@ package opmodes;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
+import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 
 import logic.Team;
+import logic.field.PlayingField;
+
+import math.Distance;
+
+import pedropathing.Constants;
 
 public class AutoOpMode extends OpModeBase {
 
@@ -32,7 +40,7 @@ public class AutoOpMode extends OpModeBase {
         MOVE_TO_COLLECT_RAMP,
         LEAVE,
         DONE,
-        FINISH_MOVE_FROM_COLLECTING_RAMP, COLLECTING_FROM_RAMP
+        FINISH_MOVE_FROM_COLLECTING_RAMP, COLLECT_FROM_RAMP_FINAL, COLLECTING_FROM_RAMP
     }
 
     private AutoState state = AutoState.MOVE_TO_SHOOT_1;
@@ -184,6 +192,13 @@ public class AutoOpMode extends OpModeBase {
                 }
                 break;
 
+            case COLLECT_FROM_RAMP_FINAL:
+                intake.on();
+                cannonBuffers.reverse();
+                runPath(paths.CollectFromRampFinal, AutoState.MOVE_TO_SHOOT_3, false);
+                break;
+
+
             case SHOOT:
                 runShootCycle();
                 break;
@@ -260,6 +275,7 @@ public class AutoOpMode extends OpModeBase {
                 MoveToShoot4,
                 MoveToCollectRamp,
                 FinishMoveToCollectRamp,
+                CollectFromRampFinal,
                 Leave;
 
         private Pose mirror(Pose pose, boolean shouldMirror) {
@@ -275,7 +291,7 @@ public class AutoOpMode extends OpModeBase {
 
         public Paths(Follower follower, boolean isBlue) {
             Pose startPose = mirror(new Pose(120, 120, Math.toRadians(45)), isBlue);
-            Pose shootingPose = mirror(new Pose(84, 84, Math.toRadians(45)), isBlue);
+            Pose shootingPose = mirror(new Pose(93, 93, Math.toRadians(45)), isBlue);
             Pose leavePose = mirror(new Pose(96, 70, Math.toRadians(0)), isBlue);
 
             Pose middleRowStartPose = mirror(new Pose(84, 57, Math.toRadians(0)), isBlue);
@@ -324,7 +340,7 @@ public class AutoOpMode extends OpModeBase {
 
             MoveToShoot3 =
                     follower.pathBuilder()
-                            .addPath(new BezierLine(middleRowBackOutPose, shootingPose))
+                            .addPath(new BezierLine(new Pose(141, 54), shootingPose))
                             .setLinearHeadingInterpolation(
                                     middleRowBackOutPose.getHeading(), shootingPose.getHeading())
                             .build();
@@ -375,6 +391,18 @@ public class AutoOpMode extends OpModeBase {
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(35), Math.toRadians(35))
                     .build();
+
+            CollectFromRampFinal =
+                    follower.pathBuilder()
+                            .addPath(
+                                    new BezierCurve(
+                                            new Pose(140.000, 61.000),
+                                            new Pose(139.000, 60.500),
+                                            new Pose(141.000, 60.000)
+                                    )
+                            )
+                            .setLinearHeadingInterpolation(Math.toRadians(35), Math.toRadians(0))
+                            .build();
 
             Leave =
                     follower.pathBuilder()

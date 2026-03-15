@@ -89,7 +89,7 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
     private void nextShoot() {
         if (lastShotLeft) {
-            rightOnly();
+            both();
         } else {
             leftOnly();
         }
