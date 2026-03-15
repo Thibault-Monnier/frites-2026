@@ -43,7 +43,8 @@ public class Movement implements RobotActuatorModule {
     private final MecanumDrive mecanumDrive;
 
     private final PIDFController turnController;
-    private final PIDFController translationController;
+    private final PIDFController translationXController;
+    private final PIDFController translationYController;
 
     private MovementMode movementMode;
     private boolean isSuperSlow = false;
@@ -69,7 +70,9 @@ public class Movement implements RobotActuatorModule {
 
         this.mecanumDrive = new MecanumDrive(globalTelemetry, FL, FR, BL, BR);
         this.turnController = new PIDFController(globalTelemetry, TURN_PIDF_COEFFICIENTS);
-        this.translationController =
+        this.translationXController =
+                new PIDFController(globalTelemetry, TRANSLATION_PIDF_COEFFICIENTS);
+        this.translationYController =
                 new PIDFController(globalTelemetry, TRANSLATION_PIDF_COEFFICIENTS);
         this.movementMode = movementMode;
     }
@@ -103,10 +106,14 @@ public class Movement implements RobotActuatorModule {
     /// controller coefficients using FTC Dashboard.
     public void reloadPIDFCoefficients() {
         turnController.setCoefficients(TURN_PIDF_COEFFICIENTS);
-        translationController.setCoefficients(TRANSLATION_PIDF_COEFFICIENTS);
+        translationXController.setCoefficients(TRANSLATION_PIDF_COEFFICIENTS);
+        translationYController.setCoefficients(TRANSLATION_PIDF_COEFFICIENTS);
+
         globalTelemetry.addData("Turn coefficients", turnController.getCoefficients());
         globalTelemetry.addData(
-                "Translation coefficients", translationController.getCoefficients());
+                "Translation X coefficients", translationXController.getCoefficients());
+        globalTelemetry.addData(
+                "Translation Y coefficients", translationYController.getCoefficients());
     }
 
     /// Sets the provided macro as the active macro.
@@ -219,28 +226,35 @@ public class Movement implements RobotActuatorModule {
     /// Translates the robot towards a target position. Returns true if finished, false otherwise.
     public boolean translateToPosition(Position2D targetPos) {
         Position2D robotPos = robotPosition.getPosition();
-        Position2D delta = targetPos.subtract(robotPos);
+        Vector2D error = targetPos.subtract(robotPos).toVector2D();
 
         DistanceUnit errorUnit = DistanceUnit.MM;
 
-        double distanceError = delta.hypot().getValue(errorUnit);
-        translationController.setError(distanceError);
-        double speed = translationController.get();
+        double xError = error.getX(errorUnit);
+        double yError = error.getY(errorUnit);
 
-        Vector2D velocity = delta.toVector2D().normalizeMax().scale(speed);
+        translationXController.setError(xError);
+        translationYController.setError(yError);
+
+        double dx = translationXController.get();
+        double dy = translationYController.get();
 
         Angle robotAngle = robotPosition.getHeading();
-        Translation translation = new Translation(velocity.getRawX(), velocity.getRawY());
+        Translation translation = new Translation(dx, dy);
         translateFieldCentric(robotAngle, translation);
 
         boolean isFinished =
-                translationController.isStableAtTarget(
-                        TRANSLATION_TOLERANCE.getValue(errorUnit),
-                        NOT_TRANSLATING_THRESHOLD.getValue(errorUnit));
-        globalTelemetry.addData("Translation speed", speed);
-        globalTelemetry.addData("Translation velocity", velocity.toString());
-        globalTelemetry.addData("Error change", translationController.getErrorChange());
-        globalTelemetry.addData("Error", distanceError);
+                translationXController.isStableAtTarget(
+                                TRANSLATION_TOLERANCE.getValue(errorUnit),
+                                NOT_TRANSLATING_THRESHOLD.getValue(errorUnit))
+                        && translationYController.isStableAtTarget(
+                                TRANSLATION_TOLERANCE.getValue(errorUnit),
+                                NOT_TRANSLATING_THRESHOLD.getValue(errorUnit));
+        globalTelemetry.addData("X Error", xError);
+        globalTelemetry.addData("Y Error", yError);
+        globalTelemetry.addData("Dx", dx);
+        globalTelemetry.addData("Dy", dy);
+
         return isFinished;
     }
 
