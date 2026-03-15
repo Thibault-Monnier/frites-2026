@@ -1,5 +1,7 @@
 package opmodes;
 
+import androidx.annotation.Nullable;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -18,6 +20,8 @@ import logic.Team;
 import logic.action.DriveActions;
 import logic.field.ArtifactSequence;
 import logic.position.RobotPosition;
+
+import math.Distance;
 
 import modules.actuator.cannon.Cannon;
 import modules.actuator.cannonBuffer.CannonBuffer;
@@ -134,7 +138,7 @@ public class OpModeBase extends LinearOpMode {
         robotPosition.stop();
     }
 
-    protected void update(boolean useRobotPosition) {
+    protected void update(boolean useRobotPosition, @Nullable Distance overrideCannonDist) {
         for (LynxModule hub : hubs) {
             hub.clearBulkCache();
         }
@@ -146,6 +150,10 @@ public class OpModeBase extends LinearOpMode {
             shotHandler.update();
 
             cannon.update(shotHandler.getShotMagnitude());
+        }
+
+        if (overrideCannonDist != null) {
+            cannon.update(overrideCannonDist);
         }
 
         System.out.println("Robot Pose: " + robotPosition.getPose().toString());
@@ -161,7 +169,7 @@ public class OpModeBase extends LinearOpMode {
     }
 
     protected void update() {
-        update(true);
+        update(true, null);
     }
 
     protected void log() {
