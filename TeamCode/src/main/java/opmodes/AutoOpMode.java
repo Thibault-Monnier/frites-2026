@@ -6,16 +6,9 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.Path;
-import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 
 import logic.Team;
-import logic.field.PlayingField;
-
-import math.Distance;
-
-import pedropathing.Constants;
 
 public class AutoOpMode extends OpModeBase {
 
@@ -40,7 +33,9 @@ public class AutoOpMode extends OpModeBase {
         MOVE_TO_COLLECT_RAMP,
         LEAVE,
         DONE,
-        FINISH_MOVE_FROM_COLLECTING_RAMP, COLLECT_FROM_RAMP_FINAL, COLLECTING_FROM_RAMP
+        FINISH_MOVE_FROM_COLLECTING_RAMP,
+        COLLECT_FROM_RAMP_FINAL,
+        COLLECTING_FROM_RAMP
     }
 
     private AutoState state = AutoState.MOVE_TO_SHOOT_1;
