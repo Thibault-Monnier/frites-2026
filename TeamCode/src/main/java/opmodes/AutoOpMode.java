@@ -187,8 +187,8 @@ public class AutoOpMode extends OpModeBase {
 
             case COLLECTING_FROM_RAMP:
                 intake();
-                if (runtime.milliseconds() - collectStartTime > 2500) {
-                    state = AutoState.MOVE_TO_SHOOT_3;
+                if (runtime.milliseconds() - collectStartTime > 1000) {
+                    state = AutoState.COLLECT_FROM_RAMP_FINAL;
                 }
                 break;
 
