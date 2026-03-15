@@ -6,6 +6,8 @@ import com.pedropathing.ftc.FTCCoordinates;
 import com.pedropathing.geometry.PedroCoordinates;
 import com.pedropathing.geometry.Pose;
 
+import config.FieldConfig;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -242,12 +244,17 @@ public class Pose2D {
 
     /** Converts a PedroCoordinates Pose to a Pose2D, changing the coordinate system accordingly. */
     public static Pose2D fromPedropathingPose(Pose pose) {
-        Pose ftcPose = pose.getAsCoordinateSystem(FTCCoordinates.INSTANCE);
-        return new Pose2D(
-                DistanceUnit.INCH,
-                -ftcPose.getX(),
-                -ftcPose.getY(),
-                AngleUnit.RADIANS,
-                ftcPose.getHeading());
+        double x = pose.getX();
+        double y = pose.getY();
+        double heading = pose.getHeading();
+
+        x -= FieldConfig.FIELD_SIZE.toInches() / 2;
+        y -= FieldConfig.FIELD_SIZE.toInches() / 2;
+
+        double newX = -y;
+        double newY = x;
+        double newHeading = heading + Math.PI / 2;
+
+        return new Pose2D(DistanceUnit.INCH, newX, newY, AngleUnit.RADIANS, newHeading);
     }
 }

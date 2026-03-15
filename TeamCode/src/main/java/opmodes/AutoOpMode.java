@@ -113,45 +113,45 @@ public class AutoOpMode extends OpModeBase {
 
     private void execute() {
         switch (state) {
-            /*
-                    case MOVE_TO_SHOOT_1:
-            runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
+            /*case MOVE_TO_SHOOT_1:
+                runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
 
-            Pose2D robotPose = robotPosition.getPose();
-            Angle goalAngle = PlayingField.angleToGoal(robotPose.toPosition2D(), team);
-            Distance goalDistance = PlayingField.distanceToGoal(robotPose.toPosition2D(), team);
+                Pose2D robotPose = robotPosition.getPose();
+                Angle goalAngle = PlayingField.angleToGoal(robotPose.toPosition2D(), team);
+                Distance goalDistance = PlayingField.distanceToGoal(robotPose.toPosition2D(), team);
 
-            Angle angleError = robotPose.getHeading().subtract(goalAngle).abs();
-            if (angleError.leq(Angle.fromDegrees(5))
-                    && goalDistance.geq(Distance.fromCentimeters(50))
-                    && cannon.isReadyToShoot()) {
-                cannonBuffers.shootContinue(true);
-            } else {
-                globalTelemetry.addData(
-                        "Not shooting because angle error", angleError.toString());
-                globalTelemetry.addData(
-                        "Not shooting because distance too small", goalDistance.toString());
-            }
+                globalTelemetry.addLine("Cannon targets " + cannon.getTargetVelocity() + " and is ready to shoot? " + cannon.isReadyToShoot());
 
-            break;
-             */
+                Angle angleError = robotPose.getHeading().subtract(goalAngle).abs();
+                if (angleError.leq(Angle.fromDegrees(5))
+                        && goalDistance.geq(Distance.fromCentimeters(50))
+                        && cannon.isReadyToShoot()) {
+                    cannonBuffers.shootContinue(true);
+                } else {
+                    globalTelemetry.addData(
+                            "Not shooting because angle error", angleError.toString());
+                    globalTelemetry.addData(
+                            "Not shooting because distance too small", goalDistance.toString());
+                }
 
+                break;
+            */
             case MOVE_TO_SHOOT_1:
                 runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
                 break;
 
             case MOVE_TO_SHOOT_2:
-                intake();
+                intake.on();
                 runPath(paths.MoveToShoot2, AutoState.SHOOT, false);
                 break;
 
             case MOVE_TO_SHOOT_3:
-                intake();
+                intake.on();
                 runPath(paths.MoveToShoot3, AutoState.SHOOT, false);
                 break;
 
             case MOVE_TO_SHOOT_4:
-                intake();
+                intake.on();
                 runPath(paths.MoveToShoot4, AutoState.SHOOT, false);
                 break;
 
@@ -161,7 +161,6 @@ public class AutoOpMode extends OpModeBase {
                 break;
 
             case ALIGN_MIDDLE:
-                intake();
                 runPath(paths.AlignMiddleRow, AutoState.COLLECT_MIDDLE, false);
                 break;
 
@@ -171,7 +170,6 @@ public class AutoOpMode extends OpModeBase {
                 break;
 
             case ALIGN_FRONT:
-                intake();
                 runPath(paths.AlignFrontRow, AutoState.COLLECT_FRONT, false);
                 break;
 
@@ -188,18 +186,15 @@ public class AutoOpMode extends OpModeBase {
                 break;
 
             case COLLECT_FROM_RAMP_FINAL:
-                intake.on();
-                cannonBuffers.reverse();
+                intake();
                 runPath(paths.CollectFromRampFinal, AutoState.MOVE_TO_SHOOT_3, false);
                 break;
-
 
             case SHOOT:
                 runShootCycle();
                 break;
 
             case MOVE_TO_COLLECT_RAMP:
-                intake();
                 runPath(paths.MoveToCollectRamp, AutoState.FINISH_MOVE_FROM_COLLECTING_RAMP, false);
                 break;
 
@@ -229,6 +224,7 @@ public class AutoOpMode extends OpModeBase {
         if (!follower.isBusy()) {
             pathActive = false;
             state = nextState;
+            intake.off();
             if (nextState == AutoState.COLLECTING_FROM_RAMP) {
                 collectStartTime = runtime.milliseconds();
             }
@@ -240,7 +236,7 @@ public class AutoOpMode extends OpModeBase {
 
         intake.on();
 
-        boolean done = cannonBuffers.shootContinue(true);
+        boolean done = cannonBuffers.shootContinue(true, 0.5);
 
         if (done) {
             cannonBuffers.shootReset();
@@ -362,30 +358,27 @@ public class AutoOpMode extends OpModeBase {
             MoveToCollectRamp =
                     follower.pathBuilder()
                             .addPath(
-//                                    new BezierCurve(
-//                                            new Pose(84.000, 84.000),
-//                                            new Pose(81.000, 45.000),
-//                                            new Pose(135, 55, Math.toRadians(35))
-//                                    )
+                                    //                                    new BezierCurve(
+                                    //                                            new Pose(84.000,
+                                    // 84.000),
+                                    //                                            new Pose(81.000,
+                                    // 45.000),
+                                    //                                            new Pose(135, 55,
+                                    // Math.toRadians(35))
+                                    //                                    )
                                     new BezierLine(
                                             new Pose(84.000, 84.000),
-//                                            new Pose(81.000, 45.000),
-                                            new Pose(130, 66)
-                                    )
-                            )
+                                            //                                            new
+                                            // Pose(81.000, 45.000),
+                                            new Pose(130, 66)))
                             .setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(35))
                             .build();
 
-
-            FinishMoveToCollectRamp = follower.pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(135, 55),
-                                    new Pose(141, 60.5)
-                            )
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(35), Math.toRadians(35))
-                    .build();
+            FinishMoveToCollectRamp =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(new Pose(135, 55), new Pose(141, 60.5)))
+                            .setLinearHeadingInterpolation(Math.toRadians(35), Math.toRadians(35))
+                            .build();
 
             CollectFromRampFinal =
                     follower.pathBuilder()
@@ -393,9 +386,7 @@ public class AutoOpMode extends OpModeBase {
                                     new BezierCurve(
                                             new Pose(140.000, 61.000),
                                             new Pose(139.000, 60.500),
-                                            new Pose(141.000, 60.000)
-                                    )
-                            )
+                                            new Pose(141.000, 60.000)))
                             .setLinearHeadingInterpolation(Math.toRadians(35), Math.toRadians(0))
                             .build();
 
