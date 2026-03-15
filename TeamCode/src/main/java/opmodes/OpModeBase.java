@@ -134,17 +134,19 @@ public class OpModeBase extends LinearOpMode {
         robotPosition.stop();
     }
 
-    protected void update() {
+    protected void update(boolean useRobotPosition) {
         for (LynxModule hub : hubs) {
             hub.clearBulkCache();
         }
 
         gamepadController.update();
 
-        robotPosition.updatePose();
-        shotHandler.update();
+        if (useRobotPosition) {
+            robotPosition.updatePose();
+            shotHandler.update();
 
-        cannon.update(shotHandler.getShotMagnitude());
+            cannon.update(shotHandler.getShotMagnitude());
+        }
 
         System.out.println("Robot Pose: " + robotPosition.getPose().toString());
         globalTelemetry.addData(
@@ -156,6 +158,10 @@ public class OpModeBase extends LinearOpMode {
                     ArtifactSequence.findCurrentSequence(robotPosition.getLimelightHandler());
         if (artifactSequence != null)
             globalTelemetry.addData("Pattern", artifactSequence.toString());
+    }
+
+    protected void update() {
+        update(true);
     }
 
     protected void log() {

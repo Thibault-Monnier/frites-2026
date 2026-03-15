@@ -8,6 +8,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
 import logic.Team;
+import logic.field.PlayingField;
 
 import pedropathing.Constants;
 
@@ -72,7 +73,7 @@ public class AutoOpMode extends OpModeBase {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(120, 120, Math.toRadians(45)));
+        follower.setStartingPose(PlayingField.startPose(team).toPedropathingPose());
 
         paths = new Paths(follower, team.isBlue());
 
@@ -99,25 +100,45 @@ public class AutoOpMode extends OpModeBase {
 
     @Override
     protected void update() {
-        super.update();
-
         follower.update();
-        follower.setPose(robotPosition.getPose().toPedropathingPose());
+        super.update(false);
     }
 
     @Override
     protected void log() {
         super.log();
 
-        panelsTelemetry.debug("State", state);
-        panelsTelemetry.debug("X", follower.getPose().getX());
-        panelsTelemetry.debug("Y", follower.getPose().getY());
-        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
-        panelsTelemetry.update(telemetry);
+        globalTelemetry.addData("State", state);
+        globalTelemetry.addData("X", follower.getPose().getX());
+        globalTelemetry.addData("Y", follower.getPose().getY());
+        globalTelemetry.addData("Heading", follower.getPose().getHeading());
     }
 
     private void execute() {
         switch (state) {
+            /*
+                    case MOVE_TO_SHOOT_1:
+            runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
+
+            Pose2D robotPose = robotPosition.getPose();
+            Angle goalAngle = PlayingField.angleToGoal(robotPose.toPosition2D(), team);
+            Distance goalDistance = PlayingField.distanceToGoal(robotPose.toPosition2D(), team);
+
+            Angle angleError = robotPose.getHeading().subtract(goalAngle).abs();
+            if (angleError.leq(Angle.fromDegrees(5))
+                    && goalDistance.geq(Distance.fromCentimeters(50))
+                    && cannon.isReadyToShoot()) {
+                cannonBuffers.shootContinue(true);
+            } else {
+                globalTelemetry.addData(
+                        "Not shooting because angle error", angleError.toString());
+                globalTelemetry.addData(
+                        "Not shooting because distance too small", goalDistance.toString());
+            }
+
+            break;
+             */
+
             case MOVE_TO_SHOOT_1:
                 cannonBuffers.off();
                 runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
@@ -214,10 +235,6 @@ public class AutoOpMode extends OpModeBase {
             else state = AutoState.LEAVE;
         }
     }
-
-    /*------------------------------------------------*/
-    /*                     PATHS                      */
-    /*------------------------------------------------*/
 
     public static class Paths {
         public PathChain MoveToShoot1,
