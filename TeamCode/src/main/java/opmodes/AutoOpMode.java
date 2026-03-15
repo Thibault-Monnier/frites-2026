@@ -9,6 +9,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
 import logic.Team;
+import logic.field.PlayingField;
 
 public class AutoOpMode extends OpModeBase {
 
@@ -281,7 +282,8 @@ public class AutoOpMode extends OpModeBase {
         }
 
         public Paths(Follower follower, boolean isBlue) {
-            Pose startPose = mirror(new Pose(120, 120, Math.toRadians(45)), isBlue);
+            Pose startPose =
+                    PlayingField.startPose(isBlue ? Team.BLUE : Team.RED).toPedropathingPose();
             Pose shootingPose = mirror(new Pose(93, 93, Math.toRadians(45)), isBlue);
             Pose leavePose = mirror(new Pose(96, 70, Math.toRadians(0)), isBlue);
 
