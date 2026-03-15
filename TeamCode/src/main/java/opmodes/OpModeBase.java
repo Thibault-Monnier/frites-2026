@@ -157,9 +157,9 @@ public class OpModeBase extends LinearOpMode {
         }
 
         System.out.println("Robot Pose: " + robotPosition.getPose().toString());
-        globalTelemetry.addData(
-                "Shooting target distance", shotHandler.getShotMagnitude().toString());
-        globalTelemetry.addData("Shooting target angle", shotHandler.getShotAngle().toString());
+//        globalTelemetry.addData(
+//                "Shooting target distance", shotHandler.getShotMagnitude().toString());
+//        globalTelemetry.addData("Shooting target angle", shotHandler.getShotAngle().toString());
 
         if (artifactSequence == null)
             artifactSequence =

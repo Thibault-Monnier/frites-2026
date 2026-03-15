@@ -3,8 +3,11 @@ package opmodes;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
+import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 
 import logic.Team;
@@ -22,6 +25,7 @@ public class AutoOpMode extends OpModeBase {
 
     private boolean pathActive = false;
     private int nbShots = 0;
+    private double collectStartTime = 0;
 
     enum AutoState {
         SHOOT,
@@ -34,8 +38,10 @@ public class AutoOpMode extends OpModeBase {
         COLLECT_FRONT,
         ALIGN_MIDDLE,
         ALIGN_FRONT,
+        MOVE_TO_COLLECT_RAMP,
         LEAVE,
-        DONE
+        DONE,
+        FINISH_MOVE_FROM_COLLECTING_RAMP, COLLECTING_FROM_RAMP
     }
 
     private AutoState state = AutoState.MOVE_TO_SHOOT_1;
@@ -102,6 +108,8 @@ public class AutoOpMode extends OpModeBase {
 
     @Override
     protected void update() {
+//        robotPosition.updatePose();
+//        follower.setPose(robotPosition.getPose().toPedropathingPose());
         follower.update();
 
         Pose robotPose = follower.getPose();
@@ -197,8 +205,28 @@ public class AutoOpMode extends OpModeBase {
                 runPath(paths.CollectFrontRow, AutoState.MOVE_TO_SHOOT_4, true);
                 break;
 
+            case COLLECTING_FROM_RAMP:
+                intake.on();
+                cannonBuffers.reverse();
+                if (runtime.milliseconds() - collectStartTime > 2500) {
+                    state = AutoState.MOVE_TO_SHOOT_3;
+                }
+                break;
+
             case SHOOT:
                 runShootCycle();
+                break;
+
+            case MOVE_TO_COLLECT_RAMP:
+                intake.on();
+                cannonBuffers.reverse();
+                runPath(paths.MoveToCollectRamp, AutoState.FINISH_MOVE_FROM_COLLECTING_RAMP, false);
+                break;
+
+            case FINISH_MOVE_FROM_COLLECTING_RAMP:
+                intake.on();
+                cannonBuffers.reverse();
+                runPath(paths.FinishMoveToCollectRamp, AutoState.COLLECTING_FROM_RAMP, true);
                 break;
 
             case LEAVE:
@@ -222,6 +250,9 @@ public class AutoOpMode extends OpModeBase {
         if (!follower.isBusy()) {
             pathActive = false;
             state = nextState;
+            if (nextState == AutoState.COLLECTING_FROM_RAMP) {
+                collectStartTime = runtime.milliseconds();
+            }
         }
     }
 
@@ -236,9 +267,12 @@ public class AutoOpMode extends OpModeBase {
             cannonBuffers.shootReset();
             nbShots++;
 
-            if (nbShots == 1) state = AutoState.COLLECT_BACK;
-            else if (nbShots == 2) state = AutoState.ALIGN_MIDDLE;
-            else if (nbShots == 3) state = AutoState.ALIGN_FRONT;
+//            if (nbShots == 1) state = AutoState.COLLECT_BACK;
+            if (nbShots == 1) state = AutoState.MOVE_TO_COLLECT_RAMP;
+//            else if (nbShots == 2) state = AutoState.ALIGN_MIDDLE;
+            else if (nbShots == 2) state = AutoState.MOVE_TO_COLLECT_RAMP;
+//            else if (nbShots == 3) state = AutoState.ALIGN_FRONT;
+            else if (nbShots == 3) state = AutoState.COLLECT_BACK;
             else state = AutoState.LEAVE;
         }
     }
@@ -253,6 +287,8 @@ public class AutoOpMode extends OpModeBase {
                 AlignFrontRow,
                 CollectFrontRow,
                 MoveToShoot4,
+                MoveToCollectRamp,
+                FinishMoveToCollectRamp,
                 Leave;
 
         private Pose mirror(Pose pose, boolean shouldMirror) {
@@ -275,10 +311,12 @@ public class AutoOpMode extends OpModeBase {
             Pose frontRowStartPose = mirror(new Pose(84, 36, Math.toRadians(0)), isBlue);
 
             Pose backRowEndPose = mirror(new Pose(135, 84, Math.toRadians(0)), isBlue);
-            Pose middleRowEndPose = mirror(new Pose(139, 57, Math.toRadians(0)), isBlue);
+            Pose middleRowEndPose = mirror(new Pose(139, 60, Math.toRadians(0)), isBlue);
             Pose frontRowEndPose = mirror(new Pose(139, 36, Math.toRadians(0)), isBlue);
 
             Pose middleRowBackOutPose = mirror(new Pose(100, 57, Math.toRadians(0)), isBlue);
+
+            Pose rampCollectPose = mirror(new Pose(135, 60, Math.toRadians(35)), isBlue);
 
             MoveToShoot1 =
                     follower.pathBuilder()
@@ -338,6 +376,34 @@ public class AutoOpMode extends OpModeBase {
                             .setLinearHeadingInterpolation(
                                     frontRowEndPose.getHeading(), shootingPose.getHeading())
                             .build();
+
+            MoveToCollectRamp =
+                    follower.pathBuilder()
+                            .addPath(
+//                                    new BezierCurve(
+//                                            new Pose(84.000, 84.000),
+//                                            new Pose(81.000, 45.000),
+//                                            new Pose(135, 55, Math.toRadians(35))
+//                                    )
+                                    new BezierLine(
+                                            new Pose(84.000, 84.000),
+//                                            new Pose(81.000, 45.000),
+                                            new Pose(130, 66)
+                                    )
+                            )
+                            .setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(35))
+                            .build();
+
+
+            FinishMoveToCollectRamp = follower.pathBuilder()
+                    .addPath(
+                            new BezierLine(
+                                    new Pose(135, 55),
+                                    new Pose(141, 60.5)
+                            )
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(35), Math.toRadians(35))
+                    .build();
 
             Leave =
                     follower.pathBuilder()
