@@ -80,6 +80,9 @@ public class AutoOpMode extends OpModeBase {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+
+        globalTelemetry.addData(
+                "Pose start", PlayingField.startPose(Team.RED).toPedropathingPose().toString());
     }
 
     @Override
