@@ -4,8 +4,6 @@ import static config.OdometryConfig.ENCODER_X_DIRECTION;
 import static config.OdometryConfig.ENCODER_X_Y_OFFSET;
 import static config.OdometryConfig.ENCODER_Y_DIRECTION;
 import static config.OdometryConfig.ENCODER_Y_X_OFFSET;
-import static config.OdometryConfig.vx;
-import static config.OdometryConfig.vy;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
