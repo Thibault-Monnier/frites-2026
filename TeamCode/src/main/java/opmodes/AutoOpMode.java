@@ -11,6 +11,10 @@ import com.pedropathing.paths.PathChain;
 import logic.Team;
 import logic.field.PlayingField;
 
+import math.Angle;
+import math.Distance;
+import math.Pose2D;
+
 public class AutoOpMode extends OpModeBase {
 
     private TelemetryManager panelsTelemetry;
@@ -117,20 +121,21 @@ public class AutoOpMode extends OpModeBase {
 
     private void execute() {
         switch (state) {
-            /*case MOVE_TO_SHOOT_1:
+            case MOVE_TO_SHOOT_1:
+                intake();
                 runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
 
                 Pose2D robotPose = robotPosition.getPose();
                 Angle goalAngle = PlayingField.angleToGoal(robotPose.toPosition2D(), team);
                 Distance goalDistance = PlayingField.distanceToGoal(robotPose.toPosition2D(), team);
 
-                globalTelemetry.addLine("Cannon targets " + cannon.getTargetVelocity() + " and is ready to shoot? " + cannon.isReadyToShoot());
+                globalTelemetry.addLine("Is ready to shoot? " + cannon.isReadyToShoot());
 
                 Angle angleError = robotPose.getHeading().subtract(goalAngle).abs();
-                if (angleError.leq(Angle.fromDegrees(5))
-                        && goalDistance.geq(Distance.fromCentimeters(50))
-                        && cannon.isReadyToShoot()) {
-                    cannonBuffers.shootContinue(true);
+                if (cannon.isReadyToShoot()
+                        && angleError.leq(Angle.fromDegrees(4))
+                        && goalDistance.geq(Distance.fromCentimeters(100))) {
+                    runShootCycle();
                 } else {
                     globalTelemetry.addData(
                             "Not shooting because angle error", angleError.toString());
@@ -138,10 +143,6 @@ public class AutoOpMode extends OpModeBase {
                             "Not shooting because distance too small", goalDistance.toString());
                 }
 
-                break;
-            */
-            case MOVE_TO_SHOOT_1:
-                runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
                 break;
 
             case RAMP_TO_SHOOT:
@@ -236,7 +237,7 @@ public class AutoOpMode extends OpModeBase {
     }
 
     private void runShootCycle() {
-        if (follower.isBusy() || !cannon.isReadyToShoot()) return;
+        if (!cannon.isReadyToShoot()) return;
 
         intake.on();
 
