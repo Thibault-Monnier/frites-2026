@@ -1,7 +1,5 @@
 package opmodes;
 
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -16,8 +14,6 @@ import math.Distance;
 import math.Pose2D;
 
 public class AutoOpMode extends OpModeBase {
-
-    private TelemetryManager panelsTelemetry;
     private Paths paths;
 
     private boolean pathActive = false;
@@ -25,25 +21,25 @@ public class AutoOpMode extends OpModeBase {
     private double collectStartTime = 0;
 
     enum AutoState {
-        SHOOT,
-        MOVE_TO_SHOOT_1,
+        START_TO_SHOOT,
         RAMP_TO_SHOOT,
+        ALIGN_MIDDLE,
+        COLLECT_MIDDLE,
         MIDDLE_ROW_TO_SHOOT,
         ALIGN_BACK,
         COLLECT_BACK,
-        COLLECT_MIDDLE,
-        COLLECT_FRONT,
-        ALIGN_MIDDLE,
-        ALIGN_FRONT,
+        // COLLECT_FRONT,
+        // ALIGN_FRONT,
         ALIGN_COLLECT_RAMP,
-        LEAVE,
-        DONE,
         COLLECT_RAMP,
+        COLLECTING_FROM_RAMP,
         COLLECT_FROM_RAMP_FINAL,
-        COLLECTING_FROM_RAMP
+        LEAVE,
+        SHOOT,
+        DONE,
     }
 
-    private AutoState state = AutoState.MOVE_TO_SHOOT_1;
+    private AutoState state = AutoState.START_TO_SHOOT;
 
     public AutoOpMode(Team team) {
         super(team, true);
@@ -78,15 +74,10 @@ public class AutoOpMode extends OpModeBase {
         super.initialize();
         useFollower();
 
-        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
         paths = new Paths(follower, team.isBlue());
 
-        panelsTelemetry.debug("Status", "Initialized");
-        panelsTelemetry.update(telemetry);
-
         globalTelemetry.addData(
-                "Pose start", PlayingField.startPose(Team.RED).toPedropathingPose().toString());
+                "Pose start", PlayingField.startPose(team).toPedropathingPose().toString());
     }
 
     @Override
@@ -107,6 +98,8 @@ public class AutoOpMode extends OpModeBase {
     @Override
     protected void update() {
         super.update();
+        intake.off();
+        cannonBuffers.off();
     }
 
     @Override
@@ -121,9 +114,9 @@ public class AutoOpMode extends OpModeBase {
 
     private void execute() {
         switch (state) {
-            case MOVE_TO_SHOOT_1:
+            case START_TO_SHOOT:
                 intake();
-                runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
+                runPath(paths.StartToShoot, AutoState.SHOOT, false);
 
                 Pose2D robotPose = robotPosition.getPose();
                 Angle goalAngle = PlayingField.angleToGoal(robotPose.toPosition2D(), team);
@@ -173,13 +166,22 @@ public class AutoOpMode extends OpModeBase {
                 runPath(paths.CollectMiddleRow, AutoState.MIDDLE_ROW_TO_SHOOT, true);
                 break;
 
-            case ALIGN_FRONT:
-                runPath(paths.AlignFrontRow, AutoState.COLLECT_FRONT, false);
+            // case ALIGN_FRONT:
+            //     runPath(paths.AlignFrontRow, AutoState.COLLECT_FRONT, false);
+            //     break;
+            //
+            // case COLLECT_FRONT:
+            //     intake();
+            //     runPath(paths.CollectFrontRow, AutoState.LEAVE, true);
+            //     break;
+
+            case ALIGN_COLLECT_RAMP:
+                runPath(paths.AlignCollectRamp, AutoState.COLLECT_RAMP, false);
                 break;
 
-            case COLLECT_FRONT:
+            case COLLECT_RAMP:
                 intake();
-                runPath(paths.CollectFrontRow, AutoState.LEAVE, true);
+                runPath(paths.CollectRamp, AutoState.COLLECTING_FROM_RAMP, true);
                 break;
 
             case COLLECTING_FROM_RAMP:
@@ -198,30 +200,18 @@ public class AutoOpMode extends OpModeBase {
                 runShootCycle();
                 break;
 
-            case ALIGN_COLLECT_RAMP:
-                runPath(paths.AlignCollectRamp, AutoState.COLLECT_RAMP, false);
-                break;
-
-            case COLLECT_RAMP:
-                intake();
-                runPath(paths.CollectRamp, AutoState.COLLECTING_FROM_RAMP, true);
-                break;
-
             case LEAVE:
                 intake();
                 runPath(paths.Leave, AutoState.SHOOT, false);
                 break;
 
             case DONE:
-                intake.off();
-                cannonBuffers.off();
                 break;
         }
     }
 
     private void runPath(PathChain path, AutoState nextState, boolean slow) {
         if (!pathActive) {
-            intake.off();
             follower.followPath(path, slow ? 0.6 : 1, true);
             pathActive = true;
         }
@@ -229,7 +219,6 @@ public class AutoOpMode extends OpModeBase {
         if (!follower.isBusy()) {
             pathActive = false;
             state = nextState;
-            intake.off();
             if (nextState == AutoState.COLLECTING_FROM_RAMP) {
                 collectStartTime = runtime.milliseconds();
             }
@@ -261,8 +250,8 @@ public class AutoOpMode extends OpModeBase {
         intake.on();
     }
 
-    public static class Paths {
-        public PathChain MoveToShoot1,
+    private static class Paths {
+        PathChain StartToShoot,
                 AlignBackRow,
                 CollectBackRow,
                 RampToShoot,
@@ -276,18 +265,16 @@ public class AutoOpMode extends OpModeBase {
                 CollectFromRampFinal,
                 Leave;
 
-        private Pose mirror(Pose pose, boolean shouldMirror) {
-            double x = pose.getX();
-            double y = pose.getY();
-            double heading = pose.getHeading();
-
-            double newX = shouldMirror ? 144 - x : x;
-            double newHeading = shouldMirror ? Math.PI - heading : heading;
-
-            return new Pose(newX, y, newHeading);
-        }
+        private final Follower follower;
+        private final boolean isBlue;
 
         public Paths(Follower follower, boolean isBlue) {
+            this.follower = follower;
+            this.isBlue = isBlue;
+            createPaths();
+        }
+
+        private void createPaths() {
             Pose startPose =
                     PlayingField.startPose(isBlue ? Team.BLUE : Team.RED).toPedropathingPose();
             Pose shootingPose = mirror(new Pose(87, 77, Math.toRadians(51)), isBlue);
@@ -311,108 +298,52 @@ public class AutoOpMode extends OpModeBase {
 
             Pose rampToShootControlPoint = mirror(new Pose(107, 60), isBlue);
 
-            MoveToShoot1 =
-                    follower.pathBuilder()
-                            .addPath(new BezierLine(startPose, shootingPose))
-                            .setLinearHeadingInterpolation(
-                                    startPose.getHeading(), shootingPose.getHeading())
-                            .build();
+            StartToShoot = lineToPath(startPose, shootingPose);
 
-            AlignBackRow =
-                    follower.pathBuilder()
-                            .addPath(new BezierLine(shootingPose, backRowStartPos))
-                            .setLinearHeadingInterpolation(
-                                    shootingPose.getHeading(), backRowStartPos.getHeading())
-                            .build();
+            AlignBackRow = lineToPath(shootingPose, backRowStartPos);
+            CollectBackRow = lineToPath(backRowStartPos, backRowEndPose);
+            Leave = lineToPath(backRowEndPose, leavePose);
 
-            CollectBackRow =
-                    follower.pathBuilder()
-                            .addPath(new BezierLine(backRowStartPos, backRowEndPose))
-                            .setLinearHeadingInterpolation(
-                                    backRowStartPos.getHeading(), backRowEndPose.getHeading())
-                            .build();
-
-            RampToShoot =
-                    follower.pathBuilder()
-                            .addPath(
-                                    new BezierCurve(
-                                            collectRampFinalEndPose,
-                                            rampToShootControlPoint,
-                                            shootingPose))
-                            .setLinearHeadingInterpolation(
-                                    collectRampFinalEndPose.getHeading(), shootingPose.getHeading())
-                            .build();
-
-            AlignMiddleRow =
-                    follower.pathBuilder()
-                            .addPath(new BezierLine(shootingPose, middleRowStartPose))
-                            .setLinearHeadingInterpolation(
-                                    shootingPose.getHeading(), middleRowStartPose.getHeading())
-                            .build();
-            CollectMiddleRow =
-                    follower.pathBuilder()
-                            .addPath(new BezierLine(middleRowStartPose, middleRowEndPose))
-                            .setLinearHeadingInterpolation(
-                                    middleRowStartPose.getHeading(), middleRowEndPose.getHeading())
-                            .build();
-
+            AlignMiddleRow = lineToPath(shootingPose, middleRowStartPose);
+            CollectMiddleRow = lineToPath(middleRowStartPose, middleRowEndPose);
             MiddleRowToShoot =
-                    follower.pathBuilder()
-                            .addPath(
-                                    new BezierCurve(
-                                            middleRowEndPose,
-                                            middleRowToShootControlPoint,
-                                            shootingPose))
-                            .setLinearHeadingInterpolation(
-                                    middleRowEndPose.getHeading(), shootingPose.getHeading())
-                            .build();
+                    curveToPath(middleRowEndPose, middleRowToShootControlPoint, shootingPose);
 
-            AlignFrontRow =
-                    follower.pathBuilder()
-                            .addPath(new BezierLine(shootingPose, frontRowStartPose))
-                            .setLinearHeadingInterpolation(
-                                    shootingPose.getHeading(), frontRowStartPose.getHeading())
-                            .build();
-            CollectFrontRow =
-                    follower.pathBuilder()
-                            .addPath(new BezierLine(frontRowStartPose, frontRowEndPose))
-                            .setConstantHeadingInterpolation(frontRowEndPose.getHeading())
-                            .build();
+            AlignFrontRow = lineToPath(shootingPose, frontRowStartPose);
+            CollectFrontRow = lineToPath(frontRowStartPose, frontRowEndPose);
 
-            AlignCollectRamp =
-                    follower.pathBuilder()
-                            .addPath(
-                                    new BezierCurve(
-                                            shootingPose, alignRampControlPoint, alignRampPose))
-                            .setLinearHeadingInterpolation(
-                                    shootingPose.getHeading(), alignRampPose.getHeading())
-                            .build();
-
-            CollectRamp =
-                    follower.pathBuilder()
-                            .addPath(new BezierLine(alignRampPose, collectRampPose))
-                            .setLinearHeadingInterpolation(
-                                    alignRampPose.getHeading(), collectRampPose.getHeading())
-                            .build();
-
+            AlignCollectRamp = curveToPath(shootingPose, alignRampControlPoint, alignRampPose);
+            CollectRamp = lineToPath(alignRampPose, collectRampPose);
             CollectFromRampFinal =
-                    follower.pathBuilder()
-                            .addPath(
-                                    new BezierCurve(
-                                            collectRampPose,
-                                            collectRampFinalControlPoint,
-                                            collectRampFinalEndPose))
-                            .setLinearHeadingInterpolation(
-                                    collectRampPose.getHeading(),
-                                    collectRampFinalEndPose.getHeading())
-                            .build();
+                    curveToPath(
+                            collectRampPose, collectRampFinalControlPoint, collectRampFinalEndPose);
+            RampToShoot =
+                    curveToPath(collectRampFinalEndPose, rampToShootControlPoint, shootingPose);
+        }
 
-            Leave =
-                    follower.pathBuilder()
-                            .addPath(new BezierLine(backRowEndPose, leavePose))
-                            .setLinearHeadingInterpolation(
-                                    frontRowEndPose.getHeading(), leavePose.getHeading())
-                            .build();
+        private PathChain lineToPath(Pose start, Pose end) {
+            return follower.pathBuilder()
+                    .addPath(new BezierLine(start, end))
+                    .setLinearHeadingInterpolation(start.getHeading(), end.getHeading())
+                    .build();
+        }
+
+        private PathChain curveToPath(Pose start, Pose controlPoint, Pose end) {
+            return follower.pathBuilder()
+                    .addPath(new BezierCurve(start, controlPoint, end))
+                    .setLinearHeadingInterpolation(start.getHeading(), end.getHeading())
+                    .build();
+        }
+
+        private Pose mirror(Pose pose, boolean shouldMirror) {
+            double x = pose.getX();
+            double y = pose.getY();
+            double heading = pose.getHeading();
+
+            double newX = shouldMirror ? 144 - x : x;
+            double newHeading = shouldMirror ? Math.PI - heading : heading;
+
+            return new Pose(newX, y, newHeading);
         }
     }
 }
