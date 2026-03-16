@@ -183,7 +183,7 @@ public class AutoOpMode extends OpModeBase {
 
             case COLLECTING_FROM_RAMP:
                 intake();
-                if (runtime.milliseconds() - collectStartTime > 700) {
+                if (runtime.milliseconds() - collectStartTime > 650) {
                     state = AutoState.COLLECT_FROM_RAMP_FINAL;
                 }
                 break;
@@ -221,7 +221,7 @@ public class AutoOpMode extends OpModeBase {
     private void runPath(PathChain path, AutoState nextState, boolean slow) {
         if (!pathActive) {
             intake.off();
-            follower.followPath(path, slow ? 0.7 : 1, true);
+            follower.followPath(path, slow ? 0.6 : 1, true);
             pathActive = true;
         }
 
@@ -241,6 +241,7 @@ public class AutoOpMode extends OpModeBase {
         intake.on();
 
         boolean done = cannonBuffers.shootContinue(true, 0.55);
+        globalTelemetry.addData("Shots fired", cannonBuffers.getShotsFired());
 
         if (done) {
             cannonBuffers.shootReset();
@@ -295,18 +296,17 @@ public class AutoOpMode extends OpModeBase {
             Pose frontRowEndPose = mirror(new Pose(139, 36, Math.toRadians(0)), isBlue);
 
             Pose middleRowStartPose = mirror(new Pose(99, 59, Math.toRadians(0)), isBlue);
-            Pose middleRowEndPose = mirror(new Pose(132, 59, Math.toRadians(0)), isBlue);
+            Pose middleRowEndPose = mirror(new Pose(132.5, 59, Math.toRadians(0)), isBlue);
             Pose middleRowToShootControlPoint = mirror(new Pose(106.5, 59), isBlue);
 
             Pose backRowStartPos = mirror(new Pose(101, 84, Math.toRadians(0)), isBlue);
-            Pose backRowEndPose = mirror(new Pose(126, 84, Math.toRadians(0)), isBlue);
+            Pose backRowEndPose = mirror(new Pose(126.5, 84, Math.toRadians(0)), isBlue);
 
             Pose alignRampPose = mirror(new Pose(126, 61, Math.toRadians(35)), isBlue);
             Pose alignRampControlPoint = mirror(new Pose(102, 66), isBlue);
-            Pose collectRampPose = mirror(new Pose(132, 59.5, Math.toRadians(30)), isBlue);
-            // Pose collectRampFinalControlPoint = mirror(new Pose(130, 56.5), isBlue);
-            Pose collectRampFinalEndPose =
-                    mirror(new Pose(133.5, 56.5, Math.toRadians(-8)), isBlue);
+            Pose collectRampPose = mirror(new Pose(131, 59.5, Math.toRadians(30)), isBlue);
+            Pose collectRampFinalControlPoint = mirror(new Pose(127, 57.5), isBlue);
+            Pose collectRampFinalEndPose = mirror(new Pose(133, 56.5, Math.toRadians(0)), isBlue);
 
             Pose rampToShootControlPoint = mirror(new Pose(107, 60), isBlue);
 
@@ -335,9 +335,11 @@ public class AutoOpMode extends OpModeBase {
                     follower.pathBuilder()
                             .addPath(
                                     new BezierCurve(
-                                            collectRampPose, rampToShootControlPoint, shootingPose))
+                                            collectRampFinalEndPose,
+                                            rampToShootControlPoint,
+                                            shootingPose))
                             .setLinearHeadingInterpolation(
-                                    backRowEndPose.getHeading(), shootingPose.getHeading())
+                                    collectRampFinalEndPose.getHeading(), shootingPose.getHeading())
                             .build();
 
             AlignMiddleRow =
@@ -394,7 +396,11 @@ public class AutoOpMode extends OpModeBase {
 
             CollectFromRampFinal =
                     follower.pathBuilder()
-                            .addPath(new BezierLine(collectRampPose, collectRampFinalEndPose))
+                            .addPath(
+                                    new BezierCurve(
+                                            collectRampPose,
+                                            collectRampFinalControlPoint,
+                                            collectRampFinalEndPose))
                             .setLinearHeadingInterpolation(
                                     collectRampPose.getHeading(),
                                     collectRampFinalEndPose.getHeading())
@@ -402,7 +408,7 @@ public class AutoOpMode extends OpModeBase {
 
             Leave =
                     follower.pathBuilder()
-                            .addPath(new BezierLine(frontRowEndPose, leavePose))
+                            .addPath(new BezierLine(backRowEndPose, leavePose))
                             .setLinearHeadingInterpolation(
                                     frontRowEndPose.getHeading(), leavePose.getHeading())
                             .build();

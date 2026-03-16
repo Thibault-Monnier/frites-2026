@@ -93,6 +93,10 @@ public class CannonBuffersHandler implements RobotActuatorModule {
         off();
     }
 
+    public int getShotsFired() {
+        return shotsFired;
+    }
+
     private void nextShoot() {
         if (shotsFired == 2) {
             both();
