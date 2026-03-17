@@ -1,0 +1,461 @@
+\documentclass[11pt]{report}
+\usepackage{titling}
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,top=1.5cm,bottom=1.5cm,left=2.5cm,right=2.5cm,marginparwidth=1.75cm]{geometry}
+\usepackage{amsmath}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{titlesec}
+\usepackage{mathtools}
+\usepackage{float}
+\usepackage{cancel}
+\usepackage{tikz}
+\usepackage{blindtext}
+\usetikzlibrary{arrows.meta, positioning, calc, angles, quotes}
+\usepackage{setspace}
+\usepackage[protrusion=true,expansion=true]{microtype}
+\microtypesetup{nopatch=footnote}
+\setstretch{1.1}
+\setlength{\droptitle}{-2em}
+\setlength{\parskip}{0.6em}
+
+\pretitle{%
+  \hrule\vspace{3em}
+  \par\vspace{\baselineskip}%
+  \centering\Huge\bfseries
+}
+\posttitle{\par\vspace{0.5\baselineskip}}
+
+\preauthor{%
+  \centering\large
+}
+\postauthor{\par\vspace{0.25\baselineskip}}
+
+\predate{%
+  \centering\small
+}
+\postdate{
+\par\vspace{1em}
+\includegraphics[width=10cm]{Assets/FRITES-Logo.png}\par
+\par\vspace{3em}
+\hrule\vspace{2em}
+}
+
+
+
+\title{Shooting while moving for an FTC Decode robot}
+\author{Thibault Monnier \textendash{} Team FRITES 20991}
+\date{February 2026}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Introduction}
+
+In the 2025--26 Decode season of the FIRST Tech Challenge, robots have to shoot
+``Artifacts'' --- which are 12.5~centimeter balls --- into a goal located 1.4 meters
+above the ground. While shooting from a stationary position can already prove
+challenging, some teams wish to save time by shooting while moving.
+
+This article aims to explain the calculations that make this possible, to allow
+as many teams as possible to implement it. It does not contain any
+implementation details, but provides the formulas that can be used.
+
+If you want to skip the calculations and go straight to the final result, see~\ref{sec:final_result}.
+
+\bigskip
+
+\textbf{Disclaimer:} If you are having trouble achieving sufficient precision when shooting from a stationary position, you should probably not consider this approach. Not all physical parameters can be taken into account, which \textit{will} result in a loss of precision.
+In particular, this text assumes no air friction, because it is difficult to model and has a minimal impact on the trajectories (from what we have observed, at least).
+
+
+\chapter{Calculations}
+
+In the following, we use
+\href{https://en.wikipedia.org/wiki/Angle#Signed_angles}{oriented angles}. We use $(r, \theta)$ for \href{https://en.wikipedia.org/wiki/Polar_coordinate_system}{polar coordinates}, and $\begin{pmatrix}
+		x \\
+		y
+	\end{pmatrix}$ for \href{https://en.wikipedia.org/wiki/Cartesian_coordinate_system}{Cartesian coordinates}.
+
+\section{Defining the problem}
+
+Consider the following three vectors as projected onto the ground plane:
+\begin{itemize}
+	\item $\vec{v}_{robot}$: the velocity of the robot
+	\item $\vec{v}_{shoot}$: the velocity at which the ball is launched relative to the robot
+	\item $\vec{v}_{ball}$: the resulting velocity of the ball in the field's frame of reference
+\end{itemize}
+
+For the sake of simplicity, we assume that $\vec{v}_{robot}$ has an angle
+of $0$. Therefore, $\vec{v}_{shoot}$ has angle $\alpha$, and $\vec{v}_{ball}$
+has angle $\varphi$.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+			scale=1.2,
+			vector/.style={->, thick},
+			velocity/.style={->, thick, blue},
+			target/.style={->, thick, red},
+			correction/.style={->, thick, green!60!black},
+			every node/.style={font=\small}
+		]
+
+		% Robot
+		\coordinate (R) at (0,0);
+		\draw[thick] (R) circle (0.3);
+		\node[below left=6pt] at (R) {Robot};
+
+		% Goal
+		\coordinate (G) at (6,2);
+		\filldraw[black] (G) circle (2pt);
+		\draw[thick] ($(G)+(-0.25,-0.25)$) rectangle ($(G)+(0.25,0.25)$);
+		\node[below left=3pt and 8pt] at (G) {Goal};
+
+		% Robot velocity vector
+		\coordinate (Vr) at ($(R)+(2,0)$);
+		\draw[velocity] (R) -- (Vr)
+		node[midway, below] {$\vec{v}_{robot}$};
+		% Corrected shooting vector
+		\coordinate (Vs) at ($(R)+(2.5,1.5)$);
+		\draw[correction] (R) -- (Vs)
+		node[midway, above] {$\vec{v}_{shoot}$};
+		% Ball velocity vector
+		\coordinate (Vb) at ($(R)+(4.5,1.5)$);
+		\draw[target] (R) -- (Vb)
+		node[midway, below] {$\vec{v}_{ball}$};
+
+		% Angles
+		\pic[
+			draw,
+			"$\alpha$",
+			angle eccentricity=1.3,
+			angle radius=0.75cm,
+		] {angle = Vr--R--Vs};
+		\pic[
+			draw,
+			"$\varphi$",
+			angle eccentricity=1.2,
+			angle radius=1.2cm
+		] {angle = Vr--R--Vb};
+
+	\end{tikzpicture}
+	\caption{\textit{Diagram from above of the moving shot.}}
+\end{figure}
+
+Given $\vec{v}_{robot}$, we wish to calculate $\vec{v}_{shoot}$ such that $\vec{v}_{ball}$ points toward the goal, and has the speed required to reach it.
+
+To do so, we separate the problem into two parts. First, we calculate the required velocity for the ball $\vec{v}_{ball}$, by calculating its ideal trajectory. Then, using basic trigonometry, we can calculate the direction $\alpha = \arg \vec{v}_{shoot}$ and the speed $\|\vec{v}_{shoot}\|$ in which the robot should shoot.
+
+
+\section{Calculating the ball speed}
+
+This is the most complicated part, as it involves calculating trajectories. To
+simplify, we will assume no air friction.
+
+\subsection{Definitions and notations}
+
+The following definitions will be essential:
+\begin{enumerate}[label={[\Alph*]}]
+	\item\label{def:speed} Speed is defined as the derivative of position with respect to time. $^{\href{https://en.wikipedia.org/wiki/Speed#Instantaneous_speed}{Wikipedia}}$
+	\item\label{def:accel} Acceleration is defined as the derivative of speed with respect to time, which is the second derivative of position with respect to time. $^{\href{https://en.wikipedia.org/wiki/Acceleration#Instantaneous_acceleration}{Wikipedia}}$
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+			>=Latex,
+			vec/.style={->, thick, blue},
+			traj/.style={->, thick, red},
+			guide/.style={dashed, gray},
+			every node/.style={font=\small}
+		]
+
+		% --- Parameters ---
+		\def\rx{2.0}    % robot center x
+		\def\rw{2.2}    % robot width
+		\def\rh{1.6}    % robot height (extends to ground)
+		\def\gx{9.0}    % goal center x
+		\def\gw{2.6}    % goal width
+		\def\gh{4.2}    % goal height (extends to ground)
+
+		% --- Robot rectangle (bottom on ground y=0) ---
+		\coordinate (R) at (\rx,\rh/2); % robot "center" point for vectors
+		\node[left] at (R) {R};
+		\draw[thick] (\rx-\rw/2,0) rectangle (\rx+\rw/2,\rh);
+		\node[below=3pt] at (\rx,0) {Robot};
+
+		% --- Goal rectangle (bottom on ground y=0) ---
+		\coordinate (G) at (\gx,\gh*0.75); % aim point (upper part of goal)
+		\node[right] at (G) {G};
+		\draw[thick] (\gx-\gw/2,0) rectangle (\gx+\gw/2,\gh);
+		\node[below=3pt] at (\gx,0) {Goal};
+
+		% --- Displacement vector and components ---
+		\coordinate (P) at (\gx,\rh/2); % same y as R (horizontal projection)
+		\draw[vec] (R) -- (G) node[midway, above left, blue] {$\vec d$};
+		\draw[guide, blue] (R) -- (P) node[midway, below] {$\Delta x$};
+		\draw[guide, blue] (P) -- (G) node[midway, right] {$\Delta y$};
+		\pic [draw=blue, thick, angle radius=3mm] {right angle = R--P--G};
+
+		% --- Parabola with launch tangent angle alpha, passing through G ---
+		\pgfmathsetmacro{\dx}{\gx-\rx}
+		\pgfmathsetmacro{\dy}{(\gh*0.75) - (\rh/2)}
+		\pgfmathsetmacro{\b}{tan(70)}
+		\pgfmathsetmacro{\a}{(\dy - \b*\dx)/(\dx*\dx)}
+		\draw[traj,thick,->,domain=0:\dx,samples=120]
+		plot ({\rx+\x}, {\rh/2 + (\a*\x*\x + \b*\x)});
+		\pgfmathsetmacro{\tLab}{0.55*\dx}
+		\coordinate (Vt) at ({\rx+\tLab}, {\rh/2 + (\a*\tLab*\tLab + \b*\tLab)});
+		\node[above, red] at (Vt) {$b(t)$};
+
+		% Launch vector
+		\def\L{1.75}
+		\coordinate (T) at ({\rx+\L}, {\rh/2 + \b*\L});
+		\draw[vec, green!60!black, thick] (R) -- (T) node[midway, above left] {$\vec v$};
+
+		% Alpha (between horizontal and tangent)
+		\coordinate (Xdir) at (\rx+1, \rh/2);
+		\pic[
+			draw=green!60!black, thick,
+			text=green!60!black, thick,
+			"$\theta$",
+			angle radius=0.8cm,
+			angle eccentricity=1.2
+		] {angle = Xdir--R--T};
+
+	\end{tikzpicture}
+	\caption{\textit{Diagram of the shot. Side view on the plane passing through line $RT$ and perpendicular to the ground.}}
+\end{figure}
+
+Once again, we consider the vectors as projected onto the plane.
+
+Let $\vec d = \begin{pmatrix}
+		\Delta x \\
+		\Delta y
+	\end{pmatrix}$ be the (positive) distance between where the ball stops touching the robot and the point we are aiming for in the goal. Let $\vec{b}(t) = \begin{pmatrix}
+		x(t) \\
+		y(t)
+	\end{pmatrix}$ be the position of the ball with respect to time, and let $T$ be the total duration of the shot, such that $\vec{b}(T) = G$. Finally, let $\vec{v}$ be the velocity of the ball as it exits the shooter, and let $\theta = \arg \vec{v}$ be the vertical angle at which the ball is shot.
+
+
+To simplify, we make the following assumptions:
+\begin{itemize}
+	\item neglect friction so that the ball has a constant horizontal speed
+	\item assume the shooter $R$ is at the center of the robot
+	\item define $R$ as the origin $\begin{pmatrix}
+			      0 \\
+			      0
+		      \end{pmatrix}$.
+\end{itemize}
+
+\subsection{Calculating the trajectory \texorpdfstring{$\vec{b}(t)$}{b(t)}}
+
+We know the vertical acceleration of the ball is minus the
+\href{https://en.wikipedia.org/wiki/Gravitational_acceleration}{gravitational
+	acceleration $g$} which means that:
+\[
+	\begin{aligned}
+		               & \begin{cases}
+			                 y''(t) & = -g \quad \text{(by~\ref{def:accel})} \\
+			                 y'(t)  & = \int y''(t) \cdot dt                 \\
+		                 \end{cases} \\
+		\implies y'(t) & = \int -g \cdot dt                                     \\
+		               & = -gt + y'(0)                                          \\
+		\implies y(t)  & = \int \left(-gt + y'(0)\right) dt                     \\
+		               & = -\frac12 gt^2 + y'(0) t + y(0)                       \\
+	\end{aligned}
+\]
+Since we know that $y(0) = R_y = 0$, we can simply write $y(t) = -\frac{1}{2}gt^2 + y'(0) t$. Basic trigonometry tells us that $\vec{v}_y = \|\vec{v}\|\cdot \sin\theta$, and we know that the speed at $t=0$, which is $y'(0)$, must be equal to $\vec{v}_y$. Therefore, we can further simplify to $y(t) = -\frac{1}{2}gt^2 + \|\vec{v}\|\sin\theta \cdot t$.
+
+By assumption, we also know that the ball has a constant horizontal speed. Thus, the horizontal speed can be written as the constant $x'(t) = x'(0)$ (by~\ref{def:speed}) $\implies x(t) = x'(0)t + x(0)$. Furthermore, we once again know that $\vec{v}_x = \|\vec{v}\|\cdot \cos \theta$ should be equal to $x'(0)$, and that $x(0) = R_x = 0$. We can simply write $x(t) = \|\vec{v}\| \cos \theta \cdot t$.
+
+Combining the two results, we get:
+\[
+	\vec{b}(t) = \begin{pmatrix}
+		\|\vec{v}\|\cos \theta \cdot t \\
+		-\frac{1}{2}gt^2 + \|\vec{v}\| \sin\theta \cdot t
+	\end{pmatrix}
+\]
+
+\subsection{Calculating ball velocity \texorpdfstring{$\|\vec{v}\|$}{||v||}}
+
+Now that we expressed the position of the ball as a function of the shooting speed $\|\vec{v}\|$, let's solve for $\|\vec{v}\|$. We know that $\vec{b}(T) = G$, so:
+\[
+	\begin{aligned}
+		\Delta x   & = \|\vec{v}\| \cos \theta \cdot T         \\
+		\implies T & = \dfrac{\Delta x}{\|\vec{v}\|\cos\theta} \\
+	\end{aligned}
+\]
+since if $\cos\theta = 0$, your shooter is going to have a hard time scoring anything anyway\ldots.
+
+Using $\vec{b}(T)=G$ again, we also have $\Delta y = -\frac{1}{2}gT^2 + \|\vec{v}\| \sin\theta \cdot T\implies \frac{1}{2}gT^2 - \|\vec{v}\| \sin\theta \cdot T + \Delta y = 0$. Recall the \href{https://en.wikipedia.org/wiki/Quadratic_formula}{quadratic formula}, which gives us the following solutions: $T = \frac{\|\vec{v}\|\sin\theta \pm \sqrt{\|\vec{v}\|^2\sin^2\theta - 2g\Delta y}}{g}$. Therefore, we can write:
+\[
+	\begin{aligned}
+		\dfrac{\Delta x}{\|\vec{v}\|\cos\theta}                                                                    & = \frac{\|\vec{v}\|\sin\theta \pm \sqrt{\|\vec{v}\|^2\sin^2\theta - 2g\Delta y}}{g}                                                         \\
+		\implies \Delta x \cdot g                                                                                  & = \|\vec{v}\|^2 \sin\theta \cos\theta \pm \|\vec{v}\| \cos\theta \sqrt{\|\vec{v}\|^2\sin^2\theta - 2g\Delta y}                              \\
+		\implies \pm \|\vec{v}\| \cos\theta \sqrt{\|\vec{v}\|^2\sin^2\theta - 2g\Delta y}                          & = \|\vec{v}\|^2 \sin\theta \cos\theta-\Delta x\cdot g                                                                                       \\
+		\implies \|\vec{v}\|^2\cos^2\theta \cdot (\|\vec{v}\|^2\sin^2\theta - 2g\Delta y)                          & = {(\|\vec{v}\|^2 \sin\theta \cos\theta-\Delta x\cdot g)}^2                                                                                 \\
+		\implies \cancel{\|\vec{v}\|^4\cos^2\theta \sin^2\theta} - 2\xcancel{g}\Delta y \|\vec{v}\|^2 \cos^2\theta & = \cancel{\|\vec{v}\|^4 \sin^2\theta \cos^2\theta} - 2\Delta x \xcancel{g} \|\vec{v}\|^2 \sin\theta \cos\theta + \Delta x^2 g^{\xcancel{2}} \\
+		\implies  \|\vec{v}\|^2 (2\Delta x \sin\theta \cos\theta - 2\Delta y \cos^2\theta)                         & = \Delta x^2 g                                                                                                                              \\
+		\implies \|\vec{v}\|                                                                                       & = \sqrt{\frac{\Delta x^2 g}{2\Delta x \sin\theta \cos\theta - 2\Delta y \cos^2\theta}}                                                      \\
+		                                                                                                           & = \Delta x \sqrt{\frac{g}{2\cos\theta (\Delta x \sin\theta - \Delta y \cos\theta) }}
+	\end{aligned}
+\]
+
+\subsection{Calculating horizontal ball speed \texorpdfstring{$\vec{v}_x = \|\vec{v}_{ball}\|$}{v\_x = ||v\_ball||}}
+
+We are almost done. We now have $\|\vec{v}\|$, but we are looking to express the horizontal ball speed $\vec{v}_x = \|\vec{v}_{ball}\|$. Thankfully, we know that $\vec{v}_x = \|\vec{v}\| \cos\theta$ by basic trigonometry, so:
+\[
+	\begin{aligned}
+		\vec{v}_x          & = \Delta x \sqrt{\frac{g}{2\cos\theta (\Delta x \sin\theta - \Delta y \cos\theta) }} \cdot \cos\theta \\
+		\implies \vec{v}_x
+		                   & = \Delta x \sqrt{\frac{g}{\frac{2 (\Delta x \sin\theta - \Delta y \cos\theta)}{\cos\theta} }}         \\
+		\implies
+		\vec{v}_x          & = \Delta x \sqrt{\frac{g}{2 (\Delta x \tan\theta - \Delta y)}}
+		\quad \left(\text{since $\tan\theta = \frac{\sin\theta}{\cos\theta}$}\right)                                               \\
+		\implies
+		\Aboxed{
+		\|\vec{v}_{ball}\| & = \Delta x \sqrt{\frac{g}{2 (\Delta x \tan\theta - \Delta y)}}
+		}
+	\end{aligned}
+\]
+
+
+\section{Calculating the shooting vector \texorpdfstring{$\vec{v}_{shoot}$}{v\_shoot}}
+
+Since the robot is moving with velocity $\vec{v}_{robot}$ relative to the field and launches the ball with velocity $\vec{v}_{shoot}$ in its frame of reference, the resulting velocity of the ball in the field's frame of reference must be $\vec{v}_{ball} = \vec{v}_{robot} + \vec{v}_{shoot}$.
+
+Let $r$ be such that $\vec{v}_{ball} = (r,
+	\varphi)$, and let $s$ be such that $\vec{v}_{robot} = (s, 0) = \begin{pmatrix}
+		s \\
+		0
+	\end{pmatrix}$ (since $\vec{v}_{robot}$ has an angle of 0).
+
+\subsection{Shooting angle \texorpdfstring{$\alpha$}{α}}
+
+We wish to calculate the shooting angle $\alpha$,
+such that $\vec{v}_{ball}$ points toward the goal; in other words, we want to
+find the value of $\alpha$ such that $\vec{v}_{robot} + \vec{v}_{shoot}$ has an angle of $\varphi$. We have:
+
+\[
+	\begin{aligned}
+		\vec{v}_{shoot} & = \vec{v}_{ball}
+		-\vec{v}_{robot}                                                          \\
+		                & = \begin{pmatrix}
+			                    {(\vec{v}_{ball})}_x - {(\vec{v}_{robot})}_x \\
+			                    {(\vec{v}_{ball})}_y - {(\vec{v}_{robot})}_y
+		                    \end{pmatrix} \\
+		                & = \begin{pmatrix}
+			                    r \cdot \cos \varphi - s \cdot \cos 0 \\
+			                    r \cdot \sin \varphi - s \cdot \sin 0
+		                    \end{pmatrix} \quad \text{(by basic trigonometry)}    \\
+		                & = \begin{pmatrix}
+			                    r \cdot \cos \varphi - s \\
+			                    r \cdot \sin \varphi
+		                    \end{pmatrix}
+	\end{aligned}
+\]
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+			scale=1.2,
+			axis/.style={->, thick},
+			vec/.style={->, thick, green!60!black},
+			proj/.style={dashed, gray},
+			every node/.style={font=\small}
+		]
+
+		% Origin and axes
+		\coordinate (O) at (0,0);
+		\draw[axis] (-0.5,0) -- (3.5,0) node[right] {$x$};
+		\draw[axis] (0,-0.5) -- (0,2.5) node[above] {$y$};
+
+		% Vector v_ball
+		\coordinate (V) at (2.5,1.5);
+		\draw[vec] (O) -- (V)
+		node[midway, above left] {$\vec{v}_{shoot}$};
+
+		% Projections
+		\draw[proj] (V) -- (2.5,0);
+		\draw[proj] (V) -- (0,1.5);
+		\node[below] at (2.5,0) {$r\cos\varphi - s$};
+		\node[left]  at (0,1.5) {$r\sin\varphi$};
+
+		% Angle
+		\coordinate (X) at (4.5,0);
+		\pic[
+			draw=green!60!black,
+			"$\alpha$",
+			angle radius=1.1cm,
+			angle eccentricity=1.2
+		] {angle = X--O--V};
+
+	\end{tikzpicture}
+	\caption{\textit{Decomposition of the ball velocity into its horizontal and vertical components.}}
+\end{figure}
+
+Therefore, we are done:
+\[
+	\boxed{
+		\alpha = \arg \vec{v}_{shoot} = \mathrm{atan2}\left(r\sin\varphi, r\cos \varphi - s\right)
+	}
+\]
+
+\subsection{Shooting speed \texorpdfstring{$\|\vec{v}_{shoot}\|$}{||v\_shoot||}}
+
+Now that we know the horizontal speed of the ball, we can calculate the horizontal shooting speed $\|\vec{v}_{shoot}\|$. Reusing the previous calculation, we found that $\vec{v}_{shoot} = \begin{pmatrix}
+		r \cdot \cos \varphi - s \\
+		r \cdot \sin \varphi
+	\end{pmatrix}$. Thus, the Pythagorean theorem gives us:
+\[
+	\begin{aligned}
+		\|\vec{v}_{shoot}\|         & = \sqrt{{(r \cdot \cos \varphi - s)}^2 + {(r \cdot \sin \varphi)}^2}                                                          \\
+		                            & = \sqrt{r^2\cos^2\varphi - 2rs\cos\varphi + s^2 + r^2\sin^2\varphi}                                                           \\
+		\Aboxed{\|\vec{v}_{shoot}\| & = \sqrt{r^2 - 2rs\cos\varphi + s^2}}      \quad \left(\text{by using the identity $\cos^2\varphi + \sin^2\varphi = 1$}\right) \\
+	\end{aligned}
+\]
+
+
+\section{Final result}\label{sec:final_result}
+
+Combining the two results gives the final formula for the shooting vector $(norm, angle)$:
+\[
+	\boxed{
+		\vec{v}_{shoot} = \left(
+		\sqrt{r^2 - 2rs\cos\varphi + s^2}, \mathrm{atan2}\left(r\sin\varphi, r\cos \varphi - s\right)
+		\right)
+	}
+\]
+where
+\[
+	\begin{gathered}
+		\begin{cases}
+			r                    & = \|\vec{v}_{ball}\| = \Delta x \sqrt{\frac{g}{2 (\Delta x \tan\theta - \Delta y)}} \\
+			s                    & = \|\vec{v}_{robot}\|                                                               \\
+			\varphi              & = \text{angle shooter to goal}                                                      \\
+			\theta               & = \text{vertical shooting angle}                                                    \\
+			\Delta x             & = \text{horizontal distance $\mid goal - shooter \mid$}                             \\
+			\Delta y             & = \text{vertical distance $\mid goal - shooter \mid$}                               \\
+			g                    & = \text{gravitational acceleration } \approx 9.81 \text{ m/s}^2                     \\
+			\vec{v}_{robot}      & = \text{shooter ($\approx$ robot) velocity}                                         \\
+			\arg \vec{v}_{robot} & = 0 \quad\text{by assumption (rotate the coordinate system to make it so)}          \\
+		\end{cases} \\[1ex]
+		\text{\small \textbf{Note:} All quantities are expressed in standard SI units (meters, seconds, radians).}
+	\end{gathered}
+\]
+
+If you are not able to choose a shooting speed $\|\vec{v}_{shoot}\|$, and instead use a shooting distance $d$ (for example, by interpolating between a few empirically measured shooting distances), the following formula converts shooting speed to shooting distance. Recall the shoot duration $T = \dfrac{\Delta x}{\vec{v}_x}$ where $\vec{v}_x = \|\vec{v}_{ball}\|=r$, so $d = \|\vec{v}_{shoot}\| \cdot T$ gives us:
+\[
+	\boxed{
+		d = \|\vec{v}_{shoot}\| \cdot \frac{\Delta x}{r} = \frac{\Delta x}{r} \cdot \sqrt{r^2 - 2rs\cos\varphi + s^2}
+	}.
+\]
+
+\end{document}
