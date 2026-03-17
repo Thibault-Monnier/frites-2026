@@ -1,0 +1,266 @@
+package opmodes;
+
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
+
+import logic.Team;
+import logic.field.PlayingField;
+
+public class AutoOpModeFar extends OpModeBase {
+
+    private TelemetryManager panelsTelemetry;
+    private Paths paths;
+
+    private boolean pathActive = false;
+    private int nbShots = 0;
+    private double collectStartTime = 0;
+
+    enum AutoState {
+        SHOOT,
+        MOVE_TO_SHOOT_1,
+        ALIGN_COLLECT_HUMAN_PLAYER,
+        COLLECT_HUMAN_PLAYER,
+        MOVE_TO_SHOOT_AFTER_COLLECT_HUMAN_PLAYER,
+        ALIGN_COLLECT_BOTTOM_ROW,
+        COLLECT_BOTTOM_ROW,
+        MOVE_TO_SHOOT_AFTER_COLLECT_BOTTOM_ROW,
+        LEAVE,
+        DONE
+    }
+
+    private AutoState state = AutoState.MOVE_TO_SHOOT_1;
+
+    public AutoOpModeFar(Team team) {
+        super(team, true);
+    }
+
+    @Override
+    public void runOpMode() {
+        initialize();
+
+        waitForStart();
+
+        runStart();
+
+        double prevTime = runtime.milliseconds();
+        while (opModeIsActive()) {
+            // Consistent step duration for better PIDs
+            double time = runtime.milliseconds();
+            globalTelemetry.addData("Delta time", time - prevTime);
+            while (time - prevTime < 35) {
+                time = runtime.milliseconds();
+            }
+            prevTime = time;
+
+            runStep();
+        }
+
+        runStop();
+    }
+
+    @Override
+    protected void initialize() {
+        super.initialize();
+        useFollower();
+
+        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+
+        paths = new Paths(follower, team.isBlue());
+
+        panelsTelemetry.debug("Status", "Initialized");
+        panelsTelemetry.update(telemetry);
+
+        globalTelemetry.addData(
+                "Pose start", PlayingField.startPose(Team.RED).toPedropathingPose().toString());
+    }
+
+    @Override
+    protected void runStart() {
+        super.runStart();
+        cannon.on();
+    }
+
+    private void runStep() {
+        update();
+
+        execute();
+
+        apply(false); // Pedro Pathing controls drive motors
+        log();
+    }
+
+    @Override
+    protected void update() {
+        super.update();
+    }
+
+    @Override
+    protected void log() {
+        super.log();
+
+        globalTelemetry.addData("State", state);
+        globalTelemetry.addData("X", follower.getPose().getX());
+        globalTelemetry.addData("Y", follower.getPose().getY());
+        globalTelemetry.addData("Heading", follower.getPose().getHeading());
+    }
+
+    private void execute() {
+        switch (state) {
+            case MOVE_TO_SHOOT_1:
+                runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
+                break;
+            case SHOOT:
+                runShootCycle();
+                break;
+            case ALIGN_COLLECT_HUMAN_PLAYER:
+                runPath(paths.AlignCollectHumanPlayer, AutoState.COLLECT_HUMAN_PLAYER, false);
+                break;
+            case COLLECT_HUMAN_PLAYER:
+                runPath(paths.CollectHumanPlayer, AutoState.MOVE_TO_SHOOT_AFTER_COLLECT_HUMAN_PLAYER, true);
+                break;
+            case MOVE_TO_SHOOT_AFTER_COLLECT_HUMAN_PLAYER:
+                runPath(paths.MoveToShootAfterCollectHumanPlayer, AutoState.SHOOT, false);
+                break;
+            case ALIGN_COLLECT_BOTTOM_ROW:
+                runPath(paths.AlignCollectBottomRow, AutoState.COLLECT_BOTTOM_ROW, false);
+                break;
+            case COLLECT_BOTTOM_ROW:
+                runPath(paths.CollectBottomRow, AutoState.MOVE_TO_SHOOT_AFTER_COLLECT_BOTTOM_ROW, true);
+                break;
+            case MOVE_TO_SHOOT_AFTER_COLLECT_BOTTOM_ROW:
+                runPath(paths.MoveToShootAfterCollectBottomRow, AutoState.SHOOT, false);
+                break;
+            case LEAVE:
+                runPath(paths.Leave, AutoState.DONE, false);
+                break;
+            case DONE:
+                intake.off();
+                cannonBuffers.off();
+                break;
+        }
+    }
+
+    private void runPath(PathChain path, AutoState nextState, boolean slow) {
+        if (!pathActive) {
+            intake.off();
+            follower.followPath(path, slow ? 0.6 : 1, true);
+            pathActive = true;
+        }
+
+        if (!follower.isBusy()) {
+            pathActive = false;
+            state = nextState;
+            intake.off();
+        }
+    }
+
+    private void runShootCycle() {
+        if (follower.isBusy()) return;
+
+        intake.on();
+
+        boolean done = cannonBuffers.shootContinue(true, 0.5);
+
+        if (done) {
+            cannonBuffers.shootReset();
+            nbShots++;
+
+            if (nbShots == 1 || nbShots == 2 || nbShots == 3) state = AutoState.ALIGN_COLLECT_HUMAN_PLAYER;
+            else if (nbShots == 4) {
+                state = AutoState.ALIGN_COLLECT_BOTTOM_ROW;
+            }
+            else state = AutoState.LEAVE;
+        }
+    }
+
+    private void intake() {
+        cannonBuffers.reverse();
+        intake.on();
+    }
+
+    public static class Paths {
+        public PathChain MoveToShoot1,
+                AlignCollectHumanPlayer,
+                CollectHumanPlayer,
+                MoveToShootAfterCollectHumanPlayer,
+                AlignCollectBottomRow,
+                CollectBottomRow,
+                MoveToShootAfterCollectBottomRow,
+                Leave;
+
+        private Pose mirror(Pose pose, boolean shouldMirror) {
+            double x = pose.getX();
+            double y = pose.getY();
+            double heading = pose.getHeading();
+
+            double newX = shouldMirror ? 144 - x : x;
+            double newHeading = shouldMirror ? Math.PI - heading : heading;
+
+            return new Pose(newX, y, newHeading);
+        }
+
+        public Paths(Follower follower, boolean isBlue) {
+            Pose startPose =
+                    mirror(new Pose(90, 9, Math.toRadians(90)), isBlue);
+            Pose shootingPose = mirror(new Pose(90, 12, Math.toRadians(65)), isBlue);
+            Pose leavePose = mirror(new Pose(100, 20, Math.toRadians(0)), isBlue);
+
+            MoveToShoot1 =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(startPose, shootingPose))
+                            .setLinearHeadingInterpolation(
+                                    startPose.getHeading(), shootingPose.getHeading())
+                            .build();
+
+            AlignCollectHumanPlayer =
+                    follower.pathBuilder()
+                            .addPath(new BezierCurve(shootingPose, new Pose(105, 9, Math.toRadians(0)), leavePose))
+                            .setLinearHeadingInterpolation(
+                                    shootingPose.getHeading(), Math.toRadians(0))
+                            .build();
+
+            CollectHumanPlayer = follower.pathBuilder()
+                            .addPath(new BezierLine(new Pose(105, 9, Math.toRadians(0)), new Pose(138, 9, Math.toRadians(0))))
+                            .setLinearHeadingInterpolation(
+                                    Math.toRadians(0), Math.toRadians(0))
+                            .build();
+
+            MoveToShootAfterCollectHumanPlayer = follower.pathBuilder()
+                            .addPath(new BezierLine(new Pose(138, 9, Math.toRadians(0)), shootingPose))
+                            .setLinearHeadingInterpolation(
+                                    Math.toRadians(0), shootingPose.getHeading())
+                            .build();
+
+            AlignCollectBottomRow =
+                    follower.pathBuilder()
+                            .addPath(new BezierCurve(shootingPose, new Pose(90, 36, Math.toRadians(0)), leavePose))
+                            .setLinearHeadingInterpolation(
+                                    shootingPose.getHeading(), Math.toRadians(0))
+                            .build();
+
+            CollectBottomRow = follower.pathBuilder()
+                            .addPath(new BezierLine(new Pose(90, 36, Math.toRadians(0)), new Pose(138, 36, Math.toRadians(0))))
+                            .setLinearHeadingInterpolation(
+                                    Math.toRadians(0), Math.toRadians(0))
+                            .build();
+
+            MoveToShootAfterCollectBottomRow = follower.pathBuilder()
+                            .addPath(new BezierLine(new Pose(138, 36, Math.toRadians(0)), shootingPose))
+                            .setLinearHeadingInterpolation(
+                                    Math.toRadians(0), shootingPose.getHeading())
+                            .build();
+
+            Leave =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(shootingPose, leavePose))
+                            .setLinearHeadingInterpolation(
+                                    shootingPose.getHeading(), leavePose.getHeading())
+                            .build();
+        }
+    }
+}
