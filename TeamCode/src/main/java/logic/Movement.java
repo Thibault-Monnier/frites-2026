@@ -48,6 +48,7 @@ public class Movement implements RobotActuatorModule {
 
     private MovementMode movementMode;
     private boolean isSuperSlow = false;
+    private boolean lockTowardGoal = false;
 
     private Macro activeMacro = Macro.NONE;
 
@@ -90,6 +91,14 @@ public class Movement implements RobotActuatorModule {
     /// Toggles super slow mode.
     public void toggleSuperSlow() {
         isSuperSlow = !isSuperSlow;
+    }
+
+    public void toggleLockTowardsGoal() {
+        lockTowardGoal = !lockTowardGoal;
+    }
+
+    public boolean lockingTowardsGoal() {
+        return lockTowardGoal;
     }
 
     /// Returns whether the robot is currently moving.
@@ -167,12 +176,18 @@ public class Movement implements RobotActuatorModule {
         activeMacro = Macro.NONE;
     }
 
-    /// Rotates the robot using input from the *right* joystick of the gamepad.
-    public void joystickRotate(Gamepad gamepad, boolean slow) {
-        double turn = -gamepad.right_stick_x * speedMultiplier(slow);
+    /// Rotates the robot using input from the *right* joystick of the gamepad. If locking towards
+    /// goal, rotate to face the goal instead.
+    public void rotate(Gamepad gamepad, boolean slow) {
+        if (lockTowardGoal) {
+            turnTowardsHeading(shotHandler.getShotAngle());
+            lockTowardGoal = true; // Should not get overridden
+        } else {
+            double turn = -gamepad.right_stick_x * speedMultiplier(slow);
 
-        turn = MecanumDrive.smooth(turn);
-        turn(turn);
+            turn = MecanumDrive.smooth(turn);
+            turn(turn);
+        }
     }
 
     /// Translates the robot using input from the *left* joystick of the gamepad.

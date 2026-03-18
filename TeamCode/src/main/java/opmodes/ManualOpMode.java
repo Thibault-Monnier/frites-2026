@@ -62,17 +62,16 @@ public class ManualOpMode extends OpModeBase {
     }
 
     private void executeActions() {
-        if (isPressActive(ManualOpModeMappings.MOVING_SHOT_TOGGLE))
-            shotHandler.toggleUsingMovingShot();
         if (isPressActive(ManualOpModeMappings.DRIVE_MODE_TOGGLE)) move.toggleMovementMode();
+        if (isPressActive(ManualOpModeMappings.LOCK_TOWARDS_SHOOT_TOGGLE))
+            move.toggleLockTowardsGoal();
 
         move.joystickTranslate(
                 gamepadController.gamepad, isPressActive(ManualOpModeMappings.SLOW_MOVE));
-        if (isPressActive(ManualOpModeMappings.LOCK_TOWARDS_SHOOT))
+
+        if (isPressActive(ManualOpModeMappings.LOCK_TOWARDS_SHOOT) && !move.lockingTowardsGoal())
             move.turnTowardsHeading(shotHandler.getShotAngle());
-        else
-            move.joystickRotate(
-                    gamepadController.gamepad, isPressActive(ManualOpModeMappings.SLOW_TURN));
+        else move.rotate(gamepadController.gamepad, isPressActive(ManualOpModeMappings.SLOW_TURN));
 
         if (isPressActive(ManualOpModeMappings.MOVE_TO_SHOOTING_SPOT))
             move.initMacro(Macro.MOVE_TO_SHOOT);
