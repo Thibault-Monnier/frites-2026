@@ -72,7 +72,7 @@ public class CannonCalibrationOpMode extends OpModeBase {
         } else {
             move.joystickTranslate(
                     gamepad1, gamepadController.isPressing(GamepadController.Button.LEFT_STICK));
-            move.joystickRotate(
+            move.rotate(
                     gamepad1, gamepadController.isPressing(GamepadController.Button.RIGHT_STICK));
         }
 
