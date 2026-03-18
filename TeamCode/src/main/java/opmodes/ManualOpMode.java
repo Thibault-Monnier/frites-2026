@@ -95,7 +95,8 @@ public class ManualOpMode extends OpModeBase {
         // Make sure the cannon reached its target velocity
         if ((isPressActive(ManualOpModeMappings.SHOOT) && cannon.isReadyToShoot())
                 || isPressActive(ManualOpModeMappings.FORCE_SHOOT)) {
-            cannonBuffers.shootContinue(true);
+            // If red, start right
+            cannonBuffers.shootContinue(team.isBlue());
             intake.on();
         } else {
             cannonBuffers.shootDontContinue();

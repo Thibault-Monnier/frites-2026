@@ -230,7 +230,8 @@ public class AutoOpMode extends OpModeBase {
 
         intake.on();
 
-        boolean done = cannonBuffers.shootContinue(true, 0.55);
+        // If red, start right
+        boolean done = cannonBuffers.shootContinue(team.isBlue(), 0.4);
         globalTelemetry.addData("Shots fired", cannonBuffers.getShotsFired());
 
         if (done) {

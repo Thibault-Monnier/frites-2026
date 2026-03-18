@@ -45,11 +45,6 @@ public class CannonBuffersHandler implements RobotActuatorModule {
     /// Continues current round or shoots next round if done.
     /// Returns true if the shooting sequence is finished, false otherwise.
     public boolean shootContinue(boolean startLeft, double shootDelay) {
-        if (!isRoundFinished(shootDelay)) {
-            return false;
-        }
-
-        lastRoundStartTime = TimeHelpers.getRuntime();
 
         switch (shootingStage) {
             case IDLE:
@@ -57,8 +52,15 @@ public class CannonBuffersHandler implements RobotActuatorModule {
                 shootingStage = ShootingStage.SHOOTING;
             // fall through
             case SHOOTING:
-                nextShoot();
-                return shotsFired >= SHOOT_BALLS_AMOUNT;
+                if (isRoundFinished(shootDelay)) {
+                    nextShoot();
+                }
+
+                if (shotsFired >= SHOOT_BALLS_AMOUNT) both();
+                else if (lastShotLeft) leftOnly();
+                else rightOnly();
+
+                return shotsFired > SHOOT_BALLS_AMOUNT;
 
             default:
                 throw new IllegalStateException("Unexpected value: " + shootingStage);
@@ -98,13 +100,7 @@ public class CannonBuffersHandler implements RobotActuatorModule {
     }
 
     private void nextShoot() {
-        if (shotsFired == 2) {
-            both();
-        } else if (lastShotLeft) {
-            rightOnly();
-        } else {
-            leftOnly();
-        }
+        lastRoundStartTime = TimeHelpers.getRuntime();
         lastShotLeft = !lastShotLeft;
         shotsFired++;
     }
