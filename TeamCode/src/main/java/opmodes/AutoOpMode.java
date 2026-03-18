@@ -9,10 +9,6 @@ import com.pedropathing.paths.PathChain;
 import logic.Team;
 import logic.field.PlayingField;
 
-import math.Angle;
-import math.Distance;
-import math.Pose2D;
-
 public class AutoOpMode extends OpModeBase {
     private Paths paths;
 
@@ -117,25 +113,6 @@ public class AutoOpMode extends OpModeBase {
             case START_TO_SHOOT:
                 intake();
                 runPath(paths.StartToShoot, AutoState.SHOOT, false);
-
-                Pose2D robotPose = robotPosition.getPose();
-                Angle goalAngle = PlayingField.angleToGoal(robotPose.toPosition2D(), team);
-                Distance goalDistance = PlayingField.distanceToGoal(robotPose.toPosition2D(), team);
-
-                globalTelemetry.addLine("Is ready to shoot? " + cannon.isReadyToShoot());
-
-                Angle angleError = robotPose.getHeading().subtract(goalAngle).abs();
-                if (cannon.isReadyToShoot()
-                        && angleError.leq(Angle.fromDegrees(4))
-                        && goalDistance.geq(Distance.fromCentimeters(100))) {
-                    runShootCycle();
-                } else {
-                    globalTelemetry.addData(
-                            "Not shooting because angle error", angleError.toString());
-                    globalTelemetry.addData(
-                            "Not shooting because distance too small", goalDistance.toString());
-                }
-
                 break;
 
             case RAMP_TO_SHOOT:
@@ -231,7 +208,7 @@ public class AutoOpMode extends OpModeBase {
         intake.on();
 
         // If red, start right
-        boolean done = cannonBuffers.shootContinue(team.isBlue(), 0.4);
+        boolean done = cannonBuffers.shootContinue(team.isBlue(), 0.55);
         globalTelemetry.addData("Shots fired", cannonBuffers.getShotsFired());
 
         if (done) {
@@ -278,14 +255,15 @@ public class AutoOpMode extends OpModeBase {
         private void createPaths() {
             Pose startPose =
                     PlayingField.startPose(isBlue ? Team.BLUE : Team.RED).toPedropathingPose();
-            Pose shootingPose = mirror(new Pose(87, 77, Math.toRadians(51)), isBlue);
+            Pose shootingPose = mirror(new Pose(87, 77, Math.toRadians(54)), isBlue);
             Pose leavePose = mirror(new Pose(84, 102, Math.toRadians(38)), isBlue);
 
             Pose frontRowStartPose = mirror(new Pose(84, 36, Math.toRadians(0)), isBlue);
             Pose frontRowEndPose = mirror(new Pose(139, 36, Math.toRadians(0)), isBlue);
 
-            Pose middleRowStartPose = mirror(new Pose(99, 59, Math.toRadians(0)), isBlue);
-            Pose middleRowEndPose = mirror(new Pose(132.5, 59, Math.toRadians(0)), isBlue);
+            Pose middleRowStartPose = mirror(new Pose(99, 62, Math.toRadians(0)), isBlue);
+            Pose middleRowControlPoint = mirror(new Pose(126, 63, Math.toRadians(0)), isBlue);
+            Pose middleRowEndPose = mirror(new Pose(132, 56, Math.toRadians(0)), isBlue);
             Pose middleRowToShootControlPoint = mirror(new Pose(106.5, 59), isBlue);
 
             Pose backRowStartPos = mirror(new Pose(101, 84, Math.toRadians(0)), isBlue);
@@ -295,7 +273,7 @@ public class AutoOpMode extends OpModeBase {
             Pose alignRampControlPoint = mirror(new Pose(102, 66), isBlue);
             Pose collectRampPose = mirror(new Pose(131, 59.5, Math.toRadians(30)), isBlue);
             Pose collectRampFinalControlPoint = mirror(new Pose(127, 57.5), isBlue);
-            Pose collectRampFinalEndPose = mirror(new Pose(133, 56.5, Math.toRadians(0)), isBlue);
+            Pose collectRampFinalEndPose = mirror(new Pose(132, 56.5, Math.toRadians(0)), isBlue);
 
             Pose rampToShootControlPoint = mirror(new Pose(107, 60), isBlue);
 
@@ -306,7 +284,8 @@ public class AutoOpMode extends OpModeBase {
             Leave = lineToPath(backRowEndPose, leavePose);
 
             AlignMiddleRow = lineToPath(shootingPose, middleRowStartPose);
-            CollectMiddleRow = lineToPath(middleRowStartPose, middleRowEndPose);
+            CollectMiddleRow =
+                    curveToPath(middleRowStartPose, middleRowControlPoint, middleRowEndPose);
             MiddleRowToShoot =
                     curveToPath(middleRowEndPose, middleRowToShootControlPoint, shootingPose);
 
