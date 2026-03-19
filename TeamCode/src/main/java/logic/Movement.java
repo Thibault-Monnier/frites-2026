@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import logic.field.PlayingField;
-import logic.pidf.PIDFController;
+import logic.pidf.PIDFLController;
 import logic.position.RobotPosition;
 
 import math.Angle;
@@ -42,9 +42,9 @@ public class Movement implements RobotActuatorModule {
 
     private final MecanumDrive mecanumDrive;
 
-    private final PIDFController turnController;
-    private final PIDFController translationXController;
-    private final PIDFController translationYController;
+    private final PIDFLController turnController;
+    private final PIDFLController translationXController;
+    private final PIDFLController translationYController;
 
     private MovementMode movementMode;
     private boolean isSuperSlow = false;
@@ -70,11 +70,11 @@ public class Movement implements RobotActuatorModule {
         this.shotHandler = shotHandler;
 
         this.mecanumDrive = new MecanumDrive(globalTelemetry, FL, FR, BL, BR);
-        this.turnController = new PIDFController(globalTelemetry, TURN_PIDF_COEFFICIENTS);
+        this.turnController = new PIDFLController(globalTelemetry, TURN_PIDF_COEFFICIENTS);
         this.translationXController =
-                new PIDFController(globalTelemetry, TRANSLATION_PIDF_COEFFICIENTS);
+                new PIDFLController(globalTelemetry, TRANSLATION_PIDF_COEFFICIENTS);
         this.translationYController =
-                new PIDFController(globalTelemetry, TRANSLATION_PIDF_COEFFICIENTS);
+                new PIDFLController(globalTelemetry, TRANSLATION_PIDF_COEFFICIENTS);
         this.movementMode = movementMode;
     }
 
@@ -228,6 +228,9 @@ public class Movement implements RobotActuatorModule {
         Angle angleError = targetHeading.subtract(robotPose.getHeading());
         turnController.setError(angleError.toRadians());
 
+        globalTelemetry.addData("Turn error", angleError.toString());
+        globalTelemetry.addData("Turn error change", turnController.getErrorChange());
+
         boolean isFinished =
                 turnController.isStableAtTarget(
                         TURN_TOLERANCE.toRadians(), NOT_TURNING_THRESHOLD.toRadians());
@@ -240,8 +243,6 @@ public class Movement implements RobotActuatorModule {
         turn(turnSpeed);
 
         globalTelemetry.addData("Turn speed", turnSpeed);
-        globalTelemetry.addData("Turn error change", turnController.getErrorChange());
-        globalTelemetry.addData("Turn error", angleError.toString());
 
         return false;
     }

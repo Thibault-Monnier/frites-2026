@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import config.HardwareConfig;
 
-import logic.pidf.PIDFControllerMotor;
+import logic.pidf.PIDFLControllerMotor;
 
 import math.Distance;
 
@@ -35,8 +35,8 @@ public class Cannon implements RobotActuatorModule {
     private final DcMotorEx motorLeft;
     private final DcMotorEx motorRight;
 
-    private final PIDFControllerMotor PIDFControllerLeft;
-    private final PIDFControllerMotor PIDFControllerRight;
+    private final PIDFLControllerMotor PIDFControllerLeft;
+    private final PIDFLControllerMotor PIDFControllerRight;
 
     protected double motorTargetVelocity;
 
@@ -58,13 +58,13 @@ public class Cannon implements RobotActuatorModule {
         this.motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.PIDFControllerLeft =
-                new PIDFControllerMotor(
+                new PIDFLControllerMotor(
                         motorLeft,
                         HardwareConfig.SHOOTER_MAX_VELOCITY,
                         this.globalTelemetry,
                         CANNON_PID);
         this.PIDFControllerRight =
-                new PIDFControllerMotor(
+                new PIDFLControllerMotor(
                         motorRight,
                         HardwareConfig.SHOOTER_MAX_VELOCITY,
                         this.globalTelemetry,

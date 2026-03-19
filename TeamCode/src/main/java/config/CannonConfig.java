@@ -3,7 +3,7 @@ package config;
 import com.acmerobotics.dashboard.config.Config;
 import com.bylazar.configurables.annotations.Configurable;
 
-import logic.pidf.PIDFCoefficients;
+import logic.pidf.PIDFLCoefficients;
 
 import math.Angle;
 import math.Distance;
@@ -15,7 +15,7 @@ public class CannonConfig {
     public static double MOVING_SPEED = 1.0;
     public static double REVERSE_SPEED = -1.0;
 
-    public static PIDFCoefficients CANNON_PID = new PIDFCoefficients(0.02, 0.0, 0.0, -0.5);
+    public static PIDFLCoefficients CANNON_PID = new PIDFLCoefficients(0.02, 0.0, 0.0, -0.5, 0.0);
 
     public static Angle CANNON_ANGLE = Angle.fromDegrees(61.0);
     public static Distance CANNON_TOP_HEIGHT = Distance.fromCentimeters(40.8);
