@@ -260,6 +260,9 @@ public class Movement implements RobotActuatorModule {
         translationXController.setError(xError);
         translationYController.setError(yError);
 
+        globalTelemetry.addData("X Error", xError);
+        globalTelemetry.addData("Y Error", yError);
+
         boolean isFinished =
                 translationXController.isStableAtTarget(
                                 TRANSLATION_TOLERANCE.getValue(errorUnit),
@@ -279,8 +282,6 @@ public class Movement implements RobotActuatorModule {
         Translation translation = new Translation(dx, dy);
         translateFieldCentric(robotAngle, translation);
 
-        globalTelemetry.addData("X Error", xError);
-        globalTelemetry.addData("Y Error", yError);
         globalTelemetry.addData("Dx", dx);
         globalTelemetry.addData("Dy", dy);
 
