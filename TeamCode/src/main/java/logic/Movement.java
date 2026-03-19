@@ -179,14 +179,15 @@ public class Movement implements RobotActuatorModule {
     /// Rotates the robot using input from the *right* joystick of the gamepad. If locking towards
     /// goal, rotate to face the goal instead.
     public void rotate(Gamepad gamepad, boolean slow) {
-        if (lockTowardGoal) {
-            turnTowardsHeading(shotHandler.getShotAngle());
-            lockTowardGoal = true; // Should not get overridden
-        } else {
-            double turn = -gamepad.right_stick_x * speedMultiplier(slow);
+        double turn = -gamepad.right_stick_x * speedMultiplier(slow);
 
+        if (Math.abs(turn) > 0.1) {
             turn = MecanumDrive.smooth(turn);
             turn(turn);
+            lockTowardGoal = false;
+        } else if (lockTowardGoal) {
+            turnTowardsHeading(shotHandler.getShotAngle());
+            lockTowardGoal = true; // Should not get overridden
         }
     }
 
@@ -227,15 +228,22 @@ public class Movement implements RobotActuatorModule {
         Angle angleError = targetHeading.subtract(robotPose.getHeading());
         turnController.setError(angleError.toRadians());
 
-        double turnSpeed = turnController.get();
-        turn(turnSpeed);
-
         boolean isFinished =
                 turnController.isStableAtTarget(
                         TURN_TOLERANCE.toRadians(), NOT_TURNING_THRESHOLD.toRadians());
-        globalTelemetry.addData("Turn Speed", turnSpeed);
-        globalTelemetry.addData("Error change", turnController.getErrorChange());
-        return isFinished;
+        if (isFinished) {
+            globalTelemetry.addLine("Turn controller is finished");
+            return true;
+        }
+
+        double turnSpeed = turnController.get();
+        turn(turnSpeed);
+
+        globalTelemetry.addData("Turn speed", turnSpeed);
+        globalTelemetry.addData("Turn error change", turnController.getErrorChange());
+        globalTelemetry.addData("Turn error", angleError.toString());
+
+        return false;
     }
 
     /// Translates the robot towards a target position. Returns true if finished, false otherwise.
@@ -251,13 +259,6 @@ public class Movement implements RobotActuatorModule {
         translationXController.setError(xError);
         translationYController.setError(yError);
 
-        double dx = translationXController.get();
-        double dy = translationYController.get();
-
-        Angle robotAngle = robotPosition.getHeading();
-        Translation translation = new Translation(dx, dy);
-        translateFieldCentric(robotAngle, translation);
-
         boolean isFinished =
                 translationXController.isStableAtTarget(
                                 TRANSLATION_TOLERANCE.getValue(errorUnit),
@@ -265,12 +266,24 @@ public class Movement implements RobotActuatorModule {
                         && translationYController.isStableAtTarget(
                                 TRANSLATION_TOLERANCE.getValue(errorUnit),
                                 NOT_TRANSLATING_THRESHOLD.getValue(errorUnit));
+        if (isFinished) {
+            globalTelemetry.addLine("Translation controller is finished");
+            return true;
+        }
+
+        double dx = translationXController.get();
+        double dy = translationYController.get();
+
+        Angle robotAngle = robotPosition.getHeading();
+        Translation translation = new Translation(dx, dy);
+        translateFieldCentric(robotAngle, translation);
+
         globalTelemetry.addData("X Error", xError);
         globalTelemetry.addData("Y Error", yError);
         globalTelemetry.addData("Dx", dx);
         globalTelemetry.addData("Dy", dy);
 
-        return isFinished;
+        return false;
     }
 
     /// Computes translation speed forward and sideways. Returns the pair (forward, strafe).
