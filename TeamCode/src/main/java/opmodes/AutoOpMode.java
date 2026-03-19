@@ -189,11 +189,12 @@ public class AutoOpMode extends OpModeBase {
 
     private void runPath(PathChain path, AutoState nextState, boolean slow) {
         if (!pathActive) {
-            follower.followPath(path, slow ? 0.6 : 1, true);
+            follower.followPath(path, slow ? 0.7 : 1, true);
             pathActive = true;
         }
 
-        if (!follower.isBusy()) {
+        if (!follower.isBusy() || follower.isRobotStuck()) {
+            follower.breakFollowing();
             pathActive = false;
             state = nextState;
             if (nextState == AutoState.COLLECTING_FROM_RAMP) {
@@ -208,8 +209,7 @@ public class AutoOpMode extends OpModeBase {
         intake.on();
 
         // If red, start right
-        boolean done = cannonBuffers.shootContinue(team.isBlue(), 0.55);
-        globalTelemetry.addData("Shots fired", cannonBuffers.getShotsFired());
+        boolean done = cannonBuffers.shootContinue(team.isBlue(), 0.5);
 
         if (done) {
             cannonBuffers.shootReset();
@@ -255,32 +255,33 @@ public class AutoOpMode extends OpModeBase {
         private void createPaths() {
             Pose startPose =
                     PlayingField.startPose(isBlue ? Team.BLUE : Team.RED).toPedropathingPose();
-            Pose shootingPose = mirror(new Pose(87, 77, Math.toRadians(54)), isBlue);
-            Pose leavePose = mirror(new Pose(84, 102, Math.toRadians(38)), isBlue);
+            Pose shootingPose = mirror(new Pose(88, 76, Math.toRadians(53)), isBlue);
+            Pose leavePose = mirror(new Pose(85, 101, Math.toRadians(38)), isBlue);
 
             Pose frontRowStartPose = mirror(new Pose(84, 36, Math.toRadians(0)), isBlue);
             Pose frontRowEndPose = mirror(new Pose(139, 36, Math.toRadians(0)), isBlue);
 
             Pose middleRowStartPose = mirror(new Pose(99, 62, Math.toRadians(0)), isBlue);
             Pose middleRowControlPoint = mirror(new Pose(126, 63, Math.toRadians(0)), isBlue);
-            Pose middleRowEndPose = mirror(new Pose(132, 56, Math.toRadians(0)), isBlue);
+            Pose middleRowEndPose = mirror(new Pose(131, 56, Math.toRadians(0)), isBlue);
             Pose middleRowToShootControlPoint = mirror(new Pose(106.5, 59), isBlue);
 
-            Pose backRowStartPos = mirror(new Pose(101, 84, Math.toRadians(0)), isBlue);
-            Pose backRowEndPose = mirror(new Pose(126.5, 84, Math.toRadians(0)), isBlue);
+            Pose backRowStartPos = mirror(new Pose(100, 84, Math.toRadians(0)), isBlue);
+            Pose backRowControlPoint = mirror(new Pose(106.5, 88), isBlue);
+            Pose backRowEndPose = mirror(new Pose(126, 83, Math.toRadians(-10)), isBlue);
 
             Pose alignRampPose = mirror(new Pose(126, 61, Math.toRadians(35)), isBlue);
             Pose alignRampControlPoint = mirror(new Pose(102, 66), isBlue);
             Pose collectRampPose = mirror(new Pose(131, 59.5, Math.toRadians(30)), isBlue);
             Pose collectRampFinalControlPoint = mirror(new Pose(127, 57.5), isBlue);
-            Pose collectRampFinalEndPose = mirror(new Pose(132, 56.5, Math.toRadians(0)), isBlue);
+            Pose collectRampFinalEndPose = mirror(new Pose(131, 56.5, Math.toRadians(20)), isBlue);
 
             Pose rampToShootControlPoint = mirror(new Pose(107, 60), isBlue);
 
             StartToShoot = lineToPath(startPose, shootingPose);
 
             AlignBackRow = lineToPath(shootingPose, backRowStartPos);
-            CollectBackRow = lineToPath(backRowStartPos, backRowEndPose);
+            CollectBackRow = curveToPath(backRowStartPos, backRowControlPoint, backRowEndPose);
             Leave = lineToPath(backRowEndPose, leavePose);
 
             AlignMiddleRow = lineToPath(shootingPose, middleRowStartPose);
