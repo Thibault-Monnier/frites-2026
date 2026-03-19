@@ -4,27 +4,27 @@ import math.TimeHelpers;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class PIDFController {
+public class PIDFLController {
     protected final Telemetry telemetry;
 
-    protected PIDFCoefficients coefficients = new PIDFCoefficients(0.0, 0.0, 0.0, 0.0);
+    protected PIDFLCoefficients coefficients;
 
-    public PIDFController(Telemetry telemetry) {
+    public PIDFLController(Telemetry telemetry) {
         this.telemetry = telemetry;
     }
 
-    public PIDFController(Telemetry telemetry, PIDFCoefficients initialCoeffs) {
+    public PIDFLController(Telemetry telemetry, PIDFLCoefficients initialCoeffs) {
         this.telemetry = telemetry;
         this.coefficients = initialCoeffs;
     }
 
     /// Sets the PIDF coefficients.
-    public void setCoefficients(PIDFCoefficients coeffs) {
+    public void setCoefficients(PIDFLCoefficients coeffs) {
         this.coefficients = coeffs;
     }
 
     /// Returns the current PIDF coefficients.
-    public PIDFCoefficients getCoefficients() {
+    public PIDFLCoefficients getCoefficients() {
         return coefficients;
     }
 
@@ -32,7 +32,8 @@ public class PIDFController {
     /// the given error thresholds.
     public boolean isStableAtTarget(double errorThreshold, double errorChangeThreshold) {
         return Math.abs(error) < errorThreshold
-                && Math.abs(getErrorChange()) < errorChangeThreshold;
+        // && Math.abs(getErrorChange()) < errorChangeThreshold
+        ;
     }
 
     protected double lastTime = TimeHelpers.getRuntime();
@@ -67,10 +68,11 @@ public class PIDFController {
         double iTerm = coefficients.Ki * integral;
         double dTerm = coefficients.Kd * derivative;
         double fTerm = coefficients.Kf;
+        double lTerm = coefficients.Kl * Math.signum(error);
 
         previousError = error;
 
-        double sum = pTerm + iTerm + dTerm + fTerm;
+        double sum = pTerm + iTerm + dTerm + fTerm + lTerm;
 
         if (debugInfo) {
             telemetry.addData("Integral", integral);
@@ -79,6 +81,7 @@ public class PIDFController {
             telemetry.addData("I Term", iTerm);
             telemetry.addData("D Term", dTerm);
             telemetry.addData("F Term", fTerm);
+            telemetry.addData("L Term", lTerm);
 
             telemetry.addData("PID Output (before clamp)", sum);
         }

@@ -4,21 +4,21 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class PIDFControllerMotor extends PIDFController {
+public class PIDFLControllerMotor extends PIDFLController {
     private final DcMotorEx motor;
     private final double maxMotorVelocity;
 
-    public PIDFControllerMotor(DcMotorEx motor, double maxMotorVelocity, Telemetry telemetry) {
+    public PIDFLControllerMotor(DcMotorEx motor, double maxMotorVelocity, Telemetry telemetry) {
         super(telemetry);
         this.motor = motor;
         this.maxMotorVelocity = maxMotorVelocity;
     }
 
-    public PIDFControllerMotor(
+    public PIDFLControllerMotor(
             DcMotorEx motor,
             double maxMotorVelocity,
             Telemetry telemetry,
-            PIDFCoefficients initialCoeffs) {
+            PIDFLCoefficients initialCoeffs) {
         super(telemetry, initialCoeffs);
         this.motor = motor;
         this.maxMotorVelocity = maxMotorVelocity;
