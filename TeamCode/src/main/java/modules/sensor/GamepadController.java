@@ -16,6 +16,10 @@ public class GamepadController {
     public GamepadController(ElapsedTime globalRuntime, Gamepad globalGamepad) {
         gamepad = globalGamepad;
         runtime = globalRuntime;
+
+        for (Button button : Button.values()) {
+            button.reset();
+        }
     }
 
     /**
@@ -135,6 +139,15 @@ public class GamepadController {
 
         Button(java.util.function.Function<Gamepad, Boolean> accessor) {
             this.accessor = accessor;
+        }
+
+        public void reset() {
+            pressed = false;
+            released = false;
+            down = false;
+            debounceStartTime = -10000.0;
+            lastTimePressed = -10000.0;
+            previousTimePressed = -10000.0;
         }
 
         public boolean get(Gamepad gamepad) {
