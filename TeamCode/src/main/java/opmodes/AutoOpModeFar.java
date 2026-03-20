@@ -205,10 +205,15 @@ public class AutoOpModeFar extends OpModeBase {
         }
 
         public Paths(Follower follower, boolean isBlue) {
-            Pose startPose =
-                    mirror(new Pose(90, 9, Math.toRadians(90)), isBlue);
+            Pose startPose = mirror(new Pose(90, 9, Math.toRadians(90)), isBlue);
             Pose shootingPose = mirror(new Pose(90, 12, Math.toRadians(65)), isBlue);
             Pose leavePose = mirror(new Pose(100, 20, Math.toRadians(0)), isBlue);
+
+            Pose humanPlayerAlignPose = mirror(new Pose(105, 9, Math.toRadians(0)), isBlue);
+            Pose humanPlayerCollectPose = mirror(new Pose(138, 9, Math.toRadians(0)), isBlue);
+
+            Pose bottomRowAlignPose = mirror(new Pose(90, 36, Math.toRadians(0)), isBlue);
+            Pose bottomRowCollectPose = mirror(new Pose(138, 36, Math.toRadians(0)), isBlue);
 
             MoveToShoot1 =
                     follower.pathBuilder()
@@ -219,40 +224,44 @@ public class AutoOpModeFar extends OpModeBase {
 
             AlignCollectHumanPlayer =
                     follower.pathBuilder()
-                            .addPath(new BezierCurve(shootingPose, new Pose(105, 9, Math.toRadians(0)), leavePose))
+                            .addPath(new BezierCurve(shootingPose, humanPlayerAlignPose, leavePose))
                             .setLinearHeadingInterpolation(
-                                    shootingPose.getHeading(), Math.toRadians(0))
+                                    shootingPose.getHeading(), humanPlayerAlignPose.getHeading())
                             .build();
 
-            CollectHumanPlayer = follower.pathBuilder()
-                            .addPath(new BezierLine(new Pose(105, 9, Math.toRadians(0)), new Pose(138, 9, Math.toRadians(0))))
+            CollectHumanPlayer =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(humanPlayerAlignPose, humanPlayerCollectPose))
                             .setLinearHeadingInterpolation(
-                                    Math.toRadians(0), Math.toRadians(0))
+                                    humanPlayerAlignPose.getHeading(), humanPlayerCollectPose.getHeading())
                             .build();
 
-            MoveToShootAfterCollectHumanPlayer = follower.pathBuilder()
-                            .addPath(new BezierLine(new Pose(138, 9, Math.toRadians(0)), shootingPose))
+            MoveToShootAfterCollectHumanPlayer =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(humanPlayerCollectPose, shootingPose))
                             .setLinearHeadingInterpolation(
-                                    Math.toRadians(0), shootingPose.getHeading())
+                                    humanPlayerCollectPose.getHeading(), shootingPose.getHeading())
                             .build();
 
             AlignCollectBottomRow =
                     follower.pathBuilder()
-                            .addPath(new BezierCurve(shootingPose, new Pose(90, 36, Math.toRadians(0)), leavePose))
+                            .addPath(new BezierCurve(shootingPose, bottomRowAlignPose, leavePose))
                             .setLinearHeadingInterpolation(
-                                    shootingPose.getHeading(), Math.toRadians(0))
+                                    shootingPose.getHeading(), bottomRowAlignPose.getHeading())
                             .build();
 
-            CollectBottomRow = follower.pathBuilder()
-                            .addPath(new BezierLine(new Pose(90, 36, Math.toRadians(0)), new Pose(138, 36, Math.toRadians(0))))
+            CollectBottomRow =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(bottomRowAlignPose, bottomRowCollectPose))
                             .setLinearHeadingInterpolation(
-                                    Math.toRadians(0), Math.toRadians(0))
+                                    bottomRowAlignPose.getHeading(), bottomRowCollectPose.getHeading())
                             .build();
 
-            MoveToShootAfterCollectBottomRow = follower.pathBuilder()
-                            .addPath(new BezierLine(new Pose(138, 36, Math.toRadians(0)), shootingPose))
+            MoveToShootAfterCollectBottomRow =
+                    follower.pathBuilder()
+                            .addPath(new BezierLine(bottomRowCollectPose, shootingPose))
                             .setLinearHeadingInterpolation(
-                                    Math.toRadians(0), shootingPose.getHeading())
+                                    bottomRowCollectPose.getHeading(), shootingPose.getHeading())
                             .build();
 
             Leave =
