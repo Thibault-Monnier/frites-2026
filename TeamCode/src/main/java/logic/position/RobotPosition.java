@@ -38,23 +38,25 @@ public class RobotPosition {
             Telemetry globalTelemetry,
             HardwareMap hardwareMap,
             Team color,
+            boolean useFarStartPose,
             boolean forceNewInstance) {
         if (instance == null || forceNewInstance) {
-            instance = new RobotPosition(globalTelemetry, hardwareMap, color);
+            instance = new RobotPosition(globalTelemetry, hardwareMap, color, useFarStartPose);
         }
         return instance;
     }
 
-    public static RobotPosition getInstance(
-            Telemetry globalTelemetry, HardwareMap hardwareMap, Team color) {
-        return getInstance(globalTelemetry, hardwareMap, color, false);
-    }
-
-    private RobotPosition(Telemetry globalTelemetry, HardwareMap hardwareMap, Team color) {
+    private RobotPosition(
+            Telemetry globalTelemetry,
+            HardwareMap hardwareMap,
+            Team color,
+            boolean useFarStartPose) {
         this.globalTelemetry = globalTelemetry;
         this.color = color;
 
-        pose = PlayingField.startPose(color);
+        if (useFarStartPose) pose = PlayingField.farStartPose(color);
+        else pose = PlayingField.startPose(color);
+
         limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
         odometryHandler = new OdometryHandler(hardwareMap, globalTelemetry, pose);
 

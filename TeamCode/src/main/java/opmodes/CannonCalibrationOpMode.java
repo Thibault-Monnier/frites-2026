@@ -15,7 +15,7 @@ import modules.sensor.GamepadController;
 
 public class CannonCalibrationOpMode extends OpModeBase {
     public CannonCalibrationOpMode(Team team) {
-        super(team, true);
+        super(team, false, true);
     }
 
     @Override

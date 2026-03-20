@@ -40,6 +40,7 @@ public class OpModeBase extends LinearOpMode {
     protected List<LynxModule> hubs;
 
     protected final Team team;
+    protected final boolean useFarStartPose;
     protected final boolean shouldResetPose;
 
     protected RobotPosition robotPosition;
@@ -60,8 +61,9 @@ public class OpModeBase extends LinearOpMode {
 
     protected ArtifactSequence artifactSequence;
 
-    public OpModeBase(Team team, boolean shouldResetPose) {
+    public OpModeBase(Team team, boolean useFarStartPose, boolean shouldResetPose) {
         this.team = team;
+        this.useFarStartPose = useFarStartPose;
         this.shouldResetPose = shouldResetPose;
     }
 
@@ -82,7 +84,7 @@ public class OpModeBase extends LinearOpMode {
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         robotPosition =
-                RobotPosition.getInstance(globalTelemetry, hardwareMap, team, shouldResetPose);
+                RobotPosition.getInstance(globalTelemetry, hardwareMap, team, useFarStartPose, shouldResetPose);
         follower = Constants.createFollower(hardwareMap, team);
         shotHandler = new ShotHandler(robotPosition, follower, team, globalTelemetry);
 

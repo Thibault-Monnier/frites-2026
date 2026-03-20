@@ -1,7 +1,5 @@
 package opmodes;
 
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -13,12 +11,10 @@ import logic.field.PlayingField;
 
 public class AutoOpModeFar extends OpModeBase {
 
-    private TelemetryManager panelsTelemetry;
     private Paths paths;
 
     private boolean pathActive = false;
     private int nbShots = 0;
-    private double collectStartTime = 0;
 
     enum AutoState {
         SHOOT,
@@ -36,7 +32,7 @@ public class AutoOpModeFar extends OpModeBase {
     private AutoState state = AutoState.MOVE_TO_SHOOT_1;
 
     public AutoOpModeFar(Team team) {
-        super(team, true);
+        super(team, true, true);
     }
 
     @Override
@@ -68,12 +64,7 @@ public class AutoOpModeFar extends OpModeBase {
         super.initialize();
         useFollower();
 
-        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
         paths = new Paths(follower, team.isBlue());
-
-        panelsTelemetry.debug("Status", "Initialized");
-        panelsTelemetry.update(telemetry);
 
         globalTelemetry.addData(
                 "Pose start", PlayingField.startPose(Team.RED).toPedropathingPose().toString());
@@ -121,7 +112,10 @@ public class AutoOpModeFar extends OpModeBase {
                 runPath(paths.AlignCollectHumanPlayer, AutoState.COLLECT_HUMAN_PLAYER, false);
                 break;
             case COLLECT_HUMAN_PLAYER:
-                runPath(paths.CollectHumanPlayer, AutoState.MOVE_TO_SHOOT_AFTER_COLLECT_HUMAN_PLAYER, true);
+                runPath(
+                        paths.CollectHumanPlayer,
+                        AutoState.MOVE_TO_SHOOT_AFTER_COLLECT_HUMAN_PLAYER,
+                        true);
                 break;
             case MOVE_TO_SHOOT_AFTER_COLLECT_HUMAN_PLAYER:
                 runPath(paths.MoveToShootAfterCollectHumanPlayer, AutoState.SHOOT, false);
@@ -130,7 +124,10 @@ public class AutoOpModeFar extends OpModeBase {
                 runPath(paths.AlignCollectBottomRow, AutoState.COLLECT_BOTTOM_ROW, false);
                 break;
             case COLLECT_BOTTOM_ROW:
-                runPath(paths.CollectBottomRow, AutoState.MOVE_TO_SHOOT_AFTER_COLLECT_BOTTOM_ROW, true);
+                runPath(
+                        paths.CollectBottomRow,
+                        AutoState.MOVE_TO_SHOOT_AFTER_COLLECT_BOTTOM_ROW,
+                        true);
                 break;
             case MOVE_TO_SHOOT_AFTER_COLLECT_BOTTOM_ROW:
                 runPath(paths.MoveToShootAfterCollectBottomRow, AutoState.SHOOT, false);
@@ -170,11 +167,11 @@ public class AutoOpModeFar extends OpModeBase {
             cannonBuffers.shootReset();
             nbShots++;
 
-            if (nbShots == 1 || nbShots == 2 || nbShots == 3) state = AutoState.ALIGN_COLLECT_HUMAN_PLAYER;
+            if (nbShots == 1 || nbShots == 2 || nbShots == 3)
+                state = AutoState.ALIGN_COLLECT_HUMAN_PLAYER;
             else if (nbShots == 4) {
                 state = AutoState.ALIGN_COLLECT_BOTTOM_ROW;
-            }
-            else state = AutoState.LEAVE;
+            } else state = AutoState.LEAVE;
         }
     }
 
@@ -233,7 +230,8 @@ public class AutoOpModeFar extends OpModeBase {
                     follower.pathBuilder()
                             .addPath(new BezierLine(humanPlayerAlignPose, humanPlayerCollectPose))
                             .setLinearHeadingInterpolation(
-                                    humanPlayerAlignPose.getHeading(), humanPlayerCollectPose.getHeading())
+                                    humanPlayerAlignPose.getHeading(),
+                                    humanPlayerCollectPose.getHeading())
                             .build();
 
             MoveToShootAfterCollectHumanPlayer =
@@ -254,7 +252,8 @@ public class AutoOpModeFar extends OpModeBase {
                     follower.pathBuilder()
                             .addPath(new BezierLine(bottomRowAlignPose, bottomRowCollectPose))
                             .setLinearHeadingInterpolation(
-                                    bottomRowAlignPose.getHeading(), bottomRowCollectPose.getHeading())
+                                    bottomRowAlignPose.getHeading(),
+                                    bottomRowCollectPose.getHeading())
                             .build();
 
             MoveToShootAfterCollectBottomRow =

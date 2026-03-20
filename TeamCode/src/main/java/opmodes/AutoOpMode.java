@@ -38,7 +38,7 @@ public class AutoOpMode extends OpModeBase {
     private AutoState state = AutoState.START_TO_SHOOT;
 
     public AutoOpMode(Team team) {
-        super(team, true);
+        super(team, false, true);
     }
 
     @Override

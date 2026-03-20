@@ -59,6 +59,10 @@ public class PlayingField {
         return switchColor(FieldConfig.RED_START_POSE, color);
     }
 
+    public static Pose2D farStartPose(Team color) {
+        return switchColor(FieldConfig.RED_FAR_START_POSE, color);
+    }
+
     public static Position2D goalPos(Team color) {
         return switchColor(RED_GOAL.position, color);
     }

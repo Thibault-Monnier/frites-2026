@@ -24,6 +24,8 @@ public class FieldConfig {
 
     public static Pose2D RED_START_POSE =
             new Pose2D(DistanceUnit.METER, -1.270, 1.270, AngleUnit.DEGREES, 135.0);
+    public static Pose2D RED_FAR_START_POSE =
+            new Pose2D(DistanceUnit.METER, -1.600, 0.457, AngleUnit.DEGREES, 180.0);
 
     public static Pose2D RED_AUTO_MODE_LEAVE_POSE =
             new Pose2D(TILE_SIZE, TILE_SIZE, Angle.fromDegrees(90));

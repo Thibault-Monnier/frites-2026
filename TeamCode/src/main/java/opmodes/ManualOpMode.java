@@ -13,7 +13,7 @@ import modules.sensor.GamepadController;
 @Config
 public class ManualOpMode extends OpModeBase {
     public ManualOpMode(Team team, boolean isAfterAuto) {
-        super(team, !isAfterAuto);
+        super(team, false, !isAfterAuto);
     }
 
     @Override
