@@ -130,19 +130,14 @@ public class Cannon implements RobotActuatorModule {
 
     protected double computeVelocity(Distance horizontalShootingDistance) {
         // Calibrated from the following data in (shooting distance meters, motor velocity):
-        // 1.660 -> 1250
-        // 1.860 -> 1275
-        // 2.680 -> 1425
-        // 2.820 -> 1450
-        // 3.860 -> 1550
-        // Uses a quartic regression to interpolate between these values.
+        // 1.570 -> 1150
+        // 2.390 -> 1250
+        // 2.790 -> 1325
+        // 3.950 -> 1500
+        // Uses a cubic regression to interpolate between these values.
 
         double d = horizontalShootingDistance.getValue(DistanceUnit.METER);
-        return 9.18845 * d * d * d * d
-                - 135.74872 * d * d * d
-                + 660.27939 * d * d
-                - 1137.36067 * d
-                + 1869.73669;
+        return -32.44301 * d * d * d + 272.71882 * d * d - 570.99292 * d + 1499.78524;
     }
 
     @Override
