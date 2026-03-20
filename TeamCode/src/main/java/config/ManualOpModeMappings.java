@@ -42,6 +42,8 @@ public class ManualOpModeMappings {
             new ButtonMapping(Button.B, PressType.DOUBLE_PRESS);
     public static ButtonMapping MOVE_TO_RAMP_SPOT =
             new ButtonMapping(Button.X, PressType.SINGLE_PRESS);
+    public static ButtonMapping MOVE_TO_RAMP_DEFENSE_SPOT =
+            new ButtonMapping(Button.A, PressType.SINGLE_PRESS);
 
     // Misc
     public static ButtonMapping SUPER_SLOW_MODE_TOGGLE =

@@ -79,6 +79,10 @@ public class PlayingField {
         return switchColor(FieldConfig.RED_RAMP_APPROACH_POSE, color);
     }
 
+    public static Pose2D rampDefensePose(Team color) {
+        return switchColor(FieldConfig.RED_RAMP_DEFENSE_POSE, color);
+    }
+
     public static Pose2D artifactRowEntryPose(Team color, Artifact.Row row) {
         switch (row) {
             case FRONT:

@@ -160,6 +160,13 @@ public class Movement implements RobotActuatorModule {
                     targetHeading = targetPose.getHeading();
                 }
                 break;
+            case MOVE_TO_RAMP_DEFENSE:
+                {
+                    Pose2D targetPose = PlayingField.rampDefensePose(team);
+                    targetPos = targetPose.toPosition2D();
+                    targetHeading = targetPose.getHeading();
+                }
+                break;
             default:
                 throw new UnsupportedOperationException("Unhandled macro: " + activeMacro);
         }
@@ -360,6 +367,7 @@ public class Movement implements RobotActuatorModule {
         MOVE_TO_SHOOT,
         MOVE_TO_PARK,
         MOVE_TO_RAMP,
+        MOVE_TO_RAMP_DEFENSE,
         NONE
     }
 
