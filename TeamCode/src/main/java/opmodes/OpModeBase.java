@@ -84,7 +84,8 @@ public class OpModeBase extends LinearOpMode {
                 new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         robotPosition =
-                RobotPosition.getInstance(globalTelemetry, hardwareMap, team, useFarStartPose, shouldResetPose);
+                RobotPosition.getInstance(
+                        globalTelemetry, hardwareMap, team, useFarStartPose, shouldResetPose);
         follower = Constants.createFollower(hardwareMap, team);
         shotHandler = new ShotHandler(robotPosition, follower, team, globalTelemetry);
 
