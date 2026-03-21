@@ -142,7 +142,7 @@ public class Movement implements RobotActuatorModule {
             case MOVE_TO_SHOOT:
                 {
                     targetPos = PlayingField.shootingPosition(team);
-                    targetHeading = targetPos.angleTo(PlayingField.goalPos(team));
+                    targetHeading = shotHandler.getShotAngle();
                 }
                 break;
             case MOVE_TO_PARK:
