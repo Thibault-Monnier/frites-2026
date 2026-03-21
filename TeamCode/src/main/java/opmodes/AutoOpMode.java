@@ -13,6 +13,8 @@ public class AutoOpMode extends OpModeBase {
     private Paths paths;
 
     private boolean pathActive = false;
+    private double pathStartTime = -1000;
+
     private int nbShots = 0;
     private double collectStartTime = 0;
 
@@ -191,9 +193,12 @@ public class AutoOpMode extends OpModeBase {
         if (!pathActive) {
             follower.followPath(path, slow ? 0.7 : 1, true);
             pathActive = true;
+            pathStartTime = runtime.milliseconds();
         }
 
-        if (!follower.isBusy() || follower.isRobotStuck()) {
+        if (!follower.isBusy()
+                || follower.isRobotStuck()
+                || runtime.milliseconds() - pathStartTime > 4000) { // Hard time limit as backup
             follower.breakFollowing();
             pathActive = false;
             state = nextState;
@@ -272,7 +277,7 @@ public class AutoOpMode extends OpModeBase {
 
             Pose alignRampPose = mirror(new Pose(126, 61, Math.toRadians(35)), isBlue);
             Pose alignRampControlPoint = mirror(new Pose(102, 66), isBlue);
-            Pose collectRampPose = mirror(new Pose(131, 59.5, Math.toRadians(30)), isBlue);
+            Pose collectRampPose = mirror(new Pose(131.75, 59.5, Math.toRadians(28)), isBlue);
             Pose collectRampFinalControlPoint = mirror(new Pose(127, 57.5), isBlue);
             Pose collectRampFinalEndPose = mirror(new Pose(131, 56.5, Math.toRadians(20)), isBlue);
 

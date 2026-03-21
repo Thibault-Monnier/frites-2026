@@ -103,33 +103,40 @@ public class AutoOpModeFar extends OpModeBase {
     private void execute() {
         switch (state) {
             case MOVE_TO_SHOOT_1:
+                intake();
                 runPath(paths.MoveToShoot1, AutoState.SHOOT, false);
                 break;
             case SHOOT:
                 runShootCycle();
                 break;
             case ALIGN_COLLECT_HUMAN_PLAYER:
+                intake();
                 runPath(paths.AlignCollectHumanPlayer, AutoState.COLLECT_HUMAN_PLAYER, false);
                 break;
             case COLLECT_HUMAN_PLAYER:
+                intake();
                 runPath(
                         paths.CollectHumanPlayer,
                         AutoState.MOVE_TO_SHOOT_AFTER_COLLECT_HUMAN_PLAYER,
                         true);
                 break;
             case MOVE_TO_SHOOT_AFTER_COLLECT_HUMAN_PLAYER:
+                intake();
                 runPath(paths.MoveToShootAfterCollectHumanPlayer, AutoState.SHOOT, false);
                 break;
             case ALIGN_COLLECT_BOTTOM_ROW:
+                intake();
                 runPath(paths.AlignCollectBottomRow, AutoState.COLLECT_BOTTOM_ROW, false);
                 break;
             case COLLECT_BOTTOM_ROW:
+                intake();
                 runPath(
                         paths.CollectBottomRow,
                         AutoState.MOVE_TO_SHOOT_AFTER_COLLECT_BOTTOM_ROW,
                         true);
                 break;
             case MOVE_TO_SHOOT_AFTER_COLLECT_BOTTOM_ROW:
+                intake();
                 runPath(paths.MoveToShootAfterCollectBottomRow, AutoState.SHOOT, false);
                 break;
             case LEAVE:
@@ -157,7 +164,7 @@ public class AutoOpModeFar extends OpModeBase {
     }
 
     private void runShootCycle() {
-        if (follower.isBusy()) return;
+        if (!cannon.isReadyToShoot()) return;
 
         intake.on();
 
