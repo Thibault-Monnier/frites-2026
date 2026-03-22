@@ -5,126 +5,85 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
 import logic.Team;
+import logic.action.Action;
+import logic.action.ActionSequence;
 import logic.field.PlayingField;
 
 public class AutoOpMode extends AutoOpModeBase {
-    private int nbShots = 0;
-    private double collectStartTime = 0;
+    private ActionSequence sequence;
 
-    enum AutoState {
-        START_TO_SHOOT,
-        RAMP_TO_SHOOT,
-        ALIGN_MIDDLE,
-        COLLECT_MIDDLE,
-        MIDDLE_ROW_TO_SHOOT,
-        ALIGN_BACK,
-        COLLECT_BACK,
-        ALIGN_COLLECT_RAMP,
-        COLLECT_RAMP,
-        COLLECTING_FROM_RAMP,
-        COLLECT_FROM_RAMP_FINAL,
-        LEAVE,
-        SHOOT,
-        DONE;
-
-        PathChain path;
-    }
-
-    private AutoState state = AutoState.START_TO_SHOOT;
+    private final Paths paths;
 
     public AutoOpMode(Team team) {
         super(team, false);
 
-        Paths paths = new Paths(follower, team.isBlue());
-        paths.createPaths();
+        paths = new Paths(follower, team.isBlue());
     }
 
     @Override
-    protected Object getState() {
-        return state;
+    protected void initialize() {
+        super.initialize();
+
+        sequence =
+                new ActionSequence(
+                        startCannon(),
+                        startToShoot(),
+                        middleRowCycle(),
+                        rampCycle(),
+                        rampCycle(),
+                        backRowCycle());
+    }
+
+    private Action startToShoot() {
+        return new ActionSequence(pathAction(paths.startToShoot, true, false), shootAction());
+    }
+
+    private Action middleRowCycle() {
+        return new ActionSequence(
+                pathAction(paths.alignMiddleRow, false, false),
+                pathAction(paths.collectMiddleRow, true, true),
+                pathAction(paths.middleRowToShoot, true, false),
+                shootAction());
+    }
+
+    private Action backRowCycle() {
+        return new ActionSequence(
+                pathAction(paths.alignBackRow, false, false),
+                pathAction(paths.collectBackRow, true, true),
+                pathAction(paths.leave, true, false),
+                shootAction());
+    }
+
+    private Action rampCycle() {
+        return new ActionSequence(
+                pathAction(paths.alignCollectRamp, false, false),
+                pathAction(paths.collectRamp, true, true),
+                waitAction(0.650, this::intake),
+                pathAction(paths.collectFromRampFinal, true, false),
+                pathAction(paths.rampToShoot, true, false),
+                shootAction());
     }
 
     protected void execute() {
-        switch (state) {
-            case START_TO_SHOOT:
-            case RAMP_TO_SHOOT:
-            case MIDDLE_ROW_TO_SHOOT:
-            case LEAVE:
-                intake();
-                runPath(AutoState.SHOOT, false);
-                break;
-
-            case ALIGN_BACK:
-                runPath(AutoState.COLLECT_BACK, false);
-                break;
-
-            case COLLECT_BACK:
-                intake();
-                runPath(AutoState.LEAVE, true);
-                break;
-
-            case ALIGN_MIDDLE:
-                runPath(AutoState.COLLECT_MIDDLE, false);
-                break;
-
-            case COLLECT_MIDDLE:
-                intake();
-                runPath(AutoState.MIDDLE_ROW_TO_SHOOT, true);
-                break;
-
-            case ALIGN_COLLECT_RAMP:
-                runPath(AutoState.COLLECT_RAMP, false);
-                break;
-
-            case COLLECT_RAMP:
-                intake();
-                runPath(AutoState.COLLECTING_FROM_RAMP, true);
-                break;
-
-            case COLLECTING_FROM_RAMP:
-                intake();
-                if (runtime.milliseconds() - collectStartTime > 650) {
-                    state = AutoState.COLLECT_FROM_RAMP_FINAL;
-                }
-                break;
-
-            case COLLECT_FROM_RAMP_FINAL:
-                intake();
-                runPath(AutoState.RAMP_TO_SHOOT, true);
-                break;
-
-            case SHOOT:
-                runShootCycle();
-                break;
-
-            case DONE:
-                break;
-        }
-    }
-
-    private void runPath(AutoState nextState, boolean slow) {
-        if (!followPath(state.path, slow)) state = nextState;
-
-        if (nextState == AutoState.COLLECTING_FROM_RAMP) {
-            collectStartTime = runtime.milliseconds();
-        }
-    }
-
-    private void runShootCycle() {
-        if (shoot()) {
-            nbShots++;
-
-            if (nbShots == 1) state = AutoState.ALIGN_MIDDLE;
-            else if (nbShots == 2) state = AutoState.ALIGN_COLLECT_RAMP;
-            else if (nbShots == 3) state = AutoState.ALIGN_COLLECT_RAMP;
-            else if (nbShots == 4) state = AutoState.ALIGN_BACK;
-            else state = AutoState.DONE;
-        }
+        sequence.run();
     }
 
     private static class Paths extends PathsBase {
+        PathChain startToShoot,
+                alignBackRow,
+                collectBackRow,
+                rampToShoot,
+                alignMiddleRow,
+                collectMiddleRow,
+                middleRowToShoot,
+                alignCollectRamp,
+                collectRamp,
+                collectFromRampFinal,
+                leave;
+
         public Paths(Follower follower, boolean isBlue) {
             super(follower, isBlue);
+            createPaths();
         }
 
         @Override
@@ -150,26 +109,24 @@ public class AutoOpMode extends AutoOpModeBase {
 
             Pose rampToShootControlPoint = new Pose(107, 60);
 
-            AutoState.START_TO_SHOOT.path = lineToPath(startPose, shootingPose);
+            startToShoot = lineToPath(startPose, shootingPose);
 
-            AutoState.ALIGN_BACK.path = lineToPath(shootingPose, backRowStartPos);
-            AutoState.COLLECT_BACK.path =
-                    curveToPath(backRowStartPos, backRowControlPoint, backRowEndPose);
-            AutoState.LEAVE.path = lineToPath(backRowEndPose, leavePose);
+            alignBackRow = lineToPath(shootingPose, backRowStartPos);
+            collectBackRow = curveToPath(backRowStartPos, backRowControlPoint, backRowEndPose);
+            leave = lineToPath(backRowEndPose, leavePose);
 
-            AutoState.ALIGN_MIDDLE.path = lineToPath(shootingPose, middleRowStartPose);
-            AutoState.COLLECT_MIDDLE.path =
+            alignMiddleRow = lineToPath(shootingPose, middleRowStartPose);
+            collectMiddleRow =
                     curveToPath(middleRowStartPose, middleRowControlPoint, middleRowEndPose);
-            AutoState.MIDDLE_ROW_TO_SHOOT.path =
+            middleRowToShoot =
                     curveToPath(middleRowEndPose, middleRowToShootControlPoint, shootingPose);
 
-            AutoState.ALIGN_COLLECT_RAMP.path =
-                    curveToPath(shootingPose, alignRampControlPoint, alignRampPose);
-            AutoState.COLLECT_RAMP.path = lineToPath(alignRampPose, collectRampPose);
-            AutoState.COLLECT_FROM_RAMP_FINAL.path =
+            alignCollectRamp = curveToPath(shootingPose, alignRampControlPoint, alignRampPose);
+            collectRamp = lineToPath(alignRampPose, collectRampPose);
+            collectFromRampFinal =
                     curveToPath(
                             collectRampPose, collectRampFinalControlPoint, collectRampFinalEndPose);
-            AutoState.RAMP_TO_SHOOT.path =
+            rampToShoot =
                     curveToPath(collectRampFinalEndPose, rampToShootControlPoint, shootingPose);
         }
     }

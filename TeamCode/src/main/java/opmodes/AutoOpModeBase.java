@@ -7,6 +7,9 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 
 import logic.Team;
+import logic.action.Action;
+import logic.action.DelayAction;
+import logic.action.SimpleAction;
 import logic.field.PlayingField;
 
 public abstract class AutoOpModeBase extends OpModeBase {
@@ -78,48 +81,58 @@ public abstract class AutoOpModeBase extends OpModeBase {
         super.log();
 
         globalTelemetry.addData("Pose", follower.getPose().toString());
-        globalTelemetry.addData("State", getState().toString());
     }
 
-    protected abstract Object getState();
-
     protected abstract void execute();
+
+    protected Action startCannon() {
+        return new SimpleAction(() -> cannon.on());
+    }
+
+    protected Action waitAction(double delay, Runnable doWhile) {
+        return new DelayAction(delay, doWhile);
+    }
+
+    protected Action pathAction(PathChain path, boolean useIntake, boolean isSlow) {
+        return () -> {
+            if (!pathActive) {
+                follower.followPath(path, isSlow ? 0.7 : 1, true);
+                pathActive = true;
+                pathStartTime = runtime.milliseconds();
+            }
+
+            if (useIntake) intake();
+
+            if (!follower.isBusy()
+                    || follower.isRobotStuck()
+                    || runtime.milliseconds() - pathStartTime > 4000) { // Hard time limit as backup
+                follower.breakFollowing();
+                pathActive = false;
+                return true;
+            }
+
+            return false;
+        };
+    }
+
+    protected Action shootAction() {
+        return () -> {
+            if (!cannon.isReadyToShoot()) return false;
+
+            intake.on();
+
+            // If red, start right
+            boolean done = cannonBuffers.shootContinue(team.isBlue(), 0.5);
+
+            if (done) cannonBuffers.shootReset();
+
+            return done;
+        };
+    }
 
     protected void intake() {
         cannonBuffers.reverse();
         intake.on();
-    }
-
-    /// Returns true if finished, false otherwise
-    protected boolean followPath(PathChain path, boolean slow) {
-        if (!pathActive) {
-            follower.followPath(path, slow ? 0.7 : 1, true);
-            pathActive = true;
-            pathStartTime = runtime.milliseconds();
-        }
-
-        if (!follower.isBusy()
-                || follower.isRobotStuck()
-                || runtime.milliseconds() - pathStartTime > 4000) { // Hard time limit as backup
-            follower.breakFollowing();
-            pathActive = false;
-            return true;
-        }
-
-        return false;
-    }
-
-    /// Returns true if finished, false otherwise
-    protected boolean shoot() {
-        if (!cannon.isReadyToShoot()) return false;
-
-        intake.on();
-
-        // If red, start right
-        boolean done = cannonBuffers.shootContinue(team.isBlue(), 0.5);
-
-        if (done) cannonBuffers.shootReset();
-        return done;
     }
 
     protected abstract static class PathsBase {
