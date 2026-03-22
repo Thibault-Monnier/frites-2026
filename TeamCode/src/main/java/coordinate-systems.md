@@ -71,3 +71,12 @@ The relative mode is defined as follows:
 - Y axis: Positive Y points toward the left side of the robot
 - Rotation direction: Positive rotation is counter-clockwise
 - Units: Inches, degrees. Usually they are auto-converted upon access.
+
+### Pedro Pathing coordinate system
+
+- Origin: Red alliance corner
+- X axis: Positive X points toward the blue alliance side
+- Y axis: Positive Y points away from the audience side
+- Zero rotation: Direction of the +X axis
+- Rotation direction: Positive rotation is counter-clockwise
+- Units: Inches, radians.
