@@ -33,7 +33,7 @@ import pedropathing.Constants;
 
 import java.util.List;
 
-public class OpModeBase extends LinearOpMode {
+public abstract class OpModeBase extends LinearOpMode {
     protected ElapsedTime runtime;
     protected Telemetry globalTelemetry;
 
@@ -68,9 +68,7 @@ public class OpModeBase extends LinearOpMode {
     }
 
     @Override
-    public void runOpMode() {
-        throw new UnsupportedOperationException("Not implemented in base class");
-    }
+    public abstract void runOpMode();
 
     protected void initialize() {
         // For better performance, update only once per frame
