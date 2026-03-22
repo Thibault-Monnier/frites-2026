@@ -10,6 +10,9 @@ import logic.Team;
 import logic.field.PlayingField;
 
 public abstract class AutoOpModeBase extends OpModeBase {
+    private boolean pathActive = false;
+    private double pathStartTime = -1000;
+
     public AutoOpModeBase(Team team, boolean useFarStartPose) {
         super(team, useFarStartPose, true);
     }
@@ -85,6 +88,38 @@ public abstract class AutoOpModeBase extends OpModeBase {
     protected void intake() {
         cannonBuffers.reverse();
         intake.on();
+    }
+
+    /// Returns true if finished, false otherwise
+    protected boolean followPath(PathChain path, boolean slow) {
+        if (!pathActive) {
+            follower.followPath(path, slow ? 0.7 : 1, true);
+            pathActive = true;
+            pathStartTime = runtime.milliseconds();
+        }
+
+        if (!follower.isBusy()
+                || follower.isRobotStuck()
+                || runtime.milliseconds() - pathStartTime > 4000) { // Hard time limit as backup
+            follower.breakFollowing();
+            pathActive = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    /// Returns true if finished, false otherwise
+    protected boolean shoot() {
+        if (!cannon.isReadyToShoot()) return false;
+
+        intake.on();
+
+        // If red, start right
+        boolean done = cannonBuffers.shootContinue(team.isBlue(), 0.5);
+
+        if (done) cannonBuffers.shootReset();
+        return done;
     }
 
     protected abstract static class PathsBase {
