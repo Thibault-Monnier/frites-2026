@@ -24,6 +24,12 @@ public class HardwareConfig {
     public static final String ODOMETRY_POD_ID = "pinpoint";
     public static String IMU_ID = "imu";
 
+    public static final String DISTANCE_SENSOR_LEFT_ID = "distance_left";
+    public static final String DISTANCE_SENSOR_RIGHT_ID = "distance_right";
+    public static final String DISTANCE_SENSOR_INTAKE_LEFT_ID = "distance_intake_left";
+    public static final String DISTANCE_SENSOR_INTAKE_RIGHT_ID = "distance_intake_right";
+    public static final String NEOPIXEL_ID = "neopixel";
+
     public static double SHOOTER_MAX_VELOCITY = 2450.0;
 
     public static Distance ROBOT_SIZE = new Distance(DistanceUnit.INCH, 18.0);

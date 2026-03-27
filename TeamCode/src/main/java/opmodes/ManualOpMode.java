@@ -9,6 +9,7 @@ import logic.Movement.Macro;
 import logic.Team;
 
 import modules.sensor.GamepadController;
+import team.techtigers.core.display.Color;
 
 @Config
 public class ManualOpMode extends OpModeBase {
@@ -122,7 +123,9 @@ public class ManualOpMode extends OpModeBase {
         if (isPressActive(ManualOpModeMappings.RESET_ROBOT_POSE)) robotPosition.resetPose();
     }
 
-    /** Returns true if the button mapping is active based on its press type. */
+    /**
+     * Returns true if the button mapping is active based on its press type.
+     */
     private boolean isPressActive(GamepadController.ButtonMapping mapping) {
         return gamepadController.isPressActive(mapping);
     }

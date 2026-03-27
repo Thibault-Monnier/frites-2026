@@ -24,12 +24,16 @@ import modules.actuator.cannon.Cannon;
 import modules.actuator.cannonBuffer.CannonBuffer;
 import modules.actuator.cannonBuffer.CannonBuffersHandler;
 import modules.actuator.intake.Intake;
+import modules.sensor.ArtifactMonitor;
 import modules.sensor.BatteryMonitor;
+import modules.sensor.DistanceSensorMonitor;
 import modules.sensor.GamepadController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import pedropathing.Constants;
+import team.techtigers.core.display.Color;
 
 import java.util.List;
 
@@ -60,6 +64,10 @@ public abstract class OpModeBase extends LinearOpMode {
     protected Intake intake;
 
     protected ArtifactSequence artifactSequence;
+
+    protected DistanceSensorMonitor distanceSensorMonitor;
+    protected ArtifactMonitor artifactMonitor;
+    private Thread artifactMonitorThread;
 
     public OpModeBase(Team team, boolean useFarStartPose, boolean shouldResetPose) {
         this.team = team;
@@ -105,6 +113,11 @@ public abstract class OpModeBase extends LinearOpMode {
                 hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_RIGHT);
         DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConfig.INTAKE_MOTOR_ID);
 
+        this.distanceSensorMonitor = new DistanceSensorMonitor(hardwareMap);
+        this.artifactMonitor = new ArtifactMonitor(distanceSensorMonitor);
+        this.artifactMonitorThread = new Thread(this.artifactMonitor);
+        this.artifactMonitorThread.start();
+
         move =
                 new Movement(
                         globalTelemetry,
@@ -130,6 +143,7 @@ public abstract class OpModeBase extends LinearOpMode {
         this.cannonBuffers = new CannonBuffersHandler(leftBuffer, rightBuffer);
 
         this.intake = new Intake(globalTelemetry, intake);
+
     }
 
     protected void useFollower() {
@@ -149,6 +163,7 @@ public abstract class OpModeBase extends LinearOpMode {
 
     protected void runStop() {
         robotPosition.stop();
+        artifactMonitor.stop();
     }
 
     protected void update() {
