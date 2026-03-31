@@ -23,13 +23,6 @@ public class PlayingField {
                     FieldConfig.FIELD_SIZE,
                     new Distance());
 
-    private static final FieldElement RED_GOAL =
-            new FieldElement(
-                    new Position2D(FIELD.halfWidth().negate(), FIELD.halfDepth()),
-                    FieldConfig.GOAL_WIDTH,
-                    FieldConfig.GOAL_DEPTH,
-                    FieldConfig.GOAL_HEIGHT);
-
     /// Switches the color of a Pose2D by negating the y-coordinate and heading, effectively
     /// mirroring it across the x-axis.
     private static Pose2D switchColor(Pose2D pose) {
@@ -64,7 +57,7 @@ public class PlayingField {
     }
 
     public static Position2D goalPos(Team color) {
-        return switchColor(RED_GOAL.position, color);
+        return switchColor(FieldConfig.RED_GOAL_POS, color);
     }
 
     public static Pose2D autoModeLeavePose(Team color) {

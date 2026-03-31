@@ -19,8 +19,8 @@ public class FieldConfig {
     public static Distance TILE_SIZE = FIELD_SIZE.divide(6);
 
     public static Distance GOAL_HEIGHT = Distance.fromInches(54);
-    public static Distance GOAL_WIDTH = Distance.fromInches(27);
-    public static Distance GOAL_DEPTH = Distance.fromInches(27);
+    public static Position2D RED_GOAL_POS =
+            new Position2D(FIELD_SIZE.halve().negate(), FIELD_SIZE.halve());
 
     public static Pose2D RED_START_POSE =
             new Pose2D(DistanceUnit.METER, -1.270, 1.270, AngleUnit.DEGREES, 135.0);
