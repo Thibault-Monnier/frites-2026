@@ -3,24 +3,20 @@ package opmodes;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import config.FieldConfig;
 import config.ManualOpModeMappings;
 
 import logic.Movement.Macro;
 import logic.Team;
-
 import logic.field.PlayingField;
+
 import math.Angle;
-import math.Pose2D;
+
 import modules.sensor.GamepadController;
-import team.techtigers.core.display.Color;
 
 @Config
 public class ManualOpMode extends OpModeBase {
     boolean isChildMode = false;
+
     public ManualOpMode(Team team, boolean isAfterAuto) {
         super(team, false, !isAfterAuto);
     }
@@ -107,37 +103,20 @@ public class ManualOpMode extends OpModeBase {
         else gamepadController.ledRed(Gamepad.LED_DURATION_CONTINUOUS);
 
         intake.off();
-        boolean canShoot = true;
 
+        boolean allowedToShoot = true;
         if (isChildMode) {
-            // check that the robot is actually aiming
-            Pose2D botPose = robotPosition.getPose();
-            Pose2D goalPose = PlayingField.goalPos(team).toPose2D();
-
-            double angle_threshold = Math.toRadians(15);
-
-            double dx = goalPose.getX(DistanceUnit.MM) - botPose.getX(DistanceUnit.MM);
-            double dy = goalPose.getY(DistanceUnit.MM) - botPose.getY(DistanceUnit.MM);
-
-            // angle robot should face
-            double targetAngle = Math.atan2(dy, dx);
-
-            // robot's current heading
-            double botAngle = botPose.getHeading().getValue(AngleUnit.RADIANS);
-
-            // smallest angle difference
-            double angleDiff = Math.atan2(
-                    Math.sin(targetAngle - botAngle),
-                    Math.cos(targetAngle - botAngle)
-            );
-
-            boolean isAiming = Math.abs(angleDiff) <= angle_threshold;
-            if (!isAiming) canShoot = false;
+            Angle threshold = Angle.fromDegrees(15);
+            Angle angle =
+                    robotPosition.getPose().toPosition2D().angleTo(PlayingField.goalPos(team));
+            Angle angleDiff = angle.subtract(robotPosition.getHeading());
+            if (!angleDiff.abs().leq(threshold)) allowedToShoot = false;
         }
 
         // Make sure the cannon reached its target velocity
-        if (canShoot && ((isPressActive(ManualOpModeMappings.SHOOT) && cannon.isReadyToShoot())
-                || (isPressActive(ManualOpModeMappings.FORCE_SHOOT) && !isChildMode))) {
+        if (allowedToShoot
+                && ((isPressActive(ManualOpModeMappings.SHOOT) && cannon.isReadyToShoot())
+                        || (isPressActive(ManualOpModeMappings.FORCE_SHOOT) && !isChildMode))) {
             // If red, start right
             cannonBuffers.shootContinue(team.isBlue());
             intake.on();
@@ -163,9 +142,7 @@ public class ManualOpMode extends OpModeBase {
         if (isPressActive(ManualOpModeMappings.RESET_ROBOT_POSE)) robotPosition.resetPose();
     }
 
-    /**
-     * Returns true if the button mapping is active based on its press type.
-     */
+    /** Returns true if the button mapping is active based on its press type. */
     private boolean isPressActive(GamepadController.ButtonMapping mapping) {
         return gamepadController.isPressActive(mapping);
     }
