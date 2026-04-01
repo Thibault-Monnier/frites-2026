@@ -3,6 +3,7 @@ package opmodes.versions.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import logic.Team;
+
 import opmodes.AutoOpModeFar;
 import opmodes.GroupConstants;
 

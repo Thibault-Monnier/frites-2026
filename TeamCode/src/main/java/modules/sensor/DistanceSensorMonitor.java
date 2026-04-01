@@ -19,6 +19,7 @@ public class DistanceSensorMonitor {
     public DistanceSensor intake_left;
     public DistanceSensor intake_right;
     public AdafruitNeoPixel neoPixel;
+
     public DistanceSensorMonitor(HardwareMap hardwareMap) {
         left = hardwareMap.get(DistanceSensor.class, DISTANCE_SENSOR_LEFT_ID);
         right = hardwareMap.get(DistanceSensor.class, DISTANCE_SENSOR_RIGHT_ID);

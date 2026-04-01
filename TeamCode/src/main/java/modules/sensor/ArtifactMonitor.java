@@ -30,12 +30,9 @@ public class ArtifactMonitor implements Runnable {
                 if (i < ledsToLight) {
                     Color color;
 
-                    if (i < 8)
-                        color = red;
-                    else if (i < 16)
-                        color = yellow;
-                    else
-                        color = green;
+                    if (i < 8) color = red;
+                    else if (i < 16) color = yellow;
+                    else color = green;
 
                     distanceSensorMonitor.neoPixel.setLeds(i, color);
                 } else {
@@ -47,7 +44,8 @@ public class ArtifactMonitor implements Runnable {
 
             try {
                 Thread.sleep(50); // 20 Hz I2C loop
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
         }
     }
 }

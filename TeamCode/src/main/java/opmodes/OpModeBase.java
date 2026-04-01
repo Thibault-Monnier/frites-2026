@@ -30,10 +30,8 @@ import modules.sensor.DistanceSensorMonitor;
 import modules.sensor.GamepadController;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import pedropathing.Constants;
-import team.techtigers.core.display.Color;
 
 import java.util.List;
 
