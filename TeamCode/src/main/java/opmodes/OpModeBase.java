@@ -141,7 +141,6 @@ public abstract class OpModeBase extends LinearOpMode {
         this.cannonBuffers = new CannonBuffersHandler(leftBuffer, rightBuffer);
 
         this.intake = new Intake(globalTelemetry, intake);
-
     }
 
     protected void useFollower() {

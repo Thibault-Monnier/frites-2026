@@ -12,17 +12,17 @@ import logic.field.PlayingField;
 public class AutoOpMode extends AutoOpModeBase {
     private ActionSequence sequence;
 
-    private final Paths paths;
+    private Paths paths;
 
     public AutoOpMode(Team team) {
         super(team, false);
-
-        paths = new Paths(follower, team.isBlue());
     }
 
     @Override
     protected void initialize() {
         super.initialize();
+
+        paths = new Paths(follower, team.isBlue());
 
         sequence =
                 new ActionSequence(
