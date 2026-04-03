@@ -22,7 +22,7 @@ public class PIDFLControllerMotor extends PIDFLController {
 
     /// Calculates the PID output for the saved error. The output is normalized to \[-1, 1\].
     public double get(double targetVelocity, boolean debugInfo) {
-        double error = motor.getVelocity() - targetVelocity;
+        double error = targetVelocity - motor.getVelocity();
         setError(error);
 
         if (Math.abs(targetVelocity) < maxMotorVelocity / 100.0
