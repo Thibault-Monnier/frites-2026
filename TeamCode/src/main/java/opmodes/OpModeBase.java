@@ -1,7 +1,5 @@
 package opmodes;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -28,15 +26,14 @@ import modules.sensor.BatteryMonitor;
 import modules.sensor.DistanceSensorMonitor;
 import modules.sensor.GamepadController;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import pedropathing.Constants;
+
+import utils.TelemetryHandler;
 
 import java.util.List;
 
 public abstract class OpModeBase extends LinearOpMode {
     protected ElapsedTime runtime;
-    protected Telemetry globalTelemetry;
 
     protected List<LynxModule> hubs;
 
@@ -75,6 +72,8 @@ public abstract class OpModeBase extends LinearOpMode {
     public abstract void runOpMode();
 
     protected void initialize() {
+        TelemetryHandler.instantiate(telemetry);
+
         // For better performance, update only once per frame
         hubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : hubs) {
@@ -82,16 +81,13 @@ public abstract class OpModeBase extends LinearOpMode {
         }
 
         runtime = new ElapsedTime();
-        globalTelemetry =
-                new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         robotPosition =
-                RobotPosition.getInstance(
-                        globalTelemetry, hardwareMap, team, useFarStartPose, shouldResetPose);
+                RobotPosition.getInstance(hardwareMap, team, useFarStartPose, shouldResetPose);
         follower = Constants.createFollower(hardwareMap, robotPosition);
-        shotHandler = new ShotHandler(robotPosition, team, globalTelemetry);
+        shotHandler = new ShotHandler(robotPosition, team);
 
-        batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
+        batteryMonitor = new BatteryMonitor(hardwareMap);
 
         gamepadController = new GamepadController(runtime, gamepad1);
 
@@ -116,7 +112,6 @@ public abstract class OpModeBase extends LinearOpMode {
 
         move =
                 new Movement(
-                        globalTelemetry,
                         robotPosition,
                         shotHandler,
                         team,
@@ -128,14 +123,13 @@ public abstract class OpModeBase extends LinearOpMode {
 
         driveActions = new DriveActions(move, robotPosition, team);
 
-        cannon = new Cannon(globalTelemetry, cannonLeft, cannonRight);
+        cannon = new Cannon(cannonLeft, cannonRight);
 
         CannonBuffer cannonBuffer =
-                new CannonBuffer(
-                        globalTelemetry, cannonBufferMotor, DcMotorSimple.Direction.REVERSE);
+                new CannonBuffer(cannonBufferMotor, DcMotorSimple.Direction.REVERSE);
         this.cannonBuffers = new CannonBuffersHandler(cannonBuffer);
 
-        this.intake = new Intake(globalTelemetry, intake);
+        this.intake = new Intake(intake);
     }
 
     protected void runStart() {
@@ -162,22 +156,22 @@ public abstract class OpModeBase extends LinearOpMode {
         cannon.update(shotHandler.getShotMagnitude());
 
         System.out.println("Robot Pose: " + robotPosition.getPose().toString());
-        globalTelemetry.addData(
+        TelemetryHandler.addData(
                 "Shooting target distance", shotHandler.getShotMagnitude().toString());
-        globalTelemetry.addData("Shooting target angle", shotHandler.getShotAngle().toString());
+        TelemetryHandler.addData("Shooting target angle", shotHandler.getShotAngle().toString());
 
         if (artifactSequence == null)
             artifactSequence =
                     ArtifactSequence.findCurrentSequence(robotPosition.getLimelightHandler());
         if (artifactSequence != null)
-            globalTelemetry.addData("Pattern", artifactSequence.toString());
+            TelemetryHandler.addData("Pattern", artifactSequence.toString());
     }
 
     protected void log() {
         batteryMonitor.log();
-        globalTelemetry.addData("Team", team);
-        globalTelemetry.addData("Runtime", runtime.seconds());
-        globalTelemetry.update();
+        TelemetryHandler.addData("Team", team);
+        TelemetryHandler.addData("Runtime", runtime.seconds());
+        TelemetryHandler.update();
 
         // Log state
         System.out.println("------- Robot State Log -------");

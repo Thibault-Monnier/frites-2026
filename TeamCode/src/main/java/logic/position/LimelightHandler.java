@@ -13,11 +13,11 @@ import config.HardwareConfig;
 
 import logic.field.PlayingField;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
+import utils.TelemetryHandler;
 import utils.math.Pose2D;
 import utils.math.Position2D;
 
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LimelightHandler {
-    private final Telemetry globalTelemetry;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private final Limelight3A limelight;
@@ -40,8 +39,7 @@ public class LimelightHandler {
         return lastDetectedTags;
     }
 
-    public LimelightHandler(Telemetry globalTelemetry, HardwareMap hardwareMap) {
-        this.globalTelemetry = globalTelemetry;
+    public LimelightHandler(HardwareMap hardwareMap) {
         this.limelight = hardwareMap.get(Limelight3A.class, HardwareConfig.LIMELIGHT_CAMERA_ID);
     }
 
@@ -108,26 +106,26 @@ public class LimelightHandler {
         Pose3D pose = result.getBotpose();
         Position pos = pose.getPosition();
 
-        globalTelemetry.addLine("--- Detected Tags ---");
-        globalTelemetry.addData("Number of tags", lastDetectedTags.size());
-        globalTelemetry.addData(
+        TelemetryHandler.addLine("--- Detected Tags ---");
+        TelemetryHandler.addData("Number of tags", lastDetectedTags.size());
+        TelemetryHandler.addData(
                 "Tag IDs",
                 lastDetectedTags.stream()
                         .map(LLResultTypes.FiducialResult::getFiducialId)
                         .collect(Collectors.toList()));
 
-        globalTelemetry.addLine("--- Camera Localization ---");
-        globalTelemetry.addData("Unit", pos.unit);
-        globalTelemetry.addData("Robot X", pos.x);
-        globalTelemetry.addData("Robot Y", pos.y);
-        globalTelemetry.addData("Heading (deg)", pose.getOrientation().getYaw(AngleUnit.DEGREES));
+        TelemetryHandler.addLine("--- Camera Localization ---");
+        TelemetryHandler.addData("Unit", pos.unit);
+        TelemetryHandler.addData("Robot X", pos.x);
+        TelemetryHandler.addData("Robot Y", pos.y);
+        TelemetryHandler.addData("Heading (deg)", pose.getOrientation().getYaw(AngleUnit.DEGREES));
     }
 
     private void handleNoDetection() {
         lastResult = null;
         validFramesInRow = 0;
 
-        globalTelemetry.addLine("Nothing detected");
+        TelemetryHandler.addLine("Nothing detected");
     }
 
     private double distance(Position p1, Position p2) {

@@ -12,6 +12,7 @@ import opmodes.OpModeBase;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import utils.TelemetryHandler;
 import utils.math.Distance;
 import utils.math.Position2D;
 
@@ -43,7 +44,7 @@ public class GoToPositionOpMode extends OpModeBase {
         while (opModeIsActive()) {
             // Consistent step duration for better PIDs
             double time = runtime.milliseconds();
-            globalTelemetry.addData("Delta time", time - prevTime);
+            TelemetryHandler.addData("Delta time", time - prevTime);
             while (time - prevTime < 35) {
                 time = runtime.milliseconds();
             }
@@ -69,13 +70,13 @@ public class GoToPositionOpMode extends OpModeBase {
         }
 
         boolean isTranslating = move.translateToPosition(targetPosition);
-        globalTelemetry.addData("Translating", isTranslating);
+        TelemetryHandler.addData("Translating", isTranslating);
 
         Position2D currentPosition = robotPosition.getPosition();
-        globalTelemetry.addData("Target", targetPosition);
-        globalTelemetry.addData("Position", currentPosition);
-        globalTelemetry.addData("Team", team);
-        globalTelemetry.addData("Distance Error", targetPosition.distanceTo(currentPosition));
+        TelemetryHandler.addData("Target", targetPosition);
+        TelemetryHandler.addData("Position", currentPosition);
+        TelemetryHandler.addData("Team", team);
+        TelemetryHandler.addData("Distance Error", targetPosition.distanceTo(currentPosition));
     }
 
     private Position2D pickRandomTarget() {

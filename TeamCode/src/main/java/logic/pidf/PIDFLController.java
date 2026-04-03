@@ -1,20 +1,14 @@
 package logic.pidf;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+import utils.TelemetryHandler;
 import utils.TimeHelpers;
 
 public class PIDFLController {
-    protected final Telemetry telemetry;
-
     protected PIDFLCoefficients coefficients;
 
-    public PIDFLController(Telemetry telemetry) {
-        this.telemetry = telemetry;
-    }
+    public PIDFLController() {}
 
-    public PIDFLController(Telemetry telemetry, PIDFLCoefficients initialCoeffs) {
-        this.telemetry = telemetry;
+    public PIDFLController(PIDFLCoefficients initialCoeffs) {
         this.coefficients = initialCoeffs;
     }
 
@@ -58,7 +52,7 @@ public class PIDFLController {
         lastTime = currentTime;
 
         if (debugInfo) {
-            telemetry.addData("Error", error);
+            TelemetryHandler.addData("Error", error);
         }
 
         integral += error * deltaTime;
@@ -75,15 +69,15 @@ public class PIDFLController {
         double sum = pTerm + iTerm + dTerm + fTerm + lTerm;
 
         if (debugInfo) {
-            telemetry.addData("Integral", integral);
-            telemetry.addData("Derivative", derivative);
-            telemetry.addData("P Term", pTerm);
-            telemetry.addData("I Term", iTerm);
-            telemetry.addData("D Term", dTerm);
-            telemetry.addData("F Term", fTerm);
-            telemetry.addData("L Term", lTerm);
+            TelemetryHandler.addData("Integral", integral);
+            TelemetryHandler.addData("Derivative", derivative);
+            TelemetryHandler.addData("P Term", pTerm);
+            TelemetryHandler.addData("I Term", iTerm);
+            TelemetryHandler.addData("D Term", dTerm);
+            TelemetryHandler.addData("F Term", fTerm);
+            TelemetryHandler.addData("L Term", lTerm);
 
-            telemetry.addData("PID Output (before clamp)", sum);
+            TelemetryHandler.addData("PID Output (before clamp)", sum);
         }
 
         return clamp(sum);

@@ -9,6 +9,8 @@ import com.pedropathing.paths.PathChain;
 import logic.Team;
 import logic.field.PlayingField;
 
+import utils.TelemetryHandler;
+
 public class AutoOpModeFar extends OpModeBase {
 
     private Paths paths;
@@ -47,7 +49,7 @@ public class AutoOpModeFar extends OpModeBase {
         while (opModeIsActive()) {
             // Consistent step duration for better PIDs
             double time = runtime.milliseconds();
-            globalTelemetry.addData("Delta time", time - prevTime);
+            TelemetryHandler.addData("Delta time", time - prevTime);
             while (time - prevTime < 35) {
                 time = runtime.milliseconds();
             }
@@ -65,7 +67,7 @@ public class AutoOpModeFar extends OpModeBase {
 
         paths = new Paths(follower, team.isBlue());
 
-        globalTelemetry.addData(
+        TelemetryHandler.addData(
                 "Pose start", PlayingField.startPose(Team.RED).toPedropathingPose().toString());
     }
 
@@ -93,10 +95,10 @@ public class AutoOpModeFar extends OpModeBase {
     protected void log() {
         super.log();
 
-        globalTelemetry.addData("State", state);
-        globalTelemetry.addData("X", follower.getPose().getX());
-        globalTelemetry.addData("Y", follower.getPose().getY());
-        globalTelemetry.addData("Heading", follower.getPose().getHeading());
+        TelemetryHandler.addData("State", state);
+        TelemetryHandler.addData("X", follower.getPose().getX());
+        TelemetryHandler.addData("Y", follower.getPose().getY());
+        TelemetryHandler.addData("Heading", follower.getPose().getHeading());
     }
 
     private void execute() {

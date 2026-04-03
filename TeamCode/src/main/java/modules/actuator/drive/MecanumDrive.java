@@ -10,14 +10,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import modules.actuator.RobotActuatorModule;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import utils.TelemetryHandler;
 
 import java.util.HashMap;
 import java.util.Objects;
 
 public class MecanumDrive implements RobotActuatorModule {
-    private final Telemetry globalTelemetry;
-
     private final DcMotor frontLeftDrive;
     private final DcMotor frontRightDrive;
     private final DcMotor backLeftDrive;
@@ -28,8 +26,7 @@ public class MecanumDrive implements RobotActuatorModule {
     private double backLeftPower = 0;
     private double backRightPower = 0;
 
-    public MecanumDrive(Telemetry globalTelemetry, DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR) {
-        this.globalTelemetry = globalTelemetry;
+    public MecanumDrive(DcMotor FL, DcMotor FR, DcMotor BL, DcMotor BR) {
         this.frontLeftDrive = FL;
         this.frontRightDrive = FR;
         this.backLeftDrive = BL;
@@ -81,11 +78,11 @@ public class MecanumDrive implements RobotActuatorModule {
         backLeftDrive.setPower(Math.clamp(backLeftPower, -1.0, 1.0));
         backRightDrive.setPower(Math.clamp(backRightPower, -1.0, 1.0));
 
-        globalTelemetry.addLine("--- MECANUM DRIVE ---");
-        globalTelemetry.addData("Front Left", frontLeftDrive.getPower());
-        globalTelemetry.addData("Front Right", frontRightDrive.getPower());
-        globalTelemetry.addData("Back Left", backLeftDrive.getPower());
-        globalTelemetry.addData("Back Right", backRightDrive.getPower());
+        TelemetryHandler.addLine("--- MECANUM DRIVE ---");
+        TelemetryHandler.addData("Front Left", frontLeftDrive.getPower());
+        TelemetryHandler.addData("Front Right", frontRightDrive.getPower());
+        TelemetryHandler.addData("Back Left", backLeftDrive.getPower());
+        TelemetryHandler.addData("Back Right", backRightDrive.getPower());
 
         reset();
     }

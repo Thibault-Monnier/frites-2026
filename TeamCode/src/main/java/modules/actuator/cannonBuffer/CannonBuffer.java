@@ -8,22 +8,16 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import modules.actuator.RobotActuatorModule;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import java.util.HashMap;
 
 public class CannonBuffer implements RobotActuatorModule {
-    private final Telemetry globalTelemetry;
     private final DcMotor motor;
     private boolean isRunning = false;
     private boolean isReversing = false;
 
-    public CannonBuffer(
-            Telemetry globalTelemetry, DcMotor motor, DcMotorSimple.Direction direction) {
-        this.globalTelemetry = globalTelemetry;
+    public CannonBuffer(DcMotor motor, DcMotorSimple.Direction direction) {
         this.motor = motor;
-
-        motor.setDirection(direction);
+        this.motor.setDirection(direction);
     }
 
     @Override

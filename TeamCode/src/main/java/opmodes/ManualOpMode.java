@@ -11,6 +11,7 @@ import logic.field.PlayingField;
 
 import modules.sensor.GamepadController;
 
+import utils.TelemetryHandler;
 import utils.math.Angle;
 
 @Config
@@ -38,7 +39,7 @@ public class ManualOpMode extends OpModeBase {
         while (opModeIsActive()) {
             // Consistent step duration for better PIDs
             double time = runtime.milliseconds();
-            globalTelemetry.addData("Delta time", time - prevTime);
+            TelemetryHandler.addData("Delta time", time - prevTime);
             while (time - prevTime < 35) {
                 time = runtime.milliseconds();
             }

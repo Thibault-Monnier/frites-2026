@@ -2,24 +2,20 @@ package logic.pidf;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import utils.TelemetryHandler;
 
 public class PIDFLControllerMotor extends PIDFLController {
     private final DcMotorEx motor;
     private final double maxMotorVelocity;
 
-    public PIDFLControllerMotor(DcMotorEx motor, double maxMotorVelocity, Telemetry telemetry) {
-        super(telemetry);
+    public PIDFLControllerMotor(DcMotorEx motor, double maxMotorVelocity) {
         this.motor = motor;
         this.maxMotorVelocity = maxMotorVelocity;
     }
 
     public PIDFLControllerMotor(
-            DcMotorEx motor,
-            double maxMotorVelocity,
-            Telemetry telemetry,
-            PIDFLCoefficients initialCoeffs) {
-        super(telemetry, initialCoeffs);
+            DcMotorEx motor, double maxMotorVelocity, PIDFLCoefficients initialCoeffs) {
+        super(initialCoeffs);
         this.motor = motor;
         this.maxMotorVelocity = maxMotorVelocity;
     }
@@ -35,8 +31,8 @@ public class PIDFLControllerMotor extends PIDFLController {
         }
 
         if (debugInfo) {
-            telemetry.addData("Target Velocity", targetVelocity);
-            telemetry.addData("Current Velocity", motor.getVelocity());
+            TelemetryHandler.addData("Target Velocity", targetVelocity);
+            TelemetryHandler.addData("Current Velocity", motor.getVelocity());
         }
 
         return super.get(debugInfo);

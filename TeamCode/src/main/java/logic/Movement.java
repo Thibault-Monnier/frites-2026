@@ -21,9 +21,9 @@ import logic.position.RobotPosition;
 import modules.actuator.RobotActuatorModule;
 import modules.actuator.drive.MecanumDrive;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import utils.TelemetryHandler;
 import utils.math.Angle;
 import utils.math.Pose2D;
 import utils.math.Position2D;
@@ -33,8 +33,6 @@ import java.util.HashMap;
 
 @Config
 public class Movement implements RobotActuatorModule {
-    private final Telemetry globalTelemetry;
-
     private final RobotPosition robotPosition;
     private final Team team;
 
@@ -53,7 +51,6 @@ public class Movement implements RobotActuatorModule {
     private Macro activeMacro = Macro.NONE;
 
     public Movement(
-            Telemetry globalTelemetry,
             RobotPosition robotPosition,
             ShotHandler shotHandler,
             Team team,
@@ -62,19 +59,15 @@ public class Movement implements RobotActuatorModule {
             DcMotor BL,
             DcMotor BR,
             MovementMode movementMode) {
-        this.globalTelemetry = globalTelemetry;
-
         this.robotPosition = robotPosition;
         this.team = team;
 
         this.shotHandler = shotHandler;
 
-        this.mecanumDrive = new MecanumDrive(globalTelemetry, FL, FR, BL, BR);
-        this.turnController = new PIDFLController(globalTelemetry, TURN_PIDF_COEFFICIENTS);
-        this.translationXController =
-                new PIDFLController(globalTelemetry, TRANSLATION_PIDF_COEFFICIENTS);
-        this.translationYController =
-                new PIDFLController(globalTelemetry, TRANSLATION_PIDF_COEFFICIENTS);
+        this.mecanumDrive = new MecanumDrive(FL, FR, BL, BR);
+        this.turnController = new PIDFLController(TURN_PIDF_COEFFICIENTS);
+        this.translationXController = new PIDFLController(TRANSLATION_PIDF_COEFFICIENTS);
+        this.translationYController = new PIDFLController(TRANSLATION_PIDF_COEFFICIENTS);
         this.movementMode = movementMode;
     }
 
@@ -118,10 +111,10 @@ public class Movement implements RobotActuatorModule {
         translationXController.setCoefficients(TRANSLATION_PIDF_COEFFICIENTS);
         translationYController.setCoefficients(TRANSLATION_PIDF_COEFFICIENTS);
 
-        globalTelemetry.addData("Turn coefficients", turnController.getCoefficients());
-        globalTelemetry.addData(
+        TelemetryHandler.addData("Turn coefficients", turnController.getCoefficients());
+        TelemetryHandler.addData(
                 "Translation X coefficients", translationXController.getCoefficients());
-        globalTelemetry.addData(
+        TelemetryHandler.addData(
                 "Translation Y coefficients", translationYController.getCoefficients());
     }
 
@@ -235,21 +228,21 @@ public class Movement implements RobotActuatorModule {
         Angle angleError = targetHeading.subtract(robotPose.getHeading());
         turnController.setError(angleError.toRadians());
 
-        globalTelemetry.addData("Turn error", angleError.toString());
-        globalTelemetry.addData("Turn error change", turnController.getErrorChange());
+        TelemetryHandler.addData("Turn error", angleError.toString());
+        TelemetryHandler.addData("Turn error change", turnController.getErrorChange());
 
         boolean isFinished =
                 turnController.isStableAtTarget(
                         TURN_TOLERANCE.toRadians(), NOT_TURNING_THRESHOLD.toRadians());
         if (isFinished) {
-            globalTelemetry.addLine("Turn controller is finished");
+            TelemetryHandler.addLine("Turn controller is finished");
             return true;
         }
 
         double turnSpeed = turnController.get();
         turn(turnSpeed);
 
-        globalTelemetry.addData("Turn speed", turnSpeed);
+        TelemetryHandler.addData("Turn speed", turnSpeed);
 
         return false;
     }
@@ -267,8 +260,8 @@ public class Movement implements RobotActuatorModule {
         translationXController.setError(xError);
         translationYController.setError(yError);
 
-        globalTelemetry.addData("X Error", xError);
-        globalTelemetry.addData("Y Error", yError);
+        TelemetryHandler.addData("X Error", xError);
+        TelemetryHandler.addData("Y Error", yError);
 
         boolean isFinished =
                 translationXController.isStableAtTarget(
@@ -278,7 +271,7 @@ public class Movement implements RobotActuatorModule {
                                 TRANSLATION_TOLERANCE.getValue(errorUnit),
                                 NOT_TRANSLATING_THRESHOLD.getValue(errorUnit));
         if (isFinished) {
-            globalTelemetry.addLine("Translation controller is finished");
+            TelemetryHandler.addLine("Translation controller is finished");
             return true;
         }
 
@@ -289,8 +282,8 @@ public class Movement implements RobotActuatorModule {
         Translation translation = new Translation(dx, dy);
         translateFieldCentric(robotAngle, translation);
 
-        globalTelemetry.addData("Dx", dx);
-        globalTelemetry.addData("Dy", dy);
+        TelemetryHandler.addData("Dx", dx);
+        TelemetryHandler.addData("Dy", dy);
 
         return false;
     }

@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import logic.Team;
 import logic.field.PlayingField;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import utils.TelemetryHandler;
 import utils.TimeHelpers;
 import utils.math.Angle;
 import utils.math.Pose2D;
@@ -20,7 +20,6 @@ import utils.math.Vector2D;
 public class RobotPosition {
     private static RobotPosition instance;
 
-    private final Telemetry globalTelemetry;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private final LimelightHandler limelightHandler;
@@ -36,37 +35,31 @@ public class RobotPosition {
     private double previousPoseTimeSec;
 
     public static RobotPosition getInstance(
-            Telemetry globalTelemetry,
             HardwareMap hardwareMap,
             Team color,
             boolean useFarStartPose,
             boolean forceNewInstance) {
         if (instance == null || forceNewInstance) {
-            instance = new RobotPosition(globalTelemetry, hardwareMap, color, useFarStartPose);
+            instance = new RobotPosition(hardwareMap, color, useFarStartPose);
         }
         return instance;
     }
 
-    private RobotPosition(
-            Telemetry globalTelemetry,
-            HardwareMap hardwareMap,
-            Team color,
-            boolean useFarStartPose) {
-        this.globalTelemetry = globalTelemetry;
+    private RobotPosition(HardwareMap hardwareMap, Team color, boolean useFarStartPose) {
         this.color = color;
 
         if (useFarStartPose) pose = PlayingField.farStartPose(color);
         else pose = PlayingField.startPose(color);
 
-        limelightHandler = new LimelightHandler(globalTelemetry, hardwareMap);
-        odometryHandler = new OdometryHandler(hardwareMap, globalTelemetry, pose);
+        limelightHandler = new LimelightHandler(hardwareMap);
+        odometryHandler = new OdometryHandler(hardwareMap, pose);
 
         limelightHandler.start();
 
         this.kalmanFilter = new KalmanFilter(pose);
 
-        this.globalTelemetry.addData("Initialized RobotPosition", pose.toString());
-        this.globalTelemetry.update();
+        TelemetryHandler.addData("Initialized RobotPosition", pose.toString());
+        TelemetryHandler.update();
     }
 
     public void start() {
@@ -100,7 +93,7 @@ public class RobotPosition {
 
         Pose2D odometryPose = odometryHandler.getPose();
         if (odometryPose.hasNaN()) {
-            globalTelemetry.addLine("Computed pose has NaN values, using previous pose");
+            TelemetryHandler.addLine("Computed pose has NaN values, using previous pose");
             odometryPose = previousPose;
         }
         Pose2D odometryVelocity = odometryPose.subtract(pose);
@@ -109,14 +102,14 @@ public class RobotPosition {
         poseTimeSec = TimeHelpers.getRuntime();
 
         if (limelightHasNew) {
-            globalTelemetry.addLine("Using pose from Limelight with Kalman filter");
+            TelemetryHandler.addLine("Using pose from Limelight with Kalman filter");
             Pose2D limelightPose = limelightHandler.getLastKnownPose();
             pose = kalmanFilter.update(limelightPose);
             odometryHandler.setPose(pose);
-        } else globalTelemetry.addLine("Using pose from Odometry");
+        } else TelemetryHandler.addLine("Using pose from Odometry");
 
-        globalTelemetry.addData("Odometry velocity", odometryVelocity.toString());
-        globalTelemetry.addData("Computed pose", pose.toString());
+        TelemetryHandler.addData("Odometry velocity", odometryVelocity.toString());
+        TelemetryHandler.addData("Computed pose", pose.toString());
         renderFieldOverlayInDashboard();
     }
 

@@ -6,18 +6,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import modules.actuator.RobotActuatorModule;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import utils.TelemetryHandler;
 
 import java.util.HashMap;
 
 public class Intake implements RobotActuatorModule {
-    private final Telemetry globalTelemetry;
     private final DcMotor motor;
     private boolean isRunning = false;
     private boolean isReversing = false;
 
-    public Intake(Telemetry globalTelemetry, DcMotor motor) {
-        this.globalTelemetry = globalTelemetry;
+    public Intake(DcMotor motor) {
         this.motor = motor;
     }
 
@@ -31,7 +29,7 @@ public class Intake implements RobotActuatorModule {
             isReversing = false;
         }
 
-        globalTelemetry.addData("Intake Motor Power", motorTargetPower);
+        TelemetryHandler.addData("Intake Motor Power", motorTargetPower);
         motor.setPower(motorTargetPower);
     }
 

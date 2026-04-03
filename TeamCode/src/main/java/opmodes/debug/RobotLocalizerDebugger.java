@@ -9,6 +9,8 @@ import opmodes.OpModeBase;
 
 import pedropathing.RobotLocalizer;
 
+import utils.TelemetryHandler;
+
 @TeleOp(
         name = GroupConstants.DEBUGGER_MODES_GROUP + ": RobotLocalizer",
         group = GroupConstants.DEBUGGER_MODES_GROUP)
@@ -32,11 +34,11 @@ public class RobotLocalizerDebugger extends OpModeBase {
         while (opModeIsActive()) {
             robotPosition.updatePose();
 
-            globalTelemetry.addData("Pose", robotPosition.getPose().toString());
-            globalTelemetry.addData("Localizer Pose", localizer.getPose().toString());
-            globalTelemetry.addData("Localizer Velocity", localizer.getVelocity().toString());
-            globalTelemetry.addData("Pose Velocity", robotPosition.getPoseVelocity().toString());
-            globalTelemetry.update();
+            TelemetryHandler.addData("Pose", robotPosition.getPose().toString());
+            TelemetryHandler.addData("Localizer Pose", localizer.getPose().toString());
+            TelemetryHandler.addData("Localizer Velocity", localizer.getVelocity().toString());
+            TelemetryHandler.addData("Pose Velocity", robotPosition.getPoseVelocity().toString());
+            TelemetryHandler.update();
         }
 
         runStop();

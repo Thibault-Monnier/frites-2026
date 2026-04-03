@@ -14,24 +14,14 @@ import logic.pidf.PIDFLControllerMotor;
 
 import modules.actuator.RobotActuatorModule;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import utils.TelemetryHandler;
 import utils.math.Distance;
 
 import java.util.HashMap;
 
 public class Cannon implements RobotActuatorModule {
-    /*
-    Measure points:
-        1.353 -> 1180
-        1.988 -> 1230
-        2.547 -> 1260
-        3.231 -> 1380
-    */
-
-    protected final Telemetry globalTelemetry;
-
     private final DcMotorEx motorLeft;
     private final DcMotorEx motorRight;
 
@@ -42,8 +32,7 @@ public class Cannon implements RobotActuatorModule {
 
     private boolean isRunning = false;
 
-    public Cannon(Telemetry globalTelemetry, DcMotorEx motorLeft, DcMotorEx motorRight) {
-        this.globalTelemetry = globalTelemetry;
+    public Cannon(DcMotorEx motorLeft, DcMotorEx motorRight) {
         this.motorLeft = motorLeft;
         this.motorRight = motorRight;
 
@@ -59,16 +48,10 @@ public class Cannon implements RobotActuatorModule {
 
         this.PIDFControllerLeft =
                 new PIDFLControllerMotor(
-                        motorLeft,
-                        HardwareConfig.SHOOTER_MAX_VELOCITY,
-                        this.globalTelemetry,
-                        CANNON_PID);
+                        motorLeft, HardwareConfig.SHOOTER_MAX_VELOCITY, CANNON_PID);
         this.PIDFControllerRight =
                 new PIDFLControllerMotor(
-                        motorRight,
-                        HardwareConfig.SHOOTER_MAX_VELOCITY,
-                        this.globalTelemetry,
-                        CANNON_PID);
+                        motorRight, HardwareConfig.SHOOTER_MAX_VELOCITY, CANNON_PID);
     }
 
     @Override
@@ -76,10 +59,10 @@ public class Cannon implements RobotActuatorModule {
         motorLeft.setPower(PIDFControllerLeft.get(motorTargetVelocity));
         motorRight.setPower(PIDFControllerRight.get(motorTargetVelocity));
 
-        globalTelemetry.addData(
+        TelemetryHandler.addData(
                 "Cannon Motor velocity/target", getAverageVelocity() + "/" + motorTargetVelocity);
-        globalTelemetry.addData("Cannon MotorLeft velocity", motorLeft.getVelocity());
-        globalTelemetry.addData("Cannon MotorRight velocity", motorRight.getVelocity());
+        TelemetryHandler.addData("Cannon MotorLeft velocity", motorLeft.getVelocity());
+        TelemetryHandler.addData("Cannon MotorRight velocity", motorRight.getVelocity());
     }
 
     /// Toggle cannon motor on/off.

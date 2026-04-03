@@ -4,8 +4,7 @@ import static config.CannonConfig.CALIBRATION_SPEED_CHANGE_OFFSET;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
+import utils.TelemetryHandler;
 import utils.math.Distance;
 
 import java.util.HashMap;
@@ -14,8 +13,8 @@ import java.util.Map;
 public class CannonCalibrator extends Cannon {
     private final Map<Distance, Double> savedCalibrationData = new HashMap<>();
 
-    public CannonCalibrator(Telemetry globalTelemetry, DcMotorEx motorLeft, DcMotorEx motorRight) {
-        super(globalTelemetry, motorLeft, motorRight);
+    public CannonCalibrator(DcMotorEx motorLeft, DcMotorEx motorRight) {
+        super(motorLeft, motorRight);
     }
 
     @Override
@@ -43,7 +42,7 @@ public class CannonCalibrator extends Cannon {
     }
 
     public void printCalibrationData() {
-        globalTelemetry.addLine("--- Saved Calibration Data ---");
-        globalTelemetry.addData("Values", savedCalibrationData.toString());
+        TelemetryHandler.addLine("--- Saved Calibration Data ---");
+        TelemetryHandler.addData("Values", savedCalibrationData.toString());
     }
 }

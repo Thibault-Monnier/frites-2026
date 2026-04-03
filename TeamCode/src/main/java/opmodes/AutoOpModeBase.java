@@ -12,6 +12,8 @@ import logic.action.DelayAction;
 import logic.action.SimpleAction;
 import logic.field.PlayingField;
 
+import utils.TelemetryHandler;
+
 public abstract class AutoOpModeBase extends OpModeBase {
     private boolean pathActive = false;
     private double pathStartTime = -1000;
@@ -32,7 +34,7 @@ public abstract class AutoOpModeBase extends OpModeBase {
         while (opModeIsActive()) {
             // Consistent step duration for better PIDs
             double time = runtime.milliseconds();
-            globalTelemetry.addData("Delta time", time - prevTime);
+            TelemetryHandler.addData("Delta time", time - prevTime);
             while (time - prevTime < 35) {
                 time = runtime.milliseconds();
             }
@@ -48,7 +50,7 @@ public abstract class AutoOpModeBase extends OpModeBase {
     protected void initialize() {
         super.initialize();
 
-        globalTelemetry.addData(
+        TelemetryHandler.addData(
                 "Pose start (Pedro Pathing)",
                 PlayingField.startPose(team).toPedropathingPose().toString());
     }
@@ -79,7 +81,7 @@ public abstract class AutoOpModeBase extends OpModeBase {
     protected void log() {
         super.log();
 
-        globalTelemetry.addData("Pose", follower.getPose().toString());
+        TelemetryHandler.addData("Pose", follower.getPose().toString());
     }
 
     protected abstract void execute();

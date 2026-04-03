@@ -6,10 +6,10 @@ import config.FieldConfig;
 import logic.field.PlayingField;
 import logic.position.RobotPosition;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import utils.TelemetryHandler;
 import utils.math.Angle;
 import utils.math.Distance;
 import utils.math.Pose2D;
@@ -21,16 +21,13 @@ public class ShotHandler {
 
     private final Team team;
 
-    private final Telemetry globalTelemetry;
-
     private Vector2D computedShotVector;
 
     boolean usingMovingShot = true;
 
-    public ShotHandler(RobotPosition robotPosition, Team team, Telemetry globalTelemetry) {
+    public ShotHandler(RobotPosition robotPosition, Team team) {
         this.robotPosition = robotPosition;
         this.team = team;
-        this.globalTelemetry = globalTelemetry;
     }
 
     /** Updates the shot vector based on the robot's current velocity and pose. */
@@ -38,7 +35,7 @@ public class ShotHandler {
         if (usingMovingShot) computedShotVector = computeMovingShotVector();
         else computedShotVector = computeStationaryShotVector();
 
-        globalTelemetry.addData("Computed shot vector", computedShotVector.toString());
+        TelemetryHandler.addData("Computed shot vector", computedShotVector.toString());
     }
 
     /** Gets the computed shot vector. Should be called after update(). */
@@ -48,7 +45,8 @@ public class ShotHandler {
 
     /** Gets the magnitude of the computed shot vector. Should be called after update(). */
     public Distance getShotMagnitude() {
-        return computedShotVector.magnitude();
+        return Distance.fromMeters(1);
+        // return computedShotVector.magnitude();
     }
 
     /** Gets the angle of the computed shot vector. Should be called after update(). */
@@ -62,7 +60,7 @@ public class ShotHandler {
     }
 
     private Vector2D computeMovingShotVector() {
-        globalTelemetry.addLine("Using moving shot calculation");
+        TelemetryHandler.addLine("Using moving shot calculation");
 
         final double g = 9.81; // gravitational acceleration in m/s^2
 
@@ -100,7 +98,7 @@ public class ShotHandler {
     }
 
     private Vector2D computeStationaryShotVector() {
-        globalTelemetry.addLine("Using stationary shot calculation");
+        TelemetryHandler.addLine("Using stationary shot calculation");
         return goalPos().subtract(cannonPos()).toVector2D();
     }
 

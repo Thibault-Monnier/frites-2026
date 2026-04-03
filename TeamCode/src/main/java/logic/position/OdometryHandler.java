@@ -11,18 +11,12 @@ import config.HardwareConfig;
 
 import modules.sensor.GoBildaPinpointDriver;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import utils.math.Pose2D;
 
 public final class OdometryHandler {
     public final GoBildaPinpointDriver driver;
 
-    private final Telemetry globalTelemetry;
-
-    public OdometryHandler(HardwareMap hardwareMap, Telemetry globalTelemetry, Pose2D initialPose) {
-        this.globalTelemetry = globalTelemetry;
-
+    public OdometryHandler(HardwareMap hardwareMap, Pose2D initialPose) {
         driver = hardwareMap.get(GoBildaPinpointDriver.class, HardwareConfig.ODOMETRY_POD_ID);
 
         driver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);

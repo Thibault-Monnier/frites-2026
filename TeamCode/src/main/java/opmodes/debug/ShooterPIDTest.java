@@ -46,10 +46,9 @@ public class ShooterPIDTest extends LinearOpMode {
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER); // Important to avoid an extra PID layer
 
         PIDFControllerLeft =
-                new PIDFLControllerMotor(motorLeft, HardwareConfig.SHOOTER_MAX_VELOCITY, telemetry);
+                new PIDFLControllerMotor(motorLeft, HardwareConfig.SHOOTER_MAX_VELOCITY);
         PIDFControllerRight =
-                new PIDFLControllerMotor(
-                        motorRight, HardwareConfig.SHOOTER_MAX_VELOCITY, telemetry);
+                new PIDFLControllerMotor(motorRight, HardwareConfig.SHOOTER_MAX_VELOCITY);
 
         waitForStart();
 
