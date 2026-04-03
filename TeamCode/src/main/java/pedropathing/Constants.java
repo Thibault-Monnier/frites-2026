@@ -15,8 +15,7 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import logic.Team;
-import logic.field.PlayingField;
+import logic.position.RobotPosition;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -57,14 +56,12 @@ public class Constants {
                     .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
                     .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
-    public static Follower createFollower(HardwareMap hardwareMap, Team color) {
-        Follower follower =
-                new FollowerBuilder(followerConstants, hardwareMap)
-                        .pathConstraints(pathConstraints)
-                        .mecanumDrivetrain(driveConstants)
-                        .pinpointLocalizer(localizerConstants)
-                        .build();
-        follower.setStartingPose(PlayingField.startPose(color).toPedropathingPose());
-        return follower;
+    public static Follower createFollower(HardwareMap hardwareMap, RobotPosition robotPosition) {
+        RobotLocalizer localizer = new RobotLocalizer(robotPosition);
+        return new FollowerBuilder(followerConstants, hardwareMap)
+                .pathConstraints(pathConstraints)
+                .mecanumDrivetrain(driveConstants)
+                .setLocalizer(localizer)
+                .build();
     }
 }

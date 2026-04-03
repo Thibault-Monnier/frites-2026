@@ -50,17 +50,6 @@ public class ManualOpMode extends OpModeBase {
         runStop();
     }
 
-    @Override
-    protected void initialize() {
-        super.initialize();
-        useRobotPosition();
-    }
-
-    @Override
-    protected void runStart() {
-        super.runStart();
-    }
-
     private void runStep() {
         update();
 

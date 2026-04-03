@@ -1,6 +1,5 @@
 package logic;
 
-import com.pedropathing.follower.Follower;
 
 import config.CannonConfig;
 import config.FieldConfig;
@@ -20,9 +19,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class ShotHandler {
     private final RobotPosition robotPosition;
-    private final Follower follower;
-
-    private boolean useFollowerInsteadOfRobotPosition;
 
     private final Team team;
 
@@ -33,9 +29,8 @@ public class ShotHandler {
     boolean usingMovingShot = true;
 
     public ShotHandler(
-            RobotPosition robotPosition, Follower follower, Team team, Telemetry globalTelemetry) {
+            RobotPosition robotPosition, Team team, Telemetry globalTelemetry) {
         this.robotPosition = robotPosition;
-        this.follower = follower;
         this.team = team;
         this.globalTelemetry = globalTelemetry;
     }
@@ -66,16 +61,6 @@ public class ShotHandler {
     /** Toggles between using the moving shot calculation and the stationary shot calculation. */
     public void toggleUsingMovingShot() {
         usingMovingShot = !usingMovingShot;
-    }
-
-    /** Use pose calculations from pedropathing follower */
-    public void useFollowerPose() {
-        useFollowerInsteadOfRobotPosition = true;
-    }
-
-    /** Use pose calculations from custom RobotPosition */
-    public void useRobotPositionPose() {
-        useFollowerInsteadOfRobotPosition = false;
     }
 
     private Vector2D computeMovingShotVector() {
@@ -122,19 +107,12 @@ public class ShotHandler {
     }
 
     private Position2D cannonPos() {
-        Pose2D robotPose =
-                useFollowerInsteadOfRobotPosition
-                        ? Pose2D.fromPedropathingPose(follower.getPose())
-                        : robotPosition.getPose();
+        Pose2D robotPose = robotPosition.getPose();
         return robotPose.addRelative(CannonConfig.CANNON_RELATIVE_POSITION);
     }
 
     private Vector2D cannonVelocity() {
-        // It's less precise when we use follower because we calculate robot velocity instead of
-        // cannon velocity, but we don't really have a choice.
-        if (useFollowerInsteadOfRobotPosition)
-            return Pose2D.fromPedropathingPose(follower.getPose()).toPosition2D().toVector2D();
-        else return robotPosition.getPointVelocity(CannonConfig.CANNON_RELATIVE_POSITION);
+        return robotPosition.getPointVelocity(CannonConfig.CANNON_RELATIVE_POSITION);
     }
 
     private Position2D goalPos() {

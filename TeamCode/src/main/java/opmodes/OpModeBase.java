@@ -90,8 +90,8 @@ public abstract class OpModeBase extends LinearOpMode {
         robotPosition =
                 RobotPosition.getInstance(
                         globalTelemetry, hardwareMap, team, useFarStartPose, shouldResetPose);
-        follower = Constants.createFollower(hardwareMap, team);
-        shotHandler = new ShotHandler(robotPosition, follower, team, globalTelemetry);
+        follower = Constants.createFollower(hardwareMap, robotPosition);
+        shotHandler = new ShotHandler(robotPosition, team, globalTelemetry);
 
         batteryMonitor = new BatteryMonitor(hardwareMap, globalTelemetry);
 

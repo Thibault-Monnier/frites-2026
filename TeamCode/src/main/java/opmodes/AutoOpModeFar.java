@@ -62,7 +62,6 @@ public class AutoOpModeFar extends OpModeBase {
     @Override
     protected void initialize() {
         super.initialize();
-        useFollower();
 
         paths = new Paths(follower, team.isBlue());
 

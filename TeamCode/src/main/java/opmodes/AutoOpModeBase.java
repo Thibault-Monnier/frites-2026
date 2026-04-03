@@ -47,7 +47,6 @@ public abstract class AutoOpModeBase extends OpModeBase {
     @Override
     protected void initialize() {
         super.initialize();
-        useFollower();
 
         globalTelemetry.addData(
                 "Pose start (Pedro Pathing)",
