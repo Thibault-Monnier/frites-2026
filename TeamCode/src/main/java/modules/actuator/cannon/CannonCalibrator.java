@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class CannonCalibrator extends Cannon {
     private final Map<Distance, Double> savedCalibrationData = new HashMap<>();
+    private Distance lastCalibratedDistance = null;
 
     public CannonCalibrator(DcMotorEx motorLeft, DcMotorEx motorRight) {
         super(motorLeft, motorRight);
@@ -25,7 +26,7 @@ public class CannonCalibrator extends Cannon {
     }
 
     public void fastSpeedup() {
-        motorTargetVelocity += 5 * CALIBRATION_SPEED_CHANGE_OFFSET;
+        motorTargetVelocity += 2 * CALIBRATION_SPEED_CHANGE_OFFSET;
     }
 
     public void slowdown() {
@@ -33,12 +34,19 @@ public class CannonCalibrator extends Cannon {
     }
 
     public void fastSlowdown() {
-        motorTargetVelocity -= 5 * CALIBRATION_SPEED_CHANGE_OFFSET;
+        motorTargetVelocity -= 2 * CALIBRATION_SPEED_CHANGE_OFFSET;
     }
 
     public void saveCurrentCalibrationData(Distance target2dDistance) {
-        savedCalibrationData.clear();
+        lastCalibratedDistance = target2dDistance;
         savedCalibrationData.put(target2dDistance, getAverageVelocity());
+    }
+
+    public void clearLastCalibrationData() {
+        if (lastCalibratedDistance != null) {
+            savedCalibrationData.remove(lastCalibratedDistance);
+            lastCalibratedDistance = null; // Reset tracker after clearing
+        }
     }
 
     public void printCalibrationData() {

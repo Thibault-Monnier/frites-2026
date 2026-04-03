@@ -98,6 +98,9 @@ public class CannonCalibrationOpMode extends OpModeBase {
                     PlayingField.distanceToGoal(robotPosition.getPosition(), team);
             cannon().saveCurrentCalibrationData(targetDistance);
         }
+        if (gamepadController.isLongPressed(GamepadController.Button.B)) {
+            cannon().clearLastCalibrationData();
+        }
 
         if (gamepadController.isPressing(GamepadController.Button.TRIGGER_LEFT)) {
             intake.on();
