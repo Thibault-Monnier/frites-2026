@@ -10,8 +10,7 @@ import modules.actuator.RobotActuatorModule;
 import java.util.HashMap;
 
 public class CannonBuffersHandler implements RobotActuatorModule {
-    private final CannonBuffer leftBuffer;
-    private final CannonBuffer rightBuffer;
+    private final CannonBuffer buffer;
 
     private ShootingStage shootingStage = ShootingStage.IDLE;
     private double lastRoundStartTime = 0.0;
@@ -19,27 +18,23 @@ public class CannonBuffersHandler implements RobotActuatorModule {
     private boolean lastShotLeft = true;
     private int shotsFired = 0;
 
-    public CannonBuffersHandler(CannonBuffer leftBuffer, CannonBuffer rightBuffer) {
-        this.leftBuffer = leftBuffer;
-        this.rightBuffer = rightBuffer;
+    public CannonBuffersHandler(CannonBuffer buffer) {
+        this.buffer = buffer;
     }
 
     /// Sets both buffers on.
     public void on() {
-        leftBuffer.on();
-        rightBuffer.on();
+        buffer.on();
     }
 
     /// Sets both buffers off.
     public void off() {
-        leftBuffer.off();
-        rightBuffer.off();
+        buffer.off();
     }
 
     /// Reverses both buffers.
     public void reverse() {
-        leftBuffer.reverse();
-        rightBuffer.reverse();
+        buffer.reverse();
     }
 
     /// Continues current round or shoots next round if done.
@@ -106,31 +101,26 @@ public class CannonBuffersHandler implements RobotActuatorModule {
     }
 
     private void leftOnly() {
-        leftBuffer.on();
-        rightBuffer.off();
+        buffer.on();
     }
 
     private void rightOnly() {
-        leftBuffer.off();
-        rightBuffer.on();
+        buffer.on();
     }
 
     private void both() {
-        leftBuffer.on();
-        rightBuffer.on();
+        buffer.on();
     }
 
     @Override
     public void apply() {
-        leftBuffer.apply();
-        rightBuffer.apply();
+        buffer.apply();
     }
 
     @Override
     public HashMap<String, Object> getCurrentState() {
         HashMap<String, Object> state = new HashMap<>();
-        state.put("leftBuffer", leftBuffer.getCurrentState());
-        state.put("rightBuffer", rightBuffer.getCurrentState());
+        state.put("leftBuffer", buffer.getCurrentState());
         state.put("shootingStage", shootingStage.name());
         state.put("lastRoundStartTime", lastRoundStartTime);
         return state;

@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -100,14 +99,14 @@ public abstract class OpModeBase extends LinearOpMode {
         DcMotor moveFR = hardwareMap.get(DcMotor.class, HardwareConfig.FRONT_RIGHT_MOTOR_ID);
         DcMotor moveBL = hardwareMap.get(DcMotor.class, HardwareConfig.BACK_LEFT_MOTOR_ID);
         DcMotor moveBR = hardwareMap.get(DcMotor.class, HardwareConfig.BACK_RIGHT_MOTOR_ID);
+
         DcMotorEx cannonLeft =
                 hardwareMap.get(DcMotorEx.class, HardwareConfig.CANNON_MOTOR_LEFT_ID);
         DcMotorEx cannonRight =
                 hardwareMap.get(DcMotorEx.class, HardwareConfig.CANNON_MOTOR_RIGHT_ID);
-        CRServo cannonBufferLeft =
-                hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_LEFT);
-        CRServo cannonBufferRight =
-                hardwareMap.get(CRServo.class, HardwareConfig.CANNON_BUFFER_RIGHT);
+        DcMotor cannonBufferMotor =
+                hardwareMap.get(DcMotor.class, HardwareConfig.CANNON_BUFFER_LEFT);
+
         DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConfig.INTAKE_MOTOR_ID);
 
         this.distanceSensorMonitor = new DistanceSensorMonitor(hardwareMap);
@@ -131,13 +130,10 @@ public abstract class OpModeBase extends LinearOpMode {
 
         cannon = new Cannon(globalTelemetry, cannonLeft, cannonRight);
 
-        CannonBuffer leftBuffer =
+        CannonBuffer cannonBuffer =
                 new CannonBuffer(
-                        globalTelemetry, cannonBufferLeft, DcMotorSimple.Direction.REVERSE);
-        CannonBuffer rightBuffer =
-                new CannonBuffer(
-                        globalTelemetry, cannonBufferRight, DcMotorSimple.Direction.FORWARD);
-        this.cannonBuffers = new CannonBuffersHandler(leftBuffer, rightBuffer);
+                        globalTelemetry, cannonBufferMotor, DcMotorSimple.Direction.REVERSE);
+        this.cannonBuffers = new CannonBuffersHandler(cannonBuffer);
 
         this.intake = new Intake(globalTelemetry, intake);
     }

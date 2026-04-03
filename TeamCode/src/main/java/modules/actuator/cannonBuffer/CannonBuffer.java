@@ -3,7 +3,7 @@ package modules.actuator.cannonBuffer;
 import static config.CannonConfig.MOVING_SPEED;
 import static config.CannonConfig.REVERSE_SPEED;
 
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import modules.actuator.RobotActuatorModule;
@@ -14,16 +14,16 @@ import java.util.HashMap;
 
 public class CannonBuffer implements RobotActuatorModule {
     private final Telemetry globalTelemetry;
-    private final CRServo servo;
+    private final DcMotor motor;
     private boolean isRunning = false;
     private boolean isReversing = false;
 
     public CannonBuffer(
-            Telemetry globalTelemetry, CRServo servo, DcMotorSimple.Direction direction) {
+            Telemetry globalTelemetry, DcMotor motor, DcMotorSimple.Direction direction) {
         this.globalTelemetry = globalTelemetry;
-        this.servo = servo;
+        this.motor = motor;
 
-        servo.setDirection(direction);
+        motor.setDirection(direction);
     }
 
     @Override
@@ -35,16 +35,16 @@ public class CannonBuffer implements RobotActuatorModule {
             servoTargetPower = REVERSE_SPEED;
             isReversing = false;
         }
-        servo.setPower(servoTargetPower);
+        motor.setPower(servoTargetPower);
     }
 
-    /// Turn buffer servo off.
+    /// Turn buffer motor off.
     public void off() {
         isRunning = false;
         isReversing = false;
     }
 
-    /// Turn buffer servo on.
+    /// Turn buffer motor on.
     public void on() {
         off();
         isRunning = true;
