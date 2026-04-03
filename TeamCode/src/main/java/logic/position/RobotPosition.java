@@ -2,6 +2,7 @@ package logic.position;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import logic.Team;
@@ -70,6 +71,9 @@ public class RobotPosition {
 
     public void start() {
         limelightHandler.start();
+
+        odometryHandler.setPose(pose);
+        odometryHandler.update();
     }
 
     public void stop() {
@@ -131,9 +135,19 @@ public class RobotPosition {
         return pose.getHeading();
     }
 
-    /// Gets the current robot velocity as a Vector2D, in distance / second
-    public Vector2D getVelocity() {
-        Vector2D displacement = pose.subtract(previousPose).toPosition2D().toVector2D();
+    /// Gets the current robot velocity as a Pose2D, in displacement / second
+    public Pose2D getPoseVelocity() {
+        Pose2D displacement = pose.subtract(previousPose);
+        double time = poseTimeSec - previousPoseTimeSec;
+        return displacement.scale(1 / time);
+    }
+
+    /// Gets the current robot velocity as a Pedropathing Pose, in displacement / second
+    public Pose getPedroPoseVelocity() {
+        Pose pedroPose = pose.toPedropathingPose();
+        Pose previousPedroPose = previousPose.toPedropathingPose();
+
+        Pose displacement = pedroPose.minus(previousPedroPose);
         double time = poseTimeSec - previousPoseTimeSec;
         return displacement.scale(1 / time);
     }

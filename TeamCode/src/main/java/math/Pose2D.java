@@ -177,6 +177,14 @@ public class Pose2D {
     }
 
     /**
+     * Multiplies x, y and heading components by the scalar and returns the result as a new Pose2D
+     */
+    public Pose2D scale(double scalar) {
+        return new Pose2D(
+                getX().multiply(scalar), getY().multiply(scalar), getHeading().multiply(scalar));
+    }
+
+    /**
      * This returns a string representation of the object in a human readable format for debugging
      * purposes.
      *
