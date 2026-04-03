@@ -59,7 +59,6 @@ public class ManualOpMode extends OpModeBase {
     @Override
     protected void runStart() {
         super.runStart();
-        cannon.on();
     }
 
     private void runStep() {
