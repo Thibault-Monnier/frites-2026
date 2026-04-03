@@ -43,8 +43,8 @@ public class Cannon implements RobotActuatorModule {
         this.motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         this.motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        this.motorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        this.motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.motorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.motorRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         this.PIDFControllerLeft =
                 new PIDFLControllerMotor(
