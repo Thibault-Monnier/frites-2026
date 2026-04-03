@@ -66,7 +66,7 @@ public abstract class AutoOpModeBase extends OpModeBase {
 
         execute();
 
-        apply(false); // Pedro Pathing controls drive motors
+        apply(true); // Pedro Pathing controls drive motors
         log();
     }
 

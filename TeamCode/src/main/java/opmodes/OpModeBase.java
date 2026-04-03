@@ -183,8 +183,9 @@ public abstract class OpModeBase extends LinearOpMode {
         System.out.println("-----------------------------------");
     }
 
-    protected void apply(boolean updateMove) {
-        if (updateMove) move.apply();
+    protected void apply(boolean usingFollower) {
+        if (usingFollower) follower.update();
+        else move.apply();
 
         intake.apply();
 
@@ -193,6 +194,6 @@ public abstract class OpModeBase extends LinearOpMode {
     }
 
     protected void apply() {
-        apply(true);
+        apply(false);
     }
 }
