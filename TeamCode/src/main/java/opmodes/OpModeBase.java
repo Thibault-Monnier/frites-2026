@@ -47,7 +47,6 @@ public abstract class OpModeBase extends LinearOpMode {
 
     protected RobotPosition robotPosition;
     protected Follower follower;
-    private boolean useFollower = false;
     protected ShotHandler shotHandler;
 
     protected BatteryMonitor batteryMonitor;
@@ -143,16 +142,6 @@ public abstract class OpModeBase extends LinearOpMode {
         this.intake = new Intake(globalTelemetry, intake);
     }
 
-    protected void useFollower() {
-        useFollower = true;
-        shotHandler.useFollowerPose();
-    }
-
-    protected void useRobotPosition() {
-        useFollower = false;
-        shotHandler.useRobotPositionPose();
-    }
-
     protected void runStart() {
         runtime.reset();
         robotPosition.start();
@@ -170,8 +159,7 @@ public abstract class OpModeBase extends LinearOpMode {
 
         gamepadController.update();
 
-        if (useFollower) follower.update();
-        else robotPosition.updatePose();
+        robotPosition.updatePose();
 
         shotHandler.update();
 
