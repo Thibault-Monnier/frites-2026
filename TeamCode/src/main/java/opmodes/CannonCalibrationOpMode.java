@@ -8,10 +8,10 @@ import config.ManualOpModeMappings;
 import logic.Team;
 import logic.field.PlayingField;
 
-import utils.Distance;
-
 import modules.actuator.cannon.CannonCalibrator;
 import modules.sensor.GamepadController;
+
+import utils.Distance;
 
 public class CannonCalibrationOpMode extends OpModeBase {
     public CannonCalibrationOpMode(Team team) {

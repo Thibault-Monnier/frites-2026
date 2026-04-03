@@ -4,12 +4,12 @@ import config.FieldConfig;
 
 import logic.Team;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 import utils.Angle;
 import utils.Distance;
 import utils.Pose2D;
 import utils.Position2D;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class PlayingField {
     private PlayingField() {

@@ -3,9 +3,9 @@ package config;
 import com.acmerobotics.dashboard.config.Config;
 import com.bylazar.configurables.annotations.Configurable;
 
-import utils.Distance;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import utils.Distance;
 
 @Config
 @Configurable

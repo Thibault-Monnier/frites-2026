@@ -1,8 +1,8 @@
 package logic.pidf;
 
-import utils.TimeHelpers;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import utils.TimeHelpers;
 
 public class PIDFLController {
     protected final Telemetry telemetry;

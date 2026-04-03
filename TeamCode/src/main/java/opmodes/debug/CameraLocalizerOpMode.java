@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import logic.position.LimelightHandler;
 
-import utils.Pose2D;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import utils.Pose2D;
 
 @TeleOp(name = "Camera Localizer OpMode", group = "Concept")
 public class CameraLocalizerOpMode extends LinearOpMode {

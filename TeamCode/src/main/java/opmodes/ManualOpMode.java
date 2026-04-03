@@ -9,9 +9,9 @@ import logic.Movement.Macro;
 import logic.Team;
 import logic.field.PlayingField;
 
-import utils.Angle;
-
 import modules.sensor.GamepadController;
+
+import utils.Angle;
 
 @Config
 public class ManualOpMode extends OpModeBase {

@@ -5,15 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import logic.Team;
 import logic.field.PlayingField;
 
-import utils.Distance;
-import utils.Position2D;
-
 import modules.sensor.GamepadController;
 
 import opmodes.GroupConstants;
 import opmodes.OpModeBase;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import utils.Distance;
+import utils.Position2D;
 
 import java.util.Random;
 

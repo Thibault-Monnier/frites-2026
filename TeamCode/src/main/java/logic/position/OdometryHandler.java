@@ -9,11 +9,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import config.HardwareConfig;
 
-import utils.Pose2D;
-
 import modules.sensor.GoBildaPinpointDriver;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import utils.Pose2D;
 
 public final class OdometryHandler {
     public final GoBildaPinpointDriver driver;

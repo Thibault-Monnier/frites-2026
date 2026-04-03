@@ -1,21 +1,20 @@
 package logic;
 
-
 import config.CannonConfig;
 import config.FieldConfig;
 
 import logic.field.PlayingField;
 import logic.position.RobotPosition;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 import utils.Angle;
 import utils.Distance;
 import utils.Pose2D;
 import utils.Position2D;
 import utils.Vector2D;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class ShotHandler {
     private final RobotPosition robotPosition;
@@ -28,8 +27,7 @@ public class ShotHandler {
 
     boolean usingMovingShot = true;
 
-    public ShotHandler(
-            RobotPosition robotPosition, Team team, Telemetry globalTelemetry) {
+    public ShotHandler(RobotPosition robotPosition, Team team, Telemetry globalTelemetry) {
         this.robotPosition = robotPosition;
         this.team = team;
         this.globalTelemetry = globalTelemetry;

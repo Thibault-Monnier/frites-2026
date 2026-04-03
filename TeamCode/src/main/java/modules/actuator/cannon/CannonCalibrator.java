@@ -4,9 +4,9 @@ import static config.CannonConfig.CALIBRATION_SPEED_CHANGE_OFFSET;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import utils.Distance;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import utils.Distance;
 
 import java.util.HashMap;
 import java.util.Map;
