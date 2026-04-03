@@ -13,7 +13,7 @@ import modules.sensor.GoBildaPinpointDriver;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import utils.Pose2D;
+import utils.math.Pose2D;
 
 public final class OdometryHandler {
     public final GoBildaPinpointDriver driver;

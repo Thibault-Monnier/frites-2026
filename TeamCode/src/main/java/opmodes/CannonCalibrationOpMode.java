@@ -11,7 +11,7 @@ import logic.field.PlayingField;
 import modules.actuator.cannon.CannonCalibrator;
 import modules.sensor.GamepadController;
 
-import utils.Distance;
+import utils.math.Distance;
 
 public class CannonCalibrationOpMode extends OpModeBase {
     public CannonCalibrationOpMode(Team team) {

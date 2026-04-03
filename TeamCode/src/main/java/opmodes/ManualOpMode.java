@@ -11,7 +11,7 @@ import logic.field.PlayingField;
 
 import modules.sensor.GamepadController;
 
-import utils.Angle;
+import utils.math.Angle;
 
 @Config
 public class ManualOpMode extends OpModeBase {

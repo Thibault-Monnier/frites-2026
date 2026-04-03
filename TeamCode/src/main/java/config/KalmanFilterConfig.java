@@ -3,8 +3,8 @@ package config;
 import com.acmerobotics.dashboard.config.Config;
 import com.bylazar.configurables.annotations.Configurable;
 
-import utils.Angle;
-import utils.Distance;
+import utils.math.Angle;
+import utils.math.Distance;
 
 @Config
 @Configurable

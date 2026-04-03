@@ -18,8 +18,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
-import utils.Pose2D;
-import utils.Position2D;
+import utils.math.Pose2D;
+import utils.math.Position2D;
 
 import java.util.List;
 import java.util.stream.Collectors;

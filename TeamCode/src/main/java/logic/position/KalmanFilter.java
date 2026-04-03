@@ -4,9 +4,9 @@ import android.util.Pair;
 
 import config.KalmanFilterConfig;
 
-import utils.Angle;
-import utils.Distance;
-import utils.Pose2D;
+import utils.math.Angle;
+import utils.math.Distance;
+import utils.math.Pose2D;
 
 public class KalmanFilter {
     public Pose2D pose;

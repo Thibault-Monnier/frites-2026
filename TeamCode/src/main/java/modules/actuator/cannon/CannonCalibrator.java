@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import utils.Distance;
+import utils.math.Distance;
 
 import java.util.HashMap;
 import java.util.Map;

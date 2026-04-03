@@ -5,7 +5,7 @@ import com.bylazar.configurables.annotations.Configurable;
 
 import modules.sensor.GoBildaPinpointDriver;
 
-import utils.Distance;
+import utils.math.Distance;
 
 @Config
 @Configurable

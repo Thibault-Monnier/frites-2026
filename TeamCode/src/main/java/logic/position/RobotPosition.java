@@ -11,11 +11,11 @@ import logic.field.PlayingField;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import utils.Angle;
-import utils.Pose2D;
-import utils.Position2D;
 import utils.TimeHelpers;
-import utils.Vector2D;
+import utils.math.Angle;
+import utils.math.Pose2D;
+import utils.math.Position2D;
+import utils.math.Vector2D;
 
 public class RobotPosition {
     private static RobotPosition instance;

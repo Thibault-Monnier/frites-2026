@@ -1,7 +1,7 @@
 package logic.field;
 
-import utils.Distance;
-import utils.Position2D;
+import utils.math.Distance;
+import utils.math.Position2D;
 
 public class FieldElement {
     public final Position2D position;
