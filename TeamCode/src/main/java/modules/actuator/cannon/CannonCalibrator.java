@@ -4,7 +4,7 @@ import static config.CannonConfig.CALIBRATION_SPEED_CHANGE_OFFSET;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import math.Distance;
+import utils.Distance;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 

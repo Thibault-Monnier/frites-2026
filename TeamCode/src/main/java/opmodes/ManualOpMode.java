@@ -9,7 +9,7 @@ import logic.Movement.Macro;
 import logic.Team;
 import logic.field.PlayingField;
 
-import math.Angle;
+import utils.Angle;
 
 import modules.sensor.GamepadController;
 

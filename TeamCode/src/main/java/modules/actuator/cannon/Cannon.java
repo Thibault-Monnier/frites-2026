@@ -12,7 +12,7 @@ import config.HardwareConfig;
 
 import logic.pidf.PIDFLControllerMotor;
 
-import math.Distance;
+import utils.Distance;
 
 import modules.actuator.RobotActuatorModule;
 

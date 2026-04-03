@@ -3,10 +3,10 @@ package config;
 import com.acmerobotics.dashboard.config.Config;
 import com.bylazar.configurables.annotations.Configurable;
 
-import math.Angle;
-import math.Distance;
-import math.Pose2D;
-import math.Position2D;
+import utils.Angle;
+import utils.Distance;
+import utils.Pose2D;
+import utils.Position2D;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;

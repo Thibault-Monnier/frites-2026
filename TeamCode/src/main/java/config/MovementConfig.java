@@ -5,8 +5,8 @@ import com.bylazar.configurables.annotations.Configurable;
 
 import logic.pidf.PIDFLCoefficients;
 
-import math.Angle;
-import math.Distance;
+import utils.Angle;
+import utils.Distance;
 
 @Config
 @Configurable

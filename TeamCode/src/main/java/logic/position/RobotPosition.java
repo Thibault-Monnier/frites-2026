@@ -8,11 +8,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import logic.Team;
 import logic.field.PlayingField;
 
-import math.Angle;
-import math.Pose2D;
-import math.Position2D;
-import math.TimeHelpers;
-import math.Vector2D;
+import utils.Angle;
+import utils.Pose2D;
+import utils.Position2D;
+import utils.TimeHelpers;
+import utils.Vector2D;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;

@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import logic.Team;
 import logic.field.PlayingField;
 
-import math.Distance;
-import math.Position2D;
+import utils.Distance;
+import utils.Position2D;
 
 import modules.sensor.GamepadController;
 

@@ -8,7 +8,7 @@ import config.ManualOpModeMappings;
 import logic.Team;
 import logic.field.PlayingField;
 
-import math.Distance;
+import utils.Distance;
 
 import modules.actuator.cannon.CannonCalibrator;
 import modules.sensor.GamepadController;

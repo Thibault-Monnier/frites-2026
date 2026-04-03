@@ -13,8 +13,8 @@ import config.HardwareConfig;
 
 import logic.field.PlayingField;
 
-import math.Pose2D;
-import math.Position2D;
+import utils.Pose2D;
+import utils.Position2D;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;

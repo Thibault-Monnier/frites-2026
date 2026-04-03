@@ -1,6 +1,6 @@
 package logic.action;
 
-import math.TimeHelpers;
+import utils.TimeHelpers;
 
 public class DelayAction implements Action {
     private final double delay;

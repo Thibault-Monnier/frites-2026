@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import config.HardwareConfig;
 
-import math.Pose2D;
+import utils.Pose2D;
 
 import modules.sensor.GoBildaPinpointDriver;
 

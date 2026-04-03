@@ -4,10 +4,10 @@ import config.FieldConfig;
 
 import logic.Team;
 
-import math.Angle;
-import math.Distance;
-import math.Pose2D;
-import math.Position2D;
+import utils.Angle;
+import utils.Distance;
+import utils.Pose2D;
+import utils.Position2D;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
