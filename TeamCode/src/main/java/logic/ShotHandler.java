@@ -45,8 +45,7 @@ public class ShotHandler {
 
     /** Gets the magnitude of the computed shot vector. Should be called after update(). */
     public Distance getShotMagnitude() {
-        return Distance.fromMeters(1);
-        // return computedShotVector.magnitude();
+        return computedShotVector.magnitude();
     }
 
     /** Gets the angle of the computed shot vector. Should be called after update(). */
