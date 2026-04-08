@@ -26,7 +26,7 @@ public class HardwareConfig {
     public static final String DISTANCE_SENSOR_RIGHT_ID = "distance_right";
     public static final String DISTANCE_SENSOR_INTAKE_LEFT_ID = "distance_intake_left";
     public static final String DISTANCE_SENSOR_INTAKE_RIGHT_ID = "distance_intake_right";
-    public static final String NEOPIXEL_ID = "neopixel";
+    public static final String RGB_LIGHT_ID = "rgb_light";
 
     public static double SHOOTER_MAX_VELOCITY = 2450.0;
 
