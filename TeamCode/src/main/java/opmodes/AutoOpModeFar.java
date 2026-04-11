@@ -16,7 +16,6 @@ public class AutoOpModeFar extends OpModeBase {
     private Paths paths;
 
     private boolean pathActive = false;
-    private double pathStartTime = -1000;
     private int nbShots = 0;
 
     enum AutoState {
@@ -69,7 +68,7 @@ public class AutoOpModeFar extends OpModeBase {
         paths = new Paths(follower, team.isBlue());
 
         TelemetryHandler.addData(
-                "Pose start", PlayingField.startPose(team).toPedropathingPose().toString());
+                "Pose start", PlayingField.startPose(Team.RED).toPedropathingPose().toString());
     }
 
     @Override
@@ -83,7 +82,7 @@ public class AutoOpModeFar extends OpModeBase {
 
         execute();
 
-        apply(true); // Pedro Pathing controls drive motors
+        apply(false); // Pedro Pathing controls drive motors
         log();
     }
 
@@ -94,12 +93,12 @@ public class AutoOpModeFar extends OpModeBase {
 
     @Override
     protected void log() {
+        super.log();
+
         TelemetryHandler.addData("State", state);
         TelemetryHandler.addData("X", follower.getPose().getX());
         TelemetryHandler.addData("Y", follower.getPose().getY());
         TelemetryHandler.addData("Heading", follower.getPose().getHeading());
-
-        super.log();
     }
 
     private void execute() {
@@ -135,7 +134,7 @@ public class AutoOpModeFar extends OpModeBase {
                 runPath(
                         paths.CollectBottomRow,
                         AutoState.MOVE_TO_SHOOT_AFTER_COLLECT_BOTTOM_ROW,
-                        false);
+                        true);
                 break;
             case MOVE_TO_SHOOT_AFTER_COLLECT_BOTTOM_ROW:
                 intake();
@@ -156,13 +155,9 @@ public class AutoOpModeFar extends OpModeBase {
             intake.off();
             follower.followPath(path, slow ? 0.6 : 1, true);
             pathActive = true;
-            pathStartTime = runtime.milliseconds();
         }
 
-        if (!follower.isBusy()
-                || follower.isRobotStuck()
-                || runtime.milliseconds() - pathStartTime > 4000) {
-            follower.breakFollowing();
+        if (!follower.isBusy()) {
             pathActive = false;
             state = nextState;
             intake.off();
@@ -174,15 +169,15 @@ public class AutoOpModeFar extends OpModeBase {
 
         intake.on();
 
-        boolean stillShooting = cannonBuffers.shootContinue(true, true);
+        boolean done = cannonBuffers.shootContinue(true, 0.5);
 
-        if (!stillShooting) {
+        if (done) {
             cannonBuffers.shootReset();
             nbShots++;
 
-            if (nbShots == 1 || nbShots == 2)
+            if (nbShots == 1 || nbShots == 2 || nbShots == 3)
                 state = AutoState.ALIGN_COLLECT_HUMAN_PLAYER;
-            else if (nbShots == 3) {
+            else if (nbShots == 4) {
                 state = AutoState.ALIGN_COLLECT_BOTTOM_ROW;
             } else state = AutoState.LEAVE;
         }

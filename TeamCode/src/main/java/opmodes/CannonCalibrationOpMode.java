@@ -78,7 +78,7 @@ public class CannonCalibrationOpMode extends OpModeBase {
 
         if ((isPressActive(ManualOpModeMappings.SHOOT) && cannon.isReadyToShoot())
                 || isPressActive(ManualOpModeMappings.FORCE_SHOOT)) {
-            cannonBuffers.shootContinue(true, cannon.isReadyToShoot());
+            cannonBuffers.shootContinue(true);
             intake.on();
         } else {
             cannonBuffers.shootDontContinue();
