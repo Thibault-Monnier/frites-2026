@@ -106,8 +106,7 @@ public class ManualOpMode extends OpModeBase {
         if (allowedToShoot
                 && ((isPressActive(ManualOpModeMappings.SHOOT) && cannon.isReadyToShoot())
                         || (isPressActive(ManualOpModeMappings.FORCE_SHOOT) && !isChildMode))) {
-            // If red, start right
-            cannonBuffers.shootContinue(team.isBlue());
+            cannonBuffers.shootContinue();
             intake.on();
         } else {
             cannonBuffers.shootDontContinue();

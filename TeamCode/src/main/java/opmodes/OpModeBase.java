@@ -19,7 +19,7 @@ import logic.position.RobotPosition;
 
 import modules.actuator.cannon.Cannon;
 import modules.actuator.cannonBuffer.CannonBuffer;
-import modules.actuator.cannonBuffer.CannonBuffersHandler;
+import modules.actuator.cannonBuffer.CannonBufferHandler;
 import modules.actuator.intake.Intake;
 import modules.sensor.ArtifactMonitor;
 import modules.sensor.BatteryMonitor;
@@ -52,7 +52,7 @@ public abstract class OpModeBase extends LinearOpMode {
     protected GamepadController gamepadController;
 
     protected Cannon cannon;
-    protected CannonBuffersHandler cannonBuffers;
+    protected CannonBufferHandler cannonBuffers;
 
     protected Intake intake;
 
@@ -127,7 +127,7 @@ public abstract class OpModeBase extends LinearOpMode {
 
         CannonBuffer cannonBuffer =
                 new CannonBuffer(cannonBufferMotor, DcMotorSimple.Direction.REVERSE);
-        this.cannonBuffers = new CannonBuffersHandler(cannonBuffer);
+        this.cannonBuffers = new CannonBufferHandler(cannonBuffer);
 
         this.intake = new Intake(intake);
     }
