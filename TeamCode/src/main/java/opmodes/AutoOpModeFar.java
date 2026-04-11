@@ -55,7 +55,7 @@ public class AutoOpModeFar extends OpModeBase {
             }
             prevTime = time;
 
-            runStep();
+            //runStep();
         }
 
         runStop();
@@ -77,31 +77,16 @@ public class AutoOpModeFar extends OpModeBase {
         cannon.on();
     }
 
-    private void runStep() {
+   /* private void runStep() {
         update();
 
         execute();
 
         apply(false); // Pedro Pathing controls drive motors
         log();
-    }
+    }*/
 
-    @Override
-    protected void update() {
-        super.update();
-    }
-
-    @Override
-    protected void log() {
-        super.log();
-
-        TelemetryHandler.addData("State", state);
-        TelemetryHandler.addData("X", follower.getPose().getX());
-        TelemetryHandler.addData("Y", follower.getPose().getY());
-        TelemetryHandler.addData("Heading", follower.getPose().getHeading());
-    }
-
-    private void execute() {
+    /*private void execute() {
         switch (state) {
             case MOVE_TO_SHOOT_1:
                 intake();
@@ -148,45 +133,7 @@ public class AutoOpModeFar extends OpModeBase {
                 cannonBuffers.off();
                 break;
         }
-    }
-
-    private void runPath(PathChain path, AutoState nextState, boolean slow) {
-        if (!pathActive) {
-            intake.off();
-            follower.followPath(path, slow ? 0.6 : 1, true);
-            pathActive = true;
-        }
-
-        if (!follower.isBusy()) {
-            pathActive = false;
-            state = nextState;
-            intake.off();
-        }
-    }
-
-    private void runShootCycle() {
-        if (!cannon.isReadyToShoot()) return;
-
-        intake.on();
-
-        boolean done = cannonBuffers.shootContinue(true, 0.5);
-
-        if (done) {
-            cannonBuffers.shootReset();
-            nbShots++;
-
-            if (nbShots == 1 || nbShots == 2 || nbShots == 3)
-                state = AutoState.ALIGN_COLLECT_HUMAN_PLAYER;
-            else if (nbShots == 4) {
-                state = AutoState.ALIGN_COLLECT_BOTTOM_ROW;
-            } else state = AutoState.LEAVE;
-        }
-    }
-
-    private void intake() {
-        cannonBuffers.reverse();
-        intake.on();
-    }
+    }*/
 
     public static class Paths {
         public PathChain MoveToShoot1,
