@@ -4,7 +4,6 @@ import static config.CannonConfig.SHOOT_BALLS_AMOUNT;
 import static config.CannonConfig.SHOOT_DELAY;
 
 import modules.actuator.RobotActuatorModule;
-
 import utils.TimeHelpers;
 
 import java.util.HashMap;
@@ -13,103 +12,74 @@ public class CannonBuffersHandler implements RobotActuatorModule {
     private final CannonBuffer buffer;
 
     private ShootingStage shootingStage = ShootingStage.IDLE;
-    private double lastRoundStartTime = 0.0;
 
-    private boolean lastShotLeft = true;
-    private int shotsFired = 0;
+    // Duration to keep buffers on while shooting (seconds)
+    private static final double SHOOT_DURATION_SEC = 0.3;
+
+    // Timer
+    private double shootingStartTime = 0;
+    private int ballsShot = 0;
 
     public CannonBuffersHandler(CannonBuffer buffer) {
         this.buffer = buffer;
     }
 
-    /// Sets both buffers on.
     public void on() {
         buffer.on();
     }
 
-    /// Sets both buffers off.
     public void off() {
         buffer.off();
     }
 
-    /// Reverses both buffers.
     public void reverse() {
         buffer.reverse();
     }
 
-    /// Continues current round or shoots next round if done.
-    /// Returns true if the shooting sequence is finished, false otherwise.
-    public boolean shootContinue(boolean startLeft, double shootDelay) {
+    public boolean shootContinue(boolean startLeft, boolean isReady) {
+        double currentTime = TimeHelpers.getRuntime();
 
         switch (shootingStage) {
             case IDLE:
-                lastShotLeft = !startLeft;
-                shootingStage = ShootingStage.SHOOTING;
-            // fall through
-            case SHOOTING:
-                if (isRoundFinished(shootDelay)) {
-                    nextShoot();
+                ballsShot = 0;
+                shootingStage = ShootingStage.WAITING;
+                break;
+
+            case WAITING:
+                buffer.off();
+                if (isReady) {
+                    shootingStage = ShootingStage.SHOOTING;
+                    shootingStartTime = currentTime;
+                    buffer.on();
                 }
+                break;
 
-                if (shotsFired >= SHOOT_BALLS_AMOUNT) both();
-                else if (lastShotLeft) leftOnly();
-                else rightOnly();
-
-                return shotsFired > SHOOT_BALLS_AMOUNT;
-
-            default:
-                throw new IllegalStateException("Unexpected value: " + shootingStage);
+            case SHOOTING:
+                if (currentTime - shootingStartTime >= SHOOT_DURATION_SEC) {
+                    buffer.off();
+                    shootingStage = ShootingStage.WAITING;
+                    ballsShot++;
+                } else {
+                    buffer.on();
+                }
+                if (ballsShot >= 2) {
+                    shootingStage = ShootingStage.IDLE;
+                }
         }
+
+        return shootingStage != ShootingStage.IDLE;
     }
 
-    /// Continues current round or shoots next round if done.
-    /// Returns true if the shooting sequence is finished, false otherwise.
-    ///
-    /// @param startLeft Whether to start shooting with the left or right buffer.
-    public boolean shootContinue(boolean startLeft) {
-        return shootContinue(startLeft, SHOOT_DELAY);
-    }
-
-    /// Continues current round or stops if done.
-    public void shootDontContinue() {
-        if (isRoundFinished(SHOOT_DELAY)) {
-            off();
-        }
-    }
-
-    private boolean isRoundFinished(double shootDelay) {
-        double time = TimeHelpers.getRuntime();
-        return time - lastRoundStartTime >= shootDelay;
-    }
-
-    /// Resets the shooting stage and turns both buffers off.
     public void shootReset() {
-        lastRoundStartTime = 0.0;
         shootingStage = ShootingStage.IDLE;
-        shotsFired = 0;
-        off();
+        buffer.off();
     }
 
-    public int getShotsFired() {
-        return shotsFired;
-    }
-
-    private void nextShoot() {
-        lastRoundStartTime = TimeHelpers.getRuntime();
-        lastShotLeft = !lastShotLeft;
-        shotsFired++;
-    }
-
-    private void leftOnly() {
-        buffer.on();
-    }
-
-    private void rightOnly() {
-        buffer.on();
-    }
-
-    private void both() {
-        buffer.on();
+    public void shootDontContinue() {
+        if (shootingStage == ShootingStage.SHOOTING) {
+            shootingStage = ShootingStage.WAITING;
+            buffer.off();
+        }
     }
 
     @Override
@@ -122,7 +92,6 @@ public class CannonBuffersHandler implements RobotActuatorModule {
         HashMap<String, Object> state = new HashMap<>();
         state.put("leftBuffer", buffer.getCurrentState());
         state.put("shootingStage", shootingStage.name());
-        state.put("lastRoundStartTime", lastRoundStartTime);
         return state;
     }
 
@@ -134,6 +103,7 @@ public class CannonBuffersHandler implements RobotActuatorModule {
 
     enum ShootingStage {
         IDLE,
+        WAITING,
         SHOOTING
     }
 }

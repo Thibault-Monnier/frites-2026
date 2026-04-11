@@ -108,7 +108,7 @@ public class Cannon implements RobotActuatorModule {
     public boolean isReadyToShoot() {
         return PIDFControllerLeft.isStableAtTarget(ERROR_MARGIN, STABLE_THRESHOLD)
                 && PIDFControllerRight.isStableAtTarget(ERROR_MARGIN, STABLE_THRESHOLD)
-                && getAverageVelocity() >= 100; // Not stopped
+                && getAverageVelocity() >= 50; // Not stopped
     }
 
     protected double computeVelocity(Distance horizontalShootingDistance) {

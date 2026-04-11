@@ -18,6 +18,8 @@ public class CannonBuffer implements RobotActuatorModule {
     public CannonBuffer(DcMotor motor, DcMotorSimple.Direction direction) {
         this.motor = motor;
         this.motor.setDirection(direction);
+
+        this.motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     @Override

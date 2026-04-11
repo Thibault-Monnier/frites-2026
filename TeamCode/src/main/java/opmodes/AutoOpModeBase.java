@@ -12,6 +12,7 @@ import logic.action.DelayAction;
 import logic.action.SimpleAction;
 import logic.field.PlayingField;
 
+import opmodes.OpModeBase;
 import utils.TelemetryHandler;
 
 public abstract class AutoOpModeBase extends OpModeBase {
@@ -123,8 +124,7 @@ public abstract class AutoOpModeBase extends OpModeBase {
             intake.on();
 
             // If red, start right
-            boolean done = cannonBuffers.shootContinue(team.isBlue(), 0.5);
-
+            boolean done = cannonBuffers.shootContinue(team.isBlue(), cannon.isReadyToShoot());
             if (done) cannonBuffers.shootReset();
 
             return done;
