@@ -1,12 +1,15 @@
 package modules.actuator.drive;
 
 import static config.MovementConfig.BACK_LEFT_COEFF;
+import static config.MovementConfig.BACK_LEFT_DIRECTION;
 import static config.MovementConfig.BACK_RIGHT_COEFF;
+import static config.MovementConfig.BACK_RIGHT_DIRECTION;
 import static config.MovementConfig.FRONT_LEFT_COEFF;
+import static config.MovementConfig.FRONT_LEFT_DIRECTION;
 import static config.MovementConfig.FRONT_RIGHT_COEFF;
+import static config.MovementConfig.FRONT_RIGHT_DIRECTION;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import modules.actuator.RobotActuatorModule;
 
@@ -32,10 +35,10 @@ public class MecanumDrive implements RobotActuatorModule {
         this.backLeftDrive = BL;
         this.backRightDrive = BR;
 
-        frontLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftDrive.setDirection(FRONT_LEFT_DIRECTION);
+        frontRightDrive.setDirection(FRONT_RIGHT_DIRECTION);
+        backLeftDrive.setDirection(BACK_LEFT_DIRECTION);
+        backRightDrive.setDirection(BACK_RIGHT_DIRECTION);
 
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

@@ -2,6 +2,7 @@ package config;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.bylazar.configurables.annotations.Configurable;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import logic.pidf.PIDFLCoefficients;
 
@@ -15,6 +16,11 @@ public class MovementConfig {
     public static double FRONT_RIGHT_COEFF = 1;
     public static double BACK_LEFT_COEFF = 1;
     public static double BACK_RIGHT_COEFF = 1;
+
+    public static DcMotorSimple.Direction FRONT_LEFT_DIRECTION = DcMotorSimple.Direction.FORWARD;
+    public static DcMotorSimple.Direction FRONT_RIGHT_DIRECTION = DcMotorSimple.Direction.REVERSE;
+    public static DcMotorSimple.Direction BACK_LEFT_DIRECTION = DcMotorSimple.Direction.FORWARD;
+    public static DcMotorSimple.Direction BACK_RIGHT_DIRECTION = DcMotorSimple.Direction.REVERSE;
 
     public static double SPEED_MULTIPLIER = 1.0;
     public static double SLOW_SPEED_MULTIPLIER = 0.5;

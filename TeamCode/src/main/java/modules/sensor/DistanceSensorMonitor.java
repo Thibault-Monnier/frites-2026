@@ -39,7 +39,7 @@ public class DistanceSensorMonitor {
         int count = 0;
 
         final int maxBackDist = 80;
-        final int maxIntakeDist = 105;
+        final int maxIntakeDist = 110;
         if (left.getDistance(DistanceUnit.MM) < maxBackDist) count++;
         if (right.getDistance(DistanceUnit.MM) < maxBackDist) count++;
         if (intake_left1.getDistance(DistanceUnit.MM) < maxIntakeDist
