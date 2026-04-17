@@ -22,7 +22,7 @@ public class CannonConfig {
     public static Vector2D CANNON_RELATIVE_POSITION =
             new Vector2D(Distance.fromCentimeters(-15.0), Distance.fromCentimeters(0.0));
 
-    public static double SHOOT_DELAY = 0.1;
+    public static double SHOOT_DELAY = 0.075;
     public static int SHOOT_BALLS_AMOUNT = 2;
 
     public static double CALIBRATION_SPEED_CHANGE_OFFSET = 25.0;
