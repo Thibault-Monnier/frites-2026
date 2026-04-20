@@ -22,7 +22,7 @@ import java.util.Random;
         name = GroupConstants.DEBUGGER_MODES_GROUP + ": Go To Position",
         group = GroupConstants.DEBUGGER_MODES_GROUP)
 public class GoToPositionOpMode extends OpModeBase {
-    private static final Distance MIN_WALL_DISTANCE = new Distance(DistanceUnit.CM, 50);
+    private static final Distance MIN_WALL_DISTANCE = new Distance(DistanceUnit.CM, 75);
 
     private final Random random = new Random();
 
