@@ -4,11 +4,11 @@ import android.util.Pair;
 
 import config.KalmanFilterConfig;
 
-import utils.math.Angle;
-import utils.math.Distance;
-import utils.math.Pose2D;
-import utils.math.Transform2D;
-import utils.math.Vector2D;
+import utils.geometry.Angle;
+import utils.geometry.Distance;
+import utils.geometry.Pose2D;
+import utils.geometry.Transform2D;
+import utils.geometry.Vector2D;
 
 public class KalmanFilter {
     public Pose2D pose;

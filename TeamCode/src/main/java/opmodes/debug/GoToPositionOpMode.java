@@ -13,8 +13,8 @@ import opmodes.OpModeBase;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import utils.TelemetryHandler;
-import utils.math.Distance;
-import utils.math.Position2D;
+import utils.geometry.Distance;
+import utils.geometry.Position2D;
 
 import java.util.Random;
 

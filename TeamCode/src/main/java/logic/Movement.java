@@ -24,10 +24,10 @@ import modules.actuator.drive.MecanumDrive;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import utils.TelemetryHandler;
-import utils.math.Angle;
-import utils.math.Pose2D;
-import utils.math.Position2D;
-import utils.math.Vector2D;
+import utils.geometry.Angle;
+import utils.geometry.Pose2D;
+import utils.geometry.Position2D;
+import utils.geometry.Vector2D;
 
 import java.util.HashMap;
 

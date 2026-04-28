@@ -12,12 +12,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import utils.TelemetryHandler;
 import utils.TimeHelpers;
-import utils.math.Angle;
-import utils.math.Pose2D;
-import utils.math.Position2D;
-import utils.math.Transform2D;
-import utils.math.Vector2D;
-import utils.math.Velocity2D;
+import utils.geometry.Angle;
+import utils.geometry.Pose2D;
+import utils.geometry.Position2D;
+import utils.geometry.Transform2D;
+import utils.geometry.Vector2D;
+import utils.geometry.Velocity2D;
 
 public class RobotPosition {
     private static RobotPosition instance;

@@ -5,7 +5,7 @@ import com.bylazar.configurables.annotations.Configurable;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import utils.math.Distance;
+import utils.geometry.Distance;
 
 @Config
 @Configurable

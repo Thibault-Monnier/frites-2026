@@ -6,10 +6,10 @@ import logic.Team;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import utils.math.Angle;
-import utils.math.Distance;
-import utils.math.Pose2D;
-import utils.math.Position2D;
+import utils.geometry.Angle;
+import utils.geometry.Distance;
+import utils.geometry.Pose2D;
+import utils.geometry.Position2D;
 
 public class PlayingField {
     private PlayingField() {

@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import logic.pidf.PIDFLCoefficients;
 
-import utils.math.Angle;
-import utils.math.Distance;
+import utils.geometry.Angle;
+import utils.geometry.Distance;
 
 @Config
 @Configurable

@@ -1,4 +1,4 @@
-package utils.math;
+package utils.geometry;
 
 import androidx.annotation.NonNull;
 

@@ -11,7 +11,7 @@ import config.HardwareConfig;
 
 import modules.sensor.GoBildaPinpointDriver;
 
-import utils.math.Pose2D;
+import utils.geometry.Pose2D;
 
 public final class OdometryHandler {
     public final GoBildaPinpointDriver driver;

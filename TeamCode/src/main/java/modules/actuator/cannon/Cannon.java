@@ -17,7 +17,7 @@ import modules.actuator.RobotActuatorModule;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import utils.TelemetryHandler;
-import utils.math.Distance;
+import utils.geometry.Distance;
 
 import java.util.HashMap;
 

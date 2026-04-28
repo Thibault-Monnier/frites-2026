@@ -8,9 +8,9 @@ import logic.field.Artifact;
 import logic.field.PlayingField;
 import logic.position.RobotPosition;
 
-import utils.math.Pose2D;
-import utils.math.Position2D;
-import utils.math.Vector2D;
+import utils.geometry.Pose2D;
+import utils.geometry.Position2D;
+import utils.geometry.Vector2D;
 
 public class DriveActions {
     private final Movement drive;

@@ -6,10 +6,10 @@ import com.bylazar.configurables.annotations.Configurable;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import utils.math.Angle;
-import utils.math.Distance;
-import utils.math.Pose2D;
-import utils.math.Position2D;
+import utils.geometry.Angle;
+import utils.geometry.Distance;
+import utils.geometry.Pose2D;
+import utils.geometry.Position2D;
 
 @Config
 @Configurable

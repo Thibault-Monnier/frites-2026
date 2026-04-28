@@ -12,7 +12,7 @@ import modules.actuator.cannon.CannonCalibrator;
 import modules.sensor.GamepadController;
 
 import utils.TelemetryHandler;
-import utils.math.Distance;
+import utils.geometry.Distance;
 
 public class CannonCalibrationOpMode extends OpModeBase {
     public CannonCalibrationOpMode(Team team) {

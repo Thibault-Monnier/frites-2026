@@ -5,7 +5,7 @@ import static config.CannonConfig.CALIBRATION_SPEED_CHANGE_OFFSET;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import utils.TelemetryHandler;
-import utils.math.Distance;
+import utils.geometry.Distance;
 
 import java.util.HashMap;
 import java.util.Map;
