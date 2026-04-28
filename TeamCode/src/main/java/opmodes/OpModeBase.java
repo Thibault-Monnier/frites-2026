@@ -139,7 +139,7 @@ public abstract class OpModeBase extends LinearOpMode {
 
     protected void runStop() {
         robotPosition.stop();
-        artifactMonitor.stop();
+        //artifactMonitor.stop();
     }
 
     protected void update() {

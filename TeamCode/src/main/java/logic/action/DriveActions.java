@@ -35,7 +35,7 @@ public class DriveActions {
     public Action driveToLeavePose() {
         return () -> {
             Pose2D leavePose = PlayingField.autoModeLeavePose(team);
-            return drive.translateToPosition(leavePose.toPosition2D())
+            return drive.translateToPosition(leavePose.getPosition())
                     && drive.turnTowardsHeading(leavePose.getHeading());
         };
     }
@@ -43,14 +43,14 @@ public class DriveActions {
     public Action driveToArtifactRowEntryPose(Artifact.Row row) {
         return () -> {
             Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
-            return drive.translateToPosition(entryPose.toPosition2D())
+            return drive.translateToPosition(entryPose.getPosition())
                     && drive.turnTowardsHeading(entryPose.getHeading());
         };
     }
 
     public Action collectArtifactsFromRow(Artifact.Row row) {
         return () -> {
-            Position2D entryPose = PlayingField.artifactRowEntryPose(team, row).toPosition2D();
+            Position2D entryPose = PlayingField.artifactRowEntryPose(team, row).getPosition();
 
             Vector2D forwardVector =
                     new Vector2D(
@@ -64,7 +64,7 @@ public class DriveActions {
     public Action driveBackToArtifactRowEntryPose(Artifact.Row row) {
         return () -> {
             Pose2D entryPose = PlayingField.artifactRowEntryPose(team, row);
-            return drive.translateToPosition(entryPose.toPosition2D());
+            return drive.translateToPosition(entryPose.getPosition());
         };
     }
 }

@@ -15,7 +15,9 @@ import utils.TimeHelpers;
 import utils.math.Angle;
 import utils.math.Pose2D;
 import utils.math.Position2D;
+import utils.math.Transform2D;
 import utils.math.Vector2D;
+import utils.math.Velocity2D;
 
 public class RobotPosition {
     private static RobotPosition instance;
@@ -96,9 +98,9 @@ public class RobotPosition {
             TelemetryHandler.addLine("Computed pose has NaN values, using previous pose");
             odometryPose = previousPose;
         }
-        Pose2D odometryVelocity = odometryPose.subtract(pose);
+        Transform2D odometryDelta = odometryPose.subtract(pose);
 
-        pose = kalmanFilter.predict(odometryVelocity);
+        pose = kalmanFilter.predict(odometryDelta);
         poseTimeSec = TimeHelpers.getRuntime();
 
         if (limelightHasNew) {
@@ -108,7 +110,7 @@ public class RobotPosition {
             odometryHandler.setPose(pose);
         } else TelemetryHandler.addLine("Using pose from Odometry");
 
-        TelemetryHandler.addData("Odometry velocity", odometryVelocity.toString());
+        TelemetryHandler.addData("Odometry displacement", odometryDelta.toString());
         TelemetryHandler.addData("Computed pose", pose.toString());
         renderFieldOverlayInDashboard();
     }
@@ -120,7 +122,7 @@ public class RobotPosition {
 
     /// Gets the current robot position as a Position2D
     public Position2D getPosition() {
-        return pose.toPosition2D();
+        return pose.getPosition();
     }
 
     /// Gets the current robot heading as an Angle
@@ -128,11 +130,10 @@ public class RobotPosition {
         return pose.getHeading();
     }
 
-    /// Gets the current robot velocity as a Pose2D, in displacement / second
-    public Pose2D getPoseVelocity() {
-        Pose2D displacement = pose.subtract(previousPose);
+    /// Gets the current robot velocity
+    public Velocity2D getPoseVelocity() {
         double time = poseTimeSec - previousPoseTimeSec;
-        return displacement.scale(1 / time);
+        return new Velocity2D(previousPose, pose, time);
     }
 
     /// Gets the current robot velocity as a Pedropathing Pose, in displacement / second
@@ -145,15 +146,13 @@ public class RobotPosition {
         return displacement.scale(1 / time);
     }
 
-    /// Gets the current velocity of a point relative to the robot as a Vector2D, in distance /
-    /// second
-    public Vector2D getPointVelocity(Vector2D relativePosition) {
+    /// Gets the current velocity of a point relative to the robot
+    public Velocity2D getPointVelocity(Vector2D relativePosition) {
         Position2D previousPointPos = previousPose.addRelative(relativePosition);
         Position2D currentPointPos = pose.addRelative(relativePosition);
 
-        Vector2D displacement = currentPointPos.subtract(previousPointPos).toVector2D();
         double time = poseTimeSec - previousPoseTimeSec;
-        return displacement.scale(1 / time);
+        return new Velocity2D(previousPointPos, currentPointPos, time);
     }
 
     public LimelightHandler getLimelightHandler() {

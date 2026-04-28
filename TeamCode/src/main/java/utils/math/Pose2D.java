@@ -13,39 +13,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.Locale;
 
-/** Pose2D represents the position and heading of an object in 2D space. */
 public class Pose2D {
-    private final double x;
-    private final double y;
-    private final DistanceUnit distanceUnit;
-    private final double heading;
-    private final AngleUnit headingUnit;
+    private final Position2D position;
+    private final Angle heading;
 
-    /**
-     * Creates a new Pose2D object.
-     *
-     * @param distanceUnit the unit of distance for both x and y
-     * @param x the x position
-     * @param y the y position
-     * @param headingUnit the unit of heading
-     * @param heading the heading
-     */
     public Pose2D(
             DistanceUnit distanceUnit, double x, double y, AngleUnit headingUnit, double heading) {
-        this.x = x;
-        this.y = y;
-        this.distanceUnit = distanceUnit;
-        this.heading = heading;
-        this.headingUnit = headingUnit;
+        this.position = new Position2D(distanceUnit, x, y);
+        this.heading = new Angle(headingUnit, heading);
     }
 
-    /**
-     * Creates a new Pose2D object from two Distance objects and an Angle object.
-     *
-     * @param x the x position as a Distance object
-     * @param y the y position as a Distance object
-     * @param heading the heading as an Angle object
-     */
     public Pose2D(Distance x, Distance y, Angle heading) {
         this(
                 DistanceUnit.MM,
@@ -55,152 +32,78 @@ public class Pose2D {
                 heading.getValue(AngleUnit.RADIANS));
     }
 
-    /** Creates a new default Pose2D object at (0, 0) with 0 heading */
+    public Pose2D(Position2D position, Angle heading) {
+        this(position.getX(), position.getY(), heading);
+    }
+
     public Pose2D() {
         this(DistanceUnit.MM, 0, 0, AngleUnit.RADIANS, 0);
     }
 
-    /**
-     * This gets X in the desired distance unit
-     *
-     * @param unit the desired distance unit
-     * @return the X member converted to the desired distance unit
-     */
+    public Position2D getPosition() {
+        return position;
+    }
+
+    /// The x component converted to the desired distance unit
     public double getX(DistanceUnit unit) {
-        return unit.fromUnit(this.distanceUnit, x);
+        return position.getX(unit);
     }
 
-    /**
-     * This gets X as a Distance object
-     *
-     * @return the X member as a Distance object
-     */
+    /// The x component as a Distance object
     public Distance getX() {
-        return new Distance(distanceUnit, x);
+        return position.getX();
     }
 
-    /**
-     * This gets the Y in the desired distance unit
-     *
-     * @param unit the desired distance unit
-     * @return the Y member converted to the desired distance unit
-     */
+    /// The y component converted to the desired distance unit
     public double getY(DistanceUnit unit) {
-        return unit.fromUnit(this.distanceUnit, y);
+        return position.getY(unit);
     }
 
-    /**
-     * This gets Y as a Distance object
-     *
-     * @return the Y member as a Distance object
-     */
+    /// The y component as a Distance object
     public Distance getY() {
-        return new Distance(distanceUnit, y);
+        return position.getY();
     }
 
-    /**
-     * This gets the heading in the desired distance unit Be aware that this normalizes the angle to
-     * be between -PI and PI for RADIANS or between -180 and 180 for DEGREES
-     *
-     * @param unit the desired distance unit
-     * @return the heading converted to the desired Angle Unit
-     */
+    /// The heading converted to the desired angle unit
     public double getHeading(AngleUnit unit) {
-        return unit.fromUnit(this.headingUnit, heading);
+        return heading.getValue(unit);
     }
 
-    /**
-     * This gets the heading as an Angle object
-     *
-     * @return the heading as an Angle object
-     */
+    /// The heading as an Angle object
     public Angle getHeading() {
-        return new Angle(headingUnit, heading);
+        return heading;
     }
 
-    /**
-     * This checks if any of the members are NaN
-     *
-     * @return true if any member is NaN, false otherwise
-     */
     public boolean hasNaN() {
-        return Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(heading);
+        return position.hasNaN() || heading.isNaN();
     }
 
-    /**
-     * This adds another Pose2D to this Pose2D and returns the result as a new Pose2D.
-     *
-     * @param other the other Pose2D to add
-     * @return a new Pose2D that is the sum of this Pose2D and the other Pose2D
-     */
-    public Pose2D add(Pose2D other) {
-        return new Pose2D(
-                getX().add(other.getX()),
-                getY().add(other.getY()),
-                getHeading().add(other.getHeading()));
+    /// Translates this Pose2D by a Vector2D
+    public Pose2D add(Vector2D other) {
+        return new Pose2D(position.add(other), heading);
     }
 
-    /**
-     * This adds x, y, and heading to this Pose2D and returns the result as a new Pose2D.
-     *
-     * @param x the x to add as a Distance object
-     * @param y the y to add as a Distance object
-     * @param heading the heading to add as an Angle object
-     * @return a new Pose2D that is the sum of this Pose2D and the given x, y, and heading
-     */
-    public Pose2D add(Distance x, Distance y, Angle heading) {
-        return add(new Pose2D(x, y, heading));
+    /// Rotates the heading of this Pose2D by the given angle
+    public Pose2D add(Angle other) {
+        return new Pose2D(position, heading.add(other));
     }
 
-    /**
-     * This subtracts another Pose2D from this Pose2D and returns the result as a new Pose2D.
-     *
-     * @param other the other Pose2D to subtract
-     * @return a new Pose2D that is the difference of this Pose2D and the other Pose2D
-     */
-    public Pose2D subtract(Pose2D other) {
-        return new Pose2D(
-                getX().subtract(other.getX()),
-                getY().subtract(other.getY()),
-                getHeading().subtract(other.getHeading()));
+    public Pose2D add(Transform2D other) {
+        return new Pose2D(position.add(other.getTranslation()), heading.add(other.getRotation()));
     }
 
-    /**
-     * Converts a local displacement into world coordinates and adds it to this pose's position.
-     *
-     * @param other the Vector2D displacement relative to this pose
-     * @return the resulting absolute Position2D
-     */
+    public Transform2D subtract(Pose2D other) {
+        return new Transform2D(
+                position.subtract(other.getPosition()), heading.subtract(other.getHeading()));
+    }
+
+    /// Converts a local displacement into world coordinates and adds it to this pose's position
     public Position2D addRelative(Vector2D other) {
-        Vector2D rotatedOther = other.rotate(getHeading());
-        return toPosition2D().add(rotatedOther);
+        Vector2D rotatedOther = other.rotate(heading);
+        return position.add(rotatedOther);
     }
 
-    /**
-     * Multiplies x, y and heading components by the scalar and returns the result as a new Pose2D
-     */
-    public Pose2D scale(double scalar) {
-        return new Pose2D(
-                getX().multiply(scalar), getY().multiply(scalar), getHeading().multiply(scalar));
-    }
-
-    /**
-     * This returns a string representation of the object in a human readable format for debugging
-     * purposes.
-     *
-     * @return a string representation of the object
-     */
-    @NonNull
-    public String toString() {
-        return String.format(
-                Locale.ENGLISH, "(Pose2D) x=%s, y=%s, heading=%s", getX(), getY(), getHeading());
-    }
-
-    /**
-     * Converts this Pose2D to an FTC navigation Pose2D object.
-     *
-     * @return a new FTC navigation Pose2D with the same values as this Pose2D
-     */
+    /// Converts this Pose2D to an FTC navigation Pose2D object.
     public org.firstinspires.ftc.robotcore.external.navigation.Pose2D toNavigationPose2D() {
         return new org.firstinspires.ftc.robotcore.external.navigation.Pose2D(
                 DistanceUnit.MM,
@@ -210,11 +113,7 @@ public class Pose2D {
                 getHeading(AngleUnit.RADIANS));
     }
 
-    /**
-     * Converts this Pose2D to a PedroCoordinates Pose, changing the coordinate system accordingly.
-     *
-     * @return a new PedroCoordinates Pose representing the same location as this Pose2D
-     */
+    /// Converts this Pose2D to a PedroCoordinates Pose, changing the coordinate system accordingly.
     public Pose toPedropathingPose() {
         Pose pose =
                 new Pose(
@@ -225,21 +124,7 @@ public class Pose2D {
         return pose.getAsCoordinateSystem(PedroCoordinates.INSTANCE);
     }
 
-    /**
-     * Converts this Pose2D to a Position2D object.
-     *
-     * @return a new Position2D object with the same x and y values as this Pose2D
-     */
-    public Position2D toPosition2D() {
-        return new Position2D(distanceUnit, getX(distanceUnit), getY(distanceUnit));
-    }
-
-    /**
-     * Converts an FTC navigation Pose2D object to a Pose2D object.
-     *
-     * @param navPose the FTC navigation Pose2D object to convert
-     * @return a new Pose2D object the same values as the navPose
-     */
+    /// Converts an FTC navigation Pose2D object to a Pose2D object.
     public static Pose2D fromNavigationPose2D(
             org.firstinspires.ftc.robotcore.external.navigation.Pose2D navPose) {
         return new Pose2D(
@@ -250,7 +135,7 @@ public class Pose2D {
                 navPose.getHeading(AngleUnit.RADIANS));
     }
 
-    /** Converts a PedroCoordinates Pose to a Pose2D, changing the coordinate system accordingly. */
+    /// Converts a PedroCoordinates Pose to a Pose2D, changing the coordinate system accordingly.
     public static Pose2D fromPedropathingPose(Pose pose) {
         double x = pose.getX();
         double y = pose.getY();
@@ -264,5 +149,11 @@ public class Pose2D {
         double newHeading = heading + Math.PI / 2;
 
         return new Pose2D(DistanceUnit.INCH, newX, newY, AngleUnit.RADIANS, newHeading);
+    }
+
+    @NonNull
+    public String toString() {
+        return String.format(
+                Locale.ENGLISH, "(Pose2D) x=%s, y=%s, heading=%s", getX(), getY(), getHeading());
     }
 }

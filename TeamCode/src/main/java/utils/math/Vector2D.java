@@ -6,139 +6,60 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.Locale;
 
-/**
- * Vector2D represents a vector in 2D space. It has an x and y component, as well as a unit of
- * distance.
- */
+/// Represents a 2D vector, which is a displacement between two positions.
 public class Vector2D {
     private final double x;
     private final double y;
     private final DistanceUnit distanceUnit;
 
-    /**
-     * Creates a new Vector2D object.
-     *
-     * @param distanceUnit the unit of distance for both x and y
-     * @param x the x component of the vector
-     * @param y the y component of the vector
-     */
     public Vector2D(DistanceUnit distanceUnit, double x, double y) {
         this.x = x;
         this.y = y;
         this.distanceUnit = distanceUnit;
     }
 
-    /** Creates a new default Vector2D object with 0 magnitude. */
     public Vector2D() {
         this(DistanceUnit.MM, 0, 0);
     }
 
-    /**
-     * Creates a new Vector2D object from two Distance objects.
-     *
-     * @param x the x component of the vector as a Distance object
-     * @param y the y component of the vector as a Distance object
-     */
     public Vector2D(Distance x, Distance y) {
         this(DistanceUnit.MM, x.getValue(DistanceUnit.MM), y.getValue(DistanceUnit.MM));
     }
 
-    /**
-     * Creates a new Vector2D object from a magnitude and direction.
-     *
-     * @param magnitude the magnitude of the vector as a Distance object
-     * @param direction the direction of the vector as an Angle object
-     */
     public Vector2D(Distance magnitude, Angle direction) {
         this(magnitude.multiply(direction.cos()), magnitude.multiply(direction.sin()));
     }
 
-    /** Creates a new Vector2D object from a Position2D by extracting its x and y values. */
-    public Position2D toPosition2D() {
-        return new Position2D(getX(), getY());
-    }
-
-    /**
-     * This gets X in the desired distance unit
-     *
-     * @param unit the desired distance unit
-     * @return the X member converted to the desired distance unit
-     */
+    /// The x component converted to the desired distance unit
     public double getX(DistanceUnit unit) {
         return unit.fromUnit(this.distanceUnit, x);
     }
 
-    /**
-     * This gets X as a Distance object
-     *
-     * @return the X member as a Distance object
-     */
+    /// The x component as a Distance object
     public Distance getX() {
         return new Distance(distanceUnit, x);
     }
 
-    /**
-     * This gets the raw X value without converting to the desired distance unit. This is useful for
-     * calculations that require the original values, such as normalization.
-     *
-     * @return the raw X value
-     */
-    public double getRawX() {
-        return x;
-    }
-
-    /**
-     * This gets the Y in the desired distance unit
-     *
-     * @param unit the desired distance unit
-     * @return the Y member converted to the desired distance unit
-     */
+    /// The y component converted to the desired distance unit
     public double getY(DistanceUnit unit) {
         return unit.fromUnit(this.distanceUnit, y);
     }
 
-    /**
-     * This gets Y as a Distance object
-     *
-     * @return the Y member as a Distance object
-     */
+    /// The y component as a Distance object
     public Distance getY() {
         return new Distance(distanceUnit, y);
     }
 
-    /**
-     * This gets the raw Y value without converting to the desired distance unit. This is useful for
-     * calculations that require the original values, such as normalization.
-     *
-     * @return the raw Y value
-     */
-    public double getRawY() {
-        return y;
-    }
-
-    /** Calculates the magnitude of the vector as a Distance object. */
     public Distance magnitude() {
         return new Distance(distanceUnit, Math.hypot(x, y));
     }
 
-    /**
-     * This gets the direction (argument) of the vector as an Angle object, calculated using the
-     * atan2 function to determine the angle from the positive x-axis to the point represented by
-     * the vector.
-     *
-     * @return an Angle object representing the direction of the vector
-     */
     public Angle direction() {
         double rads = Math.atan2(getY(distanceUnit), getX(distanceUnit));
         return Angle.fromRadians(rads);
     }
 
-    /**
-     * This normalizes the vector to have a magnitude of 1, while maintaining its direction. The
-     * distance unit of the resulting vector is the same as the original vector.
-     *
-     * @return a new Vector2D object that is the normalized version of this vector
-     */
+    /** Normalizes the vector to have a magnitude of 1 while maintaining its direction. */
     public Vector2D normalize() {
         Distance mag = magnitude();
         if (mag.isZero()) {
@@ -148,11 +69,9 @@ public class Vector2D {
     }
 
     /**
-     * This normalizes the vector by dividing both components by the maximum absolute value of the
+     * Normalizes the vector by dividing both components by the maximum absolute value of the
      * components, ensuring that the vector scales to fit within a unit square while maintaining its
      * direction.
-     *
-     * @return a new Vector2D object that is the normalized version of this vector
      */
     public Vector2D normalizeMax() {
         double max = Math.max(Math.abs(x), Math.abs(y));
@@ -162,30 +81,15 @@ public class Vector2D {
         return new Vector2D(distanceUnit, x / max, y / max);
     }
 
-    /**
-     * This scales the vector by a scalar, multiplying both the x and y components by the scalar.
-     *
-     * @param scalar the value to scale the vector by
-     * @return a new Vector2D object that is the scaled version of this vector
-     */
     public Vector2D scale(double scalar) {
         return new Vector2D(distanceUnit, x * scalar, y * scalar);
     }
 
-    /**
-     * This rotates the vector by a given angle.
-     *
-     * @param angle the angle to rotate the vector by
-     * @return a new Vector2D object that is the rotated version of this vector
-     */
+    /// Rotates the vector by the given angle
     public Vector2D rotate(Angle angle) {
         return new Vector2D(magnitude(), direction().add(angle));
     }
 
-    /**
-     * This returns a string representation of the vector in human readable format for debugging
-     * purposes.
-     */
     @NonNull
     public String toString() {
         return String.format(Locale.ENGLISH, "(Vector2D) x=%s, y=%s", getX(), getY());

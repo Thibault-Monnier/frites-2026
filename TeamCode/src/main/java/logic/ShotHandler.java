@@ -15,6 +15,7 @@ import utils.math.Distance;
 import utils.math.Pose2D;
 import utils.math.Position2D;
 import utils.math.Vector2D;
+import utils.math.Velocity2D;
 
 public class ShotHandler {
     private final RobotPosition robotPosition;
@@ -63,24 +64,24 @@ public class ShotHandler {
 
         final double g = 9.81; // gravitational acceleration in m/s^2
 
-        Vector2D cannonVelocity = cannonVelocity();
-        Angle velocityAngle = cannonVelocity.direction();
+        Vector2D cannonLinearVelocity = cannonVelocity().getLinearVelocity();
+        Angle velocityAngle = cannonLinearVelocity.direction();
         Angle correctionAngle = velocityAngle.negate();
-        cannonVelocity = cannonVelocity.rotate(correctionAngle);
+        cannonLinearVelocity = cannonLinearVelocity.rotate(correctionAngle);
 
         Angle theta = CannonConfig.CANNON_ANGLE;
         Distance cannonTopHeight = CannonConfig.CANNON_TOP_HEIGHT;
         Distance goalHeight = FieldConfig.GOAL_HEIGHT;
-        Position2D cannonPos = cannonPos().toVector2D().rotate(correctionAngle).toPosition2D();
-        Position2D goalPos = goalPos().toVector2D().rotate(correctionAngle).toPosition2D();
+        Position2D cannonPos = cannonPos().rotateAroundOrigin(correctionAngle);
+        Position2D goalPos = goalPos().rotateAroundOrigin(correctionAngle);
 
         Angle phi = cannonPos.angleTo(goalPos);
-        Vector2D dHorizontal = cannonPos.subtract(goalPos).toVector2D();
+        Vector2D dHorizontal = cannonPos.subtract(goalPos);
         double dx = dHorizontal.magnitude().toMeters();
         double dy = goalHeight.subtract(cannonTopHeight).toMeters();
 
         double ballSpeed = dx * Math.sqrt(g / (2 * (dx * theta.tan() - dy)));
-        double robotSpeed = cannonVelocity.magnitude().toMeters();
+        double robotSpeed = cannonLinearVelocity.magnitude().toMeters();
 
         double shootSpeed =
                 Math.sqrt(
@@ -98,7 +99,7 @@ public class ShotHandler {
 
     private Vector2D computeStationaryShotVector() {
         TelemetryHandler.addLine("Using stationary shot calculation");
-        return goalPos().subtract(cannonPos()).toVector2D();
+        return goalPos().subtract(cannonPos());
     }
 
     private Position2D cannonPos() {
@@ -106,7 +107,7 @@ public class ShotHandler {
         return robotPose.addRelative(CannonConfig.CANNON_RELATIVE_POSITION);
     }
 
-    private Vector2D cannonVelocity() {
+    private Velocity2D cannonVelocity() {
         return robotPosition.getPointVelocity(CannonConfig.CANNON_RELATIVE_POSITION);
     }
 

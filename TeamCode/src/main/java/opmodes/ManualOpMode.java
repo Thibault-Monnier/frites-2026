@@ -97,7 +97,7 @@ public class ManualOpMode extends OpModeBase {
         if (isChildMode) {
             Angle threshold = Angle.fromDegrees(15);
             Angle angle =
-                    robotPosition.getPose().toPosition2D().angleTo(PlayingField.goalPos(team));
+                    robotPosition.getPose().getPosition().angleTo(PlayingField.goalPos(team));
             Angle angleDiff = angle.subtract(robotPosition.getHeading());
             if (!angleDiff.abs().leq(threshold)) allowedToShoot = false;
         }

@@ -7,6 +7,8 @@ import config.KalmanFilterConfig;
 import utils.math.Angle;
 import utils.math.Distance;
 import utils.math.Pose2D;
+import utils.math.Transform2D;
+import utils.math.Vector2D;
 
 public class KalmanFilter {
     public Pose2D pose;
@@ -21,13 +23,15 @@ public class KalmanFilter {
                         KalmanFilterConfig.MODEL_VARIANCE_ANGLE);
     }
 
-    public Pose2D predict(Pose2D odometryVelocity) {
-        pose = pose.add(odometryVelocity);
+    public Pose2D predict(Transform2D displacement) {
+        pose = pose.add(displacement);
         poseVariance =
-                poseVariance.add(
-                        KalmanFilterConfig.MODEL_VARIANCE_DIST,
-                        KalmanFilterConfig.MODEL_VARIANCE_DIST,
-                        KalmanFilterConfig.MODEL_VARIANCE_ANGLE);
+                poseVariance
+                        .add(
+                                new Vector2D(
+                                        KalmanFilterConfig.MODEL_VARIANCE_DIST,
+                                        KalmanFilterConfig.MODEL_VARIANCE_DIST))
+                        .add(KalmanFilterConfig.MODEL_VARIANCE_ANGLE);
         return pose;
     }
 

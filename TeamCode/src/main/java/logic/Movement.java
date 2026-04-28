@@ -141,7 +141,7 @@ public class Movement implements RobotActuatorModule {
             case MOVE_TO_PARK:
                 {
                     Pose2D targetPose = PlayingField.parkingPose(team);
-                    targetPos = targetPose.toPosition2D();
+                    targetPos = targetPose.getPosition();
                     targetHeading = targetPose.getHeading();
                 }
                 isSuperSlow = true;
@@ -149,14 +149,14 @@ public class Movement implements RobotActuatorModule {
             case MOVE_TO_RAMP:
                 {
                     Pose2D targetPose = PlayingField.rampPose(team);
-                    targetPos = targetPose.toPosition2D();
+                    targetPos = targetPose.getPosition();
                     targetHeading = targetPose.getHeading();
                 }
                 break;
             case MOVE_TO_RAMP_DEFENSE:
                 {
                     Pose2D targetPose = PlayingField.rampDefensePose(team);
-                    targetPos = targetPose.toPosition2D();
+                    targetPos = targetPose.getPosition();
                     targetHeading = targetPose.getHeading();
                 }
                 break;
@@ -250,7 +250,7 @@ public class Movement implements RobotActuatorModule {
     /// Translates the robot towards a target position. Returns true if finished, false otherwise.
     public boolean translateToPosition(Position2D targetPos) {
         Position2D robotPos = robotPosition.getPosition();
-        Vector2D error = targetPos.subtract(robotPos).toVector2D();
+        Vector2D error = targetPos.subtract(robotPos);
 
         DistanceUnit errorUnit = DistanceUnit.MM;
 
