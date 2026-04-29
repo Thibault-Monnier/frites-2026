@@ -6,7 +6,6 @@ import logic.Team;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import utils.geometry.Angle;
 import utils.geometry.Distance;
 import utils.geometry.Pose2D;
 import utils.geometry.Position2D;
@@ -91,15 +90,6 @@ public class PlayingField {
             default:
                 throw new IllegalArgumentException("Invalid artifact row: " + row);
         }
-    }
-
-    /// Calculates the angle from the robot's current position to the targeting point of the
-    /// specified goal.
-    /// @param robotPos The current position of the robot.
-    /// @param color The color of the goal to target.
-    /// @return The angle to the targeting point of the specified goal.
-    public static Angle angleToGoal(Position2D robotPos, Team color) {
-        return goalPos(color).subtract(robotPos).direction();
     }
 
     /// Calculates the distance from the robot's current position to the targeting point of the

@@ -101,7 +101,7 @@ public abstract class OpModeBase extends LinearOpMode {
         DcMotorEx cannonRight =
                 hardwareMap.get(DcMotorEx.class, HardwareConfig.CANNON_MOTOR_RIGHT_ID);
         DcMotor cannonBufferMotor =
-                hardwareMap.get(DcMotor.class, HardwareConfig.CANNON_BUFFER_LEFT);
+                hardwareMap.get(DcMotor.class, HardwareConfig.CANNON_BUFFER_MOTOR_ID);
 
         DcMotor intake = hardwareMap.get(DcMotor.class, HardwareConfig.INTAKE_MOTOR_ID);
 
@@ -139,7 +139,7 @@ public abstract class OpModeBase extends LinearOpMode {
 
     protected void runStop() {
         robotPosition.stop();
-        //artifactMonitor.stop();
+        // artifactMonitor.stop();
     }
 
     protected void update() {
@@ -149,7 +149,7 @@ public abstract class OpModeBase extends LinearOpMode {
 
         gamepadController.update();
 
-        robotPosition.updatePose();
+        follower.update();
 
         shotHandler.update();
 
