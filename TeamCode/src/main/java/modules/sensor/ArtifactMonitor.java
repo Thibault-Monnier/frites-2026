@@ -1,7 +1,5 @@
 package modules.sensor;
 
-import team.techtigers.core.display.Color;
-
 public class ArtifactMonitor implements Runnable {
     private final DistanceSensorMonitor distanceSensorMonitor;
     private volatile boolean running = true;
