@@ -1,18 +1,27 @@
 package pedropathing;
 
+import static config.OdometryConfig.ENCODER_X_Y_OFFSET;
+import static config.OdometryConfig.ENCODER_Y_X_OFFSET;
+
+import androidx.annotation.Nullable;
+
 import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
 import com.pedropathing.ftc.drivetrains.MecanumConstants;
+import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.paths.PathConstraints;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import config.HardwareConfig;
 import config.MovementConfig;
 
 import logic.position.RobotPosition;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants =
@@ -26,6 +35,16 @@ public class Constants {
                             new FilteredPIDFCoefficients(0.05, 0, 0.00001, 0.6, 0.025));
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
+
+    public static PinpointConstants pinpointConstants =
+            new PinpointConstants()
+                    .forwardPodY(ENCODER_X_Y_OFFSET.getValue(DistanceUnit.INCH))
+                    .strafePodX(ENCODER_Y_X_OFFSET.getValue(DistanceUnit.INCH))
+                    .distanceUnit(DistanceUnit.INCH)
+                    .hardwareMapName(HardwareConfig.ODOMETRY_POD_ID)
+                    .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
+                    .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
+                    .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
 
     public static MecanumConstants driveConstants =
             new MecanumConstants()
@@ -41,12 +60,20 @@ public class Constants {
                     .xVelocity(64.05772772360976)
                     .yVelocity(49.779096948818896);
 
-    public static Follower createFollower(HardwareMap hardwareMap, RobotPosition robotPosition) {
-        RobotLocalizer localizer = new RobotLocalizer(robotPosition);
-        return new FollowerBuilder(followerConstants, hardwareMap)
-                .pathConstraints(pathConstraints)
-                .mecanumDrivetrain(driveConstants)
-                .setLocalizer(localizer)
-                .build();
+    public static Follower createFollower(
+            HardwareMap hardwareMap, @Nullable RobotPosition robotPosition) {
+        FollowerBuilder builder =
+                new FollowerBuilder(followerConstants, hardwareMap)
+                        .pathConstraints(pathConstraints)
+                        .mecanumDrivetrain(driveConstants);
+
+        if (robotPosition != null) {
+            RobotLocalizer localizer = new RobotLocalizer(robotPosition);
+            builder = builder.setLocalizer(localizer);
+        } else {
+            builder = builder.pinpointLocalizer(pinpointConstants);
+        }
+
+        return builder.build();
     }
 }
