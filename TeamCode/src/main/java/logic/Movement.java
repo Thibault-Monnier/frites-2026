@@ -179,7 +179,7 @@ public class Movement implements RobotActuatorModule {
     /// Rotates the robot using input from the *right* joystick of the gamepad. If locking towards
     /// goal, rotate to face the goal instead.
     public void rotate(Gamepad gamepad, boolean slow) {
-        double turn = -gamepad.right_stick_x * speedMultiplier(slow);
+        double turn = gamepad.right_stick_x * speedMultiplier(slow);
 
         if (Math.abs(turn) > 0.1) {
             turn = MecanumDrive.smooth(turn);
@@ -290,7 +290,7 @@ public class Movement implements RobotActuatorModule {
 
     /// Computes translation speed forward and sideways. Returns the pair (forward, strafe).
     private Translation getTranslationVelocity(Gamepad gamepad, boolean slow) {
-        double forward = gamepad.left_stick_y * speedMultiplier(slow);
+        double forward = -gamepad.left_stick_y * speedMultiplier(slow);
         forward = MecanumDrive.smooth(forward);
 
         double strafe = gamepad.left_stick_x * speedMultiplier(slow);
