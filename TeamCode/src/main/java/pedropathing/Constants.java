@@ -57,8 +57,8 @@ public class Constants {
                     .rightFrontMotorDirection(MovementConfig.FRONT_RIGHT_DIRECTION)
                     .leftRearMotorDirection(MovementConfig.BACK_LEFT_DIRECTION)
                     .rightRearMotorDirection(MovementConfig.BACK_RIGHT_DIRECTION)
-                    .xVelocity(64.05772772360976)
-                    .yVelocity(49.779096948818896);
+                    .xVelocity(85.3)
+                    .yVelocity(66.5);
 
     public static Follower createFollower(
             HardwareMap hardwareMap, @Nullable RobotPosition robotPosition) {
