@@ -63,10 +63,10 @@ public class MecanumDrive implements RobotActuatorModule {
         double denominator =
                 Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(turnSpeed), 1);
 
-        frontLeftPower += (forward + strafe + turnSpeed) / denominator;
-        frontRightPower += (forward - strafe - turnSpeed) / denominator;
-        backLeftPower += (forward - strafe + turnSpeed) / denominator;
-        backRightPower += (forward + strafe - turnSpeed) / denominator;
+        frontLeftPower += (forward - strafe - turnSpeed) / denominator;
+        frontRightPower += (forward + strafe + turnSpeed) / denominator;
+        backLeftPower += (forward + strafe - turnSpeed) / denominator;
+        backRightPower += (forward - strafe + turnSpeed) / denominator;
 
         frontLeftPower *= FRONT_LEFT_COEFF;
         frontRightPower *= FRONT_RIGHT_COEFF;
