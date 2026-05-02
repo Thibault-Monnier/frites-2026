@@ -118,7 +118,10 @@ public abstract class AutoOpModeBase extends OpModeBase {
 
     protected Action shootAction() {
         return () -> {
-            if (!cannon.isReadyToShoot()) return false;
+            if (!cannon.isReadyToShoot()) {
+                cannonBuffers.shootDontContinue();
+                return false;
+            }
 
             intake.on();
 
