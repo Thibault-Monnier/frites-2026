@@ -110,7 +110,7 @@ public abstract class AutoOpModeBase extends OpModeBase {
 
             if (!follower.isBusy()
                     || follower.isRobotStuck()
-                    || runtime.milliseconds() - pathStartTime > 4000) { // Hard time limit as backup
+                    || runtime.milliseconds() - pathStartTime > 3000) { // Hard time limit as backup
                 follower.breakFollowing();
                 pathActive = false;
                 return true;
@@ -122,12 +122,12 @@ public abstract class AutoOpModeBase extends OpModeBase {
 
     protected Action shootAction() {
         return () -> {
+            intake.on();
+
             if (!cannon.isReadyToShoot()) {
                 cannonBuffers.shootDontContinue();
                 return false;
             }
-
-            intake.on();
 
             boolean done = cannonBuffers.shootContinue();
             if (done) cannonBuffers.shootReset();
