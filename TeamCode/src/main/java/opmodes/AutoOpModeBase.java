@@ -90,6 +90,10 @@ public abstract class AutoOpModeBase extends OpModeBase {
         return new SimpleAction(() -> cannon.on());
     }
 
+    protected Action stopCannon() {
+        return new SimpleAction(() -> cannon.off());
+    }
+
     protected Action waitAction(double delay, Runnable doWhile) {
         return new DelayAction(delay, doWhile);
     }
