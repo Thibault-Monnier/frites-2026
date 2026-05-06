@@ -5,6 +5,7 @@ import static config.OdometryConfig.ENCODER_Y_X_OFFSET;
 
 import androidx.annotation.Nullable;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
@@ -23,16 +24,17 @@ import logic.position.RobotPosition;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+@Config
 public class Constants {
     public static FollowerConstants followerConstants =
             new FollowerConstants()
                     .mass(15) // TODO: Set this
                     .forwardZeroPowerAcceleration(-29.75878312266954)
                     .lateralZeroPowerAcceleration(-63.18270607279411)
-                    .translationalPIDFCoefficients(new PIDFCoefficients(0.075, 0, 0.001, 0.025))
-                    .headingPIDFCoefficients(new PIDFCoefficients(0.85, 0, 0.001, 0.025))
+                    .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.015, 0.075))
+                    .headingPIDFCoefficients(new PIDFCoefficients(1, 0, 0.1, 0.075))
                     .drivePIDFCoefficients(
-                            new FilteredPIDFCoefficients(0.05, 0, 0.00001, 0.6, 0.025));
+                            new FilteredPIDFCoefficients(0.03, 0, 0.0001, 0.6, 0.075));
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
