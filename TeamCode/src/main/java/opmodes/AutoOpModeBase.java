@@ -98,10 +98,10 @@ public abstract class AutoOpModeBase extends OpModeBase {
         return new DelayAction(delay, doWhile);
     }
 
-    protected Action pathAction(PathChain path, boolean useIntake, boolean isSlow) {
+    protected Action pathAction(PathChain path, boolean useIntake, boolean isSlow, boolean holdAfterDone) {
         return () -> {
             if (!pathActive) {
-                follower.followPath(path, isSlow ? 0.7 : 1, true);
+                follower.followPath(path, isSlow ? 0.7 : 1, holdAfterDone);
                 pathActive = true;
                 pathStartTime = runtime.milliseconds();
             }
@@ -111,7 +111,6 @@ public abstract class AutoOpModeBase extends OpModeBase {
             if (!follower.isBusy()
                     || follower.isRobotStuck()
                     || runtime.milliseconds() - pathStartTime > 3000) { // Hard time limit as backup
-                follower.breakFollowing();
                 pathActive = false;
                 return true;
             }

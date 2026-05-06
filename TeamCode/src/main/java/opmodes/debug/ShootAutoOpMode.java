@@ -6,7 +6,6 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import logic.Team;
-import logic.action.Action;
 import logic.action.ActionSequence;
 import logic.field.PlayingField;
 
@@ -34,7 +33,7 @@ public class ShootAutoOpMode extends AutoOpModeBase {
         sequence =
                 new ActionSequence(
                         startCannon(),
-                        pathAction(paths.startToShoot, true, false),
+                        pathAction(paths.startToShoot, true, false, true),
                         shootAction(),
                         stopCannon());
     }

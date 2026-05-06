@@ -35,32 +35,32 @@ public class AutoOpMode extends AutoOpModeBase {
     }
 
     private Action startToShoot() {
-        return new ActionSequence(pathAction(paths.startToShoot, true, false), shootAction());
+        return new ActionSequence(pathAction(paths.startToShoot, true, false, true), shootAction());
     }
 
     private Action middleRowCycle() {
         return new ActionSequence(
-                pathAction(paths.alignMiddleRow, false, false),
-                pathAction(paths.collectMiddleRow, true, true),
-                pathAction(paths.middleRowToShoot, true, false),
+                pathAction(paths.alignMiddleRow, false, false, false),
+                pathAction(paths.collectMiddleRow, true, true, false),
+                pathAction(paths.middleRowToShoot, true, false, true),
                 shootAction());
     }
 
     private Action backRowCycle() {
         return new ActionSequence(
-                pathAction(paths.alignBackRow, false, false),
-                pathAction(paths.collectBackRow, true, true),
-                pathAction(paths.leave, true, false),
+                pathAction(paths.alignBackRow, false, false, false),
+                pathAction(paths.collectBackRow, true, true, false),
+                pathAction(paths.leave, true, false, true),
                 shootAction());
     }
 
     private Action rampCycle() {
         return new ActionSequence(
-                pathAction(paths.alignCollectRamp, false, false),
-                pathAction(paths.collectRamp, true, true),
+                pathAction(paths.alignCollectRamp, false, false, false),
+                pathAction(paths.collectRamp, true, true, true),
                 waitAction(0.650, this::intake),
-                pathAction(paths.collectFromRampFinal, true, false),
-                pathAction(paths.rampToShoot, true, false),
+                pathAction(paths.collectFromRampFinal, true, false, false),
+                pathAction(paths.rampToShoot, true, false, true),
                 shootAction());
     }
 
