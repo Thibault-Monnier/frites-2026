@@ -31,10 +31,10 @@ public class Constants {
                     .mass(15) // TODO: Set this
                     .forwardZeroPowerAcceleration(-29.75878312266954)
                     .lateralZeroPowerAcceleration(-63.18270607279411)
-                    .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.015, 0.075))
-                    .headingPIDFCoefficients(new PIDFCoefficients(1, 0, 0.1, 0.075))
+                    .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.015, 0.02))
+                    .headingPIDFCoefficients(new PIDFCoefficients(1, 0, 0.1, 0.025))
                     .drivePIDFCoefficients(
-                            new FilteredPIDFCoefficients(0.03, 0, 0.0001, 0.6, 0.075));
+                            new FilteredPIDFCoefficients(0.015, 0, 0.0000, 0.6, 0.03));
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 

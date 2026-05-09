@@ -10,6 +10,7 @@ import logic.Team;
 import logic.action.Action;
 import logic.action.DelayAction;
 import logic.action.SimpleAction;
+import logic.action.WaitForArtifactsAction;
 import logic.field.PlayingField;
 
 import utils.TelemetryHandler;
@@ -96,6 +97,10 @@ public abstract class AutoOpModeBase extends OpModeBase {
 
     protected Action waitAction(double delay, Runnable doWhile) {
         return new DelayAction(delay, doWhile);
+    }
+
+    protected Action waitForArtifactsAction(double delay, Runnable doWhile) {
+        return new WaitForArtifactsAction(delay, doWhile, distanceSensorMonitor);
     }
 
     protected Action pathAction(PathChain path, boolean useIntake, boolean isSlow, boolean holdAfterDone) {

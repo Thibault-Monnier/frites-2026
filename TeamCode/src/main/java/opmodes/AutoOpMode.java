@@ -31,7 +31,8 @@ public class AutoOpMode extends AutoOpModeBase {
                         middleRowCycle(),
                         rampCycle(),
                         rampCycle(),
-                        backRowCycle());
+                        backRowCycle()
+                );
     }
 
     private Action startToShoot() {
@@ -58,7 +59,7 @@ public class AutoOpMode extends AutoOpModeBase {
         return new ActionSequence(
                 pathAction(paths.alignCollectRamp, false, false, false),
                 pathAction(paths.collectRamp, true, true, true),
-                waitAction(0.650, this::intake),
+                waitAction(0.8, this::intake),
                 pathAction(paths.collectFromRampFinal, true, false, false),
                 pathAction(paths.rampToShoot, true, false, true),
                 shootAction());
@@ -89,23 +90,23 @@ public class AutoOpMode extends AutoOpModeBase {
         @Override
         protected void createPaths() {
             Pose startPose = PlayingField.startPose(Team.RED).toPedropathingPose();
-            Pose shootingPose = new Pose(88, 76, Math.toRadians(53));
+            Pose shootingPose = new Pose(88, 88, Math.toRadians(45));
             Pose leavePose = new Pose(85, 101, Math.toRadians(38));
 
             Pose middleRowStartPose = new Pose(99, 62, Math.toRadians(0));
-            Pose middleRowControlPoint = new Pose(126, 63, Math.toRadians(0));
-            Pose middleRowEndPose = new Pose(131, 56, Math.toRadians(0));
-            Pose middleRowToShootControlPoint = new Pose(106.5, 59);
+            Pose middleRowControlPoint = new Pose(126, 62, Math.toRadians(0));
+            Pose middleRowEndPose = new Pose(131, 62, Math.toRadians(0));
+            Pose middleRowToShootControlPoint = new Pose(106.5, 50);
 
-            Pose backRowStartPos = new Pose(100, 84, Math.toRadians(0));
-            Pose backRowControlPoint = new Pose(106.5, 88);
-            Pose backRowEndPose = new Pose(126, 83, Math.toRadians(-10));
+            Pose backRowStartPos = new Pose(100, 85, Math.toRadians(0));
+            Pose backRowControlPoint = new Pose(106.5, 85);
+            Pose backRowEndPose = new Pose(120, 85, Math.toRadians(0));
 
-            Pose alignRampPose = new Pose(126, 61, Math.toRadians(35));
+            Pose alignRampPose = new Pose(120, 63, Math.toRadians(35));
             Pose alignRampControlPoint = new Pose(102, 66);
-            Pose collectRampPose = new Pose(131.75, 59.5, Math.toRadians(28));
-            Pose collectRampFinalControlPoint = new Pose(127, 57.5);
-            Pose collectRampFinalEndPose = new Pose(131, 56.5, Math.toRadians(20));
+            Pose collectRampPose = new Pose(129, 63, Math.toRadians(28));
+            Pose collectRampFinalControlPoint = new Pose(124, 60.5);
+            Pose collectRampFinalEndPose = new Pose(127, 60.0, Math.toRadians(20));
 
             Pose rampToShootControlPoint = new Pose(107, 60);
 

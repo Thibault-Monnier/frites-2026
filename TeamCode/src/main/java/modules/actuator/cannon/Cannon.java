@@ -121,11 +121,13 @@ public class Cannon implements RobotActuatorModule {
         // Uses a quartic regression to interpolate between these values.
 
         double d = horizontalShootingDistance.getValue(DistanceUnit.METER);
-        return -14.0845 * d * d * d * d
-                + 167.08063 * d * d * d
-                - 717.12718 * d * d
-                + 1483.50937 * d
-                + 181.54309;
+//        return -14.0845 * d * d * d * d
+//                + 167.08063 * d * d * d
+//                - 717.12718 * d * d
+//                + 1483.50937 * d
+//                + 181.54309;
+
+        return -8.3333 * d * d + 237.5 * d + 833.333;
     }
 
     @Override
