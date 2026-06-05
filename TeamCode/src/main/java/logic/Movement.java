@@ -288,7 +288,6 @@ public class Movement implements RobotActuatorModule {
         return false;
     }
 
-    /// Computes translation speed forward and sideways. Returns the pair (forward, strafe).
     private Translation getTranslationVelocity(Gamepad gamepad, boolean slow) {
         double forward = -gamepad.left_stick_y * speedMultiplier(slow);
         forward = MecanumDrive.smooth(forward);
@@ -311,19 +310,14 @@ public class Movement implements RobotActuatorModule {
         Angle robotAngle = robotPosition.getHeading();
 
         Angle delta = Angle.fromDegrees(90);
-        if (team.isBlue()) robotAngle = robotAngle.subtract(delta);
-        if (team.isRed()) robotAngle = robotAngle.add(delta);
+        if (team.isBlue()) robotAngle = robotAngle.add(delta);
+        if (team.isRed()) robotAngle = robotAngle.subtract(delta);
 
         translateFieldCentric(robotAngle, translation);
     }
 
     private void translateFieldCentric(Angle heading, Translation translation) {
-        double forward = translation.forward;
-        double strafe = translation.strafe;
-
-        translation.forward = -forward * heading.cos() - strafe * heading.sin();
-        translation.strafe = forward * heading.sin() - strafe * heading.cos();
-
+        translation.rotate(heading.negate());
         translate(translation);
     }
 
@@ -375,6 +369,15 @@ public class Movement implements RobotActuatorModule {
 
         public Translation() {
             this(0, 0);
+        }
+
+        public void rotate(Angle angle) {
+            DistanceUnit unit = DistanceUnit.MM;
+
+            Vector2D vec = new Vector2D(unit, forward, strafe);
+            vec = vec.rotate(angle);
+            forward = vec.getX(unit);
+            strafe = vec.getY(unit);
         }
     }
 }
