@@ -10,10 +10,10 @@ import utils.geometry.Distance;
 @Config
 @Configurable
 public class HardwareConfig {
-    public static String FRONT_LEFT_MOTOR_ID = "front_left";
-    public static String FRONT_RIGHT_MOTOR_ID = "front_right";
-    public static String BACK_LEFT_MOTOR_ID = "back_left";
-    public static String BACK_RIGHT_MOTOR_ID = "back_right";
+    public static String FRONT_LEFT_MOTOR_ID = "fl";
+    public static String FRONT_RIGHT_MOTOR_ID = "fr";
+    public static String BACK_LEFT_MOTOR_ID = "bl";
+    public static String BACK_RIGHT_MOTOR_ID = "br";
     public static String CANNON_MOTOR_LEFT_ID = "cannon_motor_left";
     public static String CANNON_MOTOR_RIGHT_ID = "cannon_motor_right";
     public static String CANNON_BUFFER_MOTOR_ID = "cannon_buffer_left";
